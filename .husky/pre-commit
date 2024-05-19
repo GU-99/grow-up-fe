@@ -1,0 +1,3 @@
+echo "pre-commit: prettier와 eslint 검증 시작"
+npx lint-staged
+echo "pre-commit: prettier와 eslint 검증 완료"

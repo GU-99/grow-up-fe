@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "oderwat.indent-rainbow",
+    "dbaeumer.vscode-eslint",
+    "usernamehw.errorlens",
+    "steoates.autoimport",
+    "formulahendry.auto-rename-tag",
+    "pkief.material-icon-theme",
+    "equinusocio.vsc-material-theme",
+    "wix.vscode-import-cost"
+  ]
+}
