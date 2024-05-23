@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
+import SignUp from './pages/SignUp.tsx';
 
 async function enableMocking() {
   if (!import.meta.env.DEV) return;
@@ -10,10 +11,21 @@ async function enableMocking() {
   return worker.start();
 }
 
+const router = createBrowserRouter([
+  // {
+  //   path: '/',
+  //   element: ,
+  // },
+  {
+    path: '/signup',
+    element: <SignUp />,
+  },
+]);
+
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-      <App />
+      <RouterProvider router={router} />
     </React.StrictMode>,
   );
 });
