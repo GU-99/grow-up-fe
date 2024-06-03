@@ -38,6 +38,7 @@
       "@pages/*": ["src/pages/*"],
       "@services/*": ["src/services/*"],
       "@stories/*": ["src/stories/*"],
+      "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"]
     }
   },
