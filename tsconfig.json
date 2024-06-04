@@ -29,7 +29,6 @@
     "paths": {
       "@/*": ["src/*"],
       "@assets/*": ["src/assets/*"],
-      "@common/*": ["src/common/*"],
       "@components/*": ["src/components/*"],
       "@constants/*": ["src/constants/*"],
       "@hooks/*": ["src/hooks/*"],
@@ -38,6 +37,7 @@
       "@pages/*": ["src/pages/*"],
       "@services/*": ["src/services/*"],
       "@stories/*": ["src/stories/*"],
+      "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"]
     }
   },
