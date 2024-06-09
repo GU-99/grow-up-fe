@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
 import './index.css';
+import MainRouter from './routes/MainRouter.tsx';
 
 async function enableMocking() {
   if (!import.meta.env.DEV) return;
@@ -13,7 +13,7 @@ async function enableMocking() {
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-      <App />
+      <MainRouter />
     </React.StrictMode>,
   );
 });
