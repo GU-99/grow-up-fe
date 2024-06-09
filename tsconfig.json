@@ -35,6 +35,7 @@
       "@layouts/*": ["src/layouts/*"],
       "@mocks/*": ["src/mocks/*"],
       "@pages/*": ["src/pages/*"],
+      "@routes/*": ["src/routes/*"],
       "@services/*": ["src/services/*"],
       "@stories/*": ["src/stories/*"],
       "@types/*": ["src/types/*"],

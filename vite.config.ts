@@ -21,6 +21,7 @@ export default defineConfig({
       { find: '@layouts', replacement: path.resolve(__dirname, 'src/layouts') },
       { find: '@mocks', replacement: path.resolve(__dirname, 'src/mocks') },
       { find: '@pages', replacement: path.resolve(__dirname, 'src/pages') },
+      { find: '@routes', replacement: path.resolve(__dirname, 'src/routes') },
       { find: '@services', replacement: path.resolve(__dirname, 'src/services') },
       { find: '@stories', replacement: path.resolve(__dirname, 'src/stories') },
       { find: '@types', replacement: path.resolve(__dirname, 'src/types') },
