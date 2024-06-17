@@ -15,22 +15,24 @@
     --input-width: 30rem;
     --input-height: 3rem;
     --input-padding-x: 0.8rem;
-    --input-inner-margin-x: 3rem;
-    --input-outer-margin: 0.8rem;
+    --input-margin-x: 3rem;
+    --input-margin-y: 0.8rem;
+    --contents-layout-margin: 1.5rem;
+    --contents-box-gap: 1rem;
     --popup-min-size: 37.5rem;
-    --popup-list-margin: 1rem;
+    --popup-list-margin-bottom: 1rem;
 
     /* font-family */
-    --primary-font-family: 'Roboto', sans-serif;
+    --font-family-primary: 'Roboto', sans-serif;
 
     /* font-weight */
-    --roboto-404: 900;
-    --roboto-regular: 400;
-    --roboto-bold: 700;
+    --font-weight-404: 900;
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
 
     /* font-size */
     --font-size-3xl: 3rem;
-    --font-size-large: 1.125rem;
+    --font-size-large: 1.2rem;
     --font-size-regular: 1rem;
 
     /* letter spacing */
@@ -41,7 +43,7 @@
     --main-color: #237700;
     --sub-color: #e1f4d9;
     --close-color: #be0000;
-    --default-bg-color: #fdfdfd;
+    --contents-box-color: #fdfdfd;
     --disable-color: #c2c2c2;
     --selected-color: #c2c2c2;
     --scroll-color: #f5f5f5;
@@ -72,8 +74,9 @@
   }
 
   body {
-    font-family: var(--primary-font-family);
-    font-weight: 400;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-regular);
+    font-weight: var(--font-weight-regular);
     font-style: normal;
   }
 }
