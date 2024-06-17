@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .auth-btn {
+    @apply h-[4.38rem] bg-[#E1F4D9] rounded-[10px] text-base font-bold;
+  }
+
+  .auth-input {
+    @apply h-[4.38rem] bg-white rounded-[10px] p-4 placeholder:text-[#5E5E5E] text-sm;
+  }
+}

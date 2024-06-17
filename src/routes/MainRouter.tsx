@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AfterLoginRoute from '@routes/AfterLoginRoute';
 import BeforeLoginRoute from '@routes/BeforeLoginRoute';
 
+import AuthLayout from '@layouts/AuthLayout';
 import TeamLayout from '@layouts/TeamLayout';
 import DefaultLayout from '@layouts/DefaultLayout';
 import SettingLayout from '@layouts/SettingLayout';
@@ -23,7 +24,11 @@ export default function MainRouter() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <BeforeLoginRoute />,
+      element: (
+        <BeforeLoginRoute>
+          <AuthLayout />
+        </BeforeLoginRoute>
+      ),
       errorElement: <ErrorPage />,
       children: [
         { path: 'signup', element: <SignUpPage /> },
