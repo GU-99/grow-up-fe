@@ -8,6 +8,6 @@
   }
 
   .auth-input {
-    @apply h-[4.38rem] bg-white rounded-[10px] p-4 placeholder:text-[#5E5E5E] text-sm;
+    @apply h-[4.38rem] bg-white rounded-[10px] p-4 placeholder:text-[#5E5E5E] text-sm outline-none;
   }
 }
