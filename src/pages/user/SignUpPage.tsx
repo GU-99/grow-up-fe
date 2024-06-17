@@ -1,8 +1,9 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 
 type FormData = {
+  profile: File[];
   email: string;
   verificationCode: string;
   name: string;
@@ -13,6 +14,7 @@ type FormData = {
 };
 
 export default function SignUpPage() {
+  const [imagePreview, setImagePreview] = useState('');
   const [link, setLink] = useState<string>('');
   const [websiteList, setWebsiteList] = useState<string[]>([]);
 
@@ -25,6 +27,7 @@ export default function SignUpPage() {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
+      profile: [],
       email: '',
       verificationCode: '',
       name: '',
@@ -34,6 +37,19 @@ export default function SignUpPage() {
       website: [''],
     },
   });
+
+  const image = watch('profile');
+  useEffect(() => {
+    if (image && image.length > 0) {
+      const file = image[0];
+      setImagePreview(URL.createObjectURL(file));
+    }
+  }, [image]);
+
+  const handleRemoveImg = () => {
+    setValue('profile', []);
+    setImagePreview('');
+  };
 
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLink(e.target.value);
@@ -60,31 +76,37 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex flex-col p-10 bg-[#237700] rounded-2xl h-[90vh] overflow-y-scroll scrollbar-hide border border-[#A9A9A9] shadow-xl shadow-gray-500/50">
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-y-4">
-        <div className="flex flex-col items-center gap-y-4">
-          <div className="w-[15.63rem] h-[15.63rem]">
-            <img
-              src="https://blog.kakaocdn.net/dn/tEMUl/btrDc6957nj/NwJoDw0EOapJNDSNRNZK8K/img.jpg"
-              alt="img"
-              className="w-full h-full object-cover rounded-[50%]"
-            />
-          </div>
-          <div className="flex flex-row gap-x-2">
-            <label
-              htmlFor="file-upload"
-              className="w-[6.25rem] h-[4.38rem] bg-[#E1F4D9] rounded-[10px] sm:text-m font-bold flex items-center justify-center cursor-pointer auth-btn"
-            >
-              등록
-              <input id="file-upload" type="file" className="hidden" />
-            </label>
-            <button type="button" className="w-[6.25rem] auth-btn bg-[#EFEFEF]">
-              삭제
-            </button>
+    <div className="flex flex-col p-12 bg-[#237700] rounded-2xl h-[90vh] overflow-y-scroll scrollbar-hide border border-[#A9A9A9] shadow-xl shadow-gray-500/50">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+        <div className="flex flex-col items-center gap-[0.8rem]">
+          <div className="relative w-[10rem] h-[10rem] rounded-[50%] cursor-pointer group bg-white">
+            {imagePreview ? (
+              <>
+                <img src={imagePreview} alt="Profile" className="w-full h-full object-cover rounded-[50%]" />
+                <div className="absolute inset-0 rounded-[50%] bg-black bg-opacity-50 items-center justify-center hidden group-hover:flex">
+                  <p
+                    role="presentation"
+                    className="text-white cursor-pointer"
+                    onClick={handleRemoveImg}
+                    onKeyDown={handleRemoveImg}
+                  >
+                    삭제
+                  </p>
+                </div>
+              </>
+            ) : (
+              <label
+                htmlFor="profile"
+                className="absolute inset-0 flex flex-col gap-1 items-center justify-center text-center cursor-pointer "
+              >
+                <input {...register('profile')} id="profile" type="file" className="hidden" />
+                {/* <GoPlusCircle size="1.5rem" color="#5E5E5E" /> */}+<p className="text-[#5E5E5E]">프로필 이미지</p>
+              </label>
+            )}
           </div>
         </div>
 
-        <div className="flex flex-row gap-x-2">
+        <div className="flex flex-row gap-[0.8rem]">
           <input
             {...register('email', {
               required: '이메일(아이디)을 입력해 주세요.',
@@ -95,29 +117,29 @@ export default function SignUpPage() {
             })}
             type="email"
             placeholder="(필수) 이메일(아이디)을 입력하세요."
-            className={`w-[20.63rem] auth-input ${errors.email && `border-2 border-[#FF0000]`}`}
+            className={`auth-input ${errors.email && `border-2 border-[#FF0000]`}`}
           />
-          <button type="button" className="w-[10rem] auth-btn">
+          <button type="button" className="auth-btn">
             인증번호 발송
           </button>
         </div>
         {errors.email && <p className="text-[#FF0000] text-sm">{errors.email.message}</p>}
 
-        <div className="flex flex-row gap-x-2">
+        <div className="flex flex-row gap-[0.8rem]">
           <input
             {...register('verificationCode', { required: '인증번호를 입력해 주세요.' })}
             placeholder="(필수) 인증번호를 입력하세요."
             type="text"
             id="verificationCode"
-            className={`w-[24.38rem] auth-input ${errors.verificationCode && `border-2 border-[#FF0000]`}`}
+            className={`auth-input ${errors.verificationCode && `border-2 border-[#FF0000]`}`}
           />
-          <button type="button" className="w-[6.25rem] auth-btn">
+          <button type="button" className="auth-btn">
             확인
           </button>
         </div>
         {errors.verificationCode && <p className="text-[#FF0000] text-sm">{errors.verificationCode.message}</p>}
 
-        <div className="flex flex-row gap-x-2">
+        <div className="flex flex-row gap-[0.8rem]">
           <input
             {...register('name', {
               required: '닉네임을 입력해 주세요.',
@@ -129,9 +151,9 @@ export default function SignUpPage() {
             placeholder="(필수) 닉네임을 입력하세요."
             type="text"
             id="name"
-            className={`w-[21.88rem] auth-input ${errors.name && `border-2 border-[#FF0000]`}`}
+            className={`auth-input ${errors.name && `border-2 border-[#FF0000]`}`}
           />
-          <button type="button" className="w-[8.75rem] auth-btn">
+          <button type="button" className="auth-btn">
             중복확인
           </button>
         </div>
@@ -177,43 +199,43 @@ export default function SignUpPage() {
           placeholder="(선택) 자신을 소개해 주세요."
           type="text"
           id="bio"
-          className="h-[9.38rem] auth-input"
+          className="auth-input h-[9.38rem] w-[30rem]"
         />
 
         {websiteList &&
           websiteList.map((item, index) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={index} className="flex flex-row gap-x-2">
-              <div className="w-[26.31rem] auth-input flex items-center">
+            <div key={index} className="flex flex-row gap-[0.8rem]">
+              <div className="auth-input flex items-center">
                 <a href={`http://${item}`} target="_blank" className="underline underline-offset-4" rel="noreferrer">
                   {item}
                 </a>
               </div>
-              <button type="button" onClick={() => handleRemoveLink(index)} className="w-[4.38rem] auth-btn">
+              <button type="button" onClick={() => handleRemoveLink(index)} className="auth-btn">
                 -
               </button>
             </div>
           ))}
 
-        <div className="flex flex-row gap-x-2">
+        <div className="flex flex-row gap-[0.8rem]">
           <input
             placeholder="(선택) 링크를 추가해 보세요.(GitHub, Blog 등)"
             value={link}
             onChange={handleLinkChange}
             type="text"
-            className="w-[26.31rem] auth-input bg-[#C2C2C2]"
+            className="auth-input bg-[#C2C2C2]"
           />
-          <button type="button" onClick={() => handleAddLink(link)} className="w-[4.38rem] auth-btn">
+          <button type="button" onClick={() => handleAddLink(link)} className="auth-btn">
             +
           </button>
         </div>
 
-        <div className="flex flex-col gap-y-4 text-center">
+        <div className="flex flex-col gap-4 text-center">
           <button type="submit" className="auth-btn" disabled={isSubmitting}>
             회원가입
           </button>
 
-          <p className="sm:text-m font-bold text-[#E1F4D9] cursor-pointer">로그인 페이지로 돌아가기</p>
+          <p className="font-bold text-[#E1F4D9] cursor-pointer">로그인 페이지로 돌아가기</p>
         </div>
       </form>
     </div>
