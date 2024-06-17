@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* contents size */
+    --header-size: 4rem;
+    --header-icon-size: 2.5rem;
+    --regular-icon-size: 1.5rem;
+    --contents-size: calc(100vh - 4rem);
+    --signup-img-size: 12rem;
+    --input-width: 30rem;
+    --input-height: 3rem;
+    --input-padding-x: 0.8rem;
+    --input-inner-margin-x: 3rem;
+    --input-outer-margin: 0.8rem;
+    --popup-min-size: 37.5rem;
+    --popup-list-margin: 1rem;
+
+    /* font-family */
+    --primary-font-family: 'Roboto', sans-serif;
+
+    /* font-weight */
+    --roboto-404: 900;
+    --roboto-regular: 400;
+    --roboto-bold: 700;
+
+    /* font-size */
+    --font-size-3xl: 3rem;
+    --font-size-large: 1.125rem;
+    --font-size-regular: 1rem;
+
+    /* letter spacing */
+    --narrow-spacing-large: -0.05rem;
+    --narrow-spacing-regualr: -0.03rem;
+
+    /* color */
+    --main-color: #237700;
+    --sub-color: #e1f4d9;
+    --close-color: #be0000;
+    --default-bg-color: #fdfdfd;
+    --disable-color: #c2c2c2;
+    --selected-color: #c2c2c2;
+    --scroll-color: #f5f5f5;
+    --kakao-color: #f6e04b;
+
+    /* text color */
+    --text-color-default: #2c2c2c;
+    --text-color-bold: #5e5e5e;
+    --text-color-error: #be0000;
+    --text-color-blue: #0909e7;
+    --text-color-white: #ffffff;
+
+    /* border color */
+    --border-list: #efefef;
+    --border-input: #b1b1b1;
+    --border-scroll: #dfdfdf;
+
+    /* todo color */
+    --todo-red: #c83c00;
+    --todo-yellow: #dab700;
+    --todo-green: #237700;
+    --todo-blue: #00c2ff;
+    --todo-orange: #ff7a00;
+    --todo-purple: #db00ff;
+    --todo-pink: #ff0099;
+    --todo-yellow-green: #8fff00;
+    --todo-gray: #d9d9d9;
+  }
+
+  body {
+    font-family: var(--primary-font-family);
+    font-weight: 400;
+    font-style: normal;
+  }
+}
