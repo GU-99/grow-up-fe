@@ -18,13 +18,29 @@ const user = {
   ],
 };
 
+function TeamList(props) {
+  for (let i = 0; i < user.team.length; ) {
+    if (user.team[i].status === props) {
+      return <div>{user.team[i].name}</div>;
+    }
+  }
+}
+// mode가 Y이면 가입현황 nav 선택되고, status가 Y인 데이터 노출
+// mode가 N이면 대기현황 nav 선택되고, status가 N인 데이터 노출
 function TeamSettingPage() {
   const [mode, setMode] = useState('Y');
+  const list = TeamList(mode);
   return (
     <>
-      <nav>가입현황</nav>
-      <nav>대기현황</nav>
-      <div>{user.team[0].name}</div>
+      <nav>
+        <button type="button" onChange={() => setMode('Y')}>
+          가입현황
+        </button>
+        <button type="button" onChange={() => setMode('N')}>
+          대기현황
+        </button>
+      </nav>
+      {list}
     </>
   );
 }
