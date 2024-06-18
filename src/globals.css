@@ -7,37 +7,37 @@
 @layer base {
   :root {
     /* contents size */
-    --header-size: 4rem;
+    --header-height: 4rem;
     --header-icon-size: 2.5rem;
     --regular-icon-size: 1.5rem;
-    --contents-size: calc(100vh - 4rem);
+    --contents-height: calc(100vh - 4rem);
     --signup-img-size: 12rem;
     --input-width: 30rem;
     --input-height: 3rem;
-    --input-padding-x: 0.8rem;
     --input-margin-x: 3rem;
     --input-margin-y: 0.8rem;
+    --input-padding-x: 0.8rem;
     --contents-layout-margin: 1.5rem;
-    --contents-box-gap: 1rem;
-    --popup-min-size: 37.5rem;
+    --contents-box-margin-right: 1rem;
+    --popup-min-width: 37.5rem;
     --popup-list-margin-bottom: 1rem;
 
     /* font-family */
-    --font-family-primary: 'Roboto', sans-serif;
+    --font-family-roboto: 'Roboto', sans-serif;
 
     /* font-weight */
-    --font-weight-404: 900;
     --font-weight-regular: 400;
     --font-weight-bold: 700;
+    --font-weight-404: 900;
 
     /* font-size */
-    --font-size-3xl: 3rem;
-    --font-size-large: 1.2rem;
     --font-size-regular: 1rem;
+    --font-size-large: 1.2rem;
+    --font-size-404: 3rem;
 
     /* letter spacing */
     --narrow-spacing-large: -0.05rem;
-    --narrow-spacing-regualr: -0.03rem;
+    --narrow-spacing-regular: -0.03rem;
 
     /* color */
     --main-color: #237700;
@@ -54,7 +54,6 @@
     --text-color-bold: #5e5e5e;
     --text-color-error: #be0000;
     --text-color-blue: #0909e7;
-    --text-color-white: #ffffff;
 
     /* border color */
     --border-list: #efefef;
@@ -74,7 +73,7 @@
   }
 
   body {
-    font-family: var(--font-family-primary);
+    font-family: var(--font-family-roboto);
     font-size: var(--font-size-regular);
     font-weight: var(--font-weight-regular);
     font-style: normal;
