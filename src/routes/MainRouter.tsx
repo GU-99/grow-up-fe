@@ -48,7 +48,7 @@ export default function MainRouter() {
           children: [
             { index: true, element: <UserSettingPage /> },
             { path: 'user', element: <UserSettingPage /> },
-            { path: 'team/:teamId', element: <TeamSettingPage /> },
+            { path: 'team', element: <TeamSettingPage /> },
           ],
         },
         {
