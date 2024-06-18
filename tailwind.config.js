@@ -8,32 +8,15 @@ for (let i = 0; i <= 400; i++) {
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    letterSpacing: {
+      tighter: 'var(--narrow-spacing-large)',
+      tight: 'var(--narrow-spacing-regular)',
+    },
     extend: {
       spacing: customSpacing,
       height: {
         header: 'var(--height-header)',
         contents: 'var(--height-contents)',
-        input: 'var(--height-input)',
-      },
-      size: {
-        'header-icon': 'var(--size-header-icon)',
-        'regular-icon': 'var(--size-regular-icon)',
-        '404-icon': 'var(--size-404-icon)',
-        'signup-img': 'var(--size-signup-img)',
-      },
-      width: {
-        input: 'var(--width-input)',
-        'min-popup': 'var(--width-min-popup)',
-      },
-      margin: {
-        'contents-layout': 'var(--margin-contents-layout)',
-        'x-input': 'var(--margin-x-input)',
-        'y-input': 'var(--margin-y-input)',
-        'b-popup-list': 'var(--margin-b-popup-list)',
-        'r-contents-box': 'var(--margin-r-contents-box)',
-      },
-      padding: {
-        'x-input': 'var(--padding-x-input)',
       },
       fontFamily: {
         roboto: 'var(--font-family-roboto)',
@@ -48,12 +31,8 @@ export default {
         bold: 'var(--font-weight-bold)',
         404: 'var(--font-weight-404)',
       },
-      letterSpacing: {
-        'narrow-large': 'var(--narrow-spacing-large)',
-        'narrow-regular': 'var(--narrow-spacing-regular)',
-      },
       borderRadius: {
-        10: 'var(--border-radius-10)',
+        sl: 'var(--border-radius-sl)',
       },
       borderColor: {
         list: 'var(--border-list)',
@@ -74,6 +53,7 @@ export default {
         disable: 'var(--color-disable)',
         selected: 'var(--color-selected)',
         scroll: 'var(--color-scroll)',
+        button: 'var(--color-button)',
         kako: 'var(--color-kakao)',
         todo: {
           red: 'var(--color-todo-red)',
