@@ -7,47 +7,66 @@
 @layer base {
   :root {
     /* contents size */
-    --header-height: 4rem;
-    --header-icon-size: 2.5rem;
-    --regular-icon-size: 1.5rem;
-    --contents-height: calc(100vh - 4rem);
-    --signup-img-size: 12rem;
-    --input-width: 30rem;
-    --input-height: 3rem;
-    --input-margin-x: 3rem;
-    --input-margin-y: 0.8rem;
-    --input-padding-x: 0.8rem;
-    --contents-layout-margin: 1.5rem;
-    --contents-box-margin-right: 1rem;
-    --popup-min-width: 37.5rem;
-    --popup-list-margin-bottom: 1rem;
+    --height-header: 4rem;
+    --height-contents: calc(100vh - 4rem);
+    --height-input: 3rem;
+
+    --size-header-icon: 2.5rem;
+    --size-regular-icon: 1.5rem;
+    --size-404-icon: 7.5rem;
+    --size-signup-img: 12rem;
+
+    --width-input: 30rem;
+    --width-min-popup: 37.5rem;
+
+    --margin-contents-layout: 1.5rem;
+    --margin-x-input: 3rem;
+    --margin-y-input: 0.8rem;
+    --margin-b-popup-list: 1rem;
+    --margin-r-contents-box: 1rem;
+
+    --padding-x-input: 0.8rem;
 
     /* font-family */
     --font-family-roboto: 'Roboto', sans-serif;
-
-    /* font-weight */
-    --font-weight-regular: 400;
-    --font-weight-bold: 700;
-    --font-weight-404: 900;
 
     /* font-size */
     --font-size-regular: 1rem;
     --font-size-large: 1.2rem;
     --font-size-404: 3rem;
 
+    /* font-weight */
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
+    --font-weight-404: 900;
+
     /* letter spacing */
     --narrow-spacing-large: -0.05rem;
     --narrow-spacing-regular: -0.03rem;
 
+    /* border radius */
+    --border-radius-10: 0.625rem;
+
     /* color */
-    --main-color: #237700;
-    --sub-color: #e1f4d9;
-    --close-color: #be0000;
-    --contents-box-color: #fdfdfd;
-    --disable-color: #c2c2c2;
-    --selected-color: #c2c2c2;
-    --scroll-color: #f5f5f5;
-    --kakao-color: #f6e04b;
+    --color-main: #237700;
+    --color-sub: #e1f4d9;
+    --color-close: #be0000;
+    --color-contents-box: #fdfdfd;
+    --color-disable: #c2c2c2;
+    --color-selected: #c2c2c2;
+    --color-scroll: #f5f5f5;
+    --color-kakao: #f6e04b;
+
+    /* todo color */
+    --color-todo-red: #c83c00;
+    --color-todo-yellow: #dab700;
+    --color-todo-green: #237700;
+    --color-todo-blue: #00c2ff;
+    --color-todo-orange: #ff7a00;
+    --color-todo-purple: #db00ff;
+    --color-todo-pink: #ff0099;
+    --color-todo-yellow-green: #8fff00;
+    --color-todo-gray: #d9d9d9;
 
     /* text color */
     --text-color-default: #2c2c2c;
@@ -59,17 +78,6 @@
     --border-list: #efefef;
     --border-input: #b1b1b1;
     --border-scroll: #dfdfdf;
-
-    /* todo color */
-    --todo-red: #c83c00;
-    --todo-yellow: #dab700;
-    --todo-green: #237700;
-    --todo-blue: #00c2ff;
-    --todo-orange: #ff7a00;
-    --todo-purple: #db00ff;
-    --todo-pink: #ff0099;
-    --todo-yellow-green: #8fff00;
-    --todo-gray: #d9d9d9;
   }
 
   body {
