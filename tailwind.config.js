@@ -23,7 +23,7 @@ export default {
       },
       fontSize: {
         regular: 'var(--font-size-regular)',
-        bold: 'var(--font-size-bold)',
+        large: 'var(--font-size-large)',
         404: 'var(--font-size-404)',
       },
       fontWeight: {
@@ -41,7 +41,7 @@ export default {
       },
       textColor: {
         default: 'var(--text-color-default)',
-        bold: 'var(--text-color-bold)',
+        emphasis: 'var(--text-color-emphasis)',
         error: 'var(--text-color-error)',
         blue: 'var(--text-color-blue)',
       },
