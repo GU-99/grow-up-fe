@@ -45,6 +45,7 @@ export default {
       textColor: {
         default: 'var(--text-color-default)',
         emphasis: 'var(--text-color-emphasis)',
+        category: 'var(--text-color-category)',
         error: 'var(--text-color-error)',
         blue: 'var(--text-color-blue)',
       },
