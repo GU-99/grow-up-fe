@@ -56,6 +56,7 @@
     /* text color */
     --text-color-default: #2c2c2c;
     --text-color-emphasis: #5e5e5e;
+    --text-color-category: #b1b1b1;
     --text-color-error: #be0000;
     --text-color-blue: #0909e7;
 
@@ -69,6 +70,28 @@
     font-family: var(--font-family-roboto);
     font-size: var(--font-size-regular);
     font-weight: var(--font-weight-regular);
+    color: var(--text-color-default);
     font-style: normal;
+  }
+
+  /* ========= Scrollbar Custom ========= */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    border: 1px solid var(--border-scroll);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-scroll);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+    background: #e5e5e5;
+  }
+}
+
+@layer components {
+  .selected::before {
+    @apply absolute left-0 top-0 block h-30 w-4 bg-main content-[''];
   }
 }
