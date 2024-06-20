@@ -9,6 +9,7 @@
     /* contents size */
     --height-header: 4rem;
     --height-contents: calc(100vh - var(--height-header));
+    --max-width-contents: 90rem;
 
     /* font-family */
     --font-family-roboto: 'Roboto', sans-serif;

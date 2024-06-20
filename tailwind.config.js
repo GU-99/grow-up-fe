@@ -18,6 +18,9 @@ export default {
         header: 'var(--height-header)',
         contents: 'var(--height-contents)',
       },
+      maxWidth: {
+        contents: 'var(--max-width-contents)',
+      },
       fontFamily: {
         roboto: 'var(--font-family-roboto)',
       },
