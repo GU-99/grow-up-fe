@@ -1,9 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { RiSettings5Fill } from 'react-icons/ri';
 import { NavLink, Outlet, useParams } from 'react-router-dom';
 
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
+
+import ModalPortal from '@components/common/ModalPortal';
+import ModalLayout from '@layouts/ModalLayout';
 
 const dummy = {
   teamName: '김찌와 소주',
@@ -23,39 +26,54 @@ const dummy = {
 
 export default function ProjectLayout() {
   const { projectId } = useParams();
+  const [showStateModal, setShowStateModal] = useState(false);
   const target = useMemo(() => dummy.data.find((d) => d.id === projectId), [projectId]);
 
   return (
-    <section className="flex h-full p-15">
-      <ListSidebar label="team" title={dummy.teamName}>
-        <ListProject data={dummy.data} targetId={projectId} />
-      </ListSidebar>
-      <section className="flex w-2/3 flex-col border border-list bg-contents-box">
-        <header className="flex h-30 items-center justify-between border-b p-10">
-          <div>
-            <small className="mr-5 font-bold text-category">project</small>
-            <span className="text-emphasis">{target?.title}</span>
+    <>
+      <section className="flex h-full p-15">
+        <ListSidebar label="team" title={dummy.teamName}>
+          <ListProject data={dummy.data} targetId={projectId} />
+        </ListSidebar>
+        <section className="flex w-2/3 flex-col border border-list bg-contents-box">
+          <header className="flex h-30 items-center justify-between border-b p-10">
+            <div>
+              <small className="mr-5 font-bold text-category">project</small>
+              <span className="text-emphasis">{target?.title}</span>
+            </div>
+            <div className="flex cursor-pointer items-center text-sm text-main">
+              <RiSettings5Fill /> Project Setting
+            </div>
+          </header>
+          <div className="grow p-10">
+            <div className="flex justify-between">
+              <ul className="flex border-b *:mr-15">
+                <li>
+                  <NavLink to="calendar" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
+                    Calendar
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="kanban" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
+                    Kanban
+                  </NavLink>
+                </li>
+              </ul>
+              <div className="text-main">
+                <button type="button" onClick={() => setShowStateModal(true)}>
+                  <small>+</small> New State
+                </button>
+              </div>
+            </div>
+            <Outlet />
           </div>
-          <div className="flex cursor-pointer items-center text-sm text-main">
-            <RiSettings5Fill /> Project Setting
-          </div>
-        </header>
-        <div className="grow p-10">
-          <ul className="flex border-b *:mr-15">
-            <li>
-              <NavLink to="calendar" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
-                Calendar
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="kanban" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
-                Kanban
-              </NavLink>
-            </li>
-          </ul>
-          <Outlet />
-        </div>
+        </section>
       </section>
-    </section>
+      {showStateModal && (
+        <ModalPortal>
+          <ModalLayout onClose={() => setShowStateModal(false)} />
+        </ModalPortal>
+      )}
+    </>
   );
 }
