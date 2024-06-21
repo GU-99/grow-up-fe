@@ -1,8 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
-import type { ProjectType } from '@/types/project';
+import type { Project } from '@/types/ProjectType';
 
 type ListProjectProps = {
-  data: ProjectType[];
+  data: Project[];
   targetId?: string;
 };
 
