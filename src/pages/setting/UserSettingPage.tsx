@@ -14,7 +14,6 @@ const user = {
     { id: 2, name: '김찌와 쏘주' },
   ],
 };
-const newUser = { ...user };
 
 function UserSettingPage() {
   return (
@@ -29,7 +28,7 @@ function UserSettingPage() {
         <button type="submit">번호 변경</button>
       </div>
       <div>
-        <input type="textarea" value={user.comment} />
+        <textarea name="introduce" value={user.comment} />
         <button type="submit">소개 변경</button>
       </div>
       <div>
@@ -42,13 +41,13 @@ function UserSettingPage() {
       </div>
       <div>
         <input type="text" placeholder="인증번호를 입력해주세요." />
-        <button type="submit" onChange={(event) => console.log(event.target)}>
+        <button type="submit" onChange={(event) => event.target}>
           확인
         </button>
       </div>
       <div>
         <input type="text" placeholder="개인정보 변경을 위한 비밀번호를 입력하세요." />
-        <button type="button" onChange={(event) => console.log(event.target)}>
+        <button type="button" onChange={(event) => event.target}>
           변경
         </button>
       </div>
