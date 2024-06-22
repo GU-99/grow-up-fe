@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import { GoPlusCircle } from 'react-icons/go';
+import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
@@ -76,7 +79,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex flex-col overflow-y-scroll rounded-2xl border border-[#A9A9A9] bg-main p-30 shadow-xl shadow-gray-500/50 scrollbar-hide">
+    <div className="flex h-[93vh] flex-col overflow-y-scroll rounded-2xl border border-[#A9A9A9] bg-main p-30 shadow-xl shadow-gray-500/50 scrollbar-hide">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8">
         <div className="flex flex-col items-center gap-8">
           <div className="group relative h-100 w-100 overflow-hidden rounded-[50%] bg-white">
@@ -90,7 +93,7 @@ export default function SignUpPage() {
                     onClick={handleRemoveImg}
                     onKeyDown={handleRemoveImg}
                   >
-                    삭제
+                    <FaRegTrashCan size="1.5rem" color="white" />
                   </p>
                 </div>
               </>
@@ -100,7 +103,7 @@ export default function SignUpPage() {
                 className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1 text-center"
               >
                 <input {...register('profile')} id="profile" type="file" className="hidden" />
-                {/* <GoPlusCircle size="1.5rem" color="#5E5E5E" /> */}+<p className="text-[#5E5E5E]">프로필 이미지</p>
+                <GoPlusCircle size="1.5rem" color="#5E5E5E" />
               </label>
             )}
           </div>
@@ -206,13 +209,13 @@ export default function SignUpPage() {
           websiteList.map((item, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <div key={index} className="flex flex-row gap-8">
-              <div className="auth-input flex items-center">
+              <div className="auth-input flex items-center bg-white">
                 <a href={`http://${item}`} target="_blank" className="underline underline-offset-4" rel="noreferrer">
                   {item}
                 </a>
               </div>
               <button type="button" onClick={() => handleRemoveLink(index)} className="auth-btn">
-                -
+                <FaMinus />
               </button>
             </div>
           ))}
@@ -226,7 +229,7 @@ export default function SignUpPage() {
             className="auth-input bg-disable"
           />
           <button type="button" onClick={() => handleAddLink(link)} className="auth-btn">
-            +
+            <FaPlus />
           </button>
         </div>
 
