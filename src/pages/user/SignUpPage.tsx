@@ -1,22 +1,14 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
+import { useNavigate } from 'react-router-dom';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
-
-type FormData = {
-  profile: File[];
-  email: string;
-  verificationCode: string;
-  name: string;
-  password: string;
-  checkPassword: string;
-  bio: string;
-  website: string[];
-};
+import { UserSignUp } from '@/types/UserType';
 
 export default function SignUpPage() {
+  const nav = useNavigate();
   const [imagePreview, setImagePreview] = useState('');
   const [link, setLink] = useState<string>('');
   const [websiteList, setWebsiteList] = useState<string[]>([]);
@@ -73,7 +65,7 @@ export default function SignUpPage() {
     setValue('website', filteredData);
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: UserSignUp) => {
     const { verificationCode, checkPassword, ...filteredData } = data;
     console.log(filteredData);
   };
@@ -238,7 +230,13 @@ export default function SignUpPage() {
             회원가입
           </button>
 
-          <p className="cursor-pointer font-bold text-sub">로그인 페이지로 돌아가기</p>
+          <p
+            className="cursor-pointer font-bold text-sub"
+            onClick={() => nav('/signin')}
+            onKeyDown={() => nav('/signin')}
+          >
+            로그인 페이지로 돌아가기
+          </p>
         </div>
       </form>
     </div>
