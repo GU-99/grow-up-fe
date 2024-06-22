@@ -76,17 +76,17 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex flex-col p-12 bg-[#237700] rounded-2xl h-[90vh] overflow-y-scroll scrollbar-hide border border-[#A9A9A9] shadow-xl shadow-gray-500/50">
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
-        <div className="flex flex-col items-center gap-[0.8rem]">
-          <div className="relative w-[10rem] h-[10rem] rounded-[50%] cursor-pointer group bg-white">
+    <div className="flex flex-col overflow-y-scroll rounded-2xl border border-[#A9A9A9] bg-main p-30 shadow-xl shadow-gray-500/50 scrollbar-hide">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8">
+        <div className="flex flex-col items-center gap-8">
+          <div className="group relative h-100 w-100 overflow-hidden rounded-[50%] bg-white">
             {imagePreview ? (
               <>
-                <img src={imagePreview} alt="Profile" className="w-full h-full object-cover rounded-[50%]" />
-                <div className="absolute inset-0 rounded-[50%] bg-black bg-opacity-50 items-center justify-center hidden group-hover:flex">
+                <img src={imagePreview} alt="Profile" className="h-full w-full object-cover" />
+                <div className="absolute inset-0 hidden items-center justify-center bg-black bg-opacity-50 group-hover:flex">
                   <p
                     role="presentation"
-                    className="text-white cursor-pointer"
+                    className="cursor-pointer text-white"
                     onClick={handleRemoveImg}
                     onKeyDown={handleRemoveImg}
                   >
@@ -97,7 +97,7 @@ export default function SignUpPage() {
             ) : (
               <label
                 htmlFor="profile"
-                className="absolute inset-0 flex flex-col gap-1 items-center justify-center text-center cursor-pointer "
+                className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1 text-center"
               >
                 <input {...register('profile')} id="profile" type="file" className="hidden" />
                 {/* <GoPlusCircle size="1.5rem" color="#5E5E5E" /> */}+<p className="text-[#5E5E5E]">프로필 이미지</p>
@@ -106,7 +106,7 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        <div className="flex flex-row gap-[0.8rem]">
+        <div className="flex flex-row gap-8">
           <input
             {...register('email', {
               required: '이메일(아이디)을 입력해 주세요.',
@@ -123,9 +123,9 @@ export default function SignUpPage() {
             인증번호 발송
           </button>
         </div>
-        {errors.email && <p className="text-[#FF0000] text-sm">{errors.email.message}</p>}
+        {errors.email && <p className="text-sm text-[#FF0000]">{errors.email.message}</p>}
 
-        <div className="flex flex-row gap-[0.8rem]">
+        <div className="flex flex-row gap-8">
           <input
             {...register('verificationCode', { required: '인증번호를 입력해 주세요.' })}
             placeholder="(필수) 인증번호를 입력하세요."
@@ -137,9 +137,9 @@ export default function SignUpPage() {
             확인
           </button>
         </div>
-        {errors.verificationCode && <p className="text-[#FF0000] text-sm">{errors.verificationCode.message}</p>}
+        {errors.verificationCode && <p className="text-sm text-[#FF0000]">{errors.verificationCode.message}</p>}
 
-        <div className="flex flex-row gap-[0.8rem]">
+        <div className="flex flex-row gap-8">
           <input
             {...register('name', {
               required: '닉네임을 입력해 주세요.',
@@ -157,7 +157,7 @@ export default function SignUpPage() {
             중복확인
           </button>
         </div>
-        {errors.name && <p className="text-[#FF0000] text-sm">{errors.name.message}</p>}
+        {errors.name && <p className="text-sm text-[#FF0000]">{errors.name.message}</p>}
 
         <input
           {...register('password', {
@@ -180,7 +180,7 @@ export default function SignUpPage() {
           id="password"
           className={`auth-input ${errors.password && `border-2 border-[#FF0000]`}`}
         />
-        {errors.password && <p className="text-[#FF0000] text-sm">{errors.password.message}</p>}
+        {errors.password && <p className="text-sm text-[#FF0000]">{errors.password.message}</p>}
 
         <input
           {...register('checkPassword', {
@@ -192,20 +192,20 @@ export default function SignUpPage() {
           id="checkPassword"
           className={`auth-input ${errors.checkPassword && `border-2 border-[#FF0000]`}`}
         />
-        {errors.checkPassword && <p className="text-[#FF0000] text-sm">{errors.checkPassword.message}</p>}
+        {errors.checkPassword && <p className="text-sm text-[#FF0000]">{errors.checkPassword.message}</p>}
 
         <input
           {...register('bio')}
           placeholder="(선택) 자신을 소개해 주세요."
           type="text"
           id="bio"
-          className="auth-input h-[9.38rem] w-[30rem]"
+          className="auth-input h-90"
         />
 
         {websiteList &&
           websiteList.map((item, index) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={index} className="flex flex-row gap-[0.8rem]">
+            <div key={index} className="flex flex-row gap-8">
               <div className="auth-input flex items-center">
                 <a href={`http://${item}`} target="_blank" className="underline underline-offset-4" rel="noreferrer">
                   {item}
@@ -217,13 +217,13 @@ export default function SignUpPage() {
             </div>
           ))}
 
-        <div className="flex flex-row gap-[0.8rem]">
+        <div className="flex flex-row gap-8">
           <input
             placeholder="(선택) 링크를 추가해 보세요.(GitHub, Blog 등)"
             value={link}
             onChange={handleLinkChange}
             type="text"
-            className="auth-input bg-[#C2C2C2]"
+            className="auth-input bg-disable"
           />
           <button type="button" onClick={() => handleAddLink(link)} className="auth-btn">
             +
@@ -235,7 +235,7 @@ export default function SignUpPage() {
             회원가입
           </button>
 
-          <p className="font-bold text-[#E1F4D9] cursor-pointer">로그인 페이지로 돌아가기</p>
+          <p className="cursor-pointer font-bold text-sub">로그인 페이지로 돌아가기</p>
         </div>
       </form>
     </div>

@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* contents size */
+    --height-header: 4rem;
+    --height-contents: calc(100vh - var(--height-header));
+
+    /* font-family */
+    --font-family-roboto: 'Roboto', sans-serif;
+
+    /* font-size */
+    --font-size-regular: 1rem;
+    --font-size-large: 1.125rem;
+    --font-size-404: 3rem;
+
+    /* font-weight */
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
+    --font-weight-404: 900;
+
+    /* letter spacing */
+    --narrow-spacing-large: -0.05rem;
+    --narrow-spacing-regular: -0.03rem;
+
+    /* border radius */
+    --border-radius-sl: 0.625rem;
+
+    /* color */
+    --color-main: #237700;
+    --color-sub: #e1f4d9;
+    --color-close: #be0000;
+    --color-contents-box: #fdfdfd;
+    --color-disable: #c2c2c2;
+    --color-selected: #c2c2c2;
+    --color-scroll: #f5f5f5;
+    --color-button: #efefef;
+    --color-kakao: #f6e04b;
+
+    /* todo color */
+    --color-todo-red: #c83c00;
+    --color-todo-yellow: #dab700;
+    --color-todo-green: #237700;
+    --color-todo-blue: #00c2ff;
+    --color-todo-orange: #ff7a00;
+    --color-todo-purple: #db00ff;
+    --color-todo-pink: #ff0099;
+    --color-todo-yellow-green: #8fff00;
+    --color-todo-gray: #d9d9d9;
+
+    /* text color */
+    --text-color-default: #2c2c2c;
+    --text-color-bold: #5e5e5e;
+    --text-color-error: #be0000;
+    --text-color-blue: #0909e7;
+
+    /* border color */
+    --border-list: #efefef;
+    --border-input: #b1b1b1;
+    --border-scroll: #dfdfdf;
+  }
+
+  body {
+    font-family: var(--font-family-roboto);
+    font-size: var(--font-size-regular);
+    font-weight: var(--font-weight-regular);
+    font-style: normal;
+  }
+}
+
+@layer components {
+  .auth-btn {
+    @apply h-30 rounded-lg bg-sub px-8 font-bold;
+  }
+
+  .auth-input {
+    @apply h-30 flex-grow rounded-lg px-8 text-sm outline-none placeholder:text-bold;
+  }
+}

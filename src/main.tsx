@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import MainRouter from './routes/MainRouter.tsx';
+import '@/globals.css';
+import MainRouter from '@routes/MainRouter.tsx';
 
 async function enableMocking() {
   if (!import.meta.env.DEV) return;
