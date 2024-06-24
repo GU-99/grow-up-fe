@@ -2,10 +2,10 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AfterLoginRoute from '@routes/AfterLoginRoute';
 import BeforeLoginRoute from '@routes/BeforeLoginRoute';
 
-import TeamLayout from '@layouts/TeamLayout';
-import DefaultLayout from '@layouts/DefaultLayout';
-import SettingLayout from '@layouts/SettingLayout';
-import ProjectLayout from '@layouts/ProjectLayout';
+import TeamLayout from '@layouts/page/TeamLayout';
+import DefaultLayout from '@layouts/page/DefaultLayout';
+import SettingLayout from '@layouts/page/SettingLayout';
+import ProjectLayout from '@layouts/page/ProjectLayout';
 
 import SignUpPage from '@pages/user/SignUpPage';
 import SignInPage from '@pages/user/SignInPage';
