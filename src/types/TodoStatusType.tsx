@@ -5,7 +5,13 @@ export type TodoStatus = {
   color: string;
 };
 
-export type TodoStatusFormValues = {
+export type TodoStatusForm = {
   name: string;
   color: string;
+};
+
+export type ColorInfo = {
+  color: string;
+  isDefault: boolean;
+  isUsable: boolean;
 };

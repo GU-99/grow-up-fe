@@ -3,9 +3,9 @@ import { IoIosClose } from 'react-icons/io';
 import { RiProhibited2Fill, RiProhibited2Line } from 'react-icons/ri';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
-import type { TodoStatus, TodoStatusFormValues } from '@/types/TodoStatusType';
+import type { ColorInfo, TodoStatus, TodoStatusForm } from '@/types/TodoStatusType';
 
-type TodoProps = {
+type TodoStatusProps = {
   todoStatus: TodoStatus[];
   onClose: () => void;
 };
@@ -22,7 +22,7 @@ const DEFAULT_TODO_COLORS = Object.freeze({
 });
 
 // 색상 정보 취득
-function getTodoColors(todoStatus: TodoStatus[]) {
+function getTodoColors(todoStatus: TodoStatus[]): ColorInfo[] {
   const colorMap = new Map();
 
   Object.values(DEFAULT_TODO_COLORS).forEach((color) =>
@@ -39,13 +39,13 @@ function getTodoColors(todoStatus: TodoStatus[]) {
   return [...colorMap.values()];
 }
 
-export default function ModalTodoStatus({ todoStatus, onClose }: TodoProps) {
+export default function ModalTodoStatus({ todoStatus, onClose }: TodoStatusProps) {
   const {
     register,
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<TodoStatusFormValues>({
+  } = useForm<TodoStatusForm>({
     mode: 'onChange',
     defaultValues: {
       name: '',
@@ -66,7 +66,7 @@ export default function ModalTodoStatus({ todoStatus, onClose }: TodoProps) {
     console.log(`${color} 삭제`);
   };
 
-  const onSubmit: SubmitHandler<TodoStatusFormValues> = async (data) => {
+  const onSubmit: SubmitHandler<TodoStatusForm> = async (data) => {
     // ToDo: 색상 생성을 위한 네트워크 로직 추가
     console.log(data);
   };
