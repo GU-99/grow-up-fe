@@ -64,6 +64,7 @@
     --border-list: #efefef;
     --border-input: #b1b1b1;
     --border-scroll: #dfdfdf;
+    --border-selected: #5e5e5e;
   }
 
   body {
