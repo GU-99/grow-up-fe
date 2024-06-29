@@ -24,9 +24,9 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex flex-col overflow-y-scroll rounded-2xl border border-[#A9A9A9] bg-main p-30 shadow-xl shadow-gray-500/50 scrollbar-hide">
+    <div className="flex flex-col overflow-y-scroll rounded-2xl bg-white p-30 scrollbar-hide">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8 text-emphasis">
-        <div className="mb-24 mt-30 text-large text-white">
+        <div className="mb-24 mt-30 text-large">
           Welcome to our site!
           <br /> Grow Up your Life with us.
         </div>
@@ -75,11 +75,11 @@ export default function SignInPage() {
           </button>
         </div>
 
-        <div className="flex flex-row justify-center gap-8 text-sub">
+        <div className="flex flex-row justify-center gap-8">
           <p className="cursor-pointer font-bold" onClick={() => nav('/search/id')} onKeyDown={() => nav('/search/id')}>
             아이디 찾기
           </p>
-          <p className="text-white">|</p>
+          <p>|</p>
           <p
             className="cursor-pointer font-bold"
             onClick={() => nav('/search/password')}
@@ -90,7 +90,7 @@ export default function SignInPage() {
         </div>
 
         <div className="mb-35 mt-15 flex flex-row items-center justify-center gap-8">
-          <p className="items-center font-bold text-white">회원이 아니신가요?</p>
+          <p className="items-center font-bold">회원이 아니신가요?</p>
           <button type="button" className="auth-btn" onClick={() => nav('/signup')}>
             회원가입
           </button>
