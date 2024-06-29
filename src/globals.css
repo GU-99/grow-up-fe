@@ -99,6 +99,6 @@
   }
 
   .auth-input {
-    @apply h-30 flex-grow rounded-lg px-8 text-sm outline-none placeholder:text-emphasis;
+    @apply h-30 flex-grow rounded-lg border border-input px-8 text-sm outline-none placeholder:text-emphasis;
   }
 }
