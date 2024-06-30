@@ -1,14 +1,18 @@
 // 회원가입, 로그인 시 필요한 유저 타입 정의
-export type UserSignIn = {
+export type UserSignInType = {
   email: string;
   password: string;
 };
 
-export type UserSignUp = UserSignIn & {
-  profile: File[];
-  verificationCode: string;
-  name: string;
-  checkPassword: string;
+export type UserSignUpFormType = UserSignInType & {
+  image: File[];
+  password: string;
+  nickname: string;
   bio: string;
-  website: string[];
+  links: string[];
+};
+
+export type UserSignUpType = UserSignUpFormType & {
+  verificationCode: string;
+  checkPassword: string;
 };

@@ -6,14 +6,14 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
-import { UserSignUp } from '@/types/UserType';
+import { UserSignUpType } from '@/types/UserType';
 
 export default function SignUpPage() {
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
   const [link, setLink] = useState<string>('');
-  const [websiteList, setWebsiteList] = useState<string[]>([]);
+  const [linksList, setlinksList] = useState<string[]>([]);
 
   const {
     register,
@@ -24,30 +24,38 @@ export default function SignUpPage() {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      profile: [],
+      image: [],
       email: '',
       verificationCode: '',
-      name: '',
+      nickname: '',
       password: '',
       checkPassword: '',
       bio: '',
-      website: [''],
+      links: [''],
     },
   });
 
-  const image = watch('profile');
-  useEffect(() => {
-    if (image && image.length > 0) {
-      const file = image[0];
-      setImagePreview(URL.createObjectURL(file));
-    }
-  }, [image]);
-
-  const handleRemoveImg = () => {
-    setValue('profile', []);
-    setImagePreview('');
+  // 비밀번호 숨김/보이기 처리 함수
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
 
+  // 이미지 관련 코드
+  const profileImage = watch('image');
+  useEffect(() => {
+    if (profileImage && profileImage.length > 0) {
+      const file = profileImage[0];
+      setImagePreview(URL.createObjectURL(file));
+    }
+  }, [profileImage]);
+
+  const handleRemoveImg = () => {
+    setValue('image', []);
+    setImagePreview('');
+  };
+  // 이미지 서버 전송 관련 함수는 추후에 추가하기
+
+  // 웹사이트 링크 관련 코드
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLink(e.target.value);
   };
@@ -56,34 +64,32 @@ export default function SignUpPage() {
     if (newLink.trim() === '') {
       return;
     }
-    setWebsiteList([...websiteList, newLink.trim()]);
-    setValue('website', [...websiteList, newLink.trim()]);
+    setlinksList([...linksList, newLink.trim()]);
+    setValue('links', [...linksList, newLink.trim()]);
     setLink('');
   };
 
   const handleRemoveLink = (idx: number) => {
-    const filteredData = websiteList.filter((_, index) => index !== idx);
-    setWebsiteList(filteredData);
-    setValue('website', filteredData);
+    const filteredData = linksList.filter((_, index) => index !== idx);
+    setlinksList(filteredData);
+    setValue('links', filteredData);
   };
 
-  const onSubmit = (data: UserSignUp) => {
+  // form 전송 함수
+  const onSubmit = (data: UserSignUpType) => {
     const { verificationCode, checkPassword, ...filteredData } = data;
     console.log(filteredData);
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
   };
 
   return (
     <div className="font-emphasis flex h-[93vh] flex-col overflow-y-scroll rounded-2xl bg-[white] p-30 scrollbar-hide">
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8">
+        {/* 프로필 이미지 */}
         <div className="flex flex-col items-center gap-8">
           <div className="group relative h-100 w-100 overflow-hidden rounded-[50%] border border-input">
             {imagePreview ? (
               <>
-                <img src={imagePreview} alt="Profile" className="h-full w-full object-cover" />
+                <img src={imagePreview} alt="profileImage" className="h-full w-full object-cover" />
                 <div className="absolute inset-0 hidden items-center justify-center bg-black bg-opacity-50 group-hover:flex">
                   <p
                     role="presentation"
@@ -97,16 +103,17 @@ export default function SignUpPage() {
               </>
             ) : (
               <label
-                htmlFor="profile"
+                htmlFor="image"
                 className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1 text-center"
               >
-                <input {...register('profile')} id="profile" type="file" className="hidden" />
+                <input {...register('image')} id="image" type="file" className="hidden" />
                 <GoPlusCircle size="1.5rem" color="#5E5E5E" />
               </label>
             )}
           </div>
         </div>
 
+        {/* 이메일(아이디) */}
         <div>
           <h1 className="font-bold">이메일 (아이디)</h1>
           <div className="flex flex-row gap-8">
@@ -129,6 +136,7 @@ export default function SignUpPage() {
           </div>
         </div>
 
+        {/* 이메일 인증 */}
         <div>
           <h1 className="font-bold">인증번호</h1>
           <div className="flex flex-row gap-8">
@@ -146,11 +154,12 @@ export default function SignUpPage() {
           {errors.verificationCode && <p className="text-sm text-[#FF0000]">{errors.verificationCode.message}</p>}
         </div>
 
+        {/* 닉네임, 중복 확인 */}
         <div>
           <h1 className="font-bold">닉네임</h1>
           <div className="flex flex-row gap-8">
             <input
-              {...register('name', {
+              {...register('nickname', {
                 required: '닉네임을 입력해 주세요.',
                 maxLength: {
                   value: 20,
@@ -160,15 +169,16 @@ export default function SignUpPage() {
               placeholder=""
               type="text"
               id="name"
-              className={`auth-input ${errors.name && `border-2 border-[#FF0000]`}`}
+              className={`auth-input ${errors.nickname && `border-2 border-[#FF0000]`}`}
             />
             <button type="button" className="auth-btn">
               중복확인
             </button>
           </div>
-          {errors.name && <p className="text-sm text-[#FF0000]">{errors.name.message}</p>}
+          {errors.nickname && <p className="text-sm text-[#FF0000]">{errors.nickname.message}</p>}
         </div>
 
+        {/* 비밀번호 */}
         <div className="flex flex-col">
           <h1 className="font-bold">비밀번호</h1>
           <div className={`auth-input relative ${errors.password && 'border-2 border-[#FF0000] pl-0'}`}>
@@ -201,7 +211,6 @@ export default function SignUpPage() {
               )}
             </div>
           </div>
-
           {errors.password ? (
             <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
           ) : (
@@ -209,6 +218,7 @@ export default function SignUpPage() {
           )}
         </div>
 
+        {/* 비밀번호 확인 */}
         <div className="flex flex-col">
           <h1 className="font-bold">비밀번호 확인</h1>
           <input
@@ -224,6 +234,7 @@ export default function SignUpPage() {
           {errors.checkPassword && <p className="text-sm text-[#FF0000]">{errors.checkPassword.message}</p>}{' '}
         </div>
 
+        {/* 자기소개 */}
         <div className="flex flex-col">
           <div className="flex flex-row justify-between">
             <h1 className="font-bold">자기소개</h1>
@@ -237,14 +248,15 @@ export default function SignUpPage() {
           />
         </div>
 
+        {/* 링크 */}
         <div>
           <div className="flex flex-row justify-between">
             <h1 className="font-bold">링크</h1>
             <p>optional</p>
           </div>
           <div className="flex flex-col gap-4">
-            {websiteList &&
-              websiteList.map((item, index) => (
+            {linksList &&
+              linksList.map((item, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={index} className="flex flex-row gap-8">
                   <div className="auth-input flex items-center bg-white">
@@ -262,7 +274,6 @@ export default function SignUpPage() {
                   </button>
                 </div>
               ))}
-
             <div className="flex flex-row gap-8">
               <input
                 placeholder="ex) www.github.com"
@@ -278,6 +289,7 @@ export default function SignUpPage() {
           </div>
         </div>
 
+        {/* 회원가입 버튼 */}
         <div className="flex flex-col gap-4 text-center">
           <button type="submit" className="auth-btn" disabled={isSubmitting}>
             회원가입
