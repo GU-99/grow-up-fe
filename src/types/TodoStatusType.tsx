@@ -3,6 +3,7 @@ export type TodoStatus = {
   statusId: number;
   name: string;
   color: string;
+  order: number;
 };
 
 export type TodoStatusForm = {
