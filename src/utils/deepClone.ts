@@ -1,20 +1,20 @@
-export default function deepClone<T>(obj: T): T {
-  if (obj === undefined || obj === null) return obj;
+export default function deepClone<T>(data: T): T {
+  if (data === undefined || data === null) return data;
 
-  if (typeof obj !== 'object') return obj;
+  if (typeof data !== 'object') return data;
 
-  if (obj instanceof Date) return new Date(obj.getTime()) as T;
+  if (data instanceof Date) return new Date(data.getTime()) as T;
 
-  if (Array.isArray(obj)) {
+  if (Array.isArray(data)) {
     const arrCopy = [] as unknown[];
-    obj.forEach((item) => arrCopy.push(deepClone(item)));
+    data.forEach((item) => arrCopy.push(deepClone(item)));
     return arrCopy as T;
   }
 
   const objCopy = {} as { [key: string]: unknown };
-  Object.keys(obj).forEach((key) => {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      objCopy[key] = deepClone((obj as { [key: string]: unknown })[key]);
+  Object.keys(data).forEach((key) => {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      objCopy[key] = deepClone((data as { [key: string]: unknown })[key]);
     }
   });
 
