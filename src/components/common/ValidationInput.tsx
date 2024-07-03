@@ -87,9 +87,9 @@ export default function ValidationInput({
         {type === 'password' && (
           <div className="absolute right-0 flex items-center pr-8 text-gray-400">
             {showPassword ? (
-              <RiEyeOffFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
-            ) : (
               <RiEyeFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
+            ) : (
+              <RiEyeOffFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
             )}
           </div>
         )}
