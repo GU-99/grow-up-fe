@@ -41,6 +41,7 @@ export default {
         list: 'var(--border-list)',
         input: 'var(--border-input)',
         scroll: 'var(--border-scroll)',
+        selected: 'var(--border-selected)',
       },
       textColor: {
         default: 'var(--text-color-default)',

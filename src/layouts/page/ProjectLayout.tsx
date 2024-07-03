@@ -7,6 +7,7 @@ import ListProject from '@components/sidebar/ListProject';
 
 import ModalPortal from '@components/common/ModalPortal';
 import ModalLayout from '@layouts/ModalLayout';
+import ModalTodoStatus from '@components/modal/ModalTodoStatus';
 
 const dummy = {
   teamName: '김찌와 소주',
@@ -21,6 +22,17 @@ const dummy = {
     { id: '8', title: '캘린더 만들기8' },
     { id: '9', title: '캘린더 만들기9' },
     { id: '10', title: '캘린더 만들기10' },
+  ],
+};
+
+const dummyColor = {
+  proejctId: 1,
+  state: [
+    { statusId: 1, name: 'To Do', color: '#c83c00' },
+    { statusId: 2, name: 'In Progress', color: '#dab700' },
+    { statusId: 3, name: 'Done', color: '#237700' },
+    { statusId: 4, name: 'Ready', color: '#2dd4bf' },
+    { statusId: 4, name: '보류', color: '#2dd4bf' },
   ],
 };
 
@@ -45,15 +57,15 @@ export default function ProjectLayout() {
               <RiSettings5Fill /> Project Setting
             </div>
           </header>
-          <div className="grow p-10">
-            <div className="flex justify-between">
-              <ul className="flex border-b *:mr-15">
-                <li>
+          <div className="flex grow flex-col overflow-auto p-10">
+            <div className="flex items-center justify-between border-b">
+              <ul className="*:mr-15">
+                <li className="inline">
                   <NavLink to="calendar" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
                     Calendar
                   </NavLink>
                 </li>
-                <li>
+                <li className="inline">
                   <NavLink to="kanban" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
                     Kanban
                   </NavLink>
@@ -71,7 +83,9 @@ export default function ProjectLayout() {
       </section>
       {showStateModal && (
         <ModalPortal>
-          <ModalLayout onClose={() => setShowStateModal(false)} />
+          <ModalLayout onClose={() => setShowStateModal(false)}>
+            <ModalTodoStatus onClose={() => setShowStateModal(false)} todoStatus={dummyColor.state} />
+          </ModalLayout>
         </ModalPortal>
       )}
     </>
