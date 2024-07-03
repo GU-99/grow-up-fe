@@ -10,9 +10,15 @@ export type UserSignUpFormType = UserSignInType & {
   nickname: string;
   bio: string;
   links: string[];
+  phone: string;
 };
 
 export type UserSignUpType = UserSignUpFormType & {
-  verificationCode: string;
+  emailVerificationCode: string;
+  phoneVerificationCode: string;
   checkPassword: string;
+};
+
+export type UserSearchIdFormType = {
+  phone: string;
 };
