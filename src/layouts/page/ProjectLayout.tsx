@@ -57,15 +57,15 @@ export default function ProjectLayout() {
               <RiSettings5Fill /> Project Setting
             </div>
           </header>
-          <div className="grow p-10">
-            <div className="flex justify-between">
-              <ul className="flex border-b *:mr-15">
-                <li>
+          <div className="flex grow flex-col overflow-auto p-10">
+            <div className="flex items-center justify-between border-b">
+              <ul className="*:mr-15">
+                <li className="inline">
                   <NavLink to="calendar" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
                     Calendar
                   </NavLink>
                 </li>
-                <li>
+                <li className="inline">
                   <NavLink to="kanban" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
                     Kanban
                   </NavLink>
