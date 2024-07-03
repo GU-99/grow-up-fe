@@ -63,9 +63,11 @@ export default function SignUpPage() {
   };
 
   const handleAddLink = (newLink: string) => {
-    if (newLink.trim() === '') {
+    if (newLink.trim() === '' || linksList.length === 3) {
+      // alert같은 걸로 유저에게 알려줘야 할 듯...?
       return;
     }
+
     setLinksList([...linksList, newLink.trim()]);
     setValue('links', [...linksList, newLink.trim()]);
     setLink('');
@@ -226,7 +228,6 @@ export default function SignUpPage() {
           <h1 className="font-bold">링크</h1>
           <p>optional</p>
         </div>
-
         <div className="flex flex-col gap-4">
           {linksList &&
             linksList.map((item, index) => (
