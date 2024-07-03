@@ -77,7 +77,7 @@ export default function ValidationInput({
           {isButtonInput && (
             <button
               type="button"
-              className="flex h-20 w-90 items-center justify-center rounded-lg bg-sub px-8 font-bold shadow-md"
+              className="flex h-20 w-90 items-center justify-center rounded bg-sub px-8 font-bold shadow-md"
               onClick={onButtonClick}
             >
               {buttonLabel}
