@@ -1,7 +1,7 @@
-import { TodoStatus } from './TodoStatusType';
+import { TaskStatus } from './TaskStatusType';
 
 // ToDo: API 설계 완료시 데이터 타입 변경할 것
-export type Todo = {
+export type Task = {
   taskId: number;
   name: string;
   order: number;
@@ -11,4 +11,4 @@ export type Todo = {
   endDate: string;
 };
 
-export type TodoWithStatus = TodoStatus & { tasks: Todo[] };
+export type TaskWithStatus = TaskStatus & { tasks: Task[] };
