@@ -17,47 +17,28 @@ function parserPrefixId(prefixId: string, delimiter: string = '-') {
   return result[result.length - 1];
 }
 
-function createChangedTodoForSameStatus(todo: TodoWithStatus[], dropResult: DropResult) {
-  const { source, draggableId } = dropResult;
-
-  const newTodo = deepClone(todo);
-  const sourceStatusId = Number(parserPrefixId(source.droppableId));
-  const taskId = Number(parserPrefixId(draggableId));
-
-  const { tasks: sourceTasks } = newTodo.find((data) => data.statusId === sourceStatusId)! as TodoWithStatus;
-  const task = sourceTasks.find((data) => data.taskId === taskId)! as Todo;
-
-  sourceTasks.splice(source.index, 1);
-  sourceTasks.splice(source.index, 0, task);
-  sourceTasks.forEach((task, index) => (task.order = index + 1));
-
-  return newTodo;
-}
-
-function createChangedTodoForOtherStatus(todo: TodoWithStatus[], dropResult: DropResult) {
+function createChangedTodo(todo: TodoWithStatus[], dropResult: DropResult, isSameStatus: boolean) {
   const { source, destination, draggableId } = dropResult;
 
   // ToDo: 메세지 포맷 정하고 수정하기
   if (!destination) throw Error('Error: DnD destination is null');
 
-  const newTodo = deepClone(todo);
   const sourceStatusId = Number(parserPrefixId(source.droppableId));
   const destinationStatusId = Number(parserPrefixId(destination.droppableId));
   const taskId = Number(parserPrefixId(draggableId));
 
+  const newTodo = deepClone(todo);
   const { tasks: sourceTasks } = newTodo.find((data) => data.statusId === sourceStatusId)! as TodoWithStatus;
-  const { tasks: destinationTasks } = newTodo.find((data) => data.statusId === destinationStatusId)! as TodoWithStatus;
+  const { tasks: destinationTasks } = isSameStatus
+    ? { tasks: sourceTasks }
+    : (newTodo.find((data) => data.statusId === destinationStatusId)! as TodoWithStatus);
   const task = sourceTasks.find((data) => data.taskId === taskId)! as Todo;
 
   sourceTasks.splice(source.index, 1);
   destinationTasks.splice(destination.index, 0, task);
 
-  sourceTasks.forEach((task, index) => {
-    task.order = index + 1;
-  });
-  destinationTasks.forEach((task, index) => {
-    task.order = index + 1;
-  });
+  sourceTasks.forEach((task, index) => (task.order = index + 1));
+  if (!isSameStatus) destinationTasks.forEach((task, index) => (task.order = index + 1));
 
   return newTodo;
 }
@@ -72,13 +53,12 @@ export default function KanbanPage() {
     const { source, destination } = dropResult;
 
     if (!destination) return;
-    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    const newTodo =
-      source.droppableId !== destination.droppableId
-        ? createChangedTodoForOtherStatus(todo, dropResult)
-        : createChangedTodoForSameStatus(todo, dropResult);
+    const isSameStatus = source.droppableId === destination.droppableId;
+    const isSameTodo = source.index === destination.index;
+    if (isSameStatus && isSameTodo) return;
 
+    const newTodo = createChangedTodo(todo, dropResult, isSameStatus);
     setTodo(newTodo);
   };
 
