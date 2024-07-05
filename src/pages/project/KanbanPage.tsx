@@ -17,7 +17,7 @@ function parserPrefixId(prefixId: string, delimiter: string = '-') {
   return result[result.length - 1];
 }
 
-function createChangedTask(tasks: TaskWithStatus[], dropResult: DropResult, isSameStatus: boolean) {
+function createChangedTasks(tasks: TaskWithStatus[], dropResult: DropResult, isSameStatus: boolean) {
   const { source, destination, draggableId } = dropResult;
 
   // ToDo: 메세지 포맷 정하고 수정하기
@@ -27,11 +27,11 @@ function createChangedTask(tasks: TaskWithStatus[], dropResult: DropResult, isSa
   const destinationStatusId = Number(parserPrefixId(destination.droppableId));
   const taskId = Number(parserPrefixId(draggableId));
 
-  const newTask = deepClone(tasks);
-  const { tasks: sourceTasks } = newTask.find((data) => data.statusId === sourceStatusId)! as TaskWithStatus;
+  const newTasks = deepClone(tasks);
+  const { tasks: sourceTasks } = newTasks.find((data) => data.statusId === sourceStatusId)! as TaskWithStatus;
   const { tasks: destinationTasks } = isSameStatus
     ? { tasks: sourceTasks }
-    : (newTask.find((data) => data.statusId === destinationStatusId)! as TaskWithStatus);
+    : (newTasks.find((data) => data.statusId === destinationStatusId)! as TaskWithStatus);
   const task = sourceTasks.find((data) => data.taskId === taskId)! as Task;
 
   sourceTasks.splice(source.index, 1);
@@ -40,14 +40,14 @@ function createChangedTask(tasks: TaskWithStatus[], dropResult: DropResult, isSa
   sourceTasks.forEach((task, index) => (task.order = index + 1));
   if (!isSameStatus) destinationTasks.forEach((task, index) => (task.order = index + 1));
 
-  return newTask;
+  return newTasks;
 }
 
 // ToDo: 할일 상태 Vertical DnD 추가할 것
 // ToDo: DnD시 가시성을 위한 애니메이션 처리 추가할 것
 // ToDo: 칸반보드 ItemList, Item 컴포넌트로 분리할 것
 export default function KanbanPage() {
-  const [task, setTask] = useState<TaskWithStatus[]>(TASK_DUMMY);
+  const [tasks, setTasks] = useState<TaskWithStatus[]>(TASK_DUMMY);
 
   const handleDragEnd = (dropResult: DropResult) => {
     const { source, destination } = dropResult;
@@ -58,14 +58,14 @@ export default function KanbanPage() {
     const isSameTask = source.index === destination.index;
     if (isSameStatus && isSameTask) return;
 
-    const newTask = createChangedTask(task, dropResult, isSameStatus);
-    setTask(newTask);
+    const newTasks = createChangedTasks(tasks, dropResult, isSameStatus);
+    setTasks(newTasks);
   };
 
   return (
     <section className="flex grow gap-10 pt-10">
       <DragDropContext onDragEnd={handleDragEnd}>
-        {task.map((data) => {
+        {tasks.map((data) => {
           const { statusId, name, color, tasks } = data;
           const droppableId = generatorPrefixId(statusId, 'status');
           return (
