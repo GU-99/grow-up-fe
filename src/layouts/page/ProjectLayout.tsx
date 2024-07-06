@@ -7,7 +7,7 @@ import ListProject from '@components/sidebar/ListProject';
 
 import ModalPortal from '@components/common/ModalPortal';
 import ModalLayout from '@layouts/ModalLayout';
-import ModalTodoStatus from '@components/modal/ModalTodoStatus';
+import ModalProjectStatus from '@components/modal/ModalProjectStatus';
 
 const dummy = {
   teamName: '김찌와 소주',
@@ -84,7 +84,7 @@ export default function ProjectLayout() {
       {showStateModal && (
         <ModalPortal>
           <ModalLayout onClose={() => setShowStateModal(false)}>
-            <ModalTodoStatus onClose={() => setShowStateModal(false)} todoStatus={dummyColor.state} />
+            <ModalProjectStatus onClose={() => setShowStateModal(false)} projectStatus={dummyColor.state} />
           </ModalLayout>
         </ModalPortal>
       )}

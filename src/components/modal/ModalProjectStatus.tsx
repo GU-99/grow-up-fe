@@ -3,14 +3,14 @@ import { IoIosClose } from 'react-icons/io';
 import { RiProhibited2Fill, RiProhibited2Line } from 'react-icons/ri';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
-import type { ColorInfo, TodoStatus, TodoStatusForm } from '@/types/TodoStatusType';
+import type { ColorInfo, ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 
-type TodoStatusProps = {
-  todoStatus: TodoStatus[];
+type ProjectStatusProps = {
+  projectStatus: ProjectStatus[];
   onClose: () => void;
 };
 
-const DEFAULT_TODO_COLORS = Object.freeze({
+const DEFAULT_PROJECT_COLORS = Object.freeze({
   RED: '#c83c00',
   YELLOW: '#dab700',
   GREEN: '#237700',
@@ -22,14 +22,14 @@ const DEFAULT_TODO_COLORS = Object.freeze({
 });
 
 // 색상 정보 취득
-function getTodoColors(todoStatus: TodoStatus[]): ColorInfo[] {
+function getProjectColors(projectStatus: ProjectStatus[]): ColorInfo[] {
   const colorMap = new Map();
 
-  Object.values(DEFAULT_TODO_COLORS).forEach((color) =>
+  Object.values(DEFAULT_PROJECT_COLORS).forEach((color) =>
     colorMap.set(color, { color, isDefault: true, isUsable: true }),
   );
 
-  todoStatus.forEach(({ color }) => {
+  projectStatus.forEach(({ color }) => {
     const colorStatusInfo = colorMap.has(color)
       ? { ...colorMap.get(color), isUsable: false }
       : { color, isDefault: false, isUsable: false };
@@ -39,13 +39,13 @@ function getTodoColors(todoStatus: TodoStatus[]): ColorInfo[] {
   return [...colorMap.values()];
 }
 
-export default function ModalTodoStatus({ todoStatus, onClose }: TodoStatusProps) {
+export default function ModalTodoStatus({ projectStatus, onClose }: ProjectStatusProps) {
   const {
     register,
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<TodoStatusForm>({
+  } = useForm<ProjectStatusForm>({
     mode: 'onChange',
     defaultValues: {
       name: '',
@@ -56,9 +56,9 @@ export default function ModalTodoStatus({ todoStatus, onClose }: TodoStatusProps
   const selectedColor = watch('color');
 
   // ToDo: useMemo, useCallback 고려해보기
-  const colorList = getTodoColors(todoStatus);
-  const nameList = todoStatus.map((status) => status.name);
-  const colorNameList = todoStatus.map((status) => status.color);
+  const colorList = getProjectColors(projectStatus);
+  const nameList = projectStatus.map((status) => status.name);
+  const colorNameList = projectStatus.map((status) => status.color);
 
   const handleClickDelete = (color: string) => {
     // ToDo: 색상 삭제시 등록된 할일 목록이 있는지 확인하는 로직 추가
@@ -66,7 +66,7 @@ export default function ModalTodoStatus({ todoStatus, onClose }: TodoStatusProps
     console.log(`${color} 삭제`);
   };
 
-  const onSubmit: SubmitHandler<TodoStatusForm> = async (data) => {
+  const onSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
     // ToDo: 색상 생성을 위한 네트워크 로직 추가
     console.log(data);
   };

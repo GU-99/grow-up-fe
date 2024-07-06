@@ -1,5 +1,5 @@
-import type { TodoStatus } from '@/types/TodoStatusType';
-import type { TodoWithStatus } from '@/types/TodoType';
+import type { TaskStatus } from '@/types/ProjectStatusType';
+import type { TaskWithStatus } from '@/types/TaskType';
 
 export const USER_DUMMY = [
   {
@@ -22,7 +22,7 @@ export const USER_DUMMY = [
   },
 ];
 
-export const STATUS_DUMMY: TodoStatus[] = [
+export const STATUS_DUMMY: TaskStatus[] = [
   {
     statusId: 1,
     name: 'To Do',
@@ -43,7 +43,7 @@ export const STATUS_DUMMY: TodoStatus[] = [
   },
 ];
 
-export const TODO_DUMMY: TodoWithStatus[] = [
+export const TASK_DUMMY: TaskWithStatus[] = [
   {
     statusId: 1,
     name: 'To Do',
@@ -113,7 +113,7 @@ export const TODO_DUMMY: TodoWithStatus[] = [
     tasks: [
       {
         taskId: 1,
-        name: 'todo 상태 추가 모달 작업하기',
+        name: 'task 상태 추가 모달 작업하기',
         order: 1,
         userId: 2,
         files: [],
