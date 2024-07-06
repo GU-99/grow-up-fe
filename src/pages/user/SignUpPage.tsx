@@ -211,13 +211,15 @@ export default function SignUpPage() {
       {/* 자기소개 */}
       <div className="flex flex-col">
         <div className="flex flex-row justify-between">
-          <h1 className="font-bold">자기소개</h1>
+          <label htmlFor="bio" className="font-bold">
+            자기소개
+          </label>
           <p>optional</p>
         </div>
         <textarea
           {...register('bio')}
-          placeholder="ex) 안녕하세요. 홍길동입니다."
           id="bio"
+          placeholder="ex) 안녕하세요. 홍길동입니다."
           className="h-90 flex-grow resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
         />
       </div>

@@ -36,7 +36,12 @@ module.exports = {
     'import/extensions': 'off',
     'jsx-a11y/no-noninteractive-element-interactions': 'warn',
     'vitest/valid-title': 'off',
-    'react/jsx-props-no-spreading': 'off',
+    'jsx-a11y/label-has-associated-control': [
+      2,
+      {
+        labelAttributes: ['htmlFor'],
+      },
+    ],
   },
   ignorePatterns: [
     'dist',
