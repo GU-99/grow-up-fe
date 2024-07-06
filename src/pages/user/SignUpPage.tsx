@@ -3,9 +3,9 @@ import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { EMAIL_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '@/constants/regex';
 import { UserSignUpType } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
+import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 
 export default function SignUpPage() {
   const [imagePreview, setImagePreview] = useState('');
@@ -115,13 +115,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="이메일"
         errors={errors.email?.message}
-        register={register('email', {
-          required: '이메일 인증을 진행해 주세요.',
-          pattern: {
-            value: EMAIL_REGEX,
-            message: '이메일 형식에 맞지 않습니다.',
-          },
-        })}
+        register={register('email', STATUS_VALIDATION_RULES.EMAIL())}
         isButtonInput
         buttonLabel="인증번호 발송"
       />
@@ -131,7 +125,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="이메일 인증 확인"
         errors={errors.emailVerificationCode?.message}
-        register={register('emailVerificationCode', { required: '인증번호를 입력해 주세요.' })}
+        register={register('emailVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION())}
         isButtonInput
         buttonLabel="확인"
       />
@@ -140,13 +134,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="휴대폰 번호"
         errors={errors.phone?.message}
-        register={register('phone', {
-          required: '휴대폰 번호 인증을 진행해 주세요.',
-          pattern: {
-            value: PHONE_REGEX,
-            message: '휴대폰 번호를 정확히 입력해 주세요.',
-          },
-        })}
+        register={register('phone', STATUS_VALIDATION_RULES.PHONE())}
         isButtonInput
         buttonLabel="인증번호 발송"
       />
@@ -155,7 +143,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="휴대폰 인증 확인"
         errors={errors.phoneVerificationCode?.message}
-        register={register('phoneVerificationCode', { required: '인증번호를 입력해 주세요.' })}
+        register={register('phoneVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION())}
         isButtonInput
         buttonLabel="확인"
       />
@@ -164,13 +152,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="닉네임"
         errors={errors.nickname?.message}
-        register={register('nickname', {
-          required: '닉네임을 입력해 주세요.',
-          maxLength: {
-            value: 20,
-            message: '닉네임은 최대 20자까지 입력 가능합니다.',
-          },
-        })}
+        register={register('nickname', STATUS_VALIDATION_RULES.NICKNAME())}
         isButtonInput
         buttonLabel="중복확인"
       />
@@ -179,21 +161,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="비밀번호"
         errors={errors.password?.message}
-        register={register('password', {
-          required: '비밀번호를 입력해 주세요.',
-          minLength: {
-            value: 8,
-            message: '비밀번호는 최소 8자 이상이어야 합니다.',
-          },
-          maxLength: {
-            value: 16,
-            message: '비밀번호는 최대 16자 이하여야 합니다.',
-          },
-          pattern: {
-            value: PASSWORD_REGEX,
-            message: '비밀번호는 영문자, 숫자, 기호를 포함해야 합니다.',
-          },
-        })}
+        register={register('password', STATUS_VALIDATION_RULES.PASSWORD())}
         type="password"
       />
 
@@ -202,7 +170,7 @@ export default function SignUpPage() {
         label="비밀번호 확인"
         errors={errors.checkPassword?.message}
         register={register('checkPassword', {
-          required: '비밀번호를 한 번 더 입력해 주세요.',
+          ...STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(),
           validate: (value) => value === watch('password') || '비밀번호가 일치하지 않습니다.',
         })}
         type="password"
