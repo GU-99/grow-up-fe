@@ -35,6 +35,7 @@
     --color-main: #237700;
     --color-sub: #e1f4d9;
     --color-close: #be0000;
+    --color-error: #ff0000;
     --color-contents-box: #fdfdfd;
     --color-disable: #c2c2c2;
     --color-selected: #c2c2c2;
@@ -57,7 +58,6 @@
     --text-color-default: #2c2c2c;
     --text-color-emphasis: #5e5e5e;
     --text-color-category: #b1b1b1;
-    --text-color-error: #be0000;
     --text-color-blue: #0909e7;
 
     /* border color */
@@ -96,6 +96,7 @@
   .selected::before {
     @apply absolute left-0 top-0 block h-30 w-3 bg-main content-[''];
   }
+
   .auth-btn {
     @apply flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold;
   }

@@ -63,7 +63,7 @@ export default function ValidationInput({
       )}
       <div
         className={`flex h-30 items-center rounded-lg border px-6 text-sm ${
-          errors ? 'border-2 border-[#FF0000]' : 'border-input'
+          errors ? 'border-2 border-error' : 'border-input'
         }`}
       >
         <div className="flex h-full w-full flex-row items-center gap-8">
@@ -72,29 +72,29 @@ export default function ValidationInput({
             {...register}
             type={type === 'password' && showPassword ? 'text' : type}
             placeholder={placeholder}
-            className={`h-full bg-inherit outline-none placeholder:text-emphasis ${isButtonInput ? 'w-[90%]' : 'w-full'}`}
+            className="h-full flex-grow bg-inherit outline-none placeholder:text-default"
           />
+          {type === 'password' && (
+            <div className="flex h-20 w-20 items-center text-gray-400">
+              {showPassword ? (
+                <RiEyeFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
+              ) : (
+                <RiEyeOffFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
+              )}
+            </div>
+          )}
           {isButtonInput && (
             <button
               type="button"
-              className="flex h-20 w-90 items-center justify-center rounded bg-sub px-8 font-bold shadow-md"
+              className="flex h-20 w-75 items-center justify-center rounded bg-sub px-8 font-bold shadow-md"
               onClick={onButtonClick}
             >
               {buttonLabel}
             </button>
           )}
         </div>
-        {type === 'password' && (
-          <div className="absolute right-0 flex items-center pr-8 text-gray-400">
-            {showPassword ? (
-              <RiEyeFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
-            ) : (
-              <RiEyeOffFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
-            )}
-          </div>
-        )}
       </div>
-      {errors && <p className="mt-[.5rem] text-sm text-[#FF0000]">{errors}</p>}
+      {errors && <p className="mt-[.5rem] text-sm text-error">{errors}</p>}
     </div>
   );
 }

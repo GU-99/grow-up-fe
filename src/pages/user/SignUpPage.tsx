@@ -235,7 +235,7 @@ export default function SignUpPage() {
               // eslint-disable-next-line react/no-array-index-key
               <div key={index} className="flex h-30 items-center rounded-lg border border-input px-6 text-sm">
                 <div className="flex h-full w-full flex-row items-center gap-8">
-                  <div className="flex w-[90%] items-center overflow-hidden border-transparent bg-inherit">
+                  <div className="flex flex-grow items-center overflow-hidden border-transparent bg-inherit">
                     <a href={`http://${item}`} target="_blank" rel="noreferrer">
                       {item}
                     </a>
@@ -262,7 +262,7 @@ export default function SignUpPage() {
                 onBlur={handleBlur}
                 onChange={handleLinkChange}
                 type="text"
-                className="w-[90%] bg-inherit outline-none placeholder:text-emphasis"
+                className="flex flex-grow bg-inherit outline-none placeholder:text-emphasis"
               />
               <button
                 type="button"

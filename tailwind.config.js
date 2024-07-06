@@ -47,7 +47,6 @@ export default {
         default: 'var(--text-color-default)',
         emphasis: 'var(--text-color-emphasis)',
         category: 'var(--text-color-category)',
-        error: 'var(--text-color-error)',
         blue: 'var(--text-color-blue)',
       },
       colors: {
@@ -55,6 +54,7 @@ export default {
         sub: 'var(--color-sub)',
         close: 'var(--color-close)',
         'contents-box': 'var(--color-contents-box)',
+        error: 'var(--color-error)',
         disable: 'var(--color-disable)',
         selected: 'var(--color-selected)',
         scroll: 'var(--color-scroll)',
