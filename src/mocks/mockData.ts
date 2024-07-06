@@ -1,4 +1,4 @@
-import type { TaskStatus } from '@/types/TaskStatusType';
+import type { TaskStatus } from '@/types/ProjectStatusType';
 import type { TaskWithStatus } from '@/types/TaskType';
 
 export const USER_DUMMY = [
