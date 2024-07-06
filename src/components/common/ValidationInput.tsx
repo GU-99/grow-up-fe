@@ -55,7 +55,7 @@ export default function ValidationInput({
   };
 
   return (
-    <div className="relative">
+    <div>
       {label && (
         <label htmlFor={label} className="font-bold">
           {label}
@@ -72,7 +72,7 @@ export default function ValidationInput({
             {...register}
             type={type === 'password' && showPassword ? 'text' : type}
             placeholder={placeholder}
-            className="h-full flex-grow bg-inherit outline-none placeholder:text-default"
+            className="h-full flex-grow bg-inherit outline-none placeholder:text-emphasis"
           />
           {type === 'password' && (
             <div className="flex h-20 w-20 items-center text-gray-400">

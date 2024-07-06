@@ -59,7 +59,7 @@ export default {
         selected: 'var(--color-selected)',
         scroll: 'var(--color-scroll)',
         button: 'var(--color-button)',
-        kako: 'var(--color-kakao)',
+        kakao: 'var(--color-kakao)',
         todo: {
           red: 'var(--color-todo-red)',
           yellow: 'var(--color-todo-yellow)',
