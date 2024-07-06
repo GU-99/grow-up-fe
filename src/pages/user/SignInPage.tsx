@@ -26,12 +26,12 @@ export default function SignInPage() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex h-screen w-300 flex-col py-30">
-      <div className="h-1/6 text-large text-main">
+      <section className="h-1/6 text-large text-main">
         Welcome to our site!
         <br /> Grow Up your Life with us.
-      </div>
+      </section>
 
-      <div className="flex flex-grow flex-col justify-center gap-8">
+      <section className="flex flex-grow flex-col justify-center gap-8">
         {/* 이메일(아이디) */}
         <ValidationInput
           placeholder="이메일"
@@ -69,18 +69,22 @@ export default function SignInPage() {
             회원가입
           </button>
         </div>
-      </div>
+      </section>
 
-      <div className="flex h-1/6 flex-col gap-4 text-center">
+      <section className="flex h-1/6 flex-col gap-4 text-center">
         <button type="button" className="auth-btn bg-kakao" disabled={isSubmitting}>
-          <img src={Kakao} alt="Kakao" className="mr-5 size-15" />
-          카카오 로그인
+          <div className="flex w-81 items-center justify-between">
+            <img src={Kakao} alt="Kakao" className="size-15" />
+            카카오 로그인
+          </div>
         </button>
         <button type="button" className="auth-btn bg-button" disabled={isSubmitting}>
-          <img src={Google} alt="Google" className="mr-5 size-40" />
-          구글 로그인
+          <div className="flex w-81 items-center justify-between">
+            <img src={Google} alt="Google" className="size-42" />
+            로그인
+          </div>
         </button>
-      </div>
+      </section>
     </form>
   );
 }
