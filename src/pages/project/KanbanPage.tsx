@@ -79,7 +79,7 @@ export default function KanbanPage() {
             {...statusDropProvided.droppableProps}
           >
             {statusTasks.map((statusTask) => (
-              <TaskStatusContainer statusTask={statusTask} />
+              <TaskStatusContainer key={statusTask.statusId} statusTask={statusTask} />
             ))}
             {statusDropProvided.placeholder}
           </section>

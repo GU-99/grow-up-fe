@@ -16,7 +16,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
   const index = useMemo(() => order - 1, [order]);
 
   return (
-    <Draggable draggableId={draggableId} index={index} key={statusId}>
+    <Draggable draggableId={draggableId} index={index}>
       {(statusDragProvided) => (
         <article
           className="flex min-w-125 grow basis-1/3 flex-col"
