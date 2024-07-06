@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import TaskStatusContainer from '@components/task/kanban/TaskStatusContainer';
+import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
@@ -80,7 +80,7 @@ export default function KanbanPage() {
             {...statusDropProvided.droppableProps}
           >
             {statusTasks.map((statusTask) => (
-              <TaskStatusContainer key={statusTask.statusId} statusTask={statusTask} />
+              <ProjectStatusContainer key={statusTask.statusId} statusTask={statusTask} />
             ))}
             {statusDropProvided.placeholder}
           </section>
