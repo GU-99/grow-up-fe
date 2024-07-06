@@ -7,7 +7,6 @@ import { parsePrefixId } from '@utils/converter';
 import { TASK_DUMMY } from '@mocks/mockData';
 import type { Task, TaskWithStatus } from '@/types/TaskType';
 
-// ToDo: 상태 DnD와 할일 DnD 로직 통합 가능한가 생각해보기
 function createChangedStatus(statusTasks: TaskWithStatus[], dropResult: DropResult) {
   const { source, destination } = dropResult;
 
@@ -15,9 +14,11 @@ function createChangedStatus(statusTasks: TaskWithStatus[], dropResult: DropResu
 
   const newStatusTasks = deepClone(statusTasks);
   const stausTask = newStatusTasks[source.index];
+
   newStatusTasks.splice(source.index, 1);
   newStatusTasks.splice(destination.index, 0, stausTask);
   newStatusTasks.forEach((status, index) => (status.order = index + 1));
+
   return newStatusTasks;
 }
 
@@ -32,10 +33,10 @@ function createChangedTasks(statusTasks: TaskWithStatus[], dropResult: DropResul
   const taskId = Number(parsePrefixId(draggableId));
 
   const newStatusTasks = deepClone(statusTasks);
-  const { tasks: sourceTasks } = newStatusTasks.find((data) => data.statusId === sourceStatusId)! as TaskWithStatus;
-  const { tasks: destinationTasks } = isSameStatus
-    ? { tasks: sourceTasks }
-    : (newStatusTasks.find((data) => data.statusId === destinationStatusId)! as TaskWithStatus);
+  const sourceTasks = newStatusTasks.find((data) => data.statusId === sourceStatusId)!.tasks;
+  const destinationTasks = isSameStatus
+    ? sourceTasks
+    : newStatusTasks.find((data) => data.statusId === destinationStatusId)!.tasks;
   const task = sourceTasks.find((data) => data.taskId === taskId)! as Task;
 
   sourceTasks.splice(source.index, 1);
