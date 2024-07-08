@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react';
-import { RiSettings5Fill } from 'react-icons/ri';
+import { useMemo } from 'react';
 import { NavLink, Outlet, useParams } from 'react-router-dom';
-
+import useModal from '@hooks/useModal';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
-
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
+import { RiSettings5Fill } from 'react-icons/ri';
 
 const dummy = {
   teamName: '김찌와 소주',
@@ -25,7 +24,7 @@ const dummy = {
 
 export default function ProjectLayout() {
   const { projectId } = useParams();
-  const [showStateModal, setShowStateModal] = useState(false);
+  const { showModal, openModal, closeModal } = useModal();
   const target = useMemo(() => dummy.data.find((d) => d.id === projectId), [projectId]);
 
   return (
@@ -59,7 +58,7 @@ export default function ProjectLayout() {
                 </li>
               </ul>
               <div className="text-main">
-                <button type="button" onClick={() => setShowStateModal(true)}>
+                <button type="button" onClick={openModal}>
                   <small>+</small> New State
                 </button>
               </div>
@@ -68,7 +67,7 @@ export default function ProjectLayout() {
           </div>
         </section>
       </section>
-      {showStateModal && <CreateModalProjectStatus onClose={() => setShowStateModal(false)} />}
+      {showModal && <CreateModalProjectStatus onClose={closeModal} />}
     </>
   );
 }

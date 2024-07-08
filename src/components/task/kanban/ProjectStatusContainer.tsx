@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
+import useModal from '@hooks/useModal';
 import TaskItemList from '@components/task/kanban/TaskItemList';
 import UpdateModalProjectStatus from '@components/modal/project-status/UpdateModalProjectStatus';
 import { generatePrefixId } from '@utils/converter';
@@ -12,7 +13,8 @@ type TaskStatusContainerProps = {
 };
 
 export default function TaskStatusContainer({ statusTask }: TaskStatusContainerProps) {
-  const [showStatusModal, setShowStatusModal] = useState(false);
+  // const [showStatusModal, setShowStatusModal] = useState(false);
+  const { showModal, openModal, closeModal } = useModal();
   const { statusId, name, color, order, tasks } = statusTask;
   const draggableId = useMemo(() => generatePrefixId(statusId, DND_DRAGGABLE_PREFIX.STATUS), [statusId]);
   const index = useMemo(() => order - 1, [order]);
@@ -31,7 +33,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
               <span>
                 <BsPencil
                   className="cursor-pointer hover:scale-110 hover:text-main hover:duration-150"
-                  onClick={() => setShowStatusModal(true)}
+                  onClick={openModal}
                 />
               </span>
             </header>
@@ -39,9 +41,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
           </article>
         )}
       </Draggable>
-      {showStatusModal && (
-        <UpdateModalProjectStatus onClose={() => setShowStatusModal(false)} statusId={statusTask.statusId} />
-      )}
+      {showModal && <UpdateModalProjectStatus onClose={closeModal} statusId={statusTask.statusId} />}
     </>
   );
 }
