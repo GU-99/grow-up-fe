@@ -178,12 +178,9 @@ export default function SignUpPage() {
 
       {/* 자기소개 */}
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between">
-          <label htmlFor="bio" className="font-bold">
-            자기소개
-          </label>
-          <p>optional</p>
-        </div>
+        <label htmlFor="bio" className="font-bold">
+          자기소개
+        </label>
         <textarea
           {...register('bio')}
           id="bio"
@@ -194,10 +191,7 @@ export default function SignUpPage() {
 
       {/* 링크 */}
       <div>
-        <div className="flex flex-row justify-between">
-          <h1 className="font-bold">링크</h1>
-          <p>optional</p>
-        </div>
+        <h1 className="font-bold">링크</h1>
         <div className="flex flex-col gap-4">
           {linksList &&
             linksList.map((item, index) => (
