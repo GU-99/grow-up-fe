@@ -3,16 +3,17 @@ import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
 import ModaFormButton from '@components/modal/ModaFormButton';
-import { ProjectStatusForm } from '@/types/ProjectStatusType';
+import { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 
-type CreateModalProjectStatusProps = {
+type UpdateModalProjectStatusProps = {
+  statusId: ProjectStatus['statusId'];
   onClose: () => void;
 };
 
-export default function CreateModalProjectStatus({ onClose: handleClose }: CreateModalProjectStatusProps) {
-  // ToDo: 상태 생성을 위한 네트워크 로직 추가
+export default function UpdateModalProjectStatus({ statusId, onClose: handleClose }: UpdateModalProjectStatusProps) {
+  // ToDo: 상태 수정을 위한 네트워크 로직 추가
   const handleSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
-    console.log('생성 폼 제출');
+    console.log(statusId, '수정 폼 제출');
     console.log(data);
     handleClose();
   };
@@ -21,8 +22,8 @@ export default function CreateModalProjectStatus({ onClose: handleClose }: Creat
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <div className="flex h-full flex-col items-center justify-center">
-          <ModalProjectStatusForm formId="createStatusForm" onSubmit={handleSubmit} />
-          <ModaFormButton formId="createStatusForm" isCreate onClose={handleClose} />
+          <ModalProjectStatusForm formId="updateStatusForm" statusId={statusId} onSubmit={handleSubmit} />
+          <ModaFormButton formId="updateStatusForm" isCreate={false} onClose={handleClose} />
         </div>
       </ModalLayout>
     </ModalPortal>

@@ -6,7 +6,6 @@ import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
 
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
-import { TASK_DUMMY } from '@mocks/mockData';
 
 const dummy = {
   teamName: '김찌와 소주',
@@ -69,9 +68,7 @@ export default function ProjectLayout() {
           </div>
         </section>
       </section>
-      {showStateModal && (
-        <CreateModalProjectStatus onClose={() => setShowStateModal(false)} projectStatus={TASK_DUMMY} />
-      )}
+      {showStateModal && <CreateModalProjectStatus onClose={() => setShowStateModal(false)} />}
     </>
   );
 }

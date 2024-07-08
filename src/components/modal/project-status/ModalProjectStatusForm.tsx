@@ -1,32 +1,18 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
+import useProjectStatusQuery from '@hooks/query/useProjectStatusQuery';
 import { GiCheckMark } from 'react-icons/gi';
 import { RiProhibited2Fill, RiProhibited2Line } from 'react-icons/ri';
-import type { ColorInfo, ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
+import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 
 type ModalProjectStatusFormProps = {
   formId: string;
-  projectStatus: ProjectStatus[];
+  statusId?: ProjectStatus['statusId'];
   onSubmit: SubmitHandler<ProjectStatusForm>;
 };
 
-// 색상 정보 취득
-function getProjectColors(projectStatus: ProjectStatus[]): ColorInfo[] {
-  const colorMap = new Map();
-  Object.values(PROJECT_STATUS_COLORS).forEach((color) => {
-    colorMap.set(color, { color, isUsable: true });
-  });
-
-  projectStatus.forEach(({ color }) => {
-    if (!colorMap.has(color)) throw Error('[Error] 등록되지 않은 색상입니다.');
-    colorMap.set(color, { ...colorMap.get(color), isUsable: false });
-  });
-
-  return [...colorMap.values()];
-}
-
-export default function ModalProjectStatusForm({ formId, projectStatus, onSubmit }: ModalProjectStatusFormProps) {
+export default function ModalProjectStatusForm({ formId, statusId, onSubmit }: ModalProjectStatusFormProps) {
+  const { initialValue, nameList, colorList, usableColorList } = useProjectStatusQuery(statusId);
   const {
     register,
     watch,
@@ -34,17 +20,10 @@ export default function ModalProjectStatusForm({ formId, projectStatus, onSubmit
     formState: { errors },
   } = useForm<ProjectStatusForm>({
     mode: 'onChange',
-    defaultValues: {
-      name: '',
-      color: '',
-    },
+    defaultValues: initialValue || { name: '', color: '' },
   });
   const statusName = watch('name');
   const selectedColor = watch('color');
-
-  const colorList = getProjectColors(projectStatus);
-  const nameList = projectStatus.map((status) => status.name);
-  const colorNameList = projectStatus.map((status) => status.color);
 
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
@@ -70,15 +49,14 @@ export default function ModalProjectStatusForm({ formId, projectStatus, onSubmit
         </div>
         {errors.name && <div className="mt-5 text-xs text-error">{errors.name.message}</div>}
       </label>
-
       <h3 className="text-large">색상</h3>
       <section className="grid grid-cols-8 gap-4">
-        {colorList.map(({ color, isUsable }, index) => (
+        {usableColorList.map(({ color, isUsable }, index) => (
           <div className="group relative m-auto" key={index}>
             <label
               htmlFor={color}
               style={{ backgroundColor: color }}
-              className={`realative inline-block size-20 cursor-pointer rounded-full ${selectedColor === color ? 'border-4 border-selected' : ''}`}
+              className={`realative inline-block size-20 cursor-pointer rounded-full ${isUsable && selectedColor === color ? 'border-4 border-selected' : ''}`}
             >
               <input
                 type="radio"
@@ -86,7 +64,7 @@ export default function ModalProjectStatusForm({ formId, projectStatus, onSubmit
                 value={color}
                 className="hidden"
                 disabled={!isUsable}
-                {...register('color', STATUS_VALIDATION_RULES.COLOR(colorNameList))}
+                {...register('color', STATUS_VALIDATION_RULES.COLOR(colorList))}
               />
               {!isUsable && <RiProhibited2Fill className="size-20 text-white" />}
             </label>
