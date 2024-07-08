@@ -15,6 +15,7 @@ export default function CreateModalProjectStatus({ onClose: handleClose, project
   const handleSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
     console.log('생성 폼 제출');
     console.log(data);
+    handleClose();
   };
   return (
     <ModalPortal>
