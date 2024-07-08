@@ -13,6 +13,5 @@ export type ProjectStatusForm = {
 
 export type ColorInfo = {
   color: string;
-  isDefault: boolean;
   isUsable: boolean;
 };

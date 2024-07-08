@@ -5,9 +5,8 @@ import { NavLink, Outlet, useParams } from 'react-router-dom';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
 
-import ModalPortal from '@components/common/ModalPortal';
-import ModalLayout from '@layouts/ModalLayout';
-import ModalProjectStatus from '@components/modal/ModalProjectStatus';
+import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
+import { TASK_DUMMY } from '@mocks/mockData';
 
 const dummy = {
   teamName: '김찌와 소주',
@@ -22,17 +21,6 @@ const dummy = {
     { id: '8', title: '캘린더 만들기8' },
     { id: '9', title: '캘린더 만들기9' },
     { id: '10', title: '캘린더 만들기10' },
-  ],
-};
-
-const dummyColor = {
-  proejctId: 1,
-  state: [
-    { statusId: 1, name: 'To Do', color: '#c83c00' },
-    { statusId: 2, name: 'In Progress', color: '#dab700' },
-    { statusId: 3, name: 'Done', color: '#237700' },
-    { statusId: 4, name: 'Ready', color: '#2dd4bf' },
-    { statusId: 4, name: '보류', color: '#2dd4bf' },
   ],
 };
 
@@ -82,11 +70,7 @@ export default function ProjectLayout() {
         </section>
       </section>
       {showStateModal && (
-        <ModalPortal>
-          <ModalLayout onClose={() => setShowStateModal(false)}>
-            <ModalProjectStatus onClose={() => setShowStateModal(false)} projectStatus={dummyColor.state} />
-          </ModalLayout>
-        </ModalPortal>
+        <CreateModalProjectStatus onClose={() => setShowStateModal(false)} projectStatus={TASK_DUMMY} />
       )}
     </>
   );
