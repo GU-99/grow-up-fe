@@ -3,7 +3,7 @@ import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UserSignUpType } from '@/types/UserType';
+import { UserSignUp } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 
@@ -19,7 +19,7 @@ export default function SignUpPage() {
     formState: { errors, isSubmitting },
     watch,
     setValue,
-  } = useForm<UserSignUpType>({
+  } = useForm<UserSignUp>({
     mode: 'onChange',
     defaultValues: {
       image: [], // 추후 이미지 전송 폼 분리 예정
@@ -80,7 +80,7 @@ export default function SignUpPage() {
   };
 
   // form 전송 함수
-  const onSubmit = (data: UserSignUpType) => {
+  const onSubmit = (data: UserSignUp) => {
     const { emailVerificationCode, phoneVerificationCode, checkPassword, ...filteredData } = data;
     console.log(filteredData);
   };

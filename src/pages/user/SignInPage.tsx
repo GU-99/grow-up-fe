@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
-import { UserSignInType } from '@/types/UserType';
+import { UserSignIn } from '@/types/UserType';
 
 export default function SignInPage() {
   const nav = useNavigate();
@@ -19,7 +19,7 @@ export default function SignInPage() {
     },
   });
 
-  const onSubmit = (data: UserSignInType) => {
+  const onSubmit = (data: UserSignIn) => {
     console.log(data);
   };
 
