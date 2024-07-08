@@ -5,7 +5,7 @@ import { GiCheckMark } from 'react-icons/gi';
 import { RiProhibited2Fill, RiProhibited2Line } from 'react-icons/ri';
 import type { ColorInfo, ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 
-type ProjectStatusProps = {
+type ModalProjectStatusFormProps = {
   formId: string;
   projectStatus: ProjectStatus[];
   onSubmit: SubmitHandler<ProjectStatusForm>;
@@ -26,7 +26,7 @@ function getProjectColors(projectStatus: ProjectStatus[]): ColorInfo[] {
   return [...colorMap.values()];
 }
 
-export default function ModalProjectStatusForm({ formId, projectStatus, onSubmit }: ProjectStatusProps) {
+export default function ModalProjectStatusForm({ formId, projectStatus, onSubmit }: ModalProjectStatusFormProps) {
   const {
     register,
     watch,
