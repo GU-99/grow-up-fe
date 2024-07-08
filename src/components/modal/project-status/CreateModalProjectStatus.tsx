@@ -16,7 +16,6 @@ export default function CreateModalProjectStatus({ onClose: handleClose }: Creat
     console.log(data);
     handleClose();
   };
-
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
