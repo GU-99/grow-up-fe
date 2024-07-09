@@ -36,6 +36,12 @@ module.exports = {
     'import/extensions': 'off',
     'jsx-a11y/no-noninteractive-element-interactions': 'warn',
     'vitest/valid-title': 'off',
+    'jsx-a11y/label-has-associated-control': [
+      2,
+      {
+        labelAttributes: ['htmlFor'],
+      },
+    ],
   },
   ignorePatterns: [
     'dist',
