@@ -58,7 +58,7 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
     },
     pattern: {
       value: PASSWORD_REGEX,
-      message: '비밀번호는 영문자, 숫자, 기호를 포함해야 합니다.',
+      message: '비밀번호는 영문자, 숫자, 기호를 모두 포함해야 합니다.',
     },
   }),
   PASSWORD_CONFIRM: () => ({
