@@ -3,7 +3,7 @@ import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UserSignUpType } from '@/types/UserType';
+import { UserSignUp } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 
@@ -19,7 +19,7 @@ export default function SignUpPage() {
     formState: { errors, isSubmitting },
     watch,
     setValue,
-  } = useForm<UserSignUpType>({
+  } = useForm<UserSignUp>({
     mode: 'onChange',
     defaultValues: {
       image: [], // 추후 이미지 전송 폼 분리 예정
@@ -80,13 +80,13 @@ export default function SignUpPage() {
   };
 
   // form 전송 함수
-  const onSubmit = (data: UserSignUpType) => {
+  const onSubmit = (data: UserSignUp) => {
     const { emailVerificationCode, phoneVerificationCode, checkPassword, ...filteredData } = data;
     console.log(filteredData);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex w-300 flex-col gap-8">
       {/* 프로필 이미지 */}
       <div className="flex flex-col items-center gap-8">
         <div className="group relative h-100 w-100 overflow-hidden rounded-[50%] border border-input">
@@ -178,26 +178,20 @@ export default function SignUpPage() {
 
       {/* 자기소개 */}
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between">
-          <label htmlFor="bio" className="font-bold">
-            자기소개
-          </label>
-          <p>optional</p>
-        </div>
+        <label htmlFor="bio" className="font-bold">
+          자기소개
+        </label>
         <textarea
           {...register('bio')}
           id="bio"
           placeholder="ex) 안녕하세요. 홍길동입니다."
-          className="h-90 flex-grow resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
+          className="h-90 grow resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
         />
       </div>
 
       {/* 링크 */}
       <div>
-        <div className="flex flex-row justify-between">
-          <h1 className="font-bold">링크</h1>
-          <p>optional</p>
-        </div>
+        <h1 className="font-bold">링크</h1>
         <div className="flex flex-col gap-4">
           {linksList &&
             linksList.map((item, index) => (
@@ -205,7 +199,7 @@ export default function SignUpPage() {
               // eslint-disable-next-line react/no-array-index-key
               <div key={index} className="flex h-30 items-center rounded-lg border border-input px-6 text-sm">
                 <div className="flex h-full w-full flex-row items-center gap-8">
-                  <div className="flex flex-grow items-center overflow-hidden border-transparent bg-inherit">
+                  <div className="flex grow items-center overflow-hidden border-transparent bg-inherit">
                     <a href={`http://${item}`} target="_blank" rel="noreferrer">
                       {item}
                     </a>
@@ -232,7 +226,7 @@ export default function SignUpPage() {
                 onBlur={handleBlur}
                 onChange={handleLinkChange}
                 type="text"
-                className="flex flex-grow bg-inherit outline-none placeholder:text-emphasis"
+                className="flex grow bg-inherit outline-none placeholder:text-emphasis"
               />
               <button
                 type="button"

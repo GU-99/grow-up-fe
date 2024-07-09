@@ -1,4 +1,4 @@
-import type { TaskStatus } from '@/types/ProjectStatusType';
+import type { ProjectStatus } from '@/types/ProjectStatusType';
 import type { TaskWithStatus } from '@/types/TaskType';
 
 export const USER_DUMMY = [
@@ -22,7 +22,7 @@ export const USER_DUMMY = [
   },
 ];
 
-export const STATUS_DUMMY: TaskStatus[] = [
+export const STATUS_DUMMY: ProjectStatus[] = [
   {
     statusId: 1,
     name: 'To Do',
