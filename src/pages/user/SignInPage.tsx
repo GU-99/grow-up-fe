@@ -24,7 +24,7 @@ export default function SignInPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8 text-emphasis">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex w-300 flex-col gap-8 text-emphasis">
       <div className="mb-24 mt-30 text-large">
         Welcome to our site!
         <br /> Grow Up your Life with us.

@@ -86,7 +86,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex w-300 flex-col gap-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex w-300 flex-col gap-8">
       {/* 프로필 이미지 */}
       <div className="flex flex-col items-center gap-8">
         <div className="group relative h-100 w-100 overflow-hidden rounded-[50%] border border-input">
@@ -185,7 +185,7 @@ export default function SignUpPage() {
           {...register('bio')}
           id="bio"
           placeholder="ex) 안녕하세요. 홍길동입니다."
-          className="h-90 flex-grow resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
+          className="h-90 grow resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
         />
       </div>
 
@@ -199,7 +199,7 @@ export default function SignUpPage() {
               // eslint-disable-next-line react/no-array-index-key
               <div key={index} className="flex h-30 items-center rounded-lg border border-input px-6 text-sm">
                 <div className="flex h-full w-full flex-row items-center gap-8">
-                  <div className="flex flex-grow items-center overflow-hidden border-transparent bg-inherit">
+                  <div className="flex grow items-center overflow-hidden border-transparent bg-inherit">
                     <a href={`http://${item}`} target="_blank" rel="noreferrer">
                       {item}
                     </a>
@@ -226,7 +226,7 @@ export default function SignUpPage() {
                 onBlur={handleBlur}
                 onChange={handleLinkChange}
                 type="text"
-                className="flex flex-grow bg-inherit outline-none placeholder:text-emphasis"
+                className="flex grow bg-inherit outline-none placeholder:text-emphasis"
               />
               <button
                 type="button"

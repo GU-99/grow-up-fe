@@ -63,11 +63,10 @@ export default function ValidationInput({
         {label && (
           <label htmlFor={label} className="font-bold">
             {label}
+            {required && <sup className="font-bold text-main">*</sup>}
           </label>
         )}
-        {required && <div className="relative top-[-0.05rem] text-xs font-bold text-main">*</div>}
       </div>
-
       <div
         className={`flex h-30 items-center rounded-lg border px-6 text-sm ${
           errors ? 'border-2 border-error' : 'border-input'
@@ -79,7 +78,7 @@ export default function ValidationInput({
             {...register}
             type={type === 'password' && showPassword ? 'text' : type}
             placeholder={placeholder}
-            className="h-full flex-grow bg-inherit outline-none placeholder:text-default"
+            className="h-full grow bg-inherit outline-none placeholder:text-default"
           />
           {type === 'password' && (
             <div className="flex h-20 w-20 items-center text-gray-400">
