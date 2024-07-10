@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
-import { EMAIL_REGEX, PASSWORD_REGEX } from '@/constants/regex';
 import { UserSignIn } from '@/types/UserType';
+import ValidationInput from '@/components/common/ValidationInput';
+import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 
 export default function SignInPage() {
   const nav = useNavigate();
