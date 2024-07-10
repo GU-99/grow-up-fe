@@ -11,7 +11,7 @@ export type ProjectStatusForm = {
   color: string;
 };
 
-export type ColorInfo = {
+export type UsableColor = {
   color: string;
   isUsable: boolean;
 };
