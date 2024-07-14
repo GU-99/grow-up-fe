@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AfterLoginRoute from '@routes/AfterLoginRoute';
 import BeforeLoginRoute from '@routes/BeforeLoginRoute';
 
+import ToastLayout from '@layouts/ToastLayout';
 import AuthLayout from '@layouts/page/AuthLayout';
 import TeamLayout from '@layouts/page/TeamLayout';
 import DefaultLayout from '@layouts/page/DefaultLayout';
@@ -26,7 +27,9 @@ export default function MainRouter() {
       path: '/',
       element: (
         <BeforeLoginRoute>
-          <AuthLayout />
+          <ToastLayout>
+            <AuthLayout />
+          </ToastLayout>
         </BeforeLoginRoute>
       ),
       errorElement: <ErrorPage />,
@@ -41,7 +44,9 @@ export default function MainRouter() {
       path: '/',
       element: (
         <AfterLoginRoute>
-          <DefaultLayout />
+          <ToastLayout>
+            <DefaultLayout />
+          </ToastLayout>
         </AfterLoginRoute>
       ),
       errorElement: <ErrorPage />,
