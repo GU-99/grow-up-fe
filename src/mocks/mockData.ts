@@ -1,5 +1,5 @@
 import type { ProjectStatus } from '@/types/ProjectStatusType';
-import type { TaskWithStatus } from '@/types/TaskType';
+import type { TaskListWithStatus } from '@/types/TaskType';
 
 export const USER_DUMMY = [
   {
@@ -43,7 +43,7 @@ export const STATUS_DUMMY: ProjectStatus[] = [
   },
 ];
 
-export const TASK_DUMMY: TaskWithStatus[] = [
+export const TASK_DUMMY: TaskListWithStatus[] = [
   {
     statusId: 1,
     name: 'To Do',
