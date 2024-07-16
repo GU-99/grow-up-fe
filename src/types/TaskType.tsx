@@ -11,4 +11,5 @@ export type Task = {
   endDate: string;
 };
 
-export type TaskWithStatus = ProjectStatus & { tasks: Task[] };
+export type TaskWithStatus = ProjectStatus & Task;
+export type TaskListWithStatus = ProjectStatus & { tasks: Task[] };
