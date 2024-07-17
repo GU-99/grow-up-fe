@@ -6,6 +6,7 @@ import {
   MdKeyboardDoubleArrowLeft,
   MdKeyboardDoubleArrowRight,
 } from 'react-icons/md';
+import useToast from '@hooks/useToast';
 import { Project } from '@/types/ProjectType';
 
 type CalendarToolbarProp = {
@@ -15,6 +16,7 @@ type CalendarToolbarProp = {
 };
 
 export default function CalendarToolbar({ date, startDate, onClick }: CalendarToolbarProp) {
+  const { toastWarn } = useToast();
   const { year, month } = useMemo(() => DateTime.fromJSDate(date), [date]);
 
   const handlePrevMonthClick = () => {
@@ -38,9 +40,10 @@ export default function CalendarToolbar({ date, startDate, onClick }: CalendarTo
     onClick(todayDate);
   };
 
-  // ToDo: startDate가 없을 수도 있구나... 그럼 첫태스크가 있는 곳으로 보내야하나
   const handleStartDayClick = () => {
-    if (startDate === null) return;
+    if (startDate === null) {
+      return toastWarn('등록된 할일이 없습니다.');
+    }
     const projectStartDate = DateTime.fromJSDate(startDate).toJSDate();
     onClick(projectStartDate);
   };

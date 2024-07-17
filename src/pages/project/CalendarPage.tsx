@@ -35,7 +35,7 @@ export default function CalendarPage() {
   const [selectedTask, setSelectedTask] = useState<TaskWithStatus>();
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
 
-  const handleToolbarClick = (date: Date) => setDate(date);
+  const onNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
   const handleEventClick = (task: TaskWithStatus) => {
     setSelectedTask(task);
@@ -54,7 +54,7 @@ export default function CalendarPage() {
 
   const { views, components: customComponents } = useMemo(
     () => ({
-      views: [Views.MONTH, Views.WEEK],
+      views: [Views.MONTH],
       components: {
         event: CustomEvent,
         month: {
@@ -68,32 +68,33 @@ export default function CalendarPage() {
 
   const state = {
     events: getCalendarTask(TASK_DUMMY)
-      .map((statusTask) => ({
-        title: statusTask.name,
-        start: new Date(statusTask.startDate),
-        end: new Date(statusTask.endDate),
+      .map((task) => ({
+        title: task.name,
+        start: new Date(task.startDate),
+        end: new Date(task.endDate),
         allDays: true,
-        task: { ...statusTask },
+        task: { ...task },
         handleEventClick,
       }))
-      .sort((a, b) => a.start.getTime() - b.end.getTime()),
+      .sort((a, b) => a.start.getTime() - b.start.getTime()),
   };
 
   // ToDo: 캘린더 스타일 변경을 위해 커스텀 컴포넌트 추가
   // ToDo: DnD, Resize 이벤트 추가 생각해보기
   // ToDo: 할일 추가 모달 Form 작업 완료시 모달 컴포넌트 분리
   // ToDo: react-big-calendar CSS overwrite
-  // ToDo: onNavigate로 발생하는 warning 해결
+  // ToDo: 할일이 아예 없는 경우 처리 추가할 것
   // ToDo: 캘린더 크기 전체적으로 조정
   // ToDo: 코드 리팩토링
   return (
     <div className="min-h-375 min-w-375 grow">
-      <CalendarToolbar date={date} startDate={state.events[0].start} onClick={handleToolbarClick} />
+      <CalendarToolbar date={date} startDate={state.events[0].start} onClick={onNavigate} />
       <Calendar
         toolbar={false}
         localizer={localizer}
         defaultView="month"
         date={date}
+        onNavigate={onNavigate}
         views={views}
         events={state.events}
         components={customComponents}
@@ -103,6 +104,10 @@ export default function CalendarPage() {
         allDayAccessor="allDay"
         popup
         onSelectEvent={handleSelectEvent}
+        showAllEvents={false}
+        eventPropGetter={(event: CustomEvents, start: Date, end: Date, isSlected: boolean) => ({
+          style: { padding: '0px' },
+        })}
         // selectable
         // onSelectSlot={handleSelectSlot}
       />
