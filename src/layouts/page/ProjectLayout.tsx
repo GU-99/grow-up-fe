@@ -32,7 +32,7 @@ export default function ProjectLayout() {
             </div>
           </header>
           <div className="flex grow flex-col overflow-auto p-10 pt-0">
-            <div className="sticky top-0 z-10 mb-10 flex min-w-375 items-center justify-between border-b bg-contents-box pt-10">
+            <div className="sticky top-0 z-10 mb-10 flex items-center justify-between border-b bg-contents-box pt-10">
               <ul className="*:mr-15">
                 <li className="inline">
                   <NavLink to="calendar" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>

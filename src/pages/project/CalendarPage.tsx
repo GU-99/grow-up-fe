@@ -2,14 +2,15 @@ import { useCallback, useMemo, useState } from 'react';
 import { DateTime, Settings } from 'luxon';
 import { Calendar, luxonLocalizer, Views } from 'react-big-calendar';
 import CalendarToolbar from '@components/task/calendar/CalendarToolbar';
-import CustomEvent, { CustomEvents } from '@components/task/calendar/CustomEvent';
 import CustomDateHeader from '@components/task/calendar/CustomDateHeader';
+import CustomEventWrapper from '@components/task/calendar/CustomEventWrapper';
 import useModal from '@hooks/useModal';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModaFormButton from '@components/modal/ModaFormButton';
 import { TASK_DUMMY } from '@mocks/mockData';
 import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
+import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
@@ -21,7 +22,6 @@ function getCalendarTask(statusTasks: TaskListWithStatus[]) {
       calendarTasks.push({ statusId, statusName, color, statusOrder, ...task });
     });
   });
-  console.log(calendarTasks);
 
   return calendarTasks;
 }
@@ -35,28 +35,29 @@ export default function CalendarPage() {
   const [selectedTask, setSelectedTask] = useState<TaskWithStatus>();
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
 
-  const onNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
+  const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
   const handleEventClick = (task: TaskWithStatus) => {
     setSelectedTask(task);
     openModal();
   };
 
-  const handleSelectEvent = (event: CustomEvents) => {
+  const handleSelectEvent = (event: CustomEvent) => {
     setSelectedTask(event?.task);
     openModal();
   };
 
   const handleSelectSlot = useCallback(({ start, end }: { start: Date; end: Date }) => {
-    console.log(`시작일: ${start}, 마감일: ${end}`);
-    alert('날짜가 선택되었어요!');
+    alert(`시작일: ${start}, 마감일: ${end}`);
   }, []);
+
+  const handleEventPropGetter = () => ({ style: { padding: '0px', backgroundColor: 'inherit' } });
 
   const { views, components: customComponents } = useMemo(
     () => ({
       views: [Views.MONTH],
       components: {
-        event: CustomEvent,
+        eventWrapper: CustomEventWrapper,
         month: {
           header: () => undefined,
           dateHeader: CustomDateHeader,
@@ -78,23 +79,23 @@ export default function CalendarPage() {
       }))
       .sort((a, b) => a.start.getTime() - b.start.getTime()),
   };
+  const startDate = state.events.length ? state.events[0].start : null;
 
-  // ToDo: 캘린더 스타일 변경을 위해 커스텀 컴포넌트 추가
+  // ToDo: 프로젝트 기간 이외의 영역 처리
   // ToDo: DnD, Resize 이벤트 추가 생각해보기
   // ToDo: 할일 추가 모달 Form 작업 완료시 모달 컴포넌트 분리
-  // ToDo: react-big-calendar CSS overwrite
-  // ToDo: 할일이 아예 없는 경우 처리 추가할 것
   // ToDo: 캘린더 크기 전체적으로 조정
   // ToDo: 코드 리팩토링
   return (
-    <div className="min-h-375 min-w-375 grow">
-      <CalendarToolbar date={date} startDate={state.events[0].start} onClick={onNavigate} />
+    <div className="flex h-full min-h-375 min-w-260 flex-col">
+      <CalendarToolbar date={date} startDate={startDate} onClick={handleNavigate} />
       <Calendar
         toolbar={false}
         localizer={localizer}
         defaultView="month"
         date={date}
-        onNavigate={onNavigate}
+        onNavigate={handleNavigate}
+        drilldownView={null}
         views={views}
         events={state.events}
         components={customComponents}
@@ -105,11 +106,9 @@ export default function CalendarPage() {
         popup
         onSelectEvent={handleSelectEvent}
         showAllEvents={false}
-        eventPropGetter={(event: CustomEvents, start: Date, end: Date, isSlected: boolean) => ({
-          style: { padding: '0px' },
-        })}
-        // selectable
-        // onSelectSlot={handleSelectSlot}
+        eventPropGetter={handleEventPropGetter}
+        selectable
+        onSelectSlot={handleSelectSlot}
       />
       {showModal && (
         <ModalPortal>
