@@ -6,10 +6,10 @@ import UpdateModalProjectStatus from '@components/modal/project-status/UpdateMod
 import { generatePrefixId } from '@utils/converter';
 import { DND_DRAGGABLE_PREFIX } from '@constants/dnd';
 import { BsPencil } from 'react-icons/bs';
-import { TaskWithStatus } from '@/types/TaskType';
+import { TaskListWithStatus } from '@/types/TaskType';
 
 type TaskStatusContainerProps = {
-  statusTask: TaskWithStatus;
+  statusTask: TaskListWithStatus;
 };
 
 export default function TaskStatusContainer({ statusTask }: TaskStatusContainerProps) {
