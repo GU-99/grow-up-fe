@@ -74,6 +74,7 @@
   }
   ::-webkit-scrollbar-thumb {
     background: var(--color-scroll);
+    border: 2px solid var(--border-scroll);
   }
   ::-webkit-scrollbar-thumb:hover {
     cursor: pointer;
