@@ -49,7 +49,7 @@ export default function CalendarToolbar({ date, startDate, onClick }: CalendarTo
   };
 
   return (
-    <section className="flex h-30 flex-wrap items-center justify-center bg-main px-10 *:w-1/3">
+    <section className="flex flex-col items-center justify-center gap-4 bg-main px-10 lg:h-30 lg:flex-row lg:*:w-1/3">
       <div />
       <div className="flex items-center justify-center text-center font-bold text-white">
         <button type="button" aria-label="이전 연도" onClick={handlePrevYearClick}>
@@ -58,7 +58,7 @@ export default function CalendarToolbar({ date, startDate, onClick }: CalendarTo
         <button type="button" aria-label="이전 달" onClick={handlePrevMonthClick}>
           <MdKeyboardArrowLeft />
         </button>
-        <span className="mx-10">
+        <span className="mx-5">
           {year}년 {month}월
         </span>
         <button type="button" aria-label="다음 달" onClick={handleNextMonthClick}>
@@ -68,17 +68,17 @@ export default function CalendarToolbar({ date, startDate, onClick }: CalendarTo
           <MdKeyboardDoubleArrowRight />
         </button>
       </div>
-      <div className="text-right text-emphasis *:ml-5">
+      <div className="mb-10 text-right text-emphasis lg:m-0">
         <button
           type="button"
-          className="px-8hover:brightness-90 box-border h-20 w-50 rounded-lg bg-button"
+          className="box-border h-20 w-50 rounded-lg bg-button px-8 hover:brightness-90"
           onClick={handleStartDayClick}
         >
           시작일
         </button>
         <button
           type="button"
-          className="box-border h-20 w-50 rounded-lg bg-button px-8 hover:brightness-90"
+          className="ml-5 box-border h-20 w-50 rounded-lg bg-button px-8 hover:brightness-90"
           onClick={handleTodayClick}
         >
           당일
