@@ -15,7 +15,7 @@ export default function SignInPage() {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      email: '',
+      id: '',
       password: '',
     },
   });
@@ -27,11 +27,11 @@ export default function SignInPage() {
   return (
     <AuthForm onSubmit={handleSubmit(onSubmit)}>
       <section className="auth-form-section">
-        {/* 이메일(아이디) */}
+        {/* 아이디 */}
         <ValidationInput
-          placeholder="이메일"
-          errors={errors.email?.message}
-          register={register('email', STATUS_VALIDATION_RULES.EMAIL())}
+          placeholder="아이디"
+          errors={errors.id?.message}
+          register={register('id', STATUS_VALIDATION_RULES.ID())}
         />
 
         {/* 비밀번호 */}

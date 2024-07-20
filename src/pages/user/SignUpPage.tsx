@@ -22,6 +22,7 @@ export default function SignUpPage() {
   } = useForm<UserSignUp>({
     mode: 'onChange',
     defaultValues: {
+      id: '',
       image: [], // 추후 이미지 전송 폼 분리 예정
       email: '',
       emailVerificationCode: '',
