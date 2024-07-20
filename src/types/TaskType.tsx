@@ -1,5 +1,14 @@
 import { ProjectStatus } from '@/types/ProjectStatusType';
 
+type RenameKeys<T, R extends { [K in keyof R]: K extends keyof T ? string : never }> = {
+  [P in keyof T as P extends keyof R ? R[P] : P]: T[P];
+};
+
+type StatusKeyMapping = {
+  name: 'statusName';
+  order: 'statusOrder';
+};
+
 // ToDo: API 설계 완료시 데이터 타입 변경할 것
 export type Task = {
   taskId: number;
@@ -11,4 +20,5 @@ export type Task = {
   endDate: string;
 };
 
-export type TaskWithStatus = ProjectStatus & { tasks: Task[] };
+export type TaskWithStatus = RenameKeys<ProjectStatus, StatusKeyMapping> & Task;
+export type TaskListWithStatus = ProjectStatus & { tasks: Task[] };
