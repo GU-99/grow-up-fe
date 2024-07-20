@@ -64,4 +64,7 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
   PASSWORD_CONFIRM: () => ({
     required: '비밀번호를 한 번 더 입력해 주세요.',
   }),
+  ID: () => ({
+    required: '아이디를 입력해 주세요.',
+  }),
 });
