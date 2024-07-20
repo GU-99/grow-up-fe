@@ -242,7 +242,7 @@ export default function SignUpPage() {
       </div>
 
       {/* 회원가입 버튼 */}
-      <div className="flex flex-col gap-4 text-center">
+      <div className="centered-flex-col gap-8">
         <button
           type="submit"
           className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"

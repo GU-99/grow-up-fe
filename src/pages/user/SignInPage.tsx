@@ -26,7 +26,7 @@ export default function SignInPage() {
 
   return (
     <AuthForm onSubmit={handleSubmit(onSubmit)}>
-      <section className="flex flex-grow flex-col justify-center gap-8">
+      <section className="auth-form-section">
         {/* 이메일(아이디) */}
         <ValidationInput
           placeholder="이메일"
@@ -42,7 +42,7 @@ export default function SignInPage() {
           register={register('password', STATUS_VALIDATION_RULES.PASSWORD())}
         />
 
-        <div className="flex flex-col gap-4 text-center">
+        <div className="centered-flex-col">
           <button type="submit" className="auth-btn" disabled={isSubmitting}>
             로그인
           </button>
@@ -51,7 +51,7 @@ export default function SignInPage() {
         <FooterLinks type="signIn" />
       </section>
 
-      <section className="flex h-1/6 flex-col gap-4 text-center">
+      <section className="flex h-1/6 flex-col gap-8 text-center">
         <button type="button" className="auth-btn bg-kakao" disabled={isSubmitting}>
           <div className="flex h-30 w-81 items-center justify-between">
             <img src={Kakao} alt="Kakao" className="size-15" />

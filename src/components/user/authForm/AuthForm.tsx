@@ -12,7 +12,7 @@ export default function AuthForm({ children, onSubmit }: AuthFormProps) {
         Welcome to our site!
         <br /> Grow Up your Life with us.
       </section>
-      <section className="flex flex-grow flex-col justify-center gap-8">{children}</section>
+      <section className="auth-form-section">{children}</section>
     </form>
   );
 }

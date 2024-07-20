@@ -24,7 +24,7 @@ export default function SearchIdPage() {
 
   return (
     <AuthForm onSubmit={handleSubmit(onSubmit)}>
-      <section className="flex flex-grow flex-col justify-center gap-8">
+      <section className="auth-form-section">
         {/* 이메일 */}
         <ValidationInput
           isButtonInput
@@ -41,7 +41,7 @@ export default function SearchIdPage() {
           register={register('code', STATUS_VALIDATION_RULES.CERTIFICATION())}
         />
 
-        <div className="flex flex-col gap-4 text-center">
+        <div className="centered-flex-col">
           <button type="submit" className="auth-btn" disabled={isSubmitting}>
             아이디 찾기
           </button>
