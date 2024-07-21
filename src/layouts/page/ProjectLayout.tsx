@@ -6,10 +6,12 @@ import ListProject from '@components/sidebar/ListProject';
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
 import { PROJECT_DUMMY } from '@mocks/mockData';
 import { RiSettings5Fill } from 'react-icons/ri';
+import CreateModalTask from '@/components/modal/task/CreateModalTask';
 
 export default function ProjectLayout() {
   const { projectId } = useParams();
-  const { showModal, openModal, closeModal } = useModal();
+  const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
+  const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
   const target = useMemo(
     () => PROJECT_DUMMY.find((project) => project.projectId.toString() === projectId),
     [projectId],
@@ -45,9 +47,12 @@ export default function ProjectLayout() {
                   </NavLink>
                 </li>
               </ul>
-              <div className="text-main">
-                <button type="button" onClick={openModal}>
-                  <small>+</small> New State
+              <div className="text-main *:ml-10">
+                <button type="button" onClick={openTaskModal}>
+                  + 할일 추가
+                </button>
+                <button type="button" onClick={openStatusModal}>
+                  + 상태 추가
                 </button>
               </div>
             </div>
@@ -55,7 +60,8 @@ export default function ProjectLayout() {
           </div>
         </section>
       </section>
-      {showModal && <CreateModalProjectStatus onClose={closeModal} />}
+      {showTaskModal && <CreateModalTask onClose={closeTaskModal} />}
+      {showStatusModal && <CreateModalProjectStatus onClose={closeStatusModal} />}
     </>
   );
 }
