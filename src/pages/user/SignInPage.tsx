@@ -25,8 +25,8 @@ export default function SignInPage() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit(onSubmit)}>
-      <section className="auth-form-section">
+    <>
+      <AuthForm onSubmit={handleSubmit(onSubmit)} styles="mt-40">
         {/* 아이디 */}
         <ValidationInput
           placeholder="아이디"
@@ -42,15 +42,14 @@ export default function SignInPage() {
           register={register('password', STATUS_VALIDATION_RULES.PASSWORD())}
         />
 
-        <div className="centered-flex-col">
+        <div className="flex flex-col text-center">
           <button type="submit" className="auth-btn" disabled={isSubmitting}>
             로그인
           </button>
         </div>
 
         <FooterLinks type="signIn" />
-      </section>
-
+      </AuthForm>
       <section className="flex h-1/6 flex-col gap-8 text-center">
         <button type="button" className="auth-btn bg-kakao" disabled={isSubmitting}>
           <div className="flex h-30 w-81 items-center justify-between">
@@ -65,6 +64,6 @@ export default function SignInPage() {
           </div>
         </button>
       </section>
-    </AuthForm>
+    </>
   );
 }

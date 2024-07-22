@@ -12,11 +12,15 @@ export default function FooterLinks({ type }: FooterLinksProps) {
       case 'signIn':
         return (
           <>
-            <button type="button" className="inherit-btn" onClick={() => nav('/search/id')}>
+            <button type="button" className="cursor-pointer bg-inherit font-bold" onClick={() => nav('/search/id')}>
               아이디 찾기
             </button>
             <p>|</p>
-            <button type="button" className="inherit-btn" onClick={() => nav('/search/password')}>
+            <button
+              type="button"
+              className="cursor-pointer bg-inherit font-bold"
+              onClick={() => nav('/search/password')}
+            >
               비밀번호 찾기
             </button>
           </>
@@ -24,11 +28,15 @@ export default function FooterLinks({ type }: FooterLinksProps) {
       case 'searchId':
         return (
           <>
-            <button type="button" className="inherit-btn" onClick={() => nav('/signin')}>
+            <button type="button" className="cursor-pointer bg-inherit font-bold" onClick={() => nav('/signin')}>
               로그인
             </button>
             <p>|</p>
-            <button type="button" className="inherit-btn" onClick={() => nav('/search/password')}>
+            <button
+              type="button"
+              className="cursor-pointer bg-inherit font-bold"
+              onClick={() => nav('/search/password')}
+            >
               비밀번호 찾기
             </button>
           </>
@@ -36,11 +44,11 @@ export default function FooterLinks({ type }: FooterLinksProps) {
       case 'searchPassword':
         return (
           <>
-            <button type="button" className="inherit-btn" onClick={() => nav('/signin')}>
+            <button type="button" className="cursor-pointer bg-inherit font-bold" onClick={() => nav('/signin')}>
               로그인
             </button>
             <p>|</p>
-            <button type="button" className="inherit-btn" onClick={() => nav('/search/id')}>
+            <button type="button" className="cursor-pointer bg-inherit font-bold" onClick={() => nav('/search/id')}>
               아이디 찾기
             </button>
           </>
