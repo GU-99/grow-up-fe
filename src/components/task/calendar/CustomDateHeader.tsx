@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
 import { DateTime } from 'luxon';
 import { DateHeaderProps } from 'react-big-calendar';
 import { LuxonWeekday } from '@constants/date';
+import useProjectContext from '@hooks/useProjectContext';
+import Validator from '@utils/Validator';
 
-function getTextColor(weekday: LuxonWeekday, isOffRange: boolean) {
-  if (isOffRange) return 'text-[#999999]';
+function getTextColor(weekday: LuxonWeekday, isWithinRange: boolean) {
+  if (!isWithinRange) return 'text-[#999999]';
 
   switch (weekday) {
     case LuxonWeekday.SATURDAY:
@@ -16,9 +17,15 @@ function getTextColor(weekday: LuxonWeekday, isOffRange: boolean) {
   }
 }
 
-export default function CustomDateHeader({ date, isOffRange }: DateHeaderProps) {
-  const { weekday } = useMemo(() => DateTime.fromJSDate(date), [date]);
-  const textColor = useMemo(() => getTextColor(weekday, isOffRange), [weekday, isOffRange]);
+export default function CustomDateHeader({ date, label }: DateHeaderProps) {
+  const { project } = useProjectContext();
 
-  return <div className={`pl-3 text-left ${textColor}`}>{date.getDate()}</div>;
+  if (!project.startDate || !project.endDate) return;
+
+  const isWithinDateRange = Validator.isWithinDateRange(project.startDate, project.endDate, date);
+
+  const { weekday } = DateTime.fromJSDate(date);
+  const textColor = getTextColor(weekday, isWithinDateRange);
+
+  return <div className={`pl-3 text-left ${textColor}`}>{label.padStart(2, '0')}</div>;
 }
