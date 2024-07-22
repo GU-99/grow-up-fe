@@ -5,13 +5,11 @@ import CalendarToolbar from '@components/task/calendar/CalendarToolbar';
 import CustomDateHeader from '@components/task/calendar/CustomDateHeader';
 import CustomEventWrapper from '@components/task/calendar/CustomEventWrapper';
 import useModal from '@hooks/useModal';
-import ModalLayout from '@layouts/ModalLayout';
-import ModalPortal from '@components/modal/ModalPortal';
-import ModaFormButton from '@components/modal/ModaFormButton';
 import { TASK_DUMMY } from '@mocks/mockData';
 import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
 import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import UpdateModalTask from '@/components/modal/task/UpdateModalTask';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
@@ -110,16 +108,7 @@ export default function CalendarPage() {
         selectable
         onSelectSlot={handleSelectSlot}
       />
-      {showModal && (
-        <ModalPortal>
-          <ModalLayout onClose={closeModal}>
-            <div className="flex h-full flex-col items-center justify-center">
-              <div>{selectedTask?.name}</div>
-              <ModaFormButton formId="updateStatusForm" isCreate={false} onClose={closeModal} />
-            </div>
-          </ModalLayout>
-        </ModalPortal>
-      )}
+      {showModal && <UpdateModalTask taskId={selectedTask!.taskId} onClose={closeModal} />}
     </div>
   );
 }
