@@ -30,14 +30,14 @@ export default function SearchIdPage() {
         buttonLabel="인증번호 발송"
         placeholder="이메일"
         errors={errors.email?.message}
-        register={register('email', STATUS_VALIDATION_RULES.EMAIL())}
+        register={register('email', STATUS_VALIDATION_RULES.EMAIL)}
       />
 
       {/* 이메일 인증 */}
       <ValidationInput
         placeholder="인증번호"
         errors={errors.code?.message}
-        register={register('code', STATUS_VALIDATION_RULES.CERTIFICATION())}
+        register={register('code', STATUS_VALIDATION_RULES.CERTIFICATION)}
       />
 
       <div className="flex flex-col text-center">

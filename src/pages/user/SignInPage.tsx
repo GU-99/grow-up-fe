@@ -31,7 +31,7 @@ export default function SignInPage() {
         <ValidationInput
           placeholder="아이디"
           errors={errors.id?.message}
-          register={register('id', STATUS_VALIDATION_RULES.ID())}
+          register={register('id', STATUS_VALIDATION_RULES.ID)}
         />
 
         {/* 비밀번호 */}
@@ -39,7 +39,7 @@ export default function SignInPage() {
           placeholder="비밀번호 (영문자, 숫자, 기호 포함 8~16자리)"
           type="password"
           errors={errors.password?.message}
-          register={register('password', STATUS_VALIDATION_RULES.PASSWORD())}
+          register={register('password', STATUS_VALIDATION_RULES.PASSWORD)}
         />
 
         <div className="flex flex-col text-center">
