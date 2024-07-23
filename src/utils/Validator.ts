@@ -14,11 +14,10 @@ export default class Validator {
     return nameList.includes(name);
   }
 
-  // ToDo: 프로젝트 기간 설정시 endDate를 23:59:59로 처리할지, 다음날 00:00:00으로 할지 대화해볼것
   public static isWithinDateRange(start: Date, end: Date, target: Date) {
     const startDate = DateTime.fromJSDate(start);
     const endDate = DateTime.fromJSDate(end);
     const targetDate = DateTime.fromJSDate(target);
-    return targetDate >= startDate && targetDate <= endDate;
+    return targetDate >= startDate && targetDate < endDate;
   }
 }

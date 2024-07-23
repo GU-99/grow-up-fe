@@ -20,9 +20,10 @@ function getTextColor(weekday: LuxonWeekday, isWithinRange: boolean) {
 export default function CustomDateHeader({ date, label }: DateHeaderProps) {
   const { project } = useProjectContext();
 
-  if (!project.startDate || !project.endDate) return;
-
-  const isWithinDateRange = Validator.isWithinDateRange(project.startDate, project.endDate, date);
+  // prettier-ignore
+  const isWithinDateRange = project.startDate && project.endDate
+      ? Validator.isWithinDateRange(project.startDate, project.endDate, date)
+      : true;
 
   const { weekday } = DateTime.fromJSDate(date);
   const textColor = getTextColor(weekday, isWithinDateRange);
