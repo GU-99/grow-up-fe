@@ -1,6 +1,7 @@
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
+import { Team } from '@/types/TeamType';
 
 export const USER_DUMMY = [
   {
@@ -20,6 +21,24 @@ export const USER_DUMMY = [
     email: 'yesol@naver.com',
     nickname: 'SOL천사',
     bio: '프론트엔드 취준생',
+  },
+];
+
+export const TEAM_DUMMY: Team[] = [
+  {
+    teamId: 1,
+    name: 'Grow Up',
+    content: '프로젝트 관리 사이드 프로젝트 진행중!',
+  },
+  {
+    teamId: 2,
+    name: 'With Me',
+    content: '모임 / 이벤트 관리 프로젝트',
+  },
+  {
+    teamId: 3,
+    name: 'Game World',
+    content: '게임 리뷰 / 정보 공유 프로젝트',
   },
 ];
 
