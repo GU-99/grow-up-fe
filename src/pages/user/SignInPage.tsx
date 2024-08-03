@@ -26,7 +26,7 @@ export default function SignInPage() {
 
   return (
     <>
-      <AuthForm onSubmit={handleSubmit(onSubmit)} styles="mt-40">
+      <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
         {/* 아이디 */}
         <ValidationInput
           placeholder="아이디"

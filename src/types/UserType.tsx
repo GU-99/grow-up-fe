@@ -6,7 +6,7 @@ export type UserSignInForm = {
 
 export type UserSignUpForm = UserSignInForm & {
   email: string;
-  image: File[];
+  image: string;
   password: string;
   nickname: string;
   bio: string;
@@ -15,8 +15,7 @@ export type UserSignUpForm = UserSignInForm & {
 };
 
 export type UserSignUp = UserSignUpForm & {
-  emailVerificationCode: string;
-  phoneVerificationCode: string;
+  verificationCode: string;
   checkPassword: string;
 };
 

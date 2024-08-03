@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { UserSignUp } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
+import reduceImageSize from '@/utils/reduceImageSize';
 
 export default function SignUpPage() {
-  const [imagePreview, setImagePreview] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [link, setLink] = useState<string>('');
   const [linksList, setLinksList] = useState<string[]>([]);
@@ -29,7 +30,7 @@ export default function SignUpPage() {
     defaultValues: {
       id: '',
       email: '',
-      emailVerificationCode: '',
+      verificationCode: '',
       nickname: '',
       password: '',
       checkPassword: '',
@@ -38,18 +39,22 @@ export default function SignUpPage() {
     },
   });
 
-  // 이미지 미리보기 관련 코드
-  const profileImage = watch('image');
-  useEffect(() => {
-    if (profileImage && profileImage.length > 0) {
-      const file = profileImage[0];
-      setImagePreview(URL.createObjectURL(file));
+  // 이미지 관련 코드
+  const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 1024 * 1024 * 1) {
+      alert('최대 1MB 이하의 이미지 파일만 업로드 가능합니다.');
+      e.target.value = '';
+    } else {
+      setImageUrl(URL.createObjectURL(file));
     }
-  }, [profileImage]);
+  };
 
   const handleRemoveImg = () => {
-    setValue('image', []);
-    setImagePreview('');
+    setValue('image', '');
+    setImageUrl('');
   };
 
   // 웹사이트 링크 관련 코드
@@ -87,8 +92,8 @@ export default function SignUpPage() {
   };
 
   // form 전송 함수
-  const onSubmit = (data: UserSignUp) => {
-    const { emailVerificationCode, checkPassword, ...filteredData } = data;
+  const onSubmit = async (data: UserSignUp) => {
+    const { verificationCode, checkPassword, ...filteredData } = data;
 
     // 이메일 인증번호 요청 로직
     if (!isVerificationRequested) {
@@ -98,19 +103,44 @@ export default function SignUpPage() {
       return;
     }
 
-    // 인증 코드 확인 후 form 전송 로직
-    if (emailVerificationCode === '1234') {
+    // 인증 코드 확인 후 form 전송 로직 (인증 성공, 실패는 추후 백엔드 로직으로 대체)
+    if (verificationCode === '1234') {
       setIsVerificationCodeValid(true);
-      console.log(filteredData);
-      return;
+    } else {
+      // 인증 실패 시 로직
+      setIsVerificationCodeValid(false);
+      setError('verificationCode', {
+        type: 'manual',
+        message: '인증번호가 일치하지 않습니다.',
+      });
     }
 
-    // 인증 실패 시 로직
-    setIsVerificationCodeValid(false);
-    setError('emailVerificationCode', {
-      type: 'manual',
-      message: '인증번호가 일치하지 않습니다.',
+    const formData = new FormData();
+
+    // 이미지 폼
+    if (imageUrl) {
+      try {
+        const jpeg = await reduceImageSize(imageUrl);
+        const file = new File([jpeg], new Date().toString(), { type: 'image/jpeg' });
+        formData.append('profile', file);
+      } catch (err) {
+        alert('이미지 처리에 실패했습니다.');
+        return;
+      }
+    }
+
+    // 기타 프로필 데이터 폼
+    formData.append('nickname', data.nickname);
+    formData.append('verificationCode', data.verificationCode);
+    // filteredData
+    Object.entries(filteredData).forEach(([key, value]) => {
+      formData.append(key, value as string);
     });
+
+    // form 전송 로직
+    // for (const key of formData.keys()) {
+    //   console.log(key, ":", formData.get(key));
+    // }
   };
 
   // 타이머 만료
@@ -125,9 +155,9 @@ export default function SignUpPage() {
       {/* 프로필 이미지 */}
       <div className="flex flex-col items-center gap-8">
         <div className="group relative h-100 w-100 overflow-hidden rounded-[50%] border border-input">
-          {imagePreview ? (
+          {imageUrl ? (
             <>
-              <img src={imagePreview} alt="profileImage" className="h-full w-full object-cover" />
+              <img src={imageUrl} alt="profileImage" className="h-full w-full object-cover" />
               <div className="absolute inset-0 hidden items-center justify-center bg-black bg-opacity-50 group-hover:flex">
                 <p role="presentation" className="cursor-pointer" onClick={handleRemoveImg} onKeyDown={handleRemoveImg}>
                   <FaRegTrashCan size="1.5rem" color="white" />
@@ -139,7 +169,7 @@ export default function SignUpPage() {
               htmlFor="image"
               className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1 text-center"
             >
-              <input {...register('image')} id="image" type="file" className="hidden" />
+              <input {...register('image')} id="image" type="file" className="hidden" onChange={handleChangeImg} />
               <GoPlusCircle size="1.5rem" color="#5E5E5E" />
             </label>
           )}
@@ -163,8 +193,8 @@ export default function SignUpPage() {
       {isVerificationRequested && (
         <ValidationInput
           label="인증번호"
-          errors={errors.emailVerificationCode?.message}
-          register={register('emailVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
+          errors={errors.verificationCode?.message}
+          register={register('verificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
         />
       )}
 
