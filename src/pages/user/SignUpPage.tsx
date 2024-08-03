@@ -3,6 +3,7 @@ import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 import { UserSignUp } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
@@ -28,7 +29,7 @@ export default function SignUpPage() {
   } = useForm<UserSignUp>({
     mode: 'onChange',
     defaultValues: {
-      id: '',
+      userId: '',
       email: '',
       verificationCode: '',
       nickname: '',
@@ -93,7 +94,7 @@ export default function SignUpPage() {
 
   // form 전송 함수
   const onSubmit = async (data: UserSignUp) => {
-    const { verificationCode, checkPassword, ...filteredData } = data;
+    const { userId, verificationCode, checkPassword, ...filteredData } = data;
 
     // 이메일 인증번호 요청 로직
     if (!isVerificationRequested) {
@@ -115,32 +116,42 @@ export default function SignUpPage() {
       });
     }
 
-    const formData = new FormData();
+    try {
+      // 이미지 폼
+      if (imageUrl) {
+        const imgFormData = new FormData();
+        try {
+          const jpeg = await reduceImageSize(imageUrl);
+          const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
+          imgFormData.append('profile', file);
+          imgFormData.append('userId', userId);
 
-    // 이미지 폼
-    if (imageUrl) {
-      try {
-        const jpeg = await reduceImageSize(imageUrl);
-        const file = new File([jpeg], new Date().toString(), { type: 'image/jpeg' });
-        formData.append('profile', file);
-      } catch (err) {
-        alert('이미지 처리에 실패했습니다.');
+          await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+        } catch (err) {
+          console.error('이미지 처리에 실패했습니다.');
+        }
+      }
+
+      // 회원가입 폼
+      const formData = { ...filteredData, userId, verificationCode };
+
+      // form 전송 로직
+      // for (const key of formData.keys()) {
+      //   console.log(key, ":", formData.get(key));
+      // }
+      const response = await axios.post(`http://localhost:8080/api/v1/user/${userId}`, formData);
+
+      // HTTP 상태 코드 확인
+      if (response.status === 200) {
+        alert('회원가입이 완료되었습니다.');
         return;
       }
+      console.error('회원가입에 실패했습니다.');
+    } catch (error) {
+      console.error('회원가입 중 오류가 발생했습니다.', error);
     }
-
-    // 기타 프로필 데이터 폼
-    formData.append('nickname', data.nickname);
-    formData.append('verificationCode', data.verificationCode);
-    // filteredData
-    Object.entries(filteredData).forEach(([key, value]) => {
-      formData.append(key, value as string);
-    });
-
-    // form 전송 로직
-    // for (const key of formData.keys()) {
-    //   console.log(key, ":", formData.get(key));
-    // }
   };
 
   // 타이머 만료
@@ -179,8 +190,8 @@ export default function SignUpPage() {
       {/* 아이디 */}
       <ValidationInput
         label="아이디"
-        errors={errors.id?.message}
-        register={register('id', STATUS_VALIDATION_RULES.ID)}
+        errors={errors.userId?.message}
+        register={register('userId', STATUS_VALIDATION_RULES.ID)}
       />
 
       {/* 이메일 */}

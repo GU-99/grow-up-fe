@@ -15,7 +15,7 @@ export default function SignInPage() {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      id: '',
+      userId: '',
       password: '',
     },
   });
@@ -30,8 +30,8 @@ export default function SignInPage() {
         {/* 아이디 */}
         <ValidationInput
           placeholder="아이디"
-          errors={errors.id?.message}
-          register={register('id', STATUS_VALIDATION_RULES.ID)}
+          errors={errors.userId?.message}
+          register={register('userId', STATUS_VALIDATION_RULES.ID)}
         />
 
         {/* 비밀번호 */}
