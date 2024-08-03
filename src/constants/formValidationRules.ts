@@ -69,9 +69,10 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
       message: '비밀번호는 영문자, 숫자, 기호를 모두 포함해야 합니다.',
     },
   },
-  PASSWORD_CONFIRM: {
+  PASSWORD_CONFIRM: (password: string) => ({
     required: '비밀번호를 한 번 더 입력해 주세요.',
-  },
+    validate: (value: string) => value === password || '비밀번호가 일치하지 않습니다.',
+  }),
   ID: {
     required: '아이디를 입력해 주세요.',
     minLength: {

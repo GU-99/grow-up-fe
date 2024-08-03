@@ -24,7 +24,7 @@ export default function SearchPasswordPage() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit(onSubmit)} styles="mt-34.9">
+    <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-34.9">
       {/* 아이디 */}
       <ValidationInput
         placeholder="아이디"

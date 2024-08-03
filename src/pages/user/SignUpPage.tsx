@@ -171,8 +171,7 @@ export default function SignUpPage() {
         label="비밀번호 확인"
         errors={errors.checkPassword?.message}
         register={register('checkPassword', {
-          ...STATUS_VALIDATION_RULES.PASSWORD_CONFIRM,
-          validate: (value) => value === watch('password') || '비밀번호가 일치하지 않습니다.',
+          ...STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(watch('password')),
         })}
         type="password"
       />

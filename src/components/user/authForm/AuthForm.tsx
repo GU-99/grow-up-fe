@@ -3,10 +3,10 @@ import { FormEvent, ReactNode } from 'react';
 type AuthFormProps = {
   children: ReactNode;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  styles?: string;
+  marginTop: 'mt-34.9' | 'mt-40';
 };
 
-export default function AuthForm({ children, onSubmit, styles }: AuthFormProps) {
+export default function AuthForm({ children, onSubmit, marginTop }: AuthFormProps) {
   return (
     <>
       <section className="mt-40 text-large text-main">
@@ -14,7 +14,7 @@ export default function AuthForm({ children, onSubmit, styles }: AuthFormProps) 
         <br />
         Grow Up your Life with us.
       </section>
-      <form onSubmit={onSubmit} className={`${styles} flex h-screen w-300 flex-col justify-center gap-8 py-30`}>
+      <form onSubmit={onSubmit} className={`${marginTop} flex h-screen w-300 flex-col justify-center gap-8 py-30`}>
         {children}
       </form>
     </>

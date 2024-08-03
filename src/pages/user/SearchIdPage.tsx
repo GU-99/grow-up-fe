@@ -23,7 +23,7 @@ export default function SearchIdPage() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit(onSubmit)} styles="mt-40">
+    <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
       {/* 이메일 */}
       <ValidationInput
         isButtonInput
