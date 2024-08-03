@@ -32,13 +32,6 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
     },
   },
   CERTIFICATION: { required: '인증번호를 입력해 주세요.' },
-  PHONE: {
-    required: '휴대폰 번호 인증을 진행해 주세요.',
-    pattern: {
-      value: PHONE_REGEX,
-      message: '휴대폰 번호를 정확히 입력해 주세요.',
-    },
-  },
   NICKNAME: {
     required: '닉네임을 입력해 주세요.',
     minLength: {

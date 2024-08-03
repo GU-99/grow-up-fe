@@ -12,6 +12,8 @@ export default function SignUpPage() {
   const [isFocused, setIsFocused] = useState(false);
   const [link, setLink] = useState<string>('');
   const [linksList, setLinksList] = useState<string[]>([]);
+  const [isVerificationRequested, setIsVerificationRequested] = useState(false);
+  const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
 
   const {
     register,
@@ -19,15 +21,13 @@ export default function SignUpPage() {
     formState: { errors, isSubmitting },
     watch,
     setValue,
+    setError,
   } = useForm<UserSignUp>({
     mode: 'onChange',
     defaultValues: {
       id: '',
-      image: [], // 추후 이미지 전송 폼 분리 예정
       email: '',
       emailVerificationCode: '',
-      phone: '',
-      phoneVerificationCode: '',
       nickname: '',
       password: '',
       checkPassword: '',
@@ -82,8 +82,27 @@ export default function SignUpPage() {
 
   // form 전송 함수
   const onSubmit = (data: UserSignUp) => {
-    const { emailVerificationCode, phoneVerificationCode, checkPassword, ...filteredData } = data;
-    console.log(filteredData);
+    const { emailVerificationCode, checkPassword, ...filteredData } = data;
+
+    // 이메일 인증번호 요청 로직
+    if (!isVerificationRequested) {
+      setIsVerificationRequested(true);
+      return;
+    }
+
+    // 인증 코드 확인 후 form 전송 로직
+    if (emailVerificationCode === '1234') {
+      setIsVerificationCodeValid(true);
+      console.log(filteredData);
+      return;
+    }
+
+    // 인증 실패 시 로직
+    setIsVerificationCodeValid(false);
+    setError('emailVerificationCode', {
+      type: 'manual',
+      message: '인증번호가 일치하지 않습니다.',
+    });
   };
 
   return (
@@ -112,42 +131,27 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* 이메일(아이디) */}
+      {/* 아이디 */}
+      <ValidationInput
+        label="아이디"
+        errors={errors.id?.message}
+        register={register('id', STATUS_VALIDATION_RULES.ID)}
+      />
+
+      {/* 이메일 */}
       <ValidationInput
         label="이메일"
         errors={errors.email?.message}
         register={register('email', STATUS_VALIDATION_RULES.EMAIL)}
-        isButtonInput
-        buttonLabel="인증번호 발송"
       />
 
-      {/* 이메일 인증 */}
-      {/* 인증번호 발송이 완료되면 해당 폼으로 대체 */}
-      <ValidationInput
-        label="이메일 인증 확인"
-        errors={errors.emailVerificationCode?.message}
-        register={register('emailVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
-        isButtonInput
-        buttonLabel="확인"
-      />
-
-      {/* 휴대폰 번호 */}
-      <ValidationInput
-        label="휴대폰 번호"
-        errors={errors.phone?.message}
-        register={register('phone', STATUS_VALIDATION_RULES.PHONE)}
-        isButtonInput
-        buttonLabel="인증번호 발송"
-      />
-
-      {/* 휴대폰 번호 인증 */}
-      <ValidationInput
-        label="휴대폰 인증 확인"
-        errors={errors.phoneVerificationCode?.message}
-        register={register('phoneVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
-        isButtonInput
-        buttonLabel="확인"
-      />
+      {isVerificationRequested && (
+        <ValidationInput
+          label="인증번호"
+          errors={errors.emailVerificationCode?.message}
+          register={register('emailVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
+        />
+      )}
 
       {/* 닉네임, 중복 확인 */}
       <ValidationInput
@@ -246,9 +250,9 @@ export default function SignUpPage() {
         <button
           type="submit"
           className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (!isVerificationRequested && isVerificationCodeValid)}
         >
-          회원가입
+          {isVerificationRequested ? '회원가입' : '인증요청'}
         </button>
         <Link to="/signin" className="cursor-pointer font-bold">
           로그인 페이지로 돌아가기
