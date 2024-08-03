@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { UserSignUp } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
+import Timer from '@/components/common/Timer';
 
 export default function SignUpPage() {
   const [imagePreview, setImagePreview] = useState('');
@@ -14,6 +15,7 @@ export default function SignUpPage() {
   const [linksList, setLinksList] = useState<string[]>([]);
   const [isVerificationRequested, setIsVerificationRequested] = useState(false);
   const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
+  const [isTimerVisible, setIsTimerVisible] = useState(false);
 
   const {
     register,
@@ -91,6 +93,8 @@ export default function SignUpPage() {
     // 이메일 인증번호 요청 로직
     if (!isVerificationRequested) {
       setIsVerificationRequested(true);
+      alert('인증번호가 발송되었습니다. 이메일을 확인해 주세요.');
+      setIsTimerVisible(true);
       return;
     }
 
@@ -107,6 +111,13 @@ export default function SignUpPage() {
       type: 'manual',
       message: '인증번호가 일치하지 않습니다.',
     });
+  };
+
+  // 타이머 만료
+  const handleTimerTimeout = () => {
+    setIsTimerVisible(false);
+    setIsVerificationRequested(false);
+    alert('인증 시간이 만료되었습니다. 다시 시도해주세요.');
   };
 
   return (
@@ -251,10 +262,15 @@ export default function SignUpPage() {
       <div className="flex flex-col gap-8 text-center">
         <button
           type="submit"
-          className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+          className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
           disabled={isSubmitting || (!isVerificationRequested && isVerificationCodeValid)}
         >
-          {isVerificationRequested ? '회원가입' : '인증요청'}
+          {isTimerVisible && (
+            <div className="absolute left-10">
+              <Timer time={180} onTimeout={handleTimerTimeout} />
+            </div>
+          )}
+          <span>{isVerificationRequested ? '회원가입' : '인증요청'}</span>
         </button>
         <Link to="/signin" className="cursor-pointer font-bold">
           로그인 페이지로 돌아가기
