@@ -1,6 +1,6 @@
 import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
-import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from './regex';
+import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from './regex';
 
 export const STATUS_VALIDATION_RULES = deepFreeze({
   STATUS_NAME: (nameList: string[]) => ({

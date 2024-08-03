@@ -64,8 +64,12 @@ export default function SignUpPage() {
   };
 
   const handleAddLink = (newLink: string) => {
-    if (newLink.trim() === '' || linksList.length === 3) {
-      // alert같은 걸로 유저에게 알려줘야 할 듯...?
+    if (newLink.trim() === '') {
+      return;
+    }
+
+    if (linksList.length === 3) {
+      alert('링크는 최대 3개까지 등록할 수 있습니다.');
       return;
     }
 
@@ -74,8 +78,8 @@ export default function SignUpPage() {
     setLink('');
   };
 
-  const handleRemoveLink = (idx: number) => {
-    const filteredData = linksList.filter((_, index) => index !== idx);
+  const handleRemoveLink = (removeLink: string) => {
+    const filteredData = linksList.filter((item) => item !== removeLink);
     setLinksList(filteredData);
     setValue('links', filteredData);
   };
@@ -198,10 +202,8 @@ export default function SignUpPage() {
         <h1 className="font-bold">링크</h1>
         <div className="flex flex-col gap-4">
           {linksList &&
-            linksList.map((item, index) => (
-              // 추후 uuid를 사용해 각 링크별 고유 key를 부여할 예정
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={index} className="flex h-30 items-center rounded-lg border border-input px-6 text-sm">
+            linksList.map((item) => (
+              <div key={item} className="flex h-30 items-center rounded-lg border border-input px-6 text-sm">
                 <div className="flex h-full w-full flex-row items-center gap-8">
                   <div className="flex grow items-center overflow-hidden border-transparent bg-inherit">
                     <a href={`http://${item}`} target="_blank" rel="noreferrer">
@@ -210,7 +212,7 @@ export default function SignUpPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleRemoveLink(index)}
+                    onClick={() => handleRemoveLink(item)}
                     className="flex h-20 w-20 items-center justify-center rounded-lg bg-sub px-8 font-bold shadow-md"
                     aria-label="삭제"
                   >
