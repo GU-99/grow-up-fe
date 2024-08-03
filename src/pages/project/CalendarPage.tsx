@@ -1,17 +1,18 @@
 import { useCallback, useMemo, useState } from 'react';
 import { DateTime, Settings } from 'luxon';
-import { Calendar, luxonLocalizer, Views } from 'react-big-calendar';
+import { Calendar, DayPropGetter, EventPropGetter, luxonLocalizer, Views } from 'react-big-calendar';
 import CalendarToolbar from '@components/task/calendar/CalendarToolbar';
 import CustomDateHeader from '@components/task/calendar/CustomDateHeader';
 import CustomEventWrapper from '@components/task/calendar/CustomEventWrapper';
+import UpdateModalTask from '@components/modal/task/UpdateModalTask';
 import useModal from '@hooks/useModal';
-import ModalLayout from '@layouts/ModalLayout';
-import ModalPortal from '@components/modal/ModalPortal';
-import ModaFormButton from '@components/modal/ModaFormButton';
+import useProjectContext from '@hooks/useProjectContext';
+import Validator from '@utils/Validator';
 import { TASK_DUMMY } from '@mocks/mockData';
 import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
 import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import '@/customReactBigCalendar.css';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
@@ -31,16 +32,12 @@ Settings.defaultZone = dt.zoneName;
 const localizer = luxonLocalizer(DateTime, { firstDayOfWeek: 7 });
 
 export default function CalendarPage() {
+  const { project } = useProjectContext();
   const { showModal, openModal, closeModal } = useModal();
   const [selectedTask, setSelectedTask] = useState<TaskWithStatus>();
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
 
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
-
-  const handleEventClick = (task: TaskWithStatus) => {
-    setSelectedTask(task);
-    openModal();
-  };
 
   const handleSelectEvent = (event: CustomEvent) => {
     setSelectedTask(event?.task);
@@ -51,7 +48,16 @@ export default function CalendarPage() {
     alert(`시작일: ${start}, 마감일: ${end}`);
   }, []);
 
-  const handleEventPropGetter = () => ({ style: { padding: '0px', backgroundColor: 'inherit' } });
+  const handleDayPropGetter: DayPropGetter = (targetDate) => {
+    if (!project.startDate || !project.endDate) return {};
+
+    const isWithinRange = Validator.isWithinDateRange(project.startDate, project.endDate, targetDate);
+    const bgColor = isWithinRange ? '' : '!bg-[#D9D9D9]';
+    return { className: bgColor };
+  };
+  const handleEventPropGetter: EventPropGetter<CustomEvent> = () => ({
+    style: { padding: '0px', backgroundColor: 'inherit' },
+  });
 
   const { views, components: customComponents } = useMemo(
     () => ({
@@ -75,13 +81,11 @@ export default function CalendarPage() {
         end: new Date(task.endDate),
         allDays: true,
         task: { ...task },
-        handleEventClick,
       }))
       .sort((a, b) => a.start.getTime() - b.start.getTime()),
   };
   const startDate = state.events.length ? state.events[0].start : null;
 
-  // ToDo: 프로젝트 기간 이외의 영역 처리
   // ToDo: DnD, Resize 이벤트 추가 생각해보기
   // ToDo: 할일 추가 모달 Form 작업 완료시 모달 컴포넌트 분리
   // ToDo: 캘린더 크기 전체적으로 조정
@@ -104,22 +108,14 @@ export default function CalendarPage() {
         endAccessor="end"
         allDayAccessor="allDay"
         popup
-        onSelectEvent={handleSelectEvent}
         showAllEvents={false}
+        dayPropGetter={handleDayPropGetter}
         eventPropGetter={handleEventPropGetter}
         selectable
         onSelectSlot={handleSelectSlot}
+        onSelectEvent={handleSelectEvent}
       />
-      {showModal && (
-        <ModalPortal>
-          <ModalLayout onClose={closeModal}>
-            <div className="flex h-full flex-col items-center justify-center">
-              <div>{selectedTask?.name}</div>
-              <ModaFormButton formId="updateStatusForm" isCreate={false} onClose={closeModal} />
-            </div>
-          </ModalLayout>
-        </ModalPortal>
-      )}
+      {showModal && <UpdateModalTask taskId={selectedTask!.taskId} onClose={closeModal} />}
     </div>
   );
 }

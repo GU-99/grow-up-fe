@@ -1,19 +1,24 @@
 import { useMemo } from 'react';
-import { NavLink, Outlet, useParams } from 'react-router-dom';
+import { Navigate, NavLink, Outlet, useParams } from 'react-router-dom';
 import useModal from '@hooks/useModal';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
+import CreateModalTask from '@components/modal/task/CreateModalTask';
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
+import { ProjectContext } from '@hooks/useProjectContext';
 import { PROJECT_DUMMY } from '@mocks/mockData';
 import { RiSettings5Fill } from 'react-icons/ri';
 
 export default function ProjectLayout() {
   const { projectId } = useParams();
-  const { showModal, openModal, closeModal } = useModal();
-  const target = useMemo(
+  const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
+  const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
+  const project = useMemo(
     () => PROJECT_DUMMY.find((project) => project.projectId.toString() === projectId),
     [projectId],
   );
+
+  if (!project) return <Navigate to="/error" replace />;
 
   return (
     <>
@@ -25,7 +30,7 @@ export default function ProjectLayout() {
           <header className="flex h-30 items-center justify-between border-b p-10">
             <div>
               <small className="mr-5 font-bold text-category">project</small>
-              <span className="text-emphasis">{target?.name}</span>
+              <span className="text-emphasis">{project?.name}</span>
             </div>
             <div className="flex cursor-pointer items-center text-sm text-main">
               <RiSettings5Fill /> Project Setting
@@ -45,17 +50,21 @@ export default function ProjectLayout() {
                   </NavLink>
                 </li>
               </ul>
-              <div className="text-main">
-                <button type="button" onClick={openModal}>
-                  <small>+</small> New State
+              <div className="text-main *:ml-10">
+                <button type="button" onClick={openTaskModal}>
+                  + 할일 추가
+                </button>
+                <button type="button" onClick={openStatusModal}>
+                  + 상태 추가
                 </button>
               </div>
             </div>
-            <Outlet />
+            <Outlet context={{ project } satisfies ProjectContext} />
           </div>
         </section>
       </section>
-      {showModal && <CreateModalProjectStatus onClose={closeModal} />}
+      {showTaskModal && <CreateModalTask onClose={closeTaskModal} />}
+      {showStatusModal && <CreateModalProjectStatus onClose={closeStatusModal} />}
     </>
   );
 }
