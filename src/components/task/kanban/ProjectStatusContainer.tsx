@@ -13,7 +13,6 @@ type TaskStatusContainerProps = {
 };
 
 export default function TaskStatusContainer({ statusTask }: TaskStatusContainerProps) {
-  // const [showStatusModal, setShowStatusModal] = useState(false);
   const { showModal, openModal, closeModal } = useModal();
   const { statusId, name, color, order, tasks } = statusTask;
   const draggableId = useMemo(() => generatePrefixId(statusId, DND_DRAGGABLE_PREFIX.STATUS), [statusId]);
