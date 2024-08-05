@@ -76,8 +76,8 @@ export default function SignUpPage() {
       return;
     }
 
-    if (linksList.length === 3) {
-      alert('링크는 최대 3개까지 등록할 수 있습니다.');
+    if (linksList.length === 5) {
+      alert('링크는 최대 5개까지 등록할 수 있습니다.');
       return;
     }
 
@@ -231,9 +231,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="비밀번호 확인"
         errors={errors.checkPassword?.message}
-        register={register('checkPassword', {
-          ...STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(watch('password')),
-        })}
+        register={register('checkPassword', STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(watch('password')))}
         type="password"
       />
 
