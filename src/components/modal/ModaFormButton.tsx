@@ -6,7 +6,7 @@ type ModalFormButtonProps = {
 
 export default function ModaFormButton({ formId, isCreate, onClose }: ModalFormButtonProps) {
   return (
-    <div className="h-20">
+    <div className="min-h-20">
       <button type="submit" form={formId} className="mr-10 h-full rounded-md bg-main px-10 text-white">
         {isCreate ? '등록' : '수정'}
       </button>

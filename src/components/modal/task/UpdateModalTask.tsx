@@ -20,11 +20,9 @@ export default function UpdateModalTask({ taskId, onClose: handleClose }: Update
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <div className="flex h-full flex-col items-center justify-center">
-          {/* ToDo: Task 수정 모달 작성시 수정할 것 */}
-          <ModalTaskForm formId="updateTaskForm" taskId={taskId} onSubmit={handleSubmit} />
-          <ModaFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
-        </div>
+        {/* ToDo: Task 수정 모달 작성시 수정할 것 */}
+        <ModalTaskForm formId="updateTaskForm" taskId={taskId} onSubmit={handleSubmit} />
+        <ModaFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

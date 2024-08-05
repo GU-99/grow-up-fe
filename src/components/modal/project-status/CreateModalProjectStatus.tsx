@@ -19,10 +19,8 @@ export default function CreateModalProjectStatus({ onClose: handleClose }: Creat
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <div className="flex h-full flex-col items-center justify-center">
-          <ModalProjectStatusForm formId="createStatusForm" onSubmit={handleSubmit} />
-          <ModaFormButton formId="createStatusForm" isCreate onClose={handleClose} />
-        </div>
+        <ModalProjectStatusForm formId="createStatusForm" onSubmit={handleSubmit} />
+        <ModaFormButton formId="createStatusForm" isCreate onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

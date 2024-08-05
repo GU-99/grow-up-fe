@@ -19,11 +19,8 @@ export default function CreateModalTask({ onClose: handleClose }: CreateModalTas
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <div className="flex h-full flex-col items-center justify-center">
-          {/* ToDo: Task 생성 모달 작성시 수정할 것 */}
-          <ModalTaskForm formId="updateTaskForm" onSubmit={handleSubmit} />
-          <ModaFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
-        </div>
+        <ModalTaskForm formId="createTaskForm" onSubmit={handleSubmit} />
+        <ModaFormButton formId="createTaskForm" isCreate onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

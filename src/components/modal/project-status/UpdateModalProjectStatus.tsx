@@ -21,10 +21,8 @@ export default function UpdateModalProjectStatus({ statusId, onClose: handleClos
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <div className="flex h-full flex-col items-center justify-center">
-          <ModalProjectStatusForm formId="updateStatusForm" statusId={statusId} onSubmit={handleSubmit} />
-          <ModaFormButton formId="updateStatusForm" isCreate={false} onClose={handleClose} />
-        </div>
+        <ModalProjectStatusForm formId="updateStatusForm" statusId={statusId} onSubmit={handleSubmit} />
+        <ModaFormButton formId="updateStatusForm" isCreate={false} onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );
