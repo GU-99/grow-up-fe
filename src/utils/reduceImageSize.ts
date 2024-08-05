@@ -1,4 +1,4 @@
-const MAX_IMAGE_SIZE_MB = 1;
+const MAX_IMAGE_SIZE_MB = 2;
 
 const reduceImageSize = (objUrl: string) => {
   return new Promise<Blob>((resolve, reject) => {

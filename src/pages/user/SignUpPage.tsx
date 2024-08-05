@@ -45,8 +45,8 @@ export default function SignUpPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 1024 * 1024 * 1) {
-      alert('최대 1MB 이하의 이미지 파일만 업로드 가능합니다.');
+    if (file.size > 1024 * 1024 * 2) {
+      alert('최대 2MB 이하의 이미지 파일만 업로드 가능합니다.');
       e.target.value = '';
     } else {
       setImageUrl(URL.createObjectURL(file));
@@ -141,6 +141,7 @@ export default function SignUpPage() {
       // for (const key of formData.keys()) {
       //   console.log(key, ":", formData.get(key));
       // }
+      // console.log(formData);
       const response = await axios.post(`http://localhost:8080/api/v1/user/${userId}`, formData);
 
       // HTTP 상태 코드 확인
