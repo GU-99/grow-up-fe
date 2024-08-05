@@ -5,7 +5,6 @@ import AuthForm from '@/components/user/authForm/AuthForm';
 import FooterLinks from '@/components/user/authForm/FooterLinks';
 import { SearchPasswordForm } from '@/types/UserType';
 
-
 export default function SearchPasswordPage() {
   const {
     register,
