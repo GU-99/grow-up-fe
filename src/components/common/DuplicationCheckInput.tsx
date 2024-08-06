@@ -26,7 +26,7 @@ export default function DuplicationCheckInput({
         <input
           type="text"
           id={id}
-          className="h-25 w-200 rounded-md border border-input pl-10 pr-25 text-regular placeholder:text-xs"
+          className="h-25 w-full min-w-200 rounded-md border border-input pl-10 pr-25 text-regular placeholder:text-xs"
           placeholder={placeholder}
           {...register}
         />

@@ -4,12 +4,14 @@ import ModalPortal from '@components/modal/ModalPortal';
 import ModalTaskForm from '@components/modal/task/ModalTaskForm';
 import ModaFormButton from '@components/modal/ModaFormButton';
 import { TaskForm } from '@/types/TaskType';
+import { Project } from '@/types/ProjectType';
 
 type CreateModalTaskProps = {
+  project: Project;
   onClose: () => void;
 };
 
-export default function CreateModalTask({ onClose: handleClose }: CreateModalTaskProps) {
+export default function CreateModalTask({ project, onClose: handleClose }: CreateModalTaskProps) {
   // ToDo: 상태 생성을 위한 네트워크 로직 추가
   const handleSubmit: SubmitHandler<TaskForm> = async (data) => {
     console.log('생성 폼 제출');
@@ -19,7 +21,7 @@ export default function CreateModalTask({ onClose: handleClose }: CreateModalTas
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <ModalTaskForm formId="createTaskForm" onSubmit={handleSubmit} />
+        <ModalTaskForm formId="createTaskForm" project={project} onSubmit={handleSubmit} />
         <ModaFormButton formId="createTaskForm" isCreate onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
