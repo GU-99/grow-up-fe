@@ -22,6 +22,7 @@ export default function SignUpPage() {
   } = useForm<UserSignUp>({
     mode: 'onChange',
     defaultValues: {
+      id: '',
       image: [], // 추후 이미지 전송 폼 분리 예정
       email: '',
       emailVerificationCode: '',
@@ -115,7 +116,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="이메일"
         errors={errors.email?.message}
-        register={register('email', STATUS_VALIDATION_RULES.EMAIL())}
+        register={register('email', STATUS_VALIDATION_RULES.EMAIL)}
         isButtonInput
         buttonLabel="인증번호 발송"
       />
@@ -125,7 +126,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="이메일 인증 확인"
         errors={errors.emailVerificationCode?.message}
-        register={register('emailVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION())}
+        register={register('emailVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
         isButtonInput
         buttonLabel="확인"
       />
@@ -134,7 +135,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="휴대폰 번호"
         errors={errors.phone?.message}
-        register={register('phone', STATUS_VALIDATION_RULES.PHONE())}
+        register={register('phone', STATUS_VALIDATION_RULES.PHONE)}
         isButtonInput
         buttonLabel="인증번호 발송"
       />
@@ -143,7 +144,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="휴대폰 인증 확인"
         errors={errors.phoneVerificationCode?.message}
-        register={register('phoneVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION())}
+        register={register('phoneVerificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
         isButtonInput
         buttonLabel="확인"
       />
@@ -152,7 +153,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="닉네임"
         errors={errors.nickname?.message}
-        register={register('nickname', STATUS_VALIDATION_RULES.NICKNAME())}
+        register={register('nickname', STATUS_VALIDATION_RULES.NICKNAME)}
         isButtonInput
         buttonLabel="중복확인"
       />
@@ -161,7 +162,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="비밀번호"
         errors={errors.password?.message}
-        register={register('password', STATUS_VALIDATION_RULES.PASSWORD())}
+        register={register('password', STATUS_VALIDATION_RULES.PASSWORD)}
         type="password"
       />
 
@@ -170,8 +171,7 @@ export default function SignUpPage() {
         label="비밀번호 확인"
         errors={errors.checkPassword?.message}
         register={register('checkPassword', {
-          ...STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(),
-          validate: (value) => value === watch('password') || '비밀번호가 일치하지 않습니다.',
+          ...STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(watch('password')),
         })}
         type="password"
       />
@@ -242,7 +242,7 @@ export default function SignUpPage() {
       </div>
 
       {/* 회원가입 버튼 */}
-      <div className="flex flex-col gap-4 text-center">
+      <div className="flex flex-col gap-8 text-center">
         <button
           type="submit"
           className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
