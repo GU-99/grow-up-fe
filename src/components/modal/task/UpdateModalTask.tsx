@@ -2,7 +2,7 @@ import { SubmitHandler } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalTaskForm from '@components/modal/task/ModalTaskForm';
-import ModaFormButton from '@components/modal/ModaFormButton';
+import ModalFormButton from '@components/modal/ModalFormButton';
 import { Task, TaskForm } from '@/types/TaskType';
 import { Project } from '@/types/ProjectType';
 
@@ -24,7 +24,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
       <ModalLayout onClose={handleClose}>
         {/* ToDo: Task 수정 모달 작성시 수정할 것 */}
         <ModalTaskForm formId="updateTaskForm" taskId={taskId} project={project} onSubmit={handleSubmit} />
-        <ModaFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
+        <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

@@ -2,7 +2,7 @@ import { SubmitHandler } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalTaskForm from '@components/modal/task/ModalTaskForm';
-import ModaFormButton from '@components/modal/ModaFormButton';
+import ModalFormButton from '@components/modal/ModalFormButton';
 import { TaskForm } from '@/types/TaskType';
 import { Project } from '@/types/ProjectType';
 
@@ -22,7 +22,7 @@ export default function CreateModalTask({ project, onClose: handleClose }: Creat
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalTaskForm formId="createTaskForm" project={project} onSubmit={handleSubmit} />
-        <ModaFormButton formId="createTaskForm" isCreate onClose={handleClose} />
+        <ModalFormButton formId="createTaskForm" isCreate onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

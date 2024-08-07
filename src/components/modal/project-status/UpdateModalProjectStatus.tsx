@@ -2,7 +2,7 @@ import { SubmitHandler } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
-import ModaFormButton from '@components/modal/ModaFormButton';
+import ModalFormButton from '@components/modal/ModalFormButton';
 import { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 
 type UpdateModalProjectStatusProps = {
@@ -22,7 +22,7 @@ export default function UpdateModalProjectStatus({ statusId, onClose: handleClos
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalProjectStatusForm formId="updateStatusForm" statusId={statusId} onSubmit={handleSubmit} />
-        <ModaFormButton formId="updateStatusForm" isCreate={false} onClose={handleClose} />
+        <ModalFormButton formId="updateStatusForm" isCreate={false} onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );
