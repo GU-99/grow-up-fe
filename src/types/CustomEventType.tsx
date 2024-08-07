@@ -3,5 +3,4 @@ import { TaskWithStatus } from '@/types/TaskType';
 
 export type CustomEvent = Event & {
   task: TaskWithStatus;
-  handleEventClick: (task: TaskWithStatus) => void;
 };
