@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 import { IoSearch } from 'react-icons/io5';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import ToggleButton from '@components/common/ToggleButton';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useTaskQuery from '@hooks/query/useTaskQuery';
 import { Task, TaskForm } from '@/types/TaskType';
@@ -58,54 +59,37 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
         register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
       />
 
-      <div>
-        <div className="flex items-center justify-center gap-10">
-          <label htmlFor="startDate" className="w-1/2">
-            <h3 className="text-large">시작일</h3>
-            <input
-              type="date"
-              id="startDate"
-              {...register('startDate', TASK_VALIDATION_RULES.START_DATE(projectStartDate, projectEndDate))}
-            />
-            <div className={`my-5 h-10 grow text-xs text-error ${errors.startDate ? 'visible' : 'invisible'}`}>
-              {errors.startDate?.message}
-            </div>
-          </label>
-          <label htmlFor="endDate" className="w-1/2">
-            <h3 className="flex items-center text-large">
-              종료일
-              <label htmlFor="deadline" className="relative ml-2 inline-block h-10 w-20">
-                <input
-                  type="checkbox"
-                  id="deadline"
-                  className="peer h-0 w-0 border-main opacity-0"
-                  checked={hasDeadline}
-                  onChange={handleDeadlineToggle}
-                />
-                {/* prettier-ignore */}
-                <span className="
-                  absolute bottom-0 left-0 right-0 top-0 cursor-pointer rounded-full bg-disable transition duration-300
-                  before:content-[''] before:absolute before:left-2 before:top-1/2 before:-translate-y-1/2 before:size-7
-                  before:rounded-full before:bg-white before:transition before:duration-300
-                  peer-checked:bg-main peer-checked:before:translate-x-9
-                "/>
-              </label>
-            </h3>
-            <input
-              type="date"
-              id="endDate"
-              className={`${hasDeadline ? '' : '!bg-disable'}`}
-              disabled={!hasDeadline}
-              {...register(
-                'endDate',
-                TASK_VALIDATION_RULES.END_DATE(hasDeadline, projectStartDate, projectEndDate, watch('startDate')),
-              )}
-            />
-            <div className={`my-5 h-10 grow text-xs text-error ${errors.endDate ? 'visible' : 'invisible'}`}>
-              {errors.endDate?.message}
-            </div>
-          </label>
-        </div>
+      <div className="flex items-center justify-center gap-10">
+        <label htmlFor="startDate" className="w-1/2">
+          <h3 className="text-large">시작일</h3>
+          <input
+            type="date"
+            id="startDate"
+            {...register('startDate', TASK_VALIDATION_RULES.START_DATE(projectStartDate, projectEndDate))}
+          />
+          <div className={`my-5 h-10 grow text-xs text-error ${errors.startDate ? 'visible' : 'invisible'}`}>
+            {errors.startDate?.message}
+          </div>
+        </label>
+        <label htmlFor="endDate" className="w-1/2">
+          <h3 className="flex items-center text-large">
+            종료일
+            <ToggleButton id="deadline" checked={hasDeadline} onChange={handleDeadlineToggle} />
+          </h3>
+          <input
+            type="date"
+            id="endDate"
+            className={`${hasDeadline ? '' : '!bg-disable'}`}
+            disabled={!hasDeadline}
+            {...register(
+              'endDate',
+              TASK_VALIDATION_RULES.END_DATE(hasDeadline, projectStartDate, projectEndDate, watch('startDate')),
+            )}
+          />
+          <div className={`my-5 h-10 grow text-xs text-error ${errors.endDate ? 'visible' : 'invisible'}`}>
+            {errors.endDate?.message}
+          </div>
+        </label>
       </div>
 
       <label htmlFor="user" className="mb-20 flex items-center gap-5">
