@@ -28,6 +28,7 @@ export default function ProjectLayout() {
         </ListSidebar>
         <section className="flex w-2/3 flex-col border border-list bg-contents-box">
           <header className="flex h-30 items-center justify-between border-b p-10">
+            {/* ToDo: LabelTitle 공통 컴포넌트로 추출할 것 */}
             <div>
               <small className="mr-5 font-bold text-category">project</small>
               <span className="text-emphasis">{project?.name}</span>
@@ -40,6 +41,7 @@ export default function ProjectLayout() {
             <div className="sticky top-0 z-10 mb-10 flex items-center justify-between border-b bg-contents-box pt-10">
               <ul className="*:mr-15">
                 <li className="inline">
+                  {/* ToDo: nav 옵션사항을 정리하여 map으로 정리할 것 */}
                   <NavLink to="calendar" className={({ isActive }) => (isActive ? 'text-main' : 'text-emphasis')}>
                     Calendar
                   </NavLink>
@@ -63,7 +65,7 @@ export default function ProjectLayout() {
           </div>
         </section>
       </section>
-      {showTaskModal && <CreateModalTask onClose={closeTaskModal} />}
+      {showTaskModal && <CreateModalTask project={project} onClose={closeTaskModal} />}
       {showStatusModal && <CreateModalProjectStatus onClose={closeStatusModal} />}
     </>
   );

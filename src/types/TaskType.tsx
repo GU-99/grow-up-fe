@@ -23,6 +23,9 @@ export type Task = {
 // ToDo: Task 추가 모달 작업시 같이 정의할 것
 export type TaskForm = {
   name: string;
+  content: string;
+  startDate: string;
+  endDate: string;
 };
 
 export type TaskWithStatus = RenameKeys<ProjectStatus, StatusKeyMapping> & Task;
