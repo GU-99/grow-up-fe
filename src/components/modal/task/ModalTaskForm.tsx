@@ -6,8 +6,8 @@ import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import ToggleButton from '@components/common/ToggleButton';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useTaskQuery from '@hooks/query/useTaskQuery';
-import { Task, TaskForm } from '@/types/TaskType';
 import { Project } from '@/types/ProjectType';
+import { Task, TaskForm } from '@/types/TaskType';
 
 type ModalTaskFormProps = {
   formId: string;
@@ -17,7 +17,6 @@ type ModalTaskFormProps = {
 };
 
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
-  const { startDate: projectStartDate, endDate: projectEndDate } = project;
   const [hasDeadline, setHasDeadline] = useState(false);
   const { taskNameList } = useTaskQuery(project.projectId);
   const {
@@ -65,7 +64,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           <input
             type="date"
             id="startDate"
-            {...register('startDate', TASK_VALIDATION_RULES.START_DATE(projectStartDate, projectEndDate))}
+            {...register('startDate', TASK_VALIDATION_RULES.START_DATE(project.startDate, project.endDate))}
           />
           <div className={`my-5 h-10 grow text-xs text-error ${errors.startDate ? 'visible' : 'invisible'}`}>
             {errors.startDate?.message}
@@ -73,7 +72,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
         </label>
         <label htmlFor="endDate" className="w-1/2">
           <h3 className="flex items-center text-large">
-            종료일
+            <span className="mr-2">종료일</span>
             <ToggleButton id="deadline" checked={hasDeadline} onChange={handleDeadlineToggle} />
           </h3>
           <input
@@ -83,7 +82,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             disabled={!hasDeadline}
             {...register(
               'endDate',
-              TASK_VALIDATION_RULES.END_DATE(hasDeadline, projectStartDate, projectEndDate, watch('startDate')),
+              TASK_VALIDATION_RULES.END_DATE(hasDeadline, project.startDate, project.endDate, watch('startDate')),
             )}
           />
           <div className={`my-5 h-10 grow text-xs text-error ${errors.endDate ? 'visible' : 'invisible'}`}>

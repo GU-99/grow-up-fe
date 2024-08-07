@@ -6,7 +6,7 @@ type ToggleButtonProps = {
 
 export default function ToggleButton({ id, checked, onChange: handleChange }: ToggleButtonProps) {
   return (
-    <label htmlFor={id} className="relative ml-2 inline-block h-10 w-20">
+    <label htmlFor={id} className="relative inline-block h-10 w-20">
       <input
         id={id}
         type="checkbox"
