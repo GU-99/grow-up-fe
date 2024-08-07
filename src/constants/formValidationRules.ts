@@ -1,7 +1,35 @@
 import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
-import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from './regex';
+import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '@constants/regex';
+import { Project } from '@/types/ProjectType';
+import { Task } from '@/types/TaskType';
 
+type ValidateOption = { [key: string]: (value: string) => string | boolean };
+
+// ToDo: 리팩토링을 해야하나? 나중에 시간날 때 생각해보기
+function getTaskDateValidation(
+  projectStartDate: Project['startDate'],
+  projectEndDate: Project['endDate'],
+  taskStartDate?: Task['startDate'],
+) {
+  const validation: ValidateOption = {};
+
+  if (taskStartDate) {
+    validation.isEarlierDate = (taskEndDate: string) =>
+      !Validator.isEarlierStartDate(taskStartDate, taskEndDate) ? '시작일 이후로 설정해주세요.' : true;
+  }
+
+  if (projectStartDate && projectEndDate) {
+    validation.isWithinDateRange = (taskDate: string) =>
+      !Validator.isWithinDateRange(projectStartDate, projectEndDate, taskDate)
+        ? '프로젝트 기간 내로 설정해주세요.'
+        : true;
+  }
+
+  return validation;
+}
+
+// ToDo: Form 별로 Validation 분리하기
 export const STATUS_VALIDATION_RULES = deepFreeze({
   STATUS_NAME: (nameList: string[]) => ({
     required: '상태명을 입력해주세요.',
@@ -14,14 +42,16 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
       message: '상태명을 2자리 이상 20자리 이하로 입력해주세요.',
     },
     validate: {
-      isEmpty: (value: string) => !Validator.isEmptyString(value) || '상태명을 제대로 입력해주세요.',
-      duplicatedName: (value: string) => !Validator.isDuplicatedName(nameList, value) || '이미 사용중인 상태명입니다.',
+      isNotEmpty: (value: string) => (Validator.isEmptyString(value) ? '상태명을 제대로 입력해주세요.' : true),
+      isNotDuplicatedName: (value: string) =>
+        Validator.isDuplicatedName(nameList, value) ? '이미 사용중인 상태명입니다.' : true,
     },
   }),
   COLOR: (colorList: string[]) => ({
     required: '색상을 선택해주세요.',
     validate: {
-      duplicatedName: (value: string) => !Validator.isDuplicatedName(colorList, value) || '이미 사용중인 색상입니다.',
+      isNotDuplicatedName: (value: string) =>
+        Validator.isDuplicatedName(colorList, value) ? '이미 사용중인 색상입니다.' : true,
     },
   }),
   EMAIL: {
@@ -88,4 +118,32 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
       message: '아이디는 영문, 한글, 숫자 및 특수기호(., @, _, +, -)만 포함 가능합니다.',
     },
   },
+});
+
+export const TASK_VALIDATION_RULES = deepFreeze({
+  TASK_NAME: (nameList: string[]) => ({
+    required: '일정명을 입력해주세요.',
+    maxLength: {
+      value: 128,
+      message: '일정명은 128자리 이하로 입력해주세요.',
+    },
+    validate: {
+      isNotEmpty: (name: string) => (Validator.isEmptyString(name) ? '일정명을 제대로 입력해주세요.' : true),
+      isNotDuplicatedName: (value: string) =>
+        Validator.isDuplicatedName(nameList, value) ? '이미 사용중인 일정명입니다.' : true,
+    },
+  }),
+  START_DATE: (projectStartDate: Project['startDate'], projectEndDate: Project['endDate']) => ({
+    required: '시작일을 선택해주세요.',
+    validate: getTaskDateValidation(projectStartDate, projectEndDate),
+  }),
+  END_DATE: (
+    hasDeadline: boolean,
+    projectStartDate: Project['startDate'],
+    projectEndDate: Project['endDate'],
+    taskStartDate: Task['startDate'],
+  ) => ({
+    required: hasDeadline && '종료일을 선택해주세요.',
+    validate: getTaskDateValidation(projectStartDate, projectEndDate, taskStartDate),
+  }),
 });

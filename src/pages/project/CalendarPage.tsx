@@ -115,7 +115,7 @@ export default function CalendarPage() {
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
       />
-      {showModal && <UpdateModalTask taskId={selectedTask!.taskId} onClose={closeModal} />}
+      {showModal && <UpdateModalTask taskId={selectedTask!.taskId} project={project} onClose={closeModal} />}
     </div>
   );
 }
