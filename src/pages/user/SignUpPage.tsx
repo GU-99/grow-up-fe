@@ -9,6 +9,7 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
+import { MAX_IMAGE_SIZE, MB } from '@/constants/files';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
@@ -45,12 +46,13 @@ export default function SignUpPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 1024 * 1024 * 2) {
-      alert('최대 2MB 이하의 이미지 파일만 업로드 가능합니다.');
+    if (file.size > MAX_IMAGE_SIZE * MB) {
+      alert(`최대 ${MAX_IMAGE_SIZE}MB 이하의 이미지 파일만 업로드 가능합니다.`);
       e.target.value = '';
-    } else {
-      setImageUrl(URL.createObjectURL(file));
+      return;
     }
+
+    setImageUrl(URL.createObjectURL(file));
   };
 
   const handleRemoveImg = () => {
@@ -72,9 +74,7 @@ export default function SignUpPage() {
   };
 
   const handleAddLink = (newLink: string) => {
-    if (newLink.trim() === '') {
-      return;
-    }
+    if (newLink.trim() === '') return;
 
     if (linksList.length === 5) {
       alert('링크는 최대 5개까지 등록할 수 있습니다.');
