@@ -1,4 +1,5 @@
-import { MAX_IMAGE_SIZE, MB } from '@/constants/files';
+import { MAX_IMAGE_SIZE } from '@/constants/files';
+import { MB } from '@/constants/unit';
 
 const reduceImageSize = (objUrl: string) => {
   return new Promise<Blob>((resolve, reject) => {

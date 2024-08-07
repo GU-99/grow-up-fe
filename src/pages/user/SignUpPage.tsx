@@ -9,7 +9,9 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
-import { MAX_IMAGE_SIZE, MB } from '@/constants/files';
+import { MAX_IMAGE_SIZE } from '@/constants/files';
+import useToast from '@/hooks/useToast';
+import { MB } from '@/constants/unit';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
@@ -19,6 +21,7 @@ export default function SignUpPage() {
   const [isVerificationRequested, setIsVerificationRequested] = useState(false);
   const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
   const [isTimerVisible, setIsTimerVisible] = useState(false);
+  const { toastSuccess, toastError, toastWarn } = useToast();
 
   const {
     register,
@@ -47,7 +50,7 @@ export default function SignUpPage() {
     if (!file) return;
 
     if (file.size > MAX_IMAGE_SIZE * MB) {
-      alert(`최대 ${MAX_IMAGE_SIZE}MB 이하의 이미지 파일만 업로드 가능합니다.`);
+      toastWarn(`최대 ${MAX_IMAGE_SIZE}MB 이하의 이미지 파일만 업로드 가능합니다.`);
       e.target.value = '';
       return;
     }
@@ -75,11 +78,7 @@ export default function SignUpPage() {
 
   const handleAddLink = (newLink: string) => {
     if (newLink.trim() === '') return;
-
-    if (linksList.length === 5) {
-      alert('링크는 최대 5개까지 등록할 수 있습니다.');
-      return;
-    }
+    if (linksList.length === 5) return toastWarn('링크는 최대 5개까지 등록할 수 있습니다.');
 
     setLinksList([...linksList, newLink.trim()]);
     setValue('links', [...linksList, newLink.trim()]);
@@ -99,7 +98,7 @@ export default function SignUpPage() {
     // 이메일 인증번호 요청 로직
     if (!isVerificationRequested) {
       setIsVerificationRequested(true);
-      alert('인증번호가 발송되었습니다. 이메일을 확인해 주세요.');
+      toastSuccess('인증번호가 발송되었습니다. 이메일을 확인해 주세요.');
       setIsTimerVisible(true);
       return;
     }
@@ -130,7 +129,7 @@ export default function SignUpPage() {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
         } catch (err) {
-          console.error('이미지 처리에 실패했습니다.');
+          toastError('이미지 처리에 실패했습니다.');
         }
       }
 
@@ -145,13 +144,10 @@ export default function SignUpPage() {
       const response = await axios.post(`http://localhost:8080/api/v1/user/${userId}`, formData);
 
       // HTTP 상태 코드 확인
-      if (response.status === 200) {
-        alert('회원가입이 완료되었습니다.');
-        return;
-      }
-      console.error('회원가입에 실패했습니다.');
+      if (response.status === 200) return toastSuccess('회원가입이 완료되었습니다.');
+      toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
     } catch (error) {
-      console.error('회원가입 중 오류가 발생했습니다.', error);
+      toastError(`회원가입 진행 중 오류가 발생했습니다: ${error}`);
     }
   };
 
@@ -159,7 +155,7 @@ export default function SignUpPage() {
   const handleTimerTimeout = () => {
     setIsTimerVisible(false);
     setIsVerificationRequested(false);
-    alert('인증 시간이 만료되었습니다. 다시 시도해주세요.');
+    toastError('인증 시간이 만료되었습니다. 다시 시도해 주세요.');
   };
 
   return (
