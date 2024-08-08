@@ -2,7 +2,7 @@ import { SubmitHandler } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
-import ModaFormButton from '@components/modal/ModaFormButton';
+import ModalFormButton from '@components/modal/ModalFormButton';
 import { ProjectStatusForm } from '@/types/ProjectStatusType';
 
 type CreateModalProjectStatusProps = {
@@ -19,10 +19,8 @@ export default function CreateModalProjectStatus({ onClose: handleClose }: Creat
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <div className="flex h-full flex-col items-center justify-center">
-          <ModalProjectStatusForm formId="createStatusForm" onSubmit={handleSubmit} />
-          <ModaFormButton formId="createStatusForm" isCreate onClose={handleClose} />
-        </div>
+        <ModalProjectStatusForm formId="createStatusForm" onSubmit={handleSubmit} />
+        <ModalFormButton formId="createStatusForm" isCreate onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

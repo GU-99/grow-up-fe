@@ -14,10 +14,16 @@ export default class Validator {
     return nameList.includes(name);
   }
 
-  public static isWithinDateRange(start: Date, end: Date, target: Date) {
-    const startDate = DateTime.fromJSDate(start);
-    const endDate = DateTime.fromJSDate(end);
-    const targetDate = DateTime.fromJSDate(target);
+  public static isWithinDateRange(start: Date | string, end: Date | string, target: Date | string) {
+    const startDate = DateTime.fromJSDate(new Date(start));
+    const endDate = DateTime.fromJSDate(new Date(end));
+    const targetDate = DateTime.fromJSDate(new Date(target));
     return targetDate >= startDate && targetDate < endDate;
+  }
+
+  public static isEarlierStartDate(start: Date | string, end: Date | string) {
+    const startDate = DateTime.fromJSDate(new Date(start));
+    const endDate = DateTime.fromJSDate(new Date(end));
+    return startDate <= endDate;
   }
 }
