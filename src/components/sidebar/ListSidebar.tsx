@@ -3,11 +3,17 @@ import type { ReactNode } from 'react';
 type ListSidebarProps = {
   label?: string;
   title: string;
-  children?: ReactNode | undefined;
+  children?: ReactNode;
+  showButton?: boolean;
+  text?: string;
+  onClick?: () => void;
 };
 
-// ToDo: 프로젝트 생성 등과 같은 버튼 기능 추가할 것
-export default function ListSidebar({ label, title, children }: ListSidebarProps) {
+export default function ListSidebar({ label, title, children, showButton, text, onClick }: ListSidebarProps) {
+  const handleClick = () => {
+    if (onClick) onClick();
+  };
+
   return (
     <aside className="mr-10 flex w-1/3 flex-col border border-list bg-contents-box">
       <div className="flex min-h-30 items-center justify-between bg-sub px-10">
@@ -15,6 +21,15 @@ export default function ListSidebar({ label, title, children }: ListSidebarProps
           {label && <small className="mr-5 font-bold text-main">{label}</small>}
           <span className="text-emphasis">{title}</span>
         </div>
+        {showButton && (
+          <button
+            type="button"
+            className="rounded-md bg-main px-4 py-2 text-white outline-none hover:brightness-90"
+            onClick={handleClick}
+          >
+            {text}
+          </button>
+        )}
       </div>
       {children}
     </aside>
