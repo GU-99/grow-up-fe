@@ -9,9 +9,9 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
-import { MAX_IMAGE_SIZE } from '@/constants/files';
+import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
-import { MB } from '@/constants/unit';
+import { MB } from '@/constants/units';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
@@ -49,8 +49,8 @@ export default function SignUpPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > MAX_IMAGE_SIZE * MB) {
-      toastWarn(`최대 ${MAX_IMAGE_SIZE}MB 이하의 이미지 파일만 업로드 가능합니다.`);
+    if (file.size > USER_SETTINGS.MAX_IMAGE_SIZE * MB) {
+      toastWarn(`최대 ${USER_SETTINGS.MAX_IMAGE_SIZE}MB 이하의 이미지 파일만 업로드 가능합니다.`);
       e.target.value = '';
       return;
     }
@@ -78,7 +78,8 @@ export default function SignUpPage() {
 
   const handleAddLink = (newLink: string) => {
     if (newLink.trim() === '') return;
-    if (linksList.length === 5) return toastWarn('링크는 최대 5개까지 등록할 수 있습니다.');
+    if (linksList.length === USER_SETTINGS.MAX_LINK_COUNT)
+      return toastWarn(`링크는 최대 ${USER_SETTINGS.MAX_LINK_COUNT}개까지 등록할 수 있습니다.`);
 
     setLinksList([...linksList, newLink.trim()]);
     setValue('links', [...linksList, newLink.trim()]);
