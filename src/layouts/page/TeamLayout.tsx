@@ -22,7 +22,7 @@ export default function TeamLayout() {
   return (
     <>
       <section className="flex h-full p-15">
-        <ListSidebar title="팀 목록" isButton buttonText="팀 생성" onButtonClick={openTeamModal}>
+        <ListSidebar title="팀 목록" showButton text="팀 생성" onClick={openTeamModal}>
           {/* ToDo: 사이드바 팀정보 추가 예정 */}
           <div />
         </ListSidebar>
