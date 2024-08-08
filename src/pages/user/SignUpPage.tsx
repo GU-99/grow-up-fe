@@ -91,28 +91,41 @@ export default function SignUpPage() {
     setValue('links', filteredData);
   };
 
-  // form 전송 함수
-  const onSubmit = async (data: UserSignUp) => {
-    const { userId, verificationCode, checkPassword, ...filteredData } = data;
-
-    // 이메일 인증번호 요청 로직
+  // 이메일 인증번호 요청 함수
+  const requestVerificationCode = () => {
     if (!isVerificationRequested) {
       setIsVerificationRequested(true);
       toastSuccess('인증번호가 발송되었습니다. 이메일을 확인해 주세요.');
       setIsTimerVisible(true);
-      return;
+    }
+  };
+
+  // 인증번호 확인 함수
+  const verifyCode = (verificationCode: string) => {
+    if (verificationCode === '1234') {
+      // TODO: 실제 백엔드 API와 연결시 setIsVerificationCodeValid 변수를 어떻게 사용할 지 생각해보기
+      setIsVerificationCodeValid(true);
+      return true;
     }
 
-    // 인증 코드 확인 후 form 전송 로직 (인증 성공, 실패는 추후 백엔드 로직으로 대체)
-    if (verificationCode === '1234') {
-      setIsVerificationCodeValid(true);
-    } else {
-      // 인증 실패 시 로직
-      setIsVerificationCodeValid(false);
-      setError('verificationCode', {
-        type: 'manual',
-        message: '인증번호가 일치하지 않습니다.',
-      });
+    // 인증번호 불일치
+    setIsVerificationCodeValid(false);
+    setError('verificationCode', {
+      type: 'manual',
+      message: '인증번호가 일치하지 않습니다.',
+    });
+    return false;
+  };
+
+  // form 전송 함수
+  const onSubmit = async (data: UserSignUp) => {
+    const { userId, verificationCode, checkPassword, ...filteredData } = data;
+
+    const verifyResult = verifyCode(verificationCode);
+
+    if (!verifyResult) {
+      toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
+      return;
     }
 
     try {
@@ -294,20 +307,31 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* 회원가입 버튼 */}
+      {/* 인증 요청 및 회원가입 버튼 */}
       <div className="flex flex-col gap-8 text-center">
-        <button
-          type="submit"
-          className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-          disabled={isSubmitting || (!isVerificationRequested && isVerificationCodeValid)}
-        >
-          {isTimerVisible && (
-            <div className="absolute left-10">
-              <Timer time={180} onTimeout={handleTimerTimeout} />
-            </div>
-          )}
-          <span>{isVerificationRequested ? '회원가입' : '인증요청'}</span>
-        </button>
+        {!isVerificationRequested && (
+          <button
+            type="submit"
+            className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+            onClick={handleSubmit(requestVerificationCode)}
+          >
+            <span>인증요청</span>
+          </button>
+        )}
+        {isVerificationRequested && (
+          <button
+            type="submit"
+            className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+            disabled={isSubmitting}
+          >
+            {isTimerVisible && (
+              <div className="absolute left-10">
+                <Timer time={180} onTimeout={handleTimerTimeout} />
+              </div>
+            )}
+            <span>회원가입</span>
+          </button>
+        )}
         <Link to="/signin" className="cursor-pointer font-bold">
           로그인 페이지로 돌아가기
         </Link>
