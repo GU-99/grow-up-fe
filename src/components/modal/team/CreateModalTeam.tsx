@@ -1,7 +1,7 @@
 import { SubmitHandler } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
-import ModaFormButton from '@components/modal/ModaFormButton';
+import ModaFormButton from '@components/modal/ModalFormButton';
 import { Team } from '@/types/TeamType';
 import ModalTeamForm from './ModalTeamForm';
 
@@ -19,10 +19,8 @@ export default function CreateModalTeam({ onClose: handleClose }: CreateModalPro
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <div className="flex h-full flex-col items-center justify-center">
-          <ModalTeamForm formId="createTeamForm" onSubmit={handleSubmit} />
-          <ModaFormButton formId="createTeamForm" isCreate onClose={handleClose} />
-        </div>
+        <ModalTeamForm formId="createTeamForm" onSubmit={handleSubmit} />
+        <ModaFormButton formId="createTeamForm" isCreate onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>
   );

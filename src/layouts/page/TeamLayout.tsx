@@ -1,9 +1,10 @@
-import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListTeam from '@components/sidebar/ListTeam';
 import CreateModalTeam from '@components/modal/team/CreateModalTeam';
 import useModal from '@hooks/useModal';
 import { TEAM_DUMMY } from '@mocks/mockData';
+import { useMemo } from 'react';
 import { Team } from '@/types/TeamType';
 
 export default function TeamLayout() {
@@ -11,24 +12,17 @@ export default function TeamLayout() {
   const location = useLocation();
   const { teamId } = useParams();
   const teamData: Team[] = TEAM_DUMMY;
+  const selectedTeam = useMemo(() => teamData.find((team) => team.teamId.toString() === teamId), [teamId, teamData]);
   const hasProjectRoute = location.pathname.split('/').includes('projects');
+
+  if (!selectedTeam && teamId) return <Navigate to="/error" replace />;
+
   if (hasProjectRoute) return <Outlet />;
 
   return (
     <>
       <section className="flex h-full p-15">
-        <ListSidebar
-          title="팀 목록"
-          button={
-            <button
-              type="button"
-              className="rounded-md bg-main px-4 py-2 text-white outline-none hover:brightness-90"
-              onClick={openTeamModal}
-            >
-              팀 생성
-            </button>
-          }
-        >
+        <ListSidebar title="팀 목록" isButton buttonText="팀 생성" onButtonClick={openTeamModal}>
           {/* ToDo: 사이드바 팀정보 추가 예정 */}
           <div />
         </ListSidebar>

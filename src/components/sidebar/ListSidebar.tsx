@@ -3,12 +3,14 @@ import type { ReactNode } from 'react';
 type ListSidebarProps = {
   label?: string;
   title: string;
-  children?: ReactNode | undefined;
-  button?: ReactNode;
+  children?: ReactNode;
+  isButton?: boolean;
+  buttonText?: string;
+  onButtonClick?: () => void;
 };
 
 // ToDo: 프로젝트 생성 등과 같은 버튼 기능 추가할 것
-export default function ListSidebar({ label, title, children, button }: ListSidebarProps) {
+export default function ListSidebar({ label, title, children, isButton, buttonText, onButtonClick }: ListSidebarProps) {
   return (
     <aside className="mr-10 flex w-1/3 flex-col border border-list bg-contents-box">
       <div className="flex min-h-30 items-center justify-between bg-sub px-10">
@@ -17,7 +19,15 @@ export default function ListSidebar({ label, title, children, button }: ListSide
           <span className="text-emphasis">{title}</span>
         </div>
         {/* 팀 생성 모달 */}
-        {button && <div>{button}</div>}
+        {isButton && (
+          <button
+            type="button"
+            className="rounded-md bg-main px-4 py-2 text-white outline-none hover:brightness-90"
+            onClick={onButtonClick}
+          >
+            {buttonText}
+          </button>
+        )}
       </div>
       {children}
     </aside>
