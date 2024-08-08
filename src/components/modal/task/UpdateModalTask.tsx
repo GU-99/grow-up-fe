@@ -1,10 +1,11 @@
-import { SubmitHandler } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalTaskForm from '@components/modal/task/ModalTaskForm';
 import ModalFormButton from '@components/modal/ModalFormButton';
-import { Task, TaskForm } from '@/types/TaskType';
-import { Project } from '@/types/ProjectType';
+
+import type { SubmitHandler } from 'react-hook-form';
+import type { Project } from '@/types/ProjectType';
+import type { Task, TaskForm } from '@/types/TaskType';
 
 type UpdateModalTaskProps = {
   project: Project;
