@@ -103,7 +103,7 @@ export default function SignUpPage() {
   // 인증번호 확인 함수
   const verifyCode = (verificationCode: string) => {
     if (verificationCode === '1234') {
-      // TODO: 실제 백엔드 API와 연결시 setIsVerificationCodeValid 변수를 어떻게 사용할 지 생각해보기
+      // TODO: 실제 API와 연결 시 isVerificationCodeValid 변수를 어떻게 사용할지 생각해보기
       setIsVerificationCodeValid(true);
       return true;
     }
@@ -122,43 +122,33 @@ export default function SignUpPage() {
     const { userId, verificationCode, checkPassword, ...filteredData } = data;
 
     const verifyResult = verifyCode(verificationCode);
-
-    if (!verifyResult) {
-      toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
-      return;
-    }
+    if (!verifyResult) return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
 
     try {
-      // 이미지 폼
-      if (imageUrl) {
-        const imgFormData = new FormData();
-        try {
-          const jpeg = await reduceImageSize(imageUrl);
-          const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
-          imgFormData.append('profile', file);
-          imgFormData.append('userId', userId);
-
-          await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          });
-        } catch (err) {
-          toastError('이미지 처리에 실패했습니다.');
-        }
-      }
-
       // 회원가입 폼
       const formData = { ...filteredData, userId, verificationCode };
+      const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${userId}`, formData);
+      if (registrationResponse.status !== 200) return toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
 
-      // form 전송 로직
-      // for (const key of formData.keys()) {
-      //   console.log(key, ":", formData.get(key));
-      // }
-      // console.log(formData);
-      const response = await axios.post(`http://localhost:8080/api/v1/user/${userId}`, formData);
+      // 이미지 폼
+      if (!imageUrl) return toastSuccess('회원가입이 완료되었습니다.');
+      const imgFormData = new FormData();
+      try {
+        const jpeg = await reduceImageSize(imageUrl);
+        const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
+        imgFormData.append('profile', file);
+        imgFormData.append('userId', userId);
 
-      // HTTP 상태 코드 확인
-      if (response.status === 200) return toastSuccess('회원가입이 완료되었습니다.');
-      toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
+        const imageResponse = await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        if (imageResponse.status !== 200) return toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
+
+        toastSuccess('회원가입이 완료되었습니다.');
+      } catch (err) {
+        toastError(`이미지 업로드에 실패했습니다: ${err}`);
+      }
     } catch (error) {
       toastError(`회원가입 진행 중 오류가 발생했습니다: ${error}`);
     }
