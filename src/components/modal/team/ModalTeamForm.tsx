@@ -1,5 +1,7 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { Team } from '@/types/TeamType';
+import { useForm } from 'react-hook-form';
+
+import type { SubmitHandler } from 'react-hook-form';
+import type { Team } from '@/types/TeamType';
 
 type ModalTeamFormProps = {
   formId: string;
