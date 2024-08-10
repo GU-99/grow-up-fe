@@ -301,7 +301,7 @@ export default function SignUpPage() {
 
       {/* 인증 요청 및 회원가입 버튼 */}
       <div className="flex flex-col gap-8 text-center">
-        {!isVerificationRequested && (
+        {!isVerificationRequested ? (
           <button
             type="submit"
             className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
@@ -309,8 +309,7 @@ export default function SignUpPage() {
           >
             <span>인증요청</span>
           </button>
-        )}
-        {isVerificationRequested && (
+        ) : (
           <button
             type="submit"
             className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
