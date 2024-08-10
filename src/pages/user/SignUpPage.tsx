@@ -19,7 +19,8 @@ export default function SignUpPage() {
   const [link, setLink] = useState<string>('');
   const [linksList, setLinksList] = useState<string[]>([]);
   const [isVerificationRequested, setIsVerificationRequested] = useState(false);
-  const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
+  // TODO: isVerificationCodeValid 변수가 반드시 필요한지 고민해보기
+  // const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
   const [isTimerVisible, setIsTimerVisible] = useState(false);
   const { toastSuccess, toastError, toastWarn } = useToast();
 
@@ -104,13 +105,12 @@ export default function SignUpPage() {
   // 인증번호 확인 함수
   const verifyCode = (verificationCode: string) => {
     if (verificationCode === '1234') {
-      // TODO: 실제 API와 연결 시 isVerificationCodeValid 변수를 어떻게 사용할지 생각해보기
-      setIsVerificationCodeValid(true);
+      // setIsVerificationCodeValid(true);
       return true;
     }
 
     // 인증번호 불일치
-    setIsVerificationCodeValid(false);
+    // setIsVerificationCodeValid(false);
     setError('verificationCode', {
       type: 'manual',
       message: '인증번호가 일치하지 않습니다.',
@@ -125,6 +125,7 @@ export default function SignUpPage() {
     const verifyResult = verifyCode(verificationCode);
     if (!verifyResult) return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
 
+    // TODO: 폼 제출 로직 수정 필요
     try {
       // 회원가입 폼
       const formData = { ...filteredData, userId, verificationCode };
