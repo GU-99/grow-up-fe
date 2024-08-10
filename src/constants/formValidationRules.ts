@@ -57,6 +57,10 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
   }),
   EMAIL: {
     required: '이메일 인증을 진행해 주세요.',
+    maxLength: {
+      value: USER_SETTINGS.MAX_EMAIL_LENGTH,
+      message: `이메일은 최대 ${USER_SETTINGS.MAX_EMAIL_LENGTH}자까지 입력 가능합니다.`,
+    },
     pattern: {
       value: EMAIL_REGEX,
       message: '이메일 형식에 맞지 않습니다.',
@@ -90,7 +94,7 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
     },
     pattern: {
       value: PASSWORD_REGEX,
-      message: '비밀번호는 영문자, 숫자, 기호를 모두 포함해야 합니다.',
+      message: '영문자, 숫자, 기호를 조합해 비밀번호를 생성해주세요.',
     },
   },
   PASSWORD_CONFIRM: (password: string) => ({
