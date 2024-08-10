@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { UserSignUp } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
-import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
+import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
 import { USER_SETTINGS } from '@/constants/userSettings';
@@ -193,21 +193,21 @@ export default function SignUpPage() {
       <ValidationInput
         label="아이디"
         errors={errors.userId?.message}
-        register={register('userId', STATUS_VALIDATION_RULES.ID)}
+        register={register('userId', USER_AUTH_VALIDATION_RULES.ID)}
       />
 
       {/* 이메일 */}
       <ValidationInput
         label="이메일"
         errors={errors.email?.message}
-        register={register('email', STATUS_VALIDATION_RULES.EMAIL)}
+        register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
       />
 
       {isVerificationRequested && (
         <ValidationInput
           label="인증번호"
           errors={errors.verificationCode?.message}
-          register={register('verificationCode', STATUS_VALIDATION_RULES.CERTIFICATION)}
+          register={register('verificationCode', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
         />
       )}
 
@@ -215,7 +215,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="닉네임"
         errors={errors.nickname?.message}
-        register={register('nickname', STATUS_VALIDATION_RULES.NICKNAME)}
+        register={register('nickname', USER_AUTH_VALIDATION_RULES.NICKNAME)}
         isButtonInput
         buttonLabel="중복확인"
       />
@@ -224,7 +224,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="비밀번호"
         errors={errors.password?.message}
-        register={register('password', STATUS_VALIDATION_RULES.PASSWORD)}
+        register={register('password', USER_AUTH_VALIDATION_RULES.PASSWORD)}
         type="password"
       />
 
@@ -232,7 +232,7 @@ export default function SignUpPage() {
       <ValidationInput
         label="비밀번호 확인"
         errors={errors.checkPassword?.message}
-        register={register('checkPassword', STATUS_VALIDATION_RULES.PASSWORD_CONFIRM(watch('password')))}
+        register={register('checkPassword', USER_AUTH_VALIDATION_RULES.PASSWORD_CONFIRM(watch('password')))}
         type="password"
       />
 

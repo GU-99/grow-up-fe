@@ -55,6 +55,9 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
         Validator.isDuplicatedName(colorList, value) ? '이미 사용중인 색상입니다.' : true,
     },
   }),
+});
+
+export const USER_AUTH_VALIDATION_RULES = deepFreeze({
   EMAIL: {
     required: '이메일 인증을 진행해 주세요.',
     maxLength: {

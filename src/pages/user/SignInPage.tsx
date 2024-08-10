@@ -3,7 +3,7 @@ import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
 import { UserSignInForm } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
-import { STATUS_VALIDATION_RULES } from '@/constants/formValidationRules';
+import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import AuthForm from '@/components/user/authForm/AuthForm';
 import FooterLinks from '@/components/user/authForm/FooterLinks';
 
@@ -31,7 +31,7 @@ export default function SignInPage() {
         <ValidationInput
           placeholder="아이디"
           errors={errors.userId?.message}
-          register={register('userId', STATUS_VALIDATION_RULES.ID)}
+          register={register('userId', USER_AUTH_VALIDATION_RULES.ID)}
         />
 
         {/* 비밀번호 */}
@@ -39,7 +39,7 @@ export default function SignInPage() {
           placeholder="비밀번호 (영문자, 숫자, 기호 포함 8~16자리)"
           type="password"
           errors={errors.password?.message}
-          register={register('password', STATUS_VALIDATION_RULES.PASSWORD)}
+          register={register('password', USER_AUTH_VALIDATION_RULES.PASSWORD)}
         />
 
         <div className="flex flex-col text-center">
