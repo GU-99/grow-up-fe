@@ -1,5 +1,7 @@
+import { MB } from './units';
+
 export const USER_SETTINGS = Object.freeze({
-  MAX_IMAGE_SIZE: 2,
+  MAX_IMAGE_SIZE: 2 * MB,
   MAX_LINK_COUNT: 5,
   MIN_ID_LENGTH: 2,
   MAX_ID_LENGTH: 32,

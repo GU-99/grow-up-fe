@@ -1,9 +1,8 @@
 import { USER_SETTINGS } from '@/constants/userSettings';
-import { MB } from '@/constants/units';
 
 const reduceImageSize = (objUrl: string) => {
   return new Promise<Blob>((resolve, reject) => {
-    const maxSize = USER_SETTINGS.MAX_IMAGE_SIZE * MB;
+    const maxSize = USER_SETTINGS.MAX_IMAGE_SIZE;
     const img = new Image();
 
     img.src = objUrl;

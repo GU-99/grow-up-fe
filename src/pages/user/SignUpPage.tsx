@@ -11,7 +11,7 @@ import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
 import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
-import { MB } from '@/constants/units';
+import { convertBytesToString } from '@/utils/converter';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
@@ -50,8 +50,8 @@ export default function SignUpPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > USER_SETTINGS.MAX_IMAGE_SIZE * MB) {
-      toastWarn(`최대 ${USER_SETTINGS.MAX_IMAGE_SIZE}MB 이하의 이미지 파일만 업로드 가능합니다.`);
+    if (file.size > USER_SETTINGS.MAX_IMAGE_SIZE) {
+      toastWarn(`최대 ${convertBytesToString(USER_SETTINGS.MAX_IMAGE_SIZE)} 이하의 이미지 파일만 업로드 가능합니다.`);
       e.target.value = '';
       return;
     }
