@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { DateTime } from 'luxon';
 import { IoSearch } from 'react-icons/io5';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import ToggleButton from '@components/common/ToggleButton';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useTaskQuery from '@hooks/query/useTaskQuery';
-import { Project } from '@/types/ProjectType';
-import { Task, TaskForm } from '@/types/TaskType';
+import useStatusQuery from '@hooks/query/useStatusQuery';
+
+import type { SubmitHandler } from 'react-hook-form';
+import type { Project } from '@/types/ProjectType';
+import type { Task, TaskForm } from '@/types/TaskType';
 
 type ModalTaskFormProps = {
   formId: string;
@@ -18,7 +21,9 @@ type ModalTaskFormProps = {
 
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
   const [hasDeadline, setHasDeadline] = useState(false);
+  const { statusList } = useStatusQuery(project.projectId, taskId);
   const { taskNameList } = useTaskQuery(project.projectId);
+  // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
   const {
     register,
     watch,
@@ -34,6 +39,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       content: '',
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
+      statusId: statusList[0].statusId,
     },
   });
 
@@ -49,6 +55,35 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       className="mb-20 flex w-4/5 max-w-375 grow flex-col justify-center"
       onSubmit={handleSubmit(onSubmit)}
     >
+      {/* ToDo: 상태 선택 리팩토링 할 것 */}
+      <div className="flex items-center justify-start gap-4">
+        {statusList.map((status) => {
+          const { statusId, name, color } = status;
+          const isChecked = +watch('statusId') === statusId;
+          return (
+            <label
+              key={statusId}
+              htmlFor={name}
+              className={`flex items-center rounded-lg border px-5 py-3 text-emphasis ${isChecked ? 'border-input bg-white' : 'bg-button'}`}
+            >
+              <input
+                id={name}
+                type="radio"
+                className="invisible h-0 w-0"
+                value={statusId}
+                checked={isChecked}
+                {...register('statusId', TASK_VALIDATION_RULES.STATUS)}
+              />
+              <div style={{ borderColor: color }} className="mr-3 h-8 w-8 rounded-full border" />
+              <h3 className="text-xs">{name}</h3>
+            </label>
+          );
+        })}
+      </div>
+      <div className={`my-5 h-10 grow text-xs text-error ${errors.statusId ? 'visible' : 'invisible'}`}>
+        {errors.statusId?.message}
+      </div>
+
       <DuplicationCheckInput
         id="name"
         label="일정"

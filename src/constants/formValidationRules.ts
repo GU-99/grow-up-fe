@@ -1,8 +1,9 @@
 import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
 import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '@constants/regex';
-import { Project } from '@/types/ProjectType';
-import { Task } from '@/types/TaskType';
+
+import type { Project } from '@/types/ProjectType';
+import type { Task } from '@/types/TaskType';
 
 type ValidateOption = { [key: string]: (value: string) => string | boolean };
 
@@ -121,6 +122,9 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
 });
 
 export const TASK_VALIDATION_RULES = deepFreeze({
+  STATUS: {
+    required: '상태를 선택해주세요.',
+  },
   TASK_NAME: (nameList: string[]) => ({
     required: '일정명을 입력해주세요.',
     maxLength: {

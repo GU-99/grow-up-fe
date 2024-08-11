@@ -66,7 +66,7 @@ export default function ProjectLayout() {
         </section>
       </section>
       {showTaskModal && <CreateModalTask project={project} onClose={closeTaskModal} />}
-      {showStatusModal && <CreateModalProjectStatus onClose={closeStatusModal} />}
+      {showStatusModal && <CreateModalProjectStatus project={project} onClose={closeStatusModal} />}
     </>
   );
 }

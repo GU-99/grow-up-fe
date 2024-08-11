@@ -1,18 +1,22 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
-import useProjectStatusQuery from '@hooks/query/useProjectStatusQuery';
-import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import { useForm } from 'react-hook-form';
 import { RiProhibited2Fill } from 'react-icons/ri';
+import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
+import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import useStatusQuery from '@hooks/query/useStatusQuery';
+
+import type { SubmitHandler } from 'react-hook-form';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
+import type { Project } from '@/types/ProjectType';
 
 type ModalProjectStatusFormProps = {
   formId: string;
+  project: Project;
   statusId?: ProjectStatus['statusId'];
   onSubmit: SubmitHandler<ProjectStatusForm>;
 };
 
-export default function ModalProjectStatusForm({ formId, statusId, onSubmit }: ModalProjectStatusFormProps) {
-  const { initialValue, nameList, colorList, usableColorList } = useProjectStatusQuery(statusId);
+export default function ModalProjectStatusForm({ formId, project, statusId, onSubmit }: ModalProjectStatusFormProps) {
+  const { initialValue, nameList, colorList, usableColorList } = useStatusQuery(project.projectId, statusId);
   const {
     register,
     watch,
@@ -20,17 +24,15 @@ export default function ModalProjectStatusForm({ formId, statusId, onSubmit }: M
     formState: { errors },
   } = useForm<ProjectStatusForm>({
     mode: 'onChange',
-    defaultValues: initialValue || { name: '', color: '' },
+    defaultValues: initialValue,
   });
-  const statusName = watch('name');
-  const selectedColor = watch('color');
 
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
       <DuplicationCheckInput
         id="name"
         label="상태명"
-        value={statusName}
+        value={watch('name')}
         placeholder="상태명을 입력하세요."
         errors={errors.name?.message}
         register={register('name', STATUS_VALIDATION_RULES.STATUS_NAME(nameList))}
@@ -42,7 +44,7 @@ export default function ModalProjectStatusForm({ formId, statusId, onSubmit }: M
             <label
               htmlFor={color}
               style={{ backgroundColor: color }}
-              className={`realative inline-block size-20 cursor-pointer rounded-full ${isUsable && selectedColor === color ? 'border-4 border-selected' : ''}`}
+              className={`inline-block size-20 cursor-pointer rounded-full ${isUsable && watch('color') === color ? 'border-4 border-selected' : ''}`}
             >
               <input
                 type="radio"
