@@ -1,9 +1,9 @@
 import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
-import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, PHONE_REGEX } from '@constants/regex';
-
-import type { Project } from '@/types/ProjectType';
-import type { Task } from '@/types/TaskType';
+import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from './regex';
+import { USER_SETTINGS } from './userSettings';
+import { Project } from '@/types/ProjectType';
+import { Task } from '@/types/TaskType';
 
 type ValidateOption = { [key: string]: (value: string) => string | boolean };
 
@@ -55,30 +55,30 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
         Validator.isDuplicatedName(colorList, value) ? '이미 사용중인 색상입니다.' : true,
     },
   }),
+});
+
+export const USER_AUTH_VALIDATION_RULES = deepFreeze({
   EMAIL: {
     required: '이메일 인증을 진행해 주세요.',
+    maxLength: {
+      value: USER_SETTINGS.MAX_EMAIL_LENGTH,
+      message: `이메일은 최대 ${USER_SETTINGS.MAX_EMAIL_LENGTH}자까지 입력 가능합니다.`,
+    },
     pattern: {
       value: EMAIL_REGEX,
       message: '이메일 형식에 맞지 않습니다.',
     },
   },
   CERTIFICATION: { required: '인증번호를 입력해 주세요.' },
-  PHONE: {
-    required: '휴대폰 번호 인증을 진행해 주세요.',
-    pattern: {
-      value: PHONE_REGEX,
-      message: '휴대폰 번호를 정확히 입력해 주세요.',
-    },
-  },
   NICKNAME: {
     required: '닉네임을 입력해 주세요.',
     minLength: {
-      value: 2,
-      message: '닉네임은 최소 2자 이상이어야 합니다.',
+      value: USER_SETTINGS.MIN_NICKNAME_LENGTH,
+      message: `닉네임은 최소 ${USER_SETTINGS.MIN_NICKNAME_LENGTH}자 이상이어야 합니다.`,
     },
     maxLength: {
-      value: 20,
-      message: '닉네임은 최대 20자까지 입력 가능합니다.',
+      value: USER_SETTINGS.MAX_NICKNAME_LENGTH,
+      message: `닉네임은 최대 ${USER_SETTINGS.MAX_NICKNAME_LENGTH}자까지 입력 가능합니다.`,
     },
     pattern: {
       value: NICKNAME_REGEX,
@@ -88,16 +88,16 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
   PASSWORD: {
     required: '비밀번호를 입력해 주세요.',
     minLength: {
-      value: 8,
-      message: '비밀번호는 최소 8자 이상이어야 합니다.',
+      value: USER_SETTINGS.MIN_PW_LENGTH,
+      message: `비밀번호는 최소 ${USER_SETTINGS.MIN_PW_LENGTH}자 이상이어야 합니다.`,
     },
     maxLength: {
-      value: 16,
-      message: '비밀번호는 최대 16자 이하여야 합니다.',
+      value: USER_SETTINGS.MAX_PW_LENGTH,
+      message: `비밀번호는 최대 ${USER_SETTINGS.MAX_PW_LENGTH}자 이하여야 합니다.`,
     },
     pattern: {
       value: PASSWORD_REGEX,
-      message: '비밀번호는 영문자, 숫자, 기호를 모두 포함해야 합니다.',
+      message: '영문자, 숫자, 기호를 조합해 비밀번호를 생성해주세요.',
     },
   },
   PASSWORD_CONFIRM: (password: string) => ({
@@ -107,12 +107,12 @@ export const STATUS_VALIDATION_RULES = deepFreeze({
   ID: {
     required: '아이디를 입력해 주세요.',
     minLength: {
-      value: 2,
-      message: '아이디는 최소 2자 이상이어야 합니다.',
+      value: USER_SETTINGS.MIN_ID_LENGTH,
+      message: `아이디는 최소 ${USER_SETTINGS.MIN_ID_LENGTH}자 이상이어야 합니다.`,
     },
     maxLength: {
-      value: 255,
-      message: '아이디는 최대 255자 이하여야 합니다.',
+      value: USER_SETTINGS.MAX_ID_LENGTH,
+      message: `아이디는 최대 ${USER_SETTINGS.MAX_ID_LENGTH}자 이하여야 합니다.`,
     },
     pattern: {
       value: ID_REGEX,

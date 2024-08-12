@@ -1,12 +1,12 @@
 // 회원가입, 로그인 시 필요한 유저 타입 정의
 export type UserSignInForm = {
-  id: string;
+  userId: string;
   password: string;
 };
 
 export type UserSignUpForm = UserSignInForm & {
   email: string;
-  image: File[];
+  image: string;
   password: string;
   nickname: string;
   bio: string;
@@ -15,8 +15,7 @@ export type UserSignUpForm = UserSignInForm & {
 };
 
 export type UserSignUp = UserSignUpForm & {
-  emailVerificationCode: string;
-  phoneVerificationCode: string;
+  verificationCode: string;
   checkPassword: string;
 };
 
@@ -26,7 +25,7 @@ export type SearchIDForm = {
 };
 
 export type SearchPasswordForm = {
-  id: string;
+  userId: string;
   email: string;
   code: string;
 };
