@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import useModal from '@hooks/useModal';
+import useProjectContext from '@hooks/useProjectContext';
 import TaskItemList from '@components/task/kanban/TaskItemList';
 import UpdateModalProjectStatus from '@components/modal/project-status/UpdateModalProjectStatus';
 import { generatePrefixId } from '@utils/converter';
@@ -13,6 +14,7 @@ type TaskStatusContainerProps = {
 };
 
 export default function TaskStatusContainer({ statusTask }: TaskStatusContainerProps) {
+  const { project } = useProjectContext();
   const { showModal, openModal, closeModal } = useModal();
   const { statusId, name, color, order, tasks } = statusTask;
   const draggableId = useMemo(() => generatePrefixId(statusId, DND_DRAGGABLE_PREFIX.STATUS), [statusId]);
@@ -40,7 +42,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
           </article>
         )}
       </Draggable>
-      {showModal && <UpdateModalProjectStatus onClose={closeModal} statusId={statusTask.statusId} />}
+      {showModal && <UpdateModalProjectStatus project={project} statusId={statusTask.statusId} onClose={closeModal} />}
     </>
   );
 }

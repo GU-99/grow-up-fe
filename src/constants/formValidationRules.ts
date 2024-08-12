@@ -122,6 +122,9 @@ export const USER_AUTH_VALIDATION_RULES = deepFreeze({
 });
 
 export const TASK_VALIDATION_RULES = deepFreeze({
+  STATUS: {
+    required: '상태를 선택해주세요.',
+  },
   TASK_NAME: (nameList: string[]) => ({
     required: '일정명을 입력해주세요.',
     maxLength: {

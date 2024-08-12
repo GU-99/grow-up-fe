@@ -26,6 +26,7 @@ export type TaskForm = {
   content: string;
   startDate: string;
   endDate: string;
+  statusId: number;
 };
 
 export type TaskWithStatus = RenameKeys<ProjectStatus, StatusKeyMapping> & Task;

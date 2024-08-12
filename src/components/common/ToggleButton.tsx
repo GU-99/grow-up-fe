@@ -16,11 +16,11 @@ export default function ToggleButton({ id, checked, onChange: handleChange }: To
       />
       {/* prettier-ignore */}
       <span className="
-      absolute bottom-0 left-0 right-0 top-0 cursor-pointer rounded-full bg-disable transition duration-300
-      before:content-[''] before:absolute before:left-2 before:top-1/2 before:-translate-y-1/2 before:size-7
-      before:rounded-full before:bg-white before:transition before:duration-300
-      peer-checked:bg-main peer-checked:before:translate-x-9
-    "/>
+        absolute bottom-0 left-0 right-0 top-0 cursor-pointer rounded-full bg-disable transition duration-300
+        before:content-[''] before:absolute before:left-2 before:top-1/2 before:-translate-y-1/2 before:size-7
+        before:rounded-full before:bg-white before:transition before:duration-300
+        peer-checked:bg-main peer-checked:before:translate-x-9
+      "/>
     </label>
   );
 }
