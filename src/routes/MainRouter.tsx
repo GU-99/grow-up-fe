@@ -20,6 +20,8 @@ import CalendarPage from '@pages/project/CalendarPage';
 import KanbanPage from '@pages/project/KanbanPage';
 import ErrorPage from '@pages/ErrorPage';
 import NotFoundPage from '@pages/NotFoundPage';
+import UserAuthenticatePage from '@/pages/setting/UserAuthenticatePage';
+import UserPasswordSettingPage from '@/pages/setting/UserPasswordSettingPage';
 
 export default function MainRouter() {
   const router = createBrowserRouter([
@@ -56,8 +58,10 @@ export default function MainRouter() {
           path: 'setting',
           element: <SettingLayout />,
           children: [
-            { index: true, element: <UserSettingPage /> },
+            { index: true, element: <UserAuthenticatePage /> },
+            { path: 'auth', element: <UserAuthenticatePage /> },
             { path: 'user', element: <UserSettingPage /> },
+            { path: 'password', element: <UserPasswordSettingPage /> },
             { path: 'team/:teamId', element: <TeamSettingPage /> },
           ],
         },
