@@ -23,10 +23,9 @@ export default function TeamLayout() {
     <>
       <section className="flex h-full p-15">
         <ListSidebar title="팀 목록" showButton text="팀 생성" onClick={openTeamModal}>
-          {/* ToDo: 사이드바 팀정보 추가 예정 */}
-          <div />
+          <ListTeam data={TEAM_DUMMY} targetId={teamId} />
         </ListSidebar>
-        <section className="flex w-2/3 flex-col border border-list bg-contents-box">
+        <section className="flex min-h-0 flex-1 flex-col border border-list bg-contents-box">
           {teamData.length === 0 ? (
             <div className="flex h-full items-center justify-center text-center">
               소속된 팀이 없습니다! <br />
