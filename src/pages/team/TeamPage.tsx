@@ -60,7 +60,7 @@ export default function TeamPage() {
                   </div>
                   <div className="mr-6 flex basis-1/12 space-x-10">
                     <button
-                      className="flex items-center text-main"
+                      className="flex items-center text-main hover:brightness-50"
                       aria-label="Settings"
                       type="button"
                       onClick={(e) => {
@@ -72,7 +72,12 @@ export default function TeamPage() {
                       setting
                     </button>
                     {/* ToDo: 프로젝트 삭제 기능 */}
-                    <button type="button" aria-label="Delete" onClick={(e) => e.preventDefault()}>
+                    <button
+                      className="hover:brightness-200"
+                      type="button"
+                      aria-label="Delete"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <FaRegTrashAlt size={20} />
                     </button>
                   </div>
