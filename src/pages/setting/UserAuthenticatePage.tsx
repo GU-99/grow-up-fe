@@ -19,7 +19,9 @@ function UserAuthenticatePage() {
     setError,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<SearchIDForm>();
+  } = useForm<SearchIDForm>({
+    mode: 'onChange',
+  });
 
   // 이메일 인증번호 요청 함수
   const requestCode = () => {

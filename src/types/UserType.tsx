@@ -26,3 +26,9 @@ export type SearchIDForm = {
 export type SearchPasswordForm = SearchIDForm & {
   userId: string;
 };
+
+export type EditPassword = {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordChk: string;
+};
