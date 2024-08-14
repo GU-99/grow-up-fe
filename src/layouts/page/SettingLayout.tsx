@@ -37,10 +37,12 @@ export default function SettingLayout() {
       <section className="flex w-2/3 flex-col border border-list bg-contents-box">
         <header className="flex h-30 items-center justify-between border-b p-10">
           <div>
-            <small className="mr-5 font-bold text-category">{getTitle()}</small>
+            <small className="font-bold text-category">{getTitle()}</small>
           </div>
         </header>
-        <div className="flex grow flex-col overflow-auto p-10 pt-0">
+        <div
+          className={`flex flex-col overflow-auto ${!location.pathname.includes('team') ? 'h-screen items-center justify-center' : ''}`}
+        >
           <Outlet />
         </div>
       </section>

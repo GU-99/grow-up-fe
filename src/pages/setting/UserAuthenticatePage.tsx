@@ -63,56 +63,54 @@ function UserAuthenticatePage() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex w-full max-w-md flex-col p-4">
-        <p className="mb-16 text-center text-sm text-emphasis">
-          개인정보 변경을 위한 이메일 인증 단계입니다.
-          <br />
-          인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
-        </p>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-8">
-          {/* 이메일 */}
+    <div className="flex w-full max-w-300 flex-col gap-20">
+      <p className="text-center text-sm text-emphasis">
+        개인정보 변경을 위한 이메일 인증 단계입니다.
+        <br />
+        인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
+      </p>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+        {/* 이메일 */}
+        <ValidationInput
+          label="이메일"
+          errors={errors.email?.message}
+          register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
+        />
+
+        {isVerificationRequested && (
           <ValidationInput
-            label="이메일"
-            errors={errors.email?.message}
-            register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
+            label="인증번호"
+            errors={errors.code?.message}
+            register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
           />
+        )}
 
-          {isVerificationRequested && (
-            <ValidationInput
-              label="인증번호"
-              errors={errors.code?.message}
-              register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
-            />
+        {/* 인증 요청 및 확인 버튼 */}
+        <div className="flex flex-col gap-8 text-center">
+          {!isVerificationRequested ? (
+            <button
+              type="submit"
+              className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+              onClick={handleSubmit(requestCode)}
+            >
+              <span>인증요청</span>
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+              disabled={isSubmitting}
+            >
+              {isTimerVisible && (
+                <div className="absolute left-10">
+                  <Timer time={180} onTimeout={handleTimerTimeout} />
+                </div>
+              )}
+              <span>확인</span>
+            </button>
           )}
-
-          {/* 인증 요청 및 확인 버튼 */}
-          <div className="flex flex-col gap-8 text-center">
-            {!isVerificationRequested ? (
-              <button
-                type="submit"
-                className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-                onClick={handleSubmit(requestCode)}
-              >
-                <span>인증요청</span>
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-                disabled={isSubmitting}
-              >
-                {isTimerVisible && (
-                  <div className="absolute left-10">
-                    <Timer time={180} onTimeout={handleTimerTimeout} />
-                  </div>
-                )}
-                <span>확인</span>
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }

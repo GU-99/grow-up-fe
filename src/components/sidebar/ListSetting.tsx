@@ -10,10 +10,9 @@ type ListSettingProps = {
 export default function ListSetting({ navList }: ListSettingProps) {
   const { teamId } = useParams();
   return (
-    <ul className="grow overflow-auto">
+    <ul>
       {navList.map((item) => {
         const routePath = item.route.includes(':teamId') ? item.route.replace(':teamId', teamId!) : item.route;
-
         return (
           <li key={item.label} className="relative cursor-pointer border-b bg-white hover:brightness-90">
             <NavLink
