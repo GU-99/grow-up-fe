@@ -11,7 +11,6 @@ export type UserSignUpForm = UserSignInForm & {
   nickname: string;
   bio: string;
   links: string[];
-  phone: string;
 };
 
 export type UserSignUp = UserSignUpForm & {
@@ -24,8 +23,6 @@ export type SearchIDForm = {
   code: string;
 };
 
-export type SearchPasswordForm = {
+export type SearchPasswordForm = SearchIDForm & {
   userId: string;
-  email: string;
-  code: string;
 };

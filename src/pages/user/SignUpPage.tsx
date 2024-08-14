@@ -304,7 +304,7 @@ export default function SignUpPage() {
         {!isVerificationRequested ? (
           <button
             type="submit"
-            className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+            className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
             onClick={handleSubmit(requestVerificationCode)}
           >
             <span>인증요청</span>
