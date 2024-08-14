@@ -14,7 +14,7 @@ const navList = [
   },
   {
     label: 'My Teams',
-    route: 'team/:teamId',
+    route: 'teams',
   },
 ];
 
@@ -23,9 +23,8 @@ export default function SettingLayout() {
 
   const getTitle = () => {
     const currentPath = location.pathname.split('/').slice(-1)[0];
-    const currentNavItem = navList.find((item) =>
-      item.route.includes(':teamId') && location.pathname.includes('team') ? 'My Teams' : item.route === currentPath,
-    );
+    const currentNavItem = navList.find((item) => item.route === currentPath);
+
     return currentNavItem ? currentNavItem.label : '이메일 인증';
   };
 
@@ -41,7 +40,7 @@ export default function SettingLayout() {
           </div>
         </header>
         <div
-          className={`flex flex-col overflow-auto ${!location.pathname.includes('team') ? 'h-screen items-center justify-center' : ''}`}
+          className={`flex flex-col overflow-auto ${!location.pathname.includes('teams') ? 'h-screen items-center justify-center' : ''}`}
         >
           <Outlet />
         </div>

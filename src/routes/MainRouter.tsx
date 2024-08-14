@@ -62,7 +62,7 @@ export default function MainRouter() {
             { path: 'auth', element: <UserAuthenticatePage /> },
             { path: 'user', element: <UserSettingPage /> },
             { path: 'password', element: <UserPasswordSettingPage /> },
-            { path: 'team/:teamId', element: <TeamSettingPage /> },
+            { path: 'teams', element: <TeamSettingPage /> },
           ],
         },
         {
