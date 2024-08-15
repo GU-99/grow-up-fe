@@ -25,12 +25,14 @@ export const USER_DUMMY = [
 ];
 
 export const USER_INFO_DUMMY = {
+  provider: 'LOCAL',
   userId: 1,
+  id: 'test123',
   email: 'momoco@gmail.com',
   nickname: 'momoco',
-  image: '',
+  profileUrl: '',
   bio: "Hi, I'm Momoco!",
-  link: ['momoco@github.com'],
+  links: ['momoco@github.com'],
 };
 
 export const TEAM_DUMMY: Team[] = [

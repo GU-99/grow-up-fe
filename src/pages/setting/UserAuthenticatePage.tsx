@@ -5,7 +5,7 @@ import useToast from '@/hooks/useToast';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
-import { SearchIDForm } from '@/types/UserType';
+import { EmailVerificationForm } from '@/types/UserType';
 
 function UserAuthenticatePage() {
   const nav = useNavigate();
@@ -19,7 +19,7 @@ function UserAuthenticatePage() {
     setError,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<SearchIDForm>({
+  } = useForm<EmailVerificationForm>({
     mode: 'onChange',
   });
 
@@ -53,7 +53,7 @@ function UserAuthenticatePage() {
     toastError('인증 시간이 만료되었습니다. 다시 시도해 주세요.');
   };
 
-  const onSubmit = async (data: SearchIDForm) => {
+  const onSubmit = async (data: EmailVerificationForm) => {
     console.log(data);
 
     const verifyResult = verifyCode(watch('code'));

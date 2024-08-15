@@ -1,34 +1,32 @@
-// 회원가입, 로그인 시 필요한 유저 타입 정의
-export type UserSignInForm = {
-  userId: string;
-  password: string;
-};
-
-export type UserSignUpForm = UserSignInForm & {
+export type User = {
+  userId: number;
+  id: string;
   email: string;
-  image: string;
-  password: string;
+  provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
   nickname: string;
-  bio: string;
+  bio: string | null;
   links: string[];
+  profileUrl: string | null;
 };
 
-export type UserSignUp = UserSignUpForm & {
-  verificationCode: string;
+export type UserSignUpForm = Omit<User, 'userId' | 'provider'> & {
+  code: string;
+  password: string;
   checkPassword: string;
 };
 
-export type SearchIDForm = {
-  email: string;
+export type UserSignInForm = Pick<User, 'id'> & {
+  password: string;
+};
+
+export type EmailVerificationForm = Pick<User, 'email'> & {
   code: string;
 };
 
-export type SearchPasswordForm = SearchIDForm & {
-  userId: string;
-};
+export type SearchPasswordForm = Pick<User, 'id'> & EmailVerificationForm;
 
-export type EditPassword = {
-  currentPassword: string;
+export type EditPasswordForm = {
+  password: string;
   newPassword: string;
-  newPasswordChk: string;
+  checkNewPassword: string;
 };

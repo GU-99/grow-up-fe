@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import { EditPassword } from '@/types/UserType';
+import { EditPasswordForm } from '@/types/UserType';
 
 export default function UserPasswordSettingPage() {
   const {
@@ -9,11 +9,11 @@ export default function UserPasswordSettingPage() {
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<EditPassword>({
+  } = useForm<EditPasswordForm>({
     mode: 'onChange',
   });
 
-  const onSubmit = (data: EditPassword) => {
+  const onSubmit = (data: EditPasswordForm) => {
     console.log(data);
   };
 
@@ -22,8 +22,8 @@ export default function UserPasswordSettingPage() {
       {/* 현재 비밀번호 */}
       <ValidationInput
         label="현재 비밀번호"
-        errors={errors.currentPassword?.message}
-        register={register('currentPassword', USER_AUTH_VALIDATION_RULES.PASSWORD)}
+        errors={errors.password?.message}
+        register={register('password', USER_AUTH_VALIDATION_RULES.PASSWORD)}
       />
 
       {/* 신규 비밀번호 */}
@@ -36,8 +36,8 @@ export default function UserPasswordSettingPage() {
       {/* 신규 비밀번호 확인 */}
       <ValidationInput
         label="신규 비밀번호 확인"
-        errors={errors.newPasswordChk?.message}
-        register={register('newPasswordChk', USER_AUTH_VALIDATION_RULES.PASSWORD_CONFIRM(watch('newPassword')))}
+        errors={errors.checkNewPassword?.message}
+        register={register('checkNewPassword', USER_AUTH_VALIDATION_RULES.PASSWORD_CONFIRM(watch('newPassword')))}
       />
 
       <div className="flex flex-col text-center">

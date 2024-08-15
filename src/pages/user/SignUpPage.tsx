@@ -4,7 +4,7 @@ import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { UserSignUp } from '@/types/UserType';
+import { UserSignUpForm } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
@@ -31,12 +31,12 @@ export default function SignUpPage() {
     watch,
     setValue,
     setError,
-  } = useForm<UserSignUp>({
+  } = useForm<UserSignUpForm>({
     mode: 'onChange',
     defaultValues: {
-      userId: '',
+      id: '',
       email: '',
-      verificationCode: '',
+      code: '',
       nickname: '',
       password: '',
       checkPassword: '',
@@ -60,7 +60,7 @@ export default function SignUpPage() {
   };
 
   const handleRemoveImg = () => {
-    setValue('image', '');
+    setValue('profileUrl', '');
     setImageUrl('');
   };
 
@@ -111,7 +111,7 @@ export default function SignUpPage() {
 
     // 인증번호 불일치
     // setIsVerificationCodeValid(false);
-    setError('verificationCode', {
+    setError('code', {
       type: 'manual',
       message: '인증번호가 일치하지 않습니다.',
     });
@@ -119,17 +119,17 @@ export default function SignUpPage() {
   };
 
   // form 전송 함수
-  const onSubmit = async (data: UserSignUp) => {
-    const { userId, verificationCode, checkPassword, ...filteredData } = data;
+  const onSubmit = async (data: UserSignUpForm) => {
+    const { id, code, checkPassword, ...filteredData } = data;
 
-    const verifyResult = verifyCode(verificationCode);
+    const verifyResult = verifyCode(code);
     if (!verifyResult) return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
 
     // TODO: 폼 제출 로직 수정 필요
     try {
       // 회원가입 폼
-      const formData = { ...filteredData, userId, verificationCode };
-      const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${userId}`, formData);
+      const formData = { ...filteredData, id, code };
+      const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${id}`, formData);
       if (registrationResponse.status !== 200) return toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
 
       // 이미지 폼
@@ -138,8 +138,8 @@ export default function SignUpPage() {
       try {
         const jpeg = await reduceImageSize(imageUrl);
         const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
-        imgFormData.append('profile', file);
-        imgFormData.append('userId', userId);
+        imgFormData.append('profileUrl', file);
+        imgFormData.append('id', id);
 
         const imageResponse = await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -182,7 +182,7 @@ export default function SignUpPage() {
               htmlFor="image"
               className="absolute inset-0 flex cursor-pointer flex-col items-center justify-center gap-1 text-center"
             >
-              <input {...register('image')} id="image" type="file" className="hidden" onChange={handleChangeImg} />
+              <input {...register('profileUrl')} id="image" type="file" className="hidden" onChange={handleChangeImg} />
               <GoPlusCircle size="1.5rem" color="#5E5E5E" />
             </label>
           )}
@@ -192,8 +192,8 @@ export default function SignUpPage() {
       {/* 아이디 */}
       <ValidationInput
         label="아이디"
-        errors={errors.userId?.message}
-        register={register('userId', USER_AUTH_VALIDATION_RULES.ID)}
+        errors={errors.id?.message}
+        register={register('id', USER_AUTH_VALIDATION_RULES.ID)}
       />
 
       {/* 이메일 */}
@@ -206,8 +206,8 @@ export default function SignUpPage() {
       {isVerificationRequested && (
         <ValidationInput
           label="인증번호"
-          errors={errors.verificationCode?.message}
-          register={register('verificationCode', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+          errors={errors.code?.message}
+          register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
         />
       )}
 
