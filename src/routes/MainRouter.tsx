@@ -58,9 +58,9 @@ export default function MainRouter() {
           path: 'setting',
           element: <SettingLayout />,
           children: [
-            { index: true, element: <UserAuthenticatePage /> },
-            { path: 'auth', element: <UserAuthenticatePage /> },
+            { index: true, element: <UserSettingPage /> },
             { path: 'user', element: <UserSettingPage /> },
+            { path: 'auth', element: <UserAuthenticatePage /> },
             { path: 'password', element: <UserPasswordSettingPage /> },
             { path: 'teams', element: <TeamSettingPage /> },
           ],

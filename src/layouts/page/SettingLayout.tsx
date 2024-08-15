@@ -39,9 +39,7 @@ export default function SettingLayout() {
             <small className="font-bold text-category">{getTitle()}</small>
           </div>
         </header>
-        <div
-          className={`flex flex-col overflow-auto ${!location.pathname.includes('teams') ? 'h-screen items-center justify-center' : ''}`}
-        >
+        <div className="h-screen overflow-auto">
           <Outlet />
         </div>
       </section>

@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import useToast from '@/hooks/useToast';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
 import { EmailVerificationForm } from '@/types/UserType';
 
+// TODO: 회원가입 폼과 겹치는 로직 컴포넌트로 분리
 function UserAuthenticatePage() {
-  const nav = useNavigate();
   const [isVerificationRequested, setIsVerificationRequested] = useState(false);
   const [isTimerVisible, setIsTimerVisible] = useState(false);
   const { toastSuccess, toastError } = useToast();
@@ -59,58 +58,60 @@ function UserAuthenticatePage() {
     const verifyResult = verifyCode(watch('code'));
     if (!verifyResult) return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
 
-    nav('/setting/user');
+    // TODO: 인증 성공 후 전역 상태관리 및 리다이렉트 로직 작성
   };
 
   return (
-    <div className="flex w-full max-w-300 flex-col gap-20">
-      <p className="text-center text-sm text-emphasis">
-        개인정보 변경을 위한 이메일 인증 단계입니다.
-        <br />
-        인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
-      </p>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
-        {/* 이메일 */}
-        <ValidationInput
-          label="이메일"
-          errors={errors.email?.message}
-          register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
-        />
-
-        {isVerificationRequested && (
+    <div className="flex h-full items-center justify-center">
+      <div className="flex w-full max-w-300 flex-col gap-20">
+        <p className="text-center text-sm text-emphasis">
+          개인정보 변경을 위한 이메일 인증 단계입니다.
+          <br />
+          인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
+        </p>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+          {/* 이메일 */}
           <ValidationInput
-            label="인증번호"
-            errors={errors.code?.message}
-            register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+            label="이메일"
+            errors={errors.email?.message}
+            register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
           />
-        )}
 
-        {/* 인증 요청 및 확인 버튼 */}
-        <div className="flex flex-col gap-8 text-center">
-          {!isVerificationRequested ? (
-            <button
-              type="submit"
-              className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-              onClick={handleSubmit(requestCode)}
-            >
-              <span>인증요청</span>
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-              disabled={isSubmitting}
-            >
-              {isTimerVisible && (
-                <div className="absolute left-10">
-                  <Timer time={180} onTimeout={handleTimerTimeout} />
-                </div>
-              )}
-              <span>확인</span>
-            </button>
+          {isVerificationRequested && (
+            <ValidationInput
+              label="인증번호"
+              errors={errors.code?.message}
+              register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+            />
           )}
-        </div>
-      </form>
+
+          {/* 인증 요청 및 확인 버튼 */}
+          <div className="flex flex-col gap-8 text-center">
+            {!isVerificationRequested ? (
+              <button
+                type="submit"
+                className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+                onClick={handleSubmit(requestCode)}
+              >
+                <span>인증요청</span>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+                disabled={isSubmitting}
+              >
+                {isTimerVisible && (
+                  <div className="absolute left-10">
+                    <Timer time={180} onTimeout={handleTimerTimeout} />
+                  </div>
+                )}
+                <span>확인</span>
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
