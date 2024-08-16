@@ -1,150 +1,359 @@
+import type { User } from '@/types/UserType';
+import type { Team } from '@/types/TeamType';
+import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
-import { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
-import { Team } from '@/types/TeamType';
 
-export const USER_DUMMY = [
+type Role = {
+  roleId: number;
+  name: 'HEAD' | 'LEADER' | 'MATE';
+  type: 'TEAM' | 'PROJECT';
+};
+
+type TeamUser = {
+  teamId: number;
+  userId: number;
+  roleId: number;
+  regStatus: boolean;
+};
+
+type ProjectUser = {
+  projectId: number;
+  userId: number;
+  roleId: number;
+};
+
+export const JWT_TOKEN_DUMMY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+// 사용자 테이블 Mock (사용자 링크 테이블 포함)
+export const USER_DUMMY: User[] = [
   {
     userId: 1,
-    email: 'seok@naver.com',
-    nickname: '꾸르',
+    email: 'one@naver.com',
+    provider: 'GOOGLE',
+    nickname: '판다',
     bio: '풀스택 개발자를 목표중',
+    links: [],
+    profileUrl: null,
   },
   {
     userId: 2,
-    email: 'jinju@naver.com',
-    nickname: '무드메이커',
+    email: 'two@naver.com',
+    provider: 'KAKAO',
+    nickname: '카멜레온',
     bio: '디자이너 + 프론트엔드 육각형 인재',
+    links: [],
+    profileUrl: null,
   },
   {
     userId: 3,
-    email: 'yesol@naver.com',
-    nickname: 'SOL천사',
-    bio: '프론트엔드 취준생',
+    email: 'three@naver.com',
+    provider: 'GOOGLE',
+    nickname: '랫서판다',
+    bio: '급성장중인 프론트엔드 취준생',
+    links: [],
+    profileUrl: null,
   },
-];
+  {
+    userId: 4,
+    email: 'four@naver.com',
+    provider: 'KAKAO',
+    nickname: '북금곰',
+    bio: '힘을 숨긴 프론트엔드 취준생',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 5,
+    email: 'five@naver.com',
+    provider: 'KAKAO',
+    nickname: '호랑이',
+    bio: '백엔드 5년차',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 6,
+    email: 'six@naver.com',
+    provider: 'GOOGLE',
+    nickname: '나무늘보',
+    bio: '식스센스 초감각형 풀스택 개발자',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 7,
+    email: 'seven@naver.com',
+    provider: 'KAKAO',
+    nickname: '웜뱃',
+    bio: '초럭키비키 백엔드 개발자',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 8,
+    email: 'eight@naver.com',
+    provider: 'GOOGLE',
+    nickname: '벨루가',
+    bio: '팔방미인 디자이너',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 9,
+    email: 'nine@naver.com',
+    provider: 'KAKAO',
+    nickname: '펭귄',
+    bio: 'MySQL, Postgre SQL DBA',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 10,
+    email: 'ten@naver.com',
+    provider: 'GOOGLE',
+    nickname: '비버',
+    bio: 'DevOps 3년차',
+    links: [],
+    profileUrl: null,
+  },
+] as const;
 
-export const TEAM_DUMMY: Team[] = [
+// 역할 테이블 Mock
+export const ROLE_DUMMY: Role[] = [
+  {
+    roleId: 1,
+    name: 'HEAD',
+    type: 'TEAM',
+  },
+  {
+    roleId: 2,
+    name: 'LEADER',
+    type: 'TEAM',
+  },
+  {
+    roleId: 3,
+    name: 'MATE',
+    type: 'TEAM',
+  },
+  {
+    roleId: 4,
+    name: 'HEAD',
+    type: 'PROJECT',
+  },
+  {
+    roleId: 5,
+    name: 'LEADER',
+    type: 'PROJECT',
+  },
+  {
+    roleId: 6,
+    name: 'MATE',
+    type: 'PROJECT',
+  },
+] as const;
+
+// 팀 유저 테이블 Mock
+export const TEAM_USER_DUMMY: TeamUser[] = [
+  // 팀1 소속 유저 정보
   {
     teamId: 1,
-    name: 'Grow Up',
-    content: '프로젝트 관리 사이드 프로젝트 진행중!',
+    userId: 1,
+    roleId: 1,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 3,
+    roleId: 2,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 4,
+    roleId: 3,
+    regStatus: false,
+  },
+  {
+    teamId: 1,
+    userId: 8,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 9,
+    roleId: 3,
+    regStatus: true,
+  },
+  // 팀2 소속 유저 정보
+  {
+    teamId: 2,
+    userId: 3,
+    roleId: 2,
+    regStatus: true,
   },
   {
     teamId: 2,
-    name: 'With Me',
-    content: '모임 / 이벤트 관리 프로젝트',
+    userId: 4,
+    roleId: 1,
+    regStatus: true,
+  },
+  {
+    teamId: 2,
+    userId: 5,
+    roleId: 3,
+    regStatus: false,
+  },
+  {
+    teamId: 2,
+    userId: 7,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 2,
+    userId: 10,
+    roleId: 3,
+    regStatus: true,
+  },
+  // 팀3 소속 유저 정보
+  {
+    teamId: 3,
+    userId: 1,
+    roleId: 3,
+    regStatus: true,
   },
   {
     teamId: 3,
-    name: 'Game World',
-    content: '게임 리뷰 / 정보 공유 프로젝트',
+    userId: 2,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 3,
+    userId: 5,
+    roleId: 2,
+    regStatus: false,
+  },
+  {
+    teamId: 3,
+    userId: 6,
+    roleId: 1,
+    regStatus: true,
+  },
+] as const;
+
+// 팀 테이블 Mock
+export const TEAM_DUMMY: Team[] = [
+  {
+    teamId: 1,
+    name: 'GU99',
+    content: '사이드 프로젝트 팀원 모집 / 프로젝트 관리 서비스 등을 만드는 팀',
+  },
+  {
+    teamId: 2,
+    name: '오늘볼래',
+    content: '모임/이벤트/소개팅 등 사람과 사람을 이어주는 서비스를 만드는 팀',
+  },
+  {
+    teamId: 3,
+    name: '고인물',
+    content: '게임 리뷰/정보공유/모임 등을 위한 서바스를 개발하고 있는 팀',
+  },
+] as const;
+
+// 프로젝트 유저 테이블 Mock
+export const PROJECT_USER_DUMMY: ProjectUser[] = [
+  {
+    projectId: 1,
+    userId: 1,
+    roleId: 4,
+  },
+  {
+    projectId: 1,
+    userId: 3,
+    roleId: 5,
+  },
+  {
+    projectId: 1,
+    userId: 8,
+    roleId: 6,
+  },
+  {
+    projectId: 2,
+    userId: 1,
+    roleId: 4,
+  },
+  {
+    projectId: 2,
+    userId: 3,
+    roleId: 5,
+  },
+  {
+    projectId: 2,
+    userId: 9,
+    roleId: 6,
+  },
+  {
+    projectId: 3,
+    userId: 3,
+    roleId: 5,
+  },
+  {
+    projectId: 3,
+    userId: 4,
+    roleId: 4,
+  },
+  {
+    projectId: 3,
+    userId: 7,
+    roleId: 6,
+  },
+  {
+    projectId: 3,
+    userId: 10,
+    roleId: 6,
   },
 ];
 
+// 프로젝트 테이블 Mock
 export const PROJECT_DUMMY: Project[] = [
   {
     projectId: 1,
     teamId: 1,
-    name: '캘린더 만들기1',
-    content: '캘린더 만들기 설명1',
-    startDate: new Date('2022-01-01 00:00:00'),
-    endDate: new Date('2022-02-14 00:00:00'),
-    createAt: new Date('2022-01-01'),
-    updateAt: new Date('2022-01-01'),
-  },
-  {
-    projectId: 2,
-    teamId: 1,
-    name: '캘린더 만들기2',
-    content: '캘린더 만들기 설명2',
-    startDate: new Date('2022-05-12 00:00:00'),
-    endDate: new Date('2022-07-31 00:00:00'),
-    createAt: new Date('2022-05-12'),
-    updateAt: new Date('2022-06-01'),
-  },
-  {
-    projectId: 3,
-    teamId: 1,
-    name: '캘린더 만들기3',
-    content: '캘린더 만들기 설명3',
-    startDate: new Date('2023-02-05 00:00:00'),
-    endDate: new Date('2023-06-05 00:00:00'),
-    createAt: new Date('2023-02-05'),
-    updateAt: new Date('2023-02-05'),
-  },
-  {
-    projectId: 4,
-    teamId: 1,
-    name: '캘린더 만들기4',
-    content: '캘린더 만들기 설명4',
-    startDate: new Date('2023-04-25 00:00:00'),
-    endDate: new Date('2023-06-05 00:00:00'),
-    createAt: new Date('2023-04-25'),
-    updateAt: new Date('2023-04-25'),
-  },
-  {
-    projectId: 5,
-    teamId: 1,
-    name: '캘린더 만들기5',
-    content: '캘린더 만들기 설명5',
-    startDate: new Date('2023-06-05 00:00:00'),
-    endDate: new Date('2023-09-12 00:00:00'),
-    createAt: new Date('2023-06-05'),
-    updateAt: new Date('2023-06-05'),
-  },
-  {
-    projectId: 6,
-    teamId: 1,
-    name: '캘린더 만들기6',
-    content: '캘린더 만들기 설명6',
-    startDate: null,
-    endDate: null,
-    createAt: new Date('2023-07-30'),
-    updateAt: new Date('2023-07-30'),
-  },
-  {
-    projectId: 7,
-    teamId: 1,
-    name: '캘린더 만들기7',
-    content: '캘린더 만들기 설명7',
-    startDate: null,
-    endDate: null,
-    createAt: new Date('2023-09-25'),
-    updateAt: new Date('2023-09-25'),
-  },
-  {
-    projectId: 8,
-    teamId: 1,
-    name: '캘린더 만들기8',
-    content: '캘린더 만들기 설명8',
+    name: 'AITalk',
+    content: '상담용 챗봇을 만드는 프로젝트',
     startDate: null,
     endDate: null,
     createAt: new Date('2023-11-01'),
     updateAt: new Date('2023-11-01'),
   },
   {
-    projectId: 9,
+    projectId: 2,
     teamId: 1,
-    name: '캘린더 만들기9',
-    content: '캘린더 만들기 설명9',
-    startDate: new Date('2024-01-01 00:00:00'),
-    endDate: new Date('2025-01-01  00:00:00'),
-    createAt: new Date('2024-01-01'),
-    updateAt: new Date('2024-07-16'),
-  },
-  {
-    projectId: 10,
-    teamId: 1,
-    name: '캘린더 만들기10',
-    content: '캘린더 만들기 설명10',
+    name: 'GrowUp',
+    content: '팀원을 모아 프로젝트를 진행하며, 진척도를 관리하는 프로젝트',
     startDate: new Date('2024-05-15 00:00:00'),
     endDate: new Date('2024-09-01  00:00:00'),
     createAt: new Date('2024-05-15'),
     updateAt: new Date('2025-05-15'),
   },
-];
+  {
+    projectId: 3,
+    teamId: 2,
+    name: 'WithMe',
+    content: '이벤트/모임을 등록하여 참여자를 모집하는 프로젝트',
+    startDate: new Date('2023-06-05 00:00:00'),
+    endDate: new Date('2023-09-12 00:00:00'),
+    createAt: new Date('2023-06-05'),
+    updateAt: new Date('2023-06-05'),
+  },
+] as const;
 
+// 프로젝트 상태 테이블 Mock
+// ToDo: 프로젝트 상태 테이블용 더미 데이터 변경 필요
 export const STATUS_DUMMY: ProjectStatus[] = [
   {
     statusId: 1,
@@ -164,8 +373,9 @@ export const STATUS_DUMMY: ProjectStatus[] = [
     color: '#237700',
     order: 3,
   },
-];
+] as const;
 
+// 특수 케이스: 할일 목록을 프로젝트 상태별로 정리하여 내려준 Mock
 export const TASK_DUMMY: TaskListWithStatus[] = [
   {
     statusId: 1,
@@ -263,4 +473,4 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
       },
     ],
   },
-];
+] as const;
