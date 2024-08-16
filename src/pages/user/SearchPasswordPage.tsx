@@ -13,7 +13,7 @@ export default function SearchPasswordPage() {
   } = useForm<SearchPasswordForm>({
     mode: 'onChange',
     defaultValues: {
-      userId: '',
+      id: '',
       email: '',
       code: '',
     },
@@ -28,8 +28,8 @@ export default function SearchPasswordPage() {
       {/* 아이디 */}
       <ValidationInput
         placeholder="아이디"
-        errors={errors.userId?.message}
-        register={register('userId', USER_AUTH_VALIDATION_RULES.ID)}
+        errors={errors.id?.message}
+        register={register('id', USER_AUTH_VALIDATION_RULES.ID)}
       />
 
       {/* 이메일 */}

@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import { SearchIDForm } from '@/types/UserType';
+import { EmailVerificationForm } from '@/types/UserType';
 import AuthForm from '@/components/user/authForm/AuthForm';
 import FooterLinks from '@/components/user/authForm/FooterLinks';
 
@@ -10,7 +10,7 @@ export default function SearchIdPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SearchIDForm>({
+  } = useForm<EmailVerificationForm>({
     mode: 'onChange',
     defaultValues: {
       email: '',
@@ -18,7 +18,7 @@ export default function SearchIdPage() {
     },
   });
 
-  const onSubmit = (data: SearchIDForm) => {
+  const onSubmit = (data: EmailVerificationForm) => {
     console.log(data);
   };
 
