@@ -6,7 +6,8 @@ import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
  * ValidationInput 컴포넌트 params, 모든 params는 optional
  *
  * @params {string} [label] - 입력 필드의 label 텍스트
- * @params {boolean} [required] - 입력 필드 필수 여부
+ * @params {boolean} [disabled] - 입력 필드 disabled 여부. 기본값은 'false'
+ * @params {boolean} [required] - 입력 필드 필수 여부. 기본값은 'true'
  * @params {string} [errors] - 유효성 검증 후 오류 발생 시 표시할 오류 메시지
  * @params {UseFormRegisterReturn} [register] - react-hook-form의 resister 함수.
  *         register('password', {required: ...})부분을 그대로 파라미터에 넣으면 됩니다.
@@ -30,6 +31,7 @@ import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
 
 type ValidationInputProps = {
   label?: string;
+  disabled?: boolean;
   required?: boolean;
   errors?: string;
   register?: UseFormRegisterReturn;
@@ -42,6 +44,7 @@ type ValidationInputProps = {
 
 export default function ValidationInput({
   label,
+  disabled = false,
   required = true,
   errors,
   register,
@@ -70,10 +73,11 @@ export default function ValidationInput({
       <div
         className={`flex h-30 items-center rounded-lg border px-6 text-sm ${
           errors ? 'border-2 border-error' : 'border-input'
-        }`}
+        } ${disabled ? 'bg-disable' : ''}`}
       >
         <div className="flex h-full w-full flex-row items-center gap-8">
           <input
+            disabled={disabled}
             id={label}
             {...register}
             type={type === 'password' && showPassword ? 'text' : type}
