@@ -26,5 +26,3 @@ export const handlers = [
     return HttpResponse.json(matchedUserList);
   }),
 ];
-
-export const test = '';
