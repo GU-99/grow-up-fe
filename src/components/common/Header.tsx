@@ -18,7 +18,7 @@ export default function Header() {
         <NavLink to="/" className="ml-10 hover:brightness-90">
           {({ isActive }) => <FiHome className={`size-20 ${isActive ? 'text-selected' : 'text-white'}`} />}
         </NavLink>
-        <NavLink to="/setting/auth" className="ml-10 hover:brightness-90">
+        <NavLink to="/setting/user" className="ml-10 hover:brightness-90">
           {({ isActive }) => <FaUserCircle className={`size-20 ${isActive ? 'text-selected' : 'text-white'}`} />}
         </NavLink>
         <button type="button" className="ml-10 h-20 rounded-md bg-white px-4 tracking-tight hover:brightness-90">
