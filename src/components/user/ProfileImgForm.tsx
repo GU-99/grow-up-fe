@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
@@ -7,12 +6,12 @@ import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
 
 type ProfileImgFormProps = {
-  initialImage: string;
+  imageUrl: string;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function ProfileImgForm({ initialImage }: ProfileImgFormProps) {
+export default function ProfileImgForm({ imageUrl, setImageUrl }: ProfileImgFormProps) {
   const { setValue } = useFormContext();
-  const [imageUrl, setImageUrl] = useState(initialImage);
   const { toastWarn } = useToast();
 
   // 이미지 관련 코드

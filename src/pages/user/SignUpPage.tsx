@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
-import { GoPlusCircle } from 'react-icons/go';
-import { FaRegTrashCan, FaPlus, FaMinus } from 'react-icons/fa6';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { UserSignUpForm } from '@/types/UserType';
@@ -9,22 +7,17 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
-import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
-import { convertBytesToString } from '@/utils/converter';
 import LinkForm from '@/components/user/LinkForm';
 import ProfileImgForm from '@/components/user/ProfileImgForm';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
-  const [link, setLink] = useState<string>('');
-  const [linksList, setLinksList] = useState<string[]>([]);
   const [isVerificationRequested, setIsVerificationRequested] = useState(false);
   // TODO: isVerificationCodeValid 변수가 반드시 필요한지 고민해보기
   // const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
   const [isTimerVisible, setIsTimerVisible] = useState(false);
-  const { toastSuccess, toastError, toastWarn } = useToast();
+  const { toastSuccess, toastError } = useToast();
 
   const methods = useForm<UserSignUpForm>({
     mode: 'onChange',
@@ -36,7 +29,7 @@ export default function SignUpPage() {
       password: '',
       checkPassword: '',
       bio: '',
-      links: [''],
+      links: [],
     },
   });
 
@@ -115,7 +108,7 @@ export default function SignUpPage() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="flex w-300 flex-col gap-8">
         {/* 프로필 이미지 */}
-        <ProfileImgForm initialImage="" />
+        <ProfileImgForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
 
         {/* 아이디 */}
         <ValidationInput

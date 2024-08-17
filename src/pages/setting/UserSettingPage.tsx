@@ -1,4 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { EditUserInfoForm } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
@@ -7,6 +8,7 @@ import LinkForm from '@/components/user/LinkForm';
 import ProfileImgForm from '@/components/user/ProfileImgForm';
 
 export default function UserSettingPage() {
+  const [imageUrl, setImageUrl] = useState(USER_INFO_DUMMY.profileUrl);
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
@@ -32,7 +34,7 @@ export default function UserSettingPage() {
       <div className="my-60 flex h-full items-center justify-center">
         <form onSubmit={methods.handleSubmit(onSubmit)} className="flex w-full max-w-300 flex-col gap-8">
           {/* 프로필 이미지 */}
-          <ProfileImgForm initialImage={USER_INFO_DUMMY.profileUrl} />
+          <ProfileImgForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
 
           {/* 아이디 */}
           <ValidationInput
