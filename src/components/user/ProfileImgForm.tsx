@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import { UseFormSetValue } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@/utils/converter';
 import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
-import { EditUserInfoForm, UserSignUpForm } from '@/types/UserType';
 
 type ProfileImgFormProps = {
   initialImage: string;
-  setValue: UseFormSetValue<UserSignUpForm | EditUserInfoForm>;
 };
 
-export default function ProfileImgForm({ initialImage, setValue }: ProfileImgFormProps) {
+export default function ProfileImgForm({ initialImage }: ProfileImgFormProps) {
+  const { setValue } = useFormContext();
   const [imageUrl, setImageUrl] = useState(initialImage);
   const { toastWarn } = useToast();
 

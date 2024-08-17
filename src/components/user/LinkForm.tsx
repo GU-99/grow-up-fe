@@ -1,16 +1,15 @@
 import { ChangeEvent, useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
-import { UseFormSetValue } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
-import { EditUserInfoForm, UserSignUpForm } from '@/types/UserType';
 
 type LinkFormProps = {
   initialLinks: string[];
-  setValue: UseFormSetValue<UserSignUpForm | EditUserInfoForm>;
 };
 
-export default function LinkForm({ initialLinks, setValue }: LinkFormProps) {
+export default function LinkForm({ initialLinks }: LinkFormProps) {
+  const { setValue } = useFormContext();
   const [link, setLink] = useState<string>('');
   const [linksList, setLinksList] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
