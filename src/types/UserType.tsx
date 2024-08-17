@@ -9,7 +9,9 @@ export type User = {
   profileUrl: string | null;
 };
 
-export type UserSignUpForm = Omit<User, 'userId' | 'provider'> & {
+export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
+
+export type UserSignUpForm = EditUserInfoForm & {
   code: string;
   password: string;
   checkPassword: string;
