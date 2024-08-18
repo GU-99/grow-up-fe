@@ -1,44 +1,55 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-
+import { useState, useCallback } from 'react';
 import type { AxiosResponse } from 'axios';
 
-type PromiseCallback<T, P extends unknown[]> = (signal: AbortSignal, ...params: P) => Promise<AxiosResponse<T>>;
+type PromiseCallback<T, P extends unknown[]> = (...args: P) => Promise<AxiosResponse<T>>;
 
-export default function useAxios<T, P extends unknown[]>(fetchCallback: PromiseCallback<T, P>, ...params: P) {
+/**
+ * Axios API 함수를 처리하는 커스텀 훅
+ *
+ * @export
+ * @template T - AxiosResponse의 응답 데이터 타입
+ * @template {unknown[]} P - API 함수에 전달되는 매개변수의 가변인자 타입 배열
+ * @param {PromiseCallback<T, P>} fetchCallback - API 요청을 수행하는 함수
+ * @returns {{
+ *   data: T | undefined;   // API 요청의 응답 데이터
+ *   error: Error | null;   // API 요청 중 발생한 에러
+ *   loading: boolean;      // 데이터 로딩 중인지 여부
+ *   fetchData: (...args: P) => Promise<void>; // API 요청을 호출하는 함수
+ * }}
+ * @example
+ * const { data, error, loading, fetchData } = useAxios(fetchCallback) // fetchCallback에서 타입을 반환한다면, 자동 타입 추론이 가능
+ * const { data, error, loading, fetchData } = useAxios<User[], Parameters<typeof fetchCallback>>(fetchCallback);
+ */
+export default function useAxios<T, P extends unknown[]>(fetchCallback: PromiseCallback<T, P>) {
   const [data, setData] = useState<T>();
+  const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // ToDo: 성공/실패 토스트 메세지 출력하기
-  useEffect(() => {
-    const fetchController = new AbortController();
-    const { signal } = fetchController;
-
-    const fetch = async () => {
+  const fetchData = useCallback(
+    async (...params: P) => {
       try {
         setLoading(true);
-        const response = await fetchCallback(signal, ...params);
+        const response = await fetchCallback(...params);
         setData(response.data);
       } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          if (error.request) {
-            // ToDo: 네트워크 요청을 보냈지만 응답이 없는 경우 에러 처리
-          } else if (error.response) {
-            // ToDo: 요청후 응답을 받았지만 200 이외의 응답 코드인 경우 예외 처리
-          } else {
-            // ToDo: 그 외 예외 처리
-          }
+        setError(error as Error);
+
+        if (!axios.isAxiosError(error)) return;
+
+        if (error.request) {
+          // ToDo: 네트워크 요청을 보냈지만 응답이 없는 경우 에러 처리
+        } else if (error.response) {
+          // ToDo: 요청후 응답을 받았지만 200 이외의 응답 코드인 경우 예외 처리
+        } else {
+          // ToDo: request 설정 오류
         }
       } finally {
-        if (!signal.aborted) setLoading(false);
+        setLoading(false);
       }
-    };
-    fetch();
+    },
+    [fetchCallback],
+  );
 
-    return () => {
-      fetchController.abort();
-    };
-  }, [fetchCallback, params]);
-
-  return { data, loading };
+  return { data, error, loading, fetchData };
 }
