@@ -1,7 +1,7 @@
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
-import { Team } from '@/types/TeamType';
+import { Team, TeamInvitation } from '@/types/TeamType';
 
 export const USER_DUMMY = [
   {
@@ -35,6 +35,23 @@ export const USER_INFO_DUMMY = {
   links: ['momoco@github.com'],
 };
 
+export const TEAM_INVITATION_DUMMY: TeamInvitation[] = [
+  {
+    teamId: 1,
+    teamName: 'Team One',
+    teamContent: '프로젝트 관리 사이드 프로젝트 진행중!',
+  },
+  {
+    teamId: 2,
+    teamName: 'Team Two',
+    teamContent: '모임 / 이벤트 관리 프로젝트',
+  },
+  {
+    teamId: 2,
+    teamName: 'Team Three',
+    teamContent: '사이드 프로젝트 관련 여러 프로젝트 진행중!',
+  },
+];
 export const TEAM_DUMMY: Team[] = [
   {
     teamId: 1,

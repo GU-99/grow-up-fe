@@ -4,3 +4,9 @@ export type Team = {
   name: string;
   content: string;
 };
+
+export interface TeamInvitation {
+  teamId: number;
+  teamName: string;
+  teamContent: string;
+}
