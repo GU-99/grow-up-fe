@@ -1,23 +1,22 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { UserSignUpForm } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import Timer from '@/components/common/Timer';
 import reduceImageSize from '@/utils/reduceImageSize';
 import useToast from '@/hooks/useToast';
 import LinkForm from '@/components/user/LinkForm';
 import ProfileImgForm from '@/components/user/ProfileImgForm';
+import VerificationButton from '@/components/user/VerificationButton';
+import useEmailVerification from '@/hooks/useEmailVerification';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
-  const [isVerificationRequested, setIsVerificationRequested] = useState(false);
-  // TODO: isVerificationCodeValid 변수가 반드시 필요한지 고민해보기
-  // const [isVerificationCodeValid, setIsVerificationCodeValid] = useState(false);
-  const [isTimerVisible, setIsTimerVisible] = useState(false);
   const { toastSuccess, toastError } = useToast();
+  const { isVerificationRequested, isTimerVisible, requestVerificationCode, verifyCode, handleTimerTimeout } =
+    useEmailVerification();
 
   const methods = useForm<UserSignUpForm>({
     mode: 'onChange',
@@ -33,38 +32,20 @@ export default function SignUpPage() {
     },
   });
 
-  // 이메일 인증번호 요청 함수
-  const requestVerificationCode = () => {
-    if (!isVerificationRequested) {
-      setIsVerificationRequested(true);
-      toastSuccess('인증번호가 발송되었습니다. 이메일을 확인해 주세요.');
-      setIsTimerVisible(true);
-    }
-  };
-
-  // 인증번호 확인 함수
-  const verifyCode = (verificationCode: string) => {
-    if (verificationCode === '1234') {
-      // setIsVerificationCodeValid(true);
-      return true;
-    }
-
-    // 인증번호 불일치
-    // setIsVerificationCodeValid(false);
-    methods.setError('code', {
-      type: 'manual',
-      message: '인증번호가 일치하지 않습니다.',
-    });
-    return false;
-  };
-
   // form 전송 함수
   const onSubmit = async (data: UserSignUpForm) => {
     const { id, code, checkPassword, ...filteredData } = data;
     console.log(data);
 
-    const verifyResult = verifyCode(code);
-    if (!verifyResult) return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
+    const verifyResult = verifyCode(methods.watch('code'));
+    if (!verifyResult) {
+      // 인증번호 불일치
+      methods.setError('code', {
+        type: 'manual',
+        message: '인증번호가 일치하지 않습니다.',
+      });
+      return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
+    }
 
     // TODO: 폼 제출 로직 수정 필요
     try {
@@ -95,13 +76,6 @@ export default function SignUpPage() {
     } catch (error) {
       toastError(`회원가입 진행 중 오류가 발생했습니다: ${error}`);
     }
-  };
-
-  // 타이머 만료
-  const handleTimerTimeout = () => {
-    setIsTimerVisible(false);
-    setIsVerificationRequested(false);
-    toastError('인증 시간이 만료되었습니다. 다시 시도해 주세요.');
   };
 
   return (
@@ -176,30 +150,15 @@ export default function SignUpPage() {
         {/* 링크 */}
         <LinkForm initialLinks={[]} />
 
-        {/* 인증 요청 및 회원가입 버튼 */}
+        {/* 인증 요청 및 확인 버튼 */}
         <div className="flex flex-col gap-8 text-center">
-          {!isVerificationRequested ? (
-            <button
-              type="submit"
-              className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-              onClick={methods.handleSubmit(requestVerificationCode)}
-            >
-              <span>인증요청</span>
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-              disabled={methods.formState.isSubmitting}
-            >
-              {isTimerVisible && (
-                <div className="absolute left-10">
-                  <Timer time={180} onTimeout={handleTimerTimeout} />
-                </div>
-              )}
-              <span>회원가입</span>
-            </button>
-          )}
+          <VerificationButton
+            isVerificationRequested={isVerificationRequested}
+            isTimerVisible={isTimerVisible}
+            isSubmitting={methods.formState.isSubmitting}
+            requestCode={methods.handleSubmit(requestVerificationCode)}
+            handleTimerTimeout={handleTimerTimeout}
+          />
           <Link to="/signin" className="cursor-pointer font-bold">
             로그인 페이지로 돌아가기
           </Link>
