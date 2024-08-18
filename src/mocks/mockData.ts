@@ -36,6 +36,7 @@ export const USER_INFO_DUMMY = {
 export const USER_DUMMY: User[] = [
   {
     userId: 1,
+    id: null,
     email: 'one@naver.com',
     provider: 'GOOGLE',
     nickname: '판다',
@@ -45,6 +46,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 2,
+    id: null,
     email: 'two@naver.com',
     provider: 'KAKAO',
     nickname: '카멜레온',
@@ -54,6 +56,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 3,
+    id: null,
     email: 'three@naver.com',
     provider: 'GOOGLE',
     nickname: '랫서판다',
@@ -63,6 +66,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 4,
+    id: null,
     email: 'four@naver.com',
     provider: 'KAKAO',
     nickname: '북금곰',
@@ -72,6 +76,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 5,
+    id: null,
     email: 'five@naver.com',
     provider: 'KAKAO',
     nickname: '호랑이',
@@ -81,6 +86,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 6,
+    id: null,
     email: 'six@naver.com',
     provider: 'GOOGLE',
     nickname: '나무늘보',
@@ -90,6 +96,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 7,
+    id: null,
     email: 'seven@naver.com',
     provider: 'KAKAO',
     nickname: '웜뱃',
@@ -99,6 +106,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 8,
+    id: null,
     email: 'eight@naver.com',
     provider: 'GOOGLE',
     nickname: '벨루가',
@@ -108,6 +116,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 9,
+    id: null,
     email: 'nine@naver.com',
     provider: 'KAKAO',
     nickname: '펭귄',
@@ -117,10 +126,61 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 10,
+    id: null,
     email: 'ten@naver.com',
     provider: 'GOOGLE',
     nickname: '비버',
     bio: 'DevOps 3년차',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 11,
+    id: 'eleven',
+    email: 'eleven@naver.com',
+    provider: 'LOCAL',
+    nickname: '판다아빠',
+    bio: '풀스택 개발자 10년차',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 12,
+    id: 'twelve',
+    email: 'twelve@naver.com',
+    provider: 'LOCAL',
+    nickname: '판다엄마',
+    bio: '디자이너 10년차',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 13,
+    id: 'thirteen',
+    email: 'thirteen@naver.com',
+    provider: 'LOCAL',
+    nickname: '판다형',
+    bio: 'DevOps 2년차',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 14,
+    id: 'fourteen',
+    email: 'fourteen@naver.com',
+    provider: 'LOCAL',
+    nickname: '판다누나',
+    bio: 'DBA 2년차',
+    links: [],
+    profileUrl: null,
+  },
+  {
+    userId: 15,
+    id: 'fifteen',
+    email: 'fifteen@naver.com',
+    provider: 'LOCAL',
+    nickname: '판다동생',
+    bio: '미래의 슈퍼 개발자',
     links: [],
     profileUrl: null,
   },
@@ -189,6 +249,36 @@ export const TEAM_USER_DUMMY: TeamUser[] = [
   {
     teamId: 1,
     userId: 9,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 11,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 12,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 13,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 14,
+    roleId: 3,
+    regStatus: true,
+  },
+  {
+    teamId: 1,
+    userId: 15,
     roleId: 3,
     regStatus: true,
   },
@@ -271,6 +361,7 @@ export const TEAM_DUMMY: Team[] = [
 
 // 프로젝트 유저 테이블 Mock
 export const PROJECT_USER_DUMMY: ProjectUser[] = [
+  // 프로젝트1 소속 유저 정보
   {
     projectId: 1,
     userId: 1,
@@ -287,6 +378,32 @@ export const PROJECT_USER_DUMMY: ProjectUser[] = [
     roleId: 6,
   },
   {
+    projectId: 1,
+    userId: 11,
+    roleId: 6,
+  },
+  {
+    projectId: 1,
+    userId: 12,
+    roleId: 6,
+  },
+  {
+    projectId: 1,
+    userId: 13,
+    roleId: 6,
+  },
+  {
+    projectId: 1,
+    userId: 14,
+    roleId: 6,
+  },
+  {
+    projectId: 1,
+    userId: 15,
+    roleId: 6,
+  },
+  // 프로젝트2 소속 유저 정보
+  {
     projectId: 2,
     userId: 1,
     roleId: 4,
@@ -296,6 +413,7 @@ export const PROJECT_USER_DUMMY: ProjectUser[] = [
     userId: 3,
     roleId: 5,
   },
+  // 프로젝트3 소속 유저 정보
   {
     projectId: 2,
     userId: 9,
