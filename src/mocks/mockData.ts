@@ -3,12 +3,7 @@ import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import type { TaskListWithStatus } from '@/types/TaskType';
-
-type Role = {
-  roleId: number;
-  name: 'HEAD' | 'LEADER' | 'MATE';
-  type: 'TEAM' | 'PROJECT';
-};
+import type { Role } from '@/types/RoleType';
 
 type TeamUser = {
   teamId: number;
@@ -124,33 +119,33 @@ export const USER_DUMMY: User[] = [
 export const ROLE_DUMMY: Role[] = [
   {
     roleId: 1,
-    name: 'HEAD',
-    type: 'TEAM',
+    roleName: 'HEAD',
+    roleType: 'TEAM',
   },
   {
     roleId: 2,
-    name: 'LEADER',
-    type: 'TEAM',
+    roleName: 'LEADER',
+    roleType: 'TEAM',
   },
   {
     roleId: 3,
-    name: 'MATE',
-    type: 'TEAM',
+    roleName: 'MATE',
+    roleType: 'TEAM',
   },
   {
     roleId: 4,
-    name: 'HEAD',
-    type: 'PROJECT',
+    roleName: 'Admin',
+    roleType: 'PROJECT',
   },
   {
     roleId: 5,
-    name: 'LEADER',
-    type: 'PROJECT',
+    roleName: 'LEADER',
+    roleType: 'PROJECT',
   },
   {
     roleId: 6,
-    name: 'MATE',
-    type: 'PROJECT',
+    roleName: 'Assignee',
+    roleType: 'PROJECT',
   },
 ] as const;
 

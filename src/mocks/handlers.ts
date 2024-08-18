@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw';
-import { PROJECT_USER_DUMMY, USER_DUMMY } from '@mocks/mockData';
+import { PROJECT_USER_DUMMY, ROLE_DUMMY, USER_DUMMY } from '@mocks/mockData';
+import type { Role } from '@/types/RoleType';
+import type { User } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -13,11 +15,19 @@ export const handlers = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    // 프로젝트에 속하는 모든 유저 ID 추출
-    const userIdList = PROJECT_USER_DUMMY.filter((row) => row.projectId === Number(projectId)).map((row) => row.userId);
+    // 프로젝트에 속하는 모든 유저 검색
+    const projectUserList = PROJECT_USER_DUMMY.filter((row) => row.projectId === Number(projectId));
 
-    // 유저 ID와 일치하는 유저 정보 추출
-    const userList = USER_DUMMY.filter((row) => userIdList.includes(row.userId));
+    // 유저 정보 Hash 형태로 추출
+    const USERS: { [key: string | number]: User } = {};
+    USER_DUMMY.forEach((user) => (USERS[user.userId] = user));
+
+    // 역할 정보 Hash 형태로 추출
+    const ROLES: { [key: string | number]: Role } = {};
+    ROLE_DUMMY.forEach((role) => (ROLES[role.roleId] = role));
+
+    // 유저, 역할 정보 병합 추출
+    const userList = projectUserList.map((relation) => ({ ...USERS[relation.userId], ...ROLES[relation.roleId] }));
 
     // 접두사(nickname)과 일치하는 유저 정보 최대 5명 추출
     const prefixRegex = new RegExp(`^${nickname}`);
