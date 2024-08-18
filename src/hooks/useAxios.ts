@@ -26,6 +26,12 @@ export default function useAxios<T, P extends unknown[]>(fetchCallback: PromiseC
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const clearData = useCallback(() => {
+    setData(undefined);
+    setError(null);
+    setLoading(false);
+  }, []);
+
   const fetchData = useCallback(
     async (...params: P) => {
       try {
@@ -51,5 +57,5 @@ export default function useAxios<T, P extends unknown[]>(fetchCallback: PromiseC
     [fetchCallback],
   );
 
-  return { data, error, loading, fetchData };
+  return { data, error, loading, clearData, fetchData };
 }
