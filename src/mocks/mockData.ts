@@ -21,6 +21,17 @@ type ProjectUser = {
 export const JWT_TOKEN_DUMMY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
+export const USER_INFO_DUMMY = {
+  provider: 'LOCAL',
+  userId: 1,
+  id: 'test123',
+  email: 'momoco@gmail.com',
+  nickname: 'momoco',
+  profileUrl: '',
+  bio: "Hi, I'm Momoco!",
+  links: ['momoco@github.com'],
+};
+
 // 사용자 테이블 Mock (사용자 링크 테이블 포함)
 export const USER_DUMMY: User[] = [
   {
@@ -151,7 +162,6 @@ export const ROLE_DUMMY: Role[] = [
 
 // 팀 유저 테이블 Mock
 export const TEAM_USER_DUMMY: TeamUser[] = [
-  // 팀1 소속 유저 정보
   {
     teamId: 1,
     userId: 1,
@@ -161,7 +171,7 @@ export const TEAM_USER_DUMMY: TeamUser[] = [
   {
     teamId: 1,
     userId: 3,
-    roleId: 2,
+    roleId: 1,
     regStatus: true,
   },
   {

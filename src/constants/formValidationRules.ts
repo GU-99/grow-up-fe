@@ -97,7 +97,7 @@ export const USER_AUTH_VALIDATION_RULES = deepFreeze({
     },
     pattern: {
       value: PASSWORD_REGEX,
-      message: '영문자, 숫자, 기호를 조합해 비밀번호를 생성해주세요.',
+      message: '영문자, 숫자, 기호를 조합해 비밀번호를 입력해주세요.',
     },
   },
   PASSWORD_CONFIRM: (password: string) => ({
