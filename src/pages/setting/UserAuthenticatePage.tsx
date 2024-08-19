@@ -3,14 +3,11 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import { EmailVerificationForm } from '@/types/UserType';
 import useEmailVerification from '@/hooks/useEmailVerification';
-import useToast from '@/hooks/useToast';
 import VerificationButton from '@/components/user/VerificationButton';
 
 function UserAuthenticatePage() {
   const { isVerificationRequested, isTimerVisible, requestVerificationCode, verifyCode, handleTimerTimeout } =
     useEmailVerification();
-
-  const { toastError } = useToast();
 
   const {
     register,
@@ -23,15 +20,8 @@ function UserAuthenticatePage() {
   });
 
   const onSubmit = async (data: EmailVerificationForm) => {
-    const verifyResult = verifyCode(watch('code'));
-    if (!verifyResult) {
-      // 인증번호 불일치
-      setError('code', {
-        type: 'manual',
-        message: '인증번호가 일치하지 않습니다.',
-      });
-      return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
-    }
+    const verifyResult = verifyCode(watch('code'), setError);
+    if (!verifyResult) return;
 
     // TODO: 인증 성공 후 전역 상태관리 및 리다이렉트 로직 작성
     console.log(data);

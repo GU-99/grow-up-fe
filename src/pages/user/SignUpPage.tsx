@@ -37,15 +37,8 @@ export default function SignUpPage() {
     const { id, code, checkPassword, ...filteredData } = data;
     console.log(data);
 
-    const verifyResult = verifyCode(methods.watch('code'));
-    if (!verifyResult) {
-      // 인증번호 불일치
-      methods.setError('code', {
-        type: 'manual',
-        message: '인증번호가 일치하지 않습니다.',
-      });
-      return toastError('인증번호가 유효하지 않습니다. 다시 시도해 주세요.');
-    }
+    const verifyResult = verifyCode(methods.watch('code'), methods.setError);
+    if (!verifyResult) return;
 
     // TODO: 폼 제출 로직 수정 필요
     try {
@@ -61,7 +54,7 @@ export default function SignUpPage() {
         const jpeg = await reduceImageSize(imageUrl);
         const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
         imgFormData.append('profileUrl', file);
-        imgFormData.append('id', id);
+        imgFormData.append('id', id ?? '');
 
         const imageResponse = await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
           headers: { 'Content-Type': 'multipart/form-data' },
