@@ -10,6 +10,10 @@
     "pkief.material-icon-theme",
     "equinusocio.vsc-material-theme",
     "wix.vscode-import-cost",
-    "streetsidesoftware.code-spell-checker"
+    "streetsidesoftware.code-spell-checker",
+    "vitest.explorer",
+    "crystal-spider.jsdoc-generator",
+    "simonsiefke.svg-preview",
+    "bierner.jsdoc-markdown-highlighting"
   ]
 }
