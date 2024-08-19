@@ -5,12 +5,12 @@ import { convertBytesToString } from '@/utils/converter';
 import { USER_SETTINGS } from '@/constants/userSettings';
 import useToast from '@/hooks/useToast';
 
-type ProfileImgFormProps = {
+type ProfileImageFormProps = {
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function ProfileImgForm({ imageUrl, setImageUrl }: ProfileImgFormProps) {
+export default function ProfileImageForm({ imageUrl, setImageUrl }: ProfileImageFormProps) {
   const { setValue } = useFormContext();
   const { toastWarn } = useToast();
 

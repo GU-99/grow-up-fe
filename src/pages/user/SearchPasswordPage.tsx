@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import AuthForm from '@/components/user/authForm/AuthForm';
-import FooterLinks from '@/components/user/authForm/FooterLinks';
+import FooterLinks from '@/components/user/auth-form/FooterLinks';
 import { SearchPasswordForm } from '@/types/UserType';
+import AuthFormLayout from '@/layouts/AuthFormLayout';
 
 export default function SearchPasswordPage() {
   const {
@@ -24,7 +24,7 @@ export default function SearchPasswordPage() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-34.9">
+    <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-34.9">
       {/* 아이디 */}
       <ValidationInput
         placeholder="아이디"
@@ -55,6 +55,6 @@ export default function SearchPasswordPage() {
       </div>
 
       <FooterLinks type="searchPassword" />
-    </AuthForm>
+    </AuthFormLayout>
   );
 }

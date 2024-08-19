@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import { EmailVerificationForm } from '@/types/UserType';
-import AuthForm from '@/components/user/authForm/AuthForm';
-import FooterLinks from '@/components/user/authForm/FooterLinks';
+import FooterLinks from '@/components/user/auth-form/FooterLinks';
+import AuthFormLayout from '@/layouts/AuthFormLayout';
 
 export default function SearchIdPage() {
   const {
@@ -23,7 +23,7 @@ export default function SearchIdPage() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
+    <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
       {/* 이메일 */}
       <ValidationInput
         isButtonInput
@@ -47,6 +47,6 @@ export default function SearchIdPage() {
       </div>
 
       <FooterLinks type="searchId" />
-    </AuthForm>
+    </AuthFormLayout>
   );
 }

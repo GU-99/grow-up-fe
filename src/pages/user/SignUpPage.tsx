@@ -7,9 +7,9 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import reduceImageSize from '@/utils/reduceImageSize';
 import useToast from '@/hooks/useToast';
-import LinkForm from '@/components/user/LinkForm';
-import ProfileImgForm from '@/components/user/ProfileImgForm';
-import VerificationButton from '@/components/user/VerificationButton';
+import LinkForm from '@/components/user/auth-form/LinkForm';
+import ProfileImageForm from '@/components/user/auth-form/ProfileImageForm';
+import VerificationButton from '@/components/user/auth-form/VerificationButton';
 import useEmailVerification from '@/hooks/useEmailVerification';
 
 export default function SignUpPage() {
@@ -75,7 +75,7 @@ export default function SignUpPage() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="flex w-300 flex-col gap-8">
         {/* 프로필 이미지 */}
-        <ProfileImgForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
+        <ProfileImageForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
 
         {/* 아이디 */}
         <ValidationInput

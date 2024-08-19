@@ -3,7 +3,7 @@ import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import { EmailVerificationForm } from '@/types/UserType';
 import useEmailVerification from '@/hooks/useEmailVerification';
-import VerificationButton from '@/components/user/VerificationButton';
+import VerificationButton from '@/components/user/auth-form/VerificationButton';
 
 function UserAuthenticatePage() {
   const { isVerificationRequested, isTimerVisible, requestVerificationCode, verifyCode, handleTimerTimeout } =

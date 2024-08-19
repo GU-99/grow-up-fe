@@ -4,8 +4,8 @@ import Google from '@assets/social_google_icon.svg';
 import { UserSignInForm } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import AuthForm from '@/components/user/authForm/AuthForm';
-import FooterLinks from '@/components/user/authForm/FooterLinks';
+import FooterLinks from '@/components/user/auth-form/FooterLinks';
+import AuthFormLayout from '@/layouts/AuthFormLayout';
 
 export default function SignInPage() {
   const {
@@ -26,7 +26,7 @@ export default function SignInPage() {
 
   return (
     <>
-      <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
+      <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
         {/* 아이디 */}
         <ValidationInput
           placeholder="아이디"
@@ -49,7 +49,7 @@ export default function SignInPage() {
         </div>
 
         <FooterLinks type="signIn" />
-      </AuthForm>
+      </AuthFormLayout>
       <section className="flex h-1/6 flex-col gap-8 text-center">
         <button type="button" className="auth-btn bg-kakao" disabled={isSubmitting}>
           <div className="flex h-30 w-81 items-center justify-between">

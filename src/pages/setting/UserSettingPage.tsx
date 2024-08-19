@@ -4,8 +4,8 @@ import { EditUserInfoForm } from '@/types/UserType';
 import ValidationInput from '@/components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
 import { USER_INFO_DUMMY } from '@/mocks/mockData';
-import LinkForm from '@/components/user/LinkForm';
-import ProfileImgForm from '@/components/user/ProfileImgForm';
+import LinkForm from '@/components/user/auth-form/LinkForm';
+import ProfileImageForm from '@/components/user/auth-form/ProfileImageForm';
 
 export default function UserSettingPage() {
   const [imageUrl, setImageUrl] = useState(USER_INFO_DUMMY.profileUrl);
@@ -34,7 +34,7 @@ export default function UserSettingPage() {
       <div className="my-60 flex h-full items-center justify-center">
         <form onSubmit={methods.handleSubmit(onSubmit)} className="flex w-full max-w-300 flex-col gap-8">
           {/* 프로필 이미지 */}
-          <ProfileImgForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
+          <ProfileImageForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
 
           {/* 아이디 */}
           <ValidationInput
