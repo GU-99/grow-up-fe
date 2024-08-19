@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
-import { IoSearch } from 'react-icons/io5';
 import { useForm } from 'react-hook-form';
+import { IoSearch } from 'react-icons/io5';
+
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import ToggleButton from '@components/common/ToggleButton';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import useAxios from '@hooks/useAxios';
 import useTaskQuery from '@hooks/query/useTaskQuery';
 import useStatusQuery from '@hooks/query/useStatusQuery';
+import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
+import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 
@@ -20,9 +24,17 @@ type ModalTaskFormProps = {
 };
 
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
+  const { projectId, startDate, endDate } = project;
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const [hasDeadline, setHasDeadline] = useState(false);
-  const { statusList } = useStatusQuery(project.projectId, taskId);
-  const { taskNameList } = useTaskQuery(project.projectId);
+  const [keyword, setKeyword] = useState('');
+  const [workers, setWorkers] = useState<User[]>([]);
+
+  const { statusList } = useStatusQuery(projectId, taskId);
+  const { taskNameList } = useTaskQuery(projectId);
+  const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
+
   // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
   const {
     register,
@@ -43,10 +55,47 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     },
   });
 
+  const searchUsers = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+
+    abortControllerRef.current = new AbortController();
+    const { signal } = abortControllerRef.current;
+
+    fetchData(projectId, keyword, { signal });
+  }, [fetchData, projectId, keyword]);
+
+  useEffect(() => {
+    if (keyword.trim()) {
+      debounceRef.current = setTimeout(() => searchUsers(), 500);
+    }
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+    };
+  }, [searchUsers, keyword]);
+
   const handleDeadlineToggle = () => {
     setValue('endDate', getValues('startDate'));
     clearErrors('endDate');
     setHasDeadline((prev) => !prev);
+  };
+
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value);
+
+  const handleSearchClick = () => searchUsers();
+
+  const handleSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key.toLocaleLowerCase() === 'enter') {
+      e.preventDefault();
+      searchUsers();
+    }
+  };
+
+  const handleUserClick = (user: User) => {
+    setWorkers((prev) => [...prev, user]);
+    setKeyword('');
+    clearData();
   };
 
   return (
@@ -99,7 +148,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           <input
             type="date"
             id="startDate"
-            {...register('startDate', TASK_VALIDATION_RULES.START_DATE(project.startDate, project.endDate))}
+            {...register('startDate', TASK_VALIDATION_RULES.START_DATE(startDate, endDate))}
           />
           <div className={`my-5 h-10 grow text-xs text-error ${errors.startDate ? 'visible' : 'invisible'}`}>
             {errors.startDate?.message}
@@ -117,7 +166,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             disabled={!hasDeadline}
             {...register(
               'endDate',
-              TASK_VALIDATION_RULES.END_DATE(hasDeadline, project.startDate, project.endDate, watch('startDate')),
+              TASK_VALIDATION_RULES.END_DATE(hasDeadline, startDate, endDate, watch('startDate')),
             )}
           />
           <div className={`my-5 h-10 grow text-xs text-error ${errors.endDate ? 'visible' : 'invisible'}`}>
@@ -126,19 +175,53 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
         </label>
       </div>
 
-      <label htmlFor="user" className="mb-20 flex items-center gap-5">
-        <h3 className="text-large">수행자</h3>
-        <div className="relative grow">
-          <input
-            type="text"
-            id="user"
-            className="h-25 w-full rounded-md border border-input pl-10 pr-25 text-regular placeholder:text-xs"
-          />
-          <div className="absolute right-5 top-1/2 -translate-y-1/2">
-            <IoSearch className="size-15 text-emphasis" />
-          </div>
-        </div>
-      </label>
+      {/* ToDo: 검색UI 공용 컴포넌트로 추출할 것 */}
+      <div className="mb-20">
+        <label htmlFor="search" className="group mb-10 flex items-center gap-5">
+          <h3 className="text-large">수행자</h3>
+          <section className="relative grow">
+            <input
+              type="text"
+              id="search"
+              className="h-25 w-full rounded-md border border-input pl-10 pr-25 text-regular placeholder:text-xs"
+              value={keyword}
+              onChange={handleKeywordChange}
+              onKeyDown={handleSearchKeyUp}
+              placeholder="닉네임으로 검색해주세요."
+            />
+            <button
+              type="button"
+              aria-label="search"
+              className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer"
+              onClick={handleSearchClick}
+            >
+              <IoSearch className="size-15 text-emphasis hover:text-black" />
+            </button>
+            {keyword && !loading && (
+              <ul className="invisible absolute left-0 right-0 rounded-md border-2 bg-white group-focus-within:visible">
+                {data && data.length === 0 ? (
+                  <div className="h-20 border px-10 leading-8">&apos;{keyword}&apos; 의 검색 결과가 없습니다.</div>
+                ) : (
+                  data?.map((user) => (
+                    <li className="h-20 border" key={user.userId}>
+                      <button
+                        type="button"
+                        className="h-full w-full px-10 text-left hover:bg-sub"
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                          e.currentTarget.blur();
+                          handleUserClick(user);
+                        }}
+                      >
+                        {user.nickname}
+                      </button>
+                    </li>
+                  ))
+                )}
+              </ul>
+            )}
+          </section>
+        </label>
+      </div>
 
       <label htmlFor="content" className="mb-20">
         <h3 className="text-large">내용</h3>
