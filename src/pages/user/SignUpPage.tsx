@@ -151,6 +151,7 @@ export default function SignUpPage() {
             isSubmitting={methods.formState.isSubmitting}
             requestCode={methods.handleSubmit(requestVerificationCode)}
             handleTimerTimeout={handleTimerTimeout}
+            buttonLabel="회원가입"
           />
           <Link to="/signin" className="cursor-pointer font-bold">
             로그인 페이지로 돌아가기

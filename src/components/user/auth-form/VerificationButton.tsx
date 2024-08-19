@@ -6,6 +6,7 @@ type VerificationButtonProps = {
   isSubmitting: boolean;
   requestCode: () => void;
   handleTimerTimeout: () => void;
+  buttonLabel: string;
 };
 
 export default function VerificationButton({
@@ -14,6 +15,7 @@ export default function VerificationButton({
   isSubmitting,
   requestCode,
   handleTimerTimeout,
+  buttonLabel,
 }: VerificationButtonProps) {
   return (
     <div className="flex flex-col gap-8 text-center">
@@ -36,7 +38,7 @@ export default function VerificationButton({
               <Timer time={180} onTimeout={handleTimerTimeout} />
             </div>
           )}
-          <span>확인</span>
+          <span>{buttonLabel}</span>
         </button>
       )}
     </div>

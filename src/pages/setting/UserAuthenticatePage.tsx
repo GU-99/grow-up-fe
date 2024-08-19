@@ -58,6 +58,7 @@ function UserAuthenticatePage() {
             isSubmitting={isSubmitting}
             requestCode={handleSubmit(requestVerificationCode)}
             handleTimerTimeout={handleTimerTimeout}
+            buttonLabel="확인"
           />
         </form>
       </div>
