@@ -28,7 +28,7 @@ export default function TeamSettingPage() {
                     <span className="mr-4 text-xs font-bold text-main">team</span>
                     {team.name}
                   </div>
-                  <div className="basis-8/12">{team.content}</div>
+                  <div className="mr-8 max-h-60 basis-8/12 overflow-auto scrollbar-hide">{team.content}</div>
                   {/* ToDo:탈퇴하기 기능 추가 */}
                   <button
                     className="basis-1/12 rounded-md bg-gray-100 p-2 hover:bg-error hover:text-white"
@@ -49,9 +49,9 @@ export default function TeamSettingPage() {
                 <li key={invite.teamId} className="mb-2 flex items-center border p-4">
                   <div className="basis-3/12">
                     <span className="mr-4 text-xs font-bold text-main">team</span>
-                    {invite.teamName}
+                    {invite.name}
                   </div>
-                  <div className="basis-10/12">{invite.teamContent}</div>
+                  <div className="mr-8 max-h-60 basis-10/12 overflow-auto scrollbar-hide">{invite.content}</div>
                   <div className="flex basis-3/12 space-x-6">
                     {/* ToDo: 수락하기 , 거부하기 기능 추가 */}
                     <button className="rounded-md bg-gray-100 p-2 hover:bg-main hover:text-white" type="button">

@@ -1,6 +1,6 @@
 export type User = {
   userId: number;
-  id: string;
+  id: string | null;
   email: string;
   provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
   nickname: string;

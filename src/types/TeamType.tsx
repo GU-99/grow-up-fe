@@ -3,10 +3,6 @@ export type Team = {
   teamId: number;
   name: string;
   content: string;
+  creator: string;
+  isPendingApproval: boolean;
 };
-
-export interface TeamInvitation {
-  teamId: number;
-  teamName: string;
-  teamContent: string;
-}
