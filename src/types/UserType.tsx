@@ -1,3 +1,5 @@
+import { Role } from '@/types/RoleType';
+
 export type User = {
   userId: number;
   id: string | null;
@@ -8,6 +10,8 @@ export type User = {
   links: string[];
   profileUrl: string | null;
 };
+
+export type UserWithRole = User & Role;
 
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
 
