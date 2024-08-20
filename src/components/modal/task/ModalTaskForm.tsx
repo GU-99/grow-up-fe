@@ -5,6 +5,7 @@ import { IoSearch } from 'react-icons/io5';
 import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import RoleIcon from '@components/common/RoleIcon';
 import ToggleButton from '@components/common/ToggleButton';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
@@ -70,7 +71,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   }, [fetchData, projectId, keyword]);
 
   useEffect(() => {
-    if (keyword.trim()) {
+    if (keyword) {
       debounceRef.current = setTimeout(() => searchUsers(), 500);
     }
     return () => {
@@ -85,7 +86,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setHasDeadline((prev) => !prev);
   };
 
-  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value);
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
   const handleSearchClick = () => searchUsers();
 
@@ -100,9 +101,9 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     const isIncludedUser = workers.find((worker) => worker.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
-    const newWorkers = [...workers, user];
-    const workersIdList = newWorkers.map((worker) => worker.userId);
-    setWorkers(newWorkers);
+    const updatedWorkers = [...workers, user];
+    const workersIdList = updatedWorkers.map((worker) => worker.userId);
+    setWorkers(updatedWorkers);
     setValue('userId', workersIdList);
     setKeyword('');
     clearData();
@@ -211,7 +212,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
               <IoSearch className="size-15 text-emphasis hover:text-black" />
             </button>
             {keyword && !loading && (
-              <ul className="invisible absolute left-0 right-0 max-h-110 overflow-auto rounded-md border-2 bg-white group-focus-within:visible">
+              <ul className="invisible absolute left-0 right-0 z-10 max-h-110 overflow-auto rounded-md border-2 bg-white group-focus-within:visible">
                 {data && data.length === 0 ? (
                   <div className="h-20 border px-10 leading-8">&apos;{keyword}&apos; 의 검색 결과가 없습니다.</div>
                 ) : (
@@ -237,7 +238,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
         <section className="flex w-full flex-wrap items-center gap-4">
           {workers.map((user) => (
             <div key={user.userId} className="flex items-center space-x-4 rounded-md bg-button px-5">
-              <div>{user.roleName}</div>
+              <RoleIcon roleName={user.roleName} />
               <div>{user.nickname}</div>
               <button type="button" aria-label="delete-worker" onClick={() => handleDeleteClick(user)}>
                 <IoMdCloseCircle className="text-error" />
@@ -246,12 +247,10 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           ))}
         </section>
       </div>
-
       <label htmlFor="content" className="mb-20">
         <h3 className="text-large">내용</h3>
         <textarea name="content" id="content" className="w-full border" rows={5} />
       </label>
-
       <label htmlFor="files">
         <h3 className="text-large">첨부파일</h3>
         <input type="file" id="files" />

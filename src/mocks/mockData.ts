@@ -380,7 +380,7 @@ export const PROJECT_USER_DUMMY: ProjectUser[] = [
   {
     projectId: 1,
     userId: 11,
-    roleId: 6,
+    roleId: 5,
   },
   {
     projectId: 1,
