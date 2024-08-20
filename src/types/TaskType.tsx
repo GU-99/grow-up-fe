@@ -13,17 +13,19 @@ type StatusKeyMapping = {
 export type Task = {
   taskId: number;
   name: string;
-  order: number;
   userId: number;
-  files: string[];
+  // content: string;
   startDate: string;
   endDate: string;
+  files: string[];
+  order: number;
 };
 
 // ToDo: Task 추가 모달 작업시 같이 정의할 것
 export type TaskForm = {
   name: string;
   content: string;
+  userId: number[];
   startDate: string;
   endDate: string;
   statusId: number;

@@ -205,7 +205,7 @@ export const ROLE_DUMMY: Role[] = [
   },
   {
     roleId: 4,
-    roleName: 'Admin',
+    roleName: 'ADMIN',
     roleType: 'PROJECT',
   },
   {
@@ -215,7 +215,7 @@ export const ROLE_DUMMY: Role[] = [
   },
   {
     roleId: 6,
-    roleName: 'Assignee',
+    roleName: 'ASSIGNEE',
     roleType: 'PROJECT',
   },
 ] as const;

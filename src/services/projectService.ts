@@ -1,6 +1,6 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
-import type { User } from '@/types/UserType';
+import type { User, UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 
 /**
@@ -11,12 +11,12 @@ import type { Project } from '@/types/ProjectType';
  * @param {Project['projectId']} projectId - 프로젝트 아이디
  * @param {User['nickname']} nickname - 유저 닉네임
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<User[]>>}
+ * @returns {Promise<AxiosResponse<UserWithRole[]>>}
  */
 export async function findUserByProject(
   projectId: Project['projectId'],
   nickname: User['nickname'],
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<User[]>(`project/${projectId}/user/search?nickname=${nickname}`, axiosConfig);
+  return authAxios.get<UserWithRole[]>(`project/${projectId}/user/search?nickname=${nickname}`, axiosConfig);
 }

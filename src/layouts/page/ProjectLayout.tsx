@@ -53,10 +53,10 @@ export default function ProjectLayout() {
                 </li>
               </ul>
               <div className="text-main *:ml-10">
-                <button type="button" onClick={openTaskModal}>
+                <button type="button" className="outline-none" onClick={openTaskModal}>
                   + 할일 추가
                 </button>
-                <button type="button" onClick={openStatusModal}>
+                <button type="button" className="outline-none" onClick={openStatusModal}>
                   + 상태 추가
                 </button>
               </div>
