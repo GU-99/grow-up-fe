@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
-import ValidationInput from '@/components/common/ValidationInput';
-import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
+import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
+import useEmailVerification from '@hooks/useEmailVerification';
+import ValidationInput from '@components/common/ValidationInput';
+import VerificationButton from '@components/user/auth-form/VerificationButton';
 import { EmailVerificationForm } from '@/types/UserType';
-import useEmailVerification from '@/hooks/useEmailVerification';
-import VerificationButton from '@/components/user/auth-form/VerificationButton';
 
 function UserAuthenticatePage() {
   const { isVerificationRequested, isTimerVisible, requestVerificationCode, verifyCode, handleTimerTimeout } =
@@ -28,14 +28,15 @@ function UserAuthenticatePage() {
   };
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="flex h-full flex-col items-center justify-center gap-20">
       <div className="flex w-full max-w-300 flex-col gap-20">
         <p className="text-center text-sm text-emphasis">
           개인정보 변경을 위한 이메일 인증 단계입니다.
           <br />
           인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
         </p>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* 이메일 */}
           <ValidationInput
             label="이메일"

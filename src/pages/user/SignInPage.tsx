@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
 import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
-import { UserSignInForm } from '@/types/UserType';
-import ValidationInput from '@/components/common/ValidationInput';
-import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import FooterLinks from '@/components/user/auth-form/FooterLinks';
-import AuthFormLayout from '@/layouts/AuthFormLayout';
+import ValidationInput from '@components/common/ValidationInput';
+import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
+import FooterLinks from '@components/user/auth-form/FooterLinks';
+import AuthFormLayout from '@layouts/AuthFormLayout';
+import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
   const {
@@ -42,26 +42,20 @@ export default function SignInPage() {
           register={register('password', USER_AUTH_VALIDATION_RULES.PASSWORD)}
         />
 
-        <div className="flex flex-col text-center">
-          <button type="submit" className="auth-btn" disabled={isSubmitting}>
-            로그인
-          </button>
-        </div>
+        <button type="submit" className="auth-btn" disabled={isSubmitting}>
+          로그인
+        </button>
 
         <FooterLinks type="signIn" />
       </AuthFormLayout>
       <section className="flex h-1/6 flex-col gap-8 text-center">
-        <button type="button" className="auth-btn bg-kakao" disabled={isSubmitting}>
-          <div className="flex h-30 w-81 items-center justify-between">
-            <img src={Kakao} alt="Kakao" className="size-15" />
-            카카오 로그인
-          </div>
+        <button type="button" className="auth-btn space-x-4 bg-kakao" disabled={isSubmitting}>
+          <img src={Kakao} alt="Kakao" className="size-15" />
+          <span>카카오 로그인</span>
         </button>
-        <button type="button" className="auth-btn bg-button" disabled={isSubmitting}>
-          <div className="flex h-30 w-81 items-center justify-between">
-            <img src={Google} alt="Google" className="size-42" />
-            로그인
-          </div>
+        <button type="button" className="auth-btn space-x-10 bg-button" disabled={isSubmitting}>
+          <img src={Google} alt="Google" className="size-42" />
+          <span>로그인</span>
         </button>
       </section>
     </>

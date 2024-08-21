@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { UserSignUpForm } from '@/types/UserType';
-import ValidationInput from '@/components/common/ValidationInput';
-import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import reduceImageSize from '@/utils/reduceImageSize';
-import useToast from '@/hooks/useToast';
-import LinkForm from '@/components/user/auth-form/LinkForm';
-import ProfileImageForm from '@/components/user/auth-form/ProfileImageForm';
-import VerificationButton from '@/components/user/auth-form/VerificationButton';
-import useEmailVerification from '@/hooks/useEmailVerification';
+import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
+import ValidationInput from '@components/common/ValidationInput';
+import VerificationButton from '@components/user/auth-form/VerificationButton';
+import useToast from '@hooks/useToast';
+import useEmailVerification from '@hooks/useEmailVerification';
+import reduceImageSize from '@utils/reduceImageSize';
+import ProfileImageContainer from '@/components/user/auth-form/ProfileImageContainer';
+import LinkContainer from '@/components/user/auth-form/LinkContainer';
+import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
@@ -73,9 +73,9 @@ export default function SignUpPage() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className="flex w-300 flex-col gap-8">
+      <form onSubmit={methods.handleSubmit(onSubmit)} className="w-300 space-y-8">
         {/* 프로필 이미지 */}
-        <ProfileImageForm imageUrl={imageUrl} setImageUrl={setImageUrl} />
+        <ProfileImageContainer imageUrl={imageUrl} setImageUrl={setImageUrl} />
 
         {/* 아이디 */}
         <ValidationInput
@@ -128,7 +128,7 @@ export default function SignUpPage() {
         />
 
         {/* 자기소개 */}
-        <div className="flex flex-col">
+        <section>
           <label htmlFor="bio" className="font-bold">
             자기소개
           </label>
@@ -136,15 +136,15 @@ export default function SignUpPage() {
             {...methods.register('bio')}
             id="bio"
             placeholder="ex) 안녕하세요. 홍길동입니다."
-            className="h-90 grow resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
+            className="block h-70 w-full resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
           />
-        </div>
+        </section>
 
         {/* 링크 */}
-        <LinkForm initialLinks={[]} />
+        <LinkContainer initialLinks={[]} />
 
         {/* 인증 요청 및 확인 버튼 */}
-        <div className="flex flex-col gap-8 text-center">
+        <div className="space-y-8 text-center">
           <VerificationButton
             isVerificationRequested={isVerificationRequested}
             isTimerVisible={isTimerVisible}
@@ -153,7 +153,7 @@ export default function SignUpPage() {
             handleTimerTimeout={handleTimerTimeout}
             buttonLabel="회원가입"
           />
-          <Link to="/signin" className="cursor-pointer font-bold">
+          <Link to="/signin" className="block cursor-pointer font-bold">
             로그인 페이지로 돌아가기
           </Link>
         </div>

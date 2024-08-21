@@ -1,4 +1,4 @@
-import { Role } from '@/types/RoleType';
+import type { Role } from '@/types/RoleType';
 
 export type User = {
   userId: number;
@@ -15,7 +15,7 @@ export type UserWithRole = User & Role;
 
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
 
-export type UserSignUpForm = EditUserInfoForm & {
+export type UserSignUpForm = Omit<User, 'userId' | 'provider'> & {
   code: string;
   password: string;
   checkPassword: string;
@@ -25,11 +25,9 @@ export type UserSignInForm = Pick<User, 'id'> & {
   password: string;
 };
 
-export type EmailVerificationForm = Pick<User, 'email'> & {
-  code: string;
-};
+export type EmailVerificationForm = Pick<User, 'email'> & { code: string };
 
-export type SearchPasswordForm = Pick<User, 'id'> & EmailVerificationForm;
+export type SearchPasswordForm = Pick<User, 'id' | 'email'> & { code: string };
 
 export type EditPasswordForm = {
   password: string;

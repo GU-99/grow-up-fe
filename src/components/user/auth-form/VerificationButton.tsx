@@ -22,7 +22,7 @@ export default function VerificationButton({
       {!isVerificationRequested ? (
         <button
           type="submit"
-          className="flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+          className="flex h-25 items-center justify-center rounded-lg bg-sub px-8 font-bold"
           onClick={requestCode}
         >
           <span>인증요청</span>
@@ -30,7 +30,7 @@ export default function VerificationButton({
       ) : (
         <button
           type="submit"
-          className="relative flex h-30 items-center justify-center rounded-lg bg-sub px-8 font-bold"
+          className="relative flex h-25 items-center justify-center rounded-lg bg-sub px-8 font-bold"
           disabled={isSubmitting}
         >
           {isTimerVisible && (

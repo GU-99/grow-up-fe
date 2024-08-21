@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import ListSidebar from '@components/sidebar/ListSidebar';
+import ListSetting from '@components/sidebar/ListSetting';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
-import ListSetting from '@/components/sidebar/ListSetting';
 
 const navList = [
   {
@@ -34,12 +34,12 @@ export default function SettingLayout() {
         <ListSetting navList={navList} />
       </ListSidebar>
       <section className="flex w-2/3 flex-col border border-list bg-contents-box">
-        <header className="flex h-30 items-center justify-between border-b p-10">
+        <header className="flex h-25 items-center justify-between border-b p-10">
           <div>
             <small className="font-bold text-category">{getTitle()}</small>
           </div>
         </header>
-        <div className="h-screen overflow-auto">
+        <div className="grow overflow-auto">
           <Outlet />
         </div>
       </section>

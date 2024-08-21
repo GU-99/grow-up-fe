@@ -61,50 +61,42 @@ export default function ValidationInput({
   };
 
   return (
-    <div>
-      <div className="flex flex-row gap-1">
-        {label && (
-          <label htmlFor={label} className="font-bold">
-            {label}
-            {required && <sup className="font-bold text-main">*</sup>}
-          </label>
-        )}
-      </div>
+    <section>
+      {label && (
+        <label htmlFor={label} className="font-bold">
+          {label}
+          {required && <sup className="text-main">*</sup>}
+        </label>
+      )}
       <div
-        className={`flex h-30 items-center rounded-lg border px-6 text-sm ${
+        className={`flex size-full h-25 flex-row items-center rounded-lg border px-6 text-sm ${
           errors ? 'border-2 border-error' : 'border-input'
         } ${disabled ? 'bg-disable' : ''}`}
       >
-        <div className="flex h-full w-full flex-row items-center gap-8">
-          <input
-            disabled={disabled}
-            id={label}
-            {...register}
-            type={type === 'password' && showPassword ? 'text' : type}
-            placeholder={placeholder}
-            className="h-full grow bg-inherit outline-none placeholder:text-default"
-          />
-          {type === 'password' && (
-            <div className="flex h-20 w-20 items-center text-gray-400">
-              {showPassword ? (
-                <RiEyeFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
-              ) : (
-                <RiEyeOffFill className="h-15 w-15 cursor-pointer" onClick={handleTogglePassword} />
-              )}
-            </div>
-          )}
-          {isButtonInput && (
-            <button
-              type="button"
-              className="flex h-20 w-75 items-center justify-center rounded bg-sub px-8 font-bold"
-              onClick={onButtonClick}
-            >
-              {buttonLabel}
-            </button>
-          )}
-        </div>
+        <input
+          disabled={disabled}
+          id={label}
+          {...register}
+          type={type === 'password' && showPassword ? 'text' : type}
+          placeholder={placeholder}
+          className="grow bg-inherit outline-none placeholder:text-default"
+        />
+        {type === 'password' && (
+          <div className="flex size-20 items-center text-gray-400">
+            {showPassword ? (
+              <RiEyeFill className="size-13 cursor-pointer" onClick={handleTogglePassword} />
+            ) : (
+              <RiEyeOffFill className="size-13 cursor-pointer" onClick={handleTogglePassword} />
+            )}
+          </div>
+        )}
+        {isButtonInput && (
+          <button type="button" className="h-18 w-75 rounded bg-sub px-8 font-bold" onClick={onButtonClick}>
+            {buttonLabel}
+          </button>
+        )}
       </div>
-      {errors && <p className="mt-[.5rem] text-sm text-error">{errors}</p>}
-    </div>
+      {errors && <p className="mt-2 text-sm text-error">{errors}</p>}
+    </section>
   );
 }
