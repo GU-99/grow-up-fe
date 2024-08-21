@@ -2,17 +2,20 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import { useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
+import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import RoleIcon from '@components/common/RoleIcon';
 import ToggleButton from '@components/common/ToggleButton';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
 import useTaskQuery from '@hooks/query/useTaskQuery';
 import useStatusQuery from '@hooks/query/useStatusQuery';
 import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { User } from '@/types/UserType';
+import type { UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 
@@ -29,11 +32,12 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const abortControllerRef = useRef<AbortController | null>(null);
   const [hasDeadline, setHasDeadline] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const [workers, setWorkers] = useState<User[]>([]);
+  const [workers, setWorkers] = useState<UserWithRole[]>([]);
 
   const { statusList } = useStatusQuery(projectId, taskId);
   const { taskNameList } = useTaskQuery(projectId);
   const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
+  const { toastInfo } = useToast();
 
   // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
   const {
@@ -49,6 +53,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     defaultValues: {
       name: '',
       content: '',
+      userId: [],
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       statusId: statusList[0].statusId,
@@ -66,7 +71,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   }, [fetchData, projectId, keyword]);
 
   useEffect(() => {
-    if (keyword.trim()) {
+    if (keyword) {
       debounceRef.current = setTimeout(() => searchUsers(), 500);
     }
     return () => {
@@ -81,29 +86,38 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setHasDeadline((prev) => !prev);
   };
 
-  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value);
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
   const handleSearchClick = () => searchUsers();
 
   const handleSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key.toLocaleLowerCase() === 'enter') {
+    if (e.key.toLowerCase() === 'enter') {
       e.preventDefault();
       searchUsers();
     }
   };
 
-  const handleUserClick = (user: User) => {
-    setWorkers((prev) => [...prev, user]);
+  const handleUserClick = (user: UserWithRole) => {
+    const isIncludedUser = workers.find((worker) => worker.userId === user.userId);
+    if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
+
+    const updatedWorkers = [...workers, user];
+    const workersIdList = updatedWorkers.map((worker) => worker.userId);
+    setWorkers(updatedWorkers);
+    setValue('userId', workersIdList);
     setKeyword('');
     clearData();
   };
 
+  const handleDeleteClick = (user: UserWithRole) => {
+    const filteredWorker = workers.filter((worker) => worker.userId !== user.userId);
+    const workersIdList = filteredWorker.map((worker) => worker.userId);
+    setWorkers(filteredWorker);
+    setValue('userId', workersIdList);
+  };
+
   return (
-    <form
-      id={formId}
-      className="mb-20 flex w-4/5 max-w-375 grow flex-col justify-center"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form id={formId} className="mb-20 flex w-4/5 grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
       {/* ToDo: 상태 선택 리팩토링 할 것 */}
       <div className="flex items-center justify-start gap-4">
         {statusList.map((status) => {
@@ -187,7 +201,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
               value={keyword}
               onChange={handleKeywordChange}
               onKeyDown={handleSearchKeyUp}
-              placeholder="닉네임으로 검색해주세요."
+              placeholder="닉네임을 검색해주세요."
             />
             <button
               type="button"
@@ -198,7 +212,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
               <IoSearch className="size-15 text-emphasis hover:text-black" />
             </button>
             {keyword && !loading && (
-              <ul className="invisible absolute left-0 right-0 rounded-md border-2 bg-white group-focus-within:visible">
+              <ul className="invisible absolute left-0 right-0 z-10 max-h-110 overflow-auto rounded-md border-2 bg-white group-focus-within:visible">
                 {data && data.length === 0 ? (
                   <div className="h-20 border px-10 leading-8">&apos;{keyword}&apos; 의 검색 결과가 없습니다.</div>
                 ) : (
@@ -221,13 +235,22 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             )}
           </section>
         </label>
+        <section className="flex w-full flex-wrap items-center gap-4">
+          {workers.map((user) => (
+            <div key={user.userId} className="flex items-center space-x-4 rounded-md bg-button px-5">
+              <RoleIcon roleName={user.roleName} />
+              <div>{user.nickname}</div>
+              <button type="button" aria-label="delete-worker" onClick={() => handleDeleteClick(user)}>
+                <IoMdCloseCircle className="text-error" />
+              </button>
+            </div>
+          ))}
+        </section>
       </div>
-
       <label htmlFor="content" className="mb-20">
         <h3 className="text-large">내용</h3>
         <textarea name="content" id="content" className="w-full border" rows={5} />
       </label>
-
       <label htmlFor="files">
         <h3 className="text-large">첨부파일</h3>
         <input type="file" id="files" />
