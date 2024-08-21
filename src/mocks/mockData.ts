@@ -9,7 +9,7 @@ type TeamUser = {
   teamId: number;
   userId: number;
   roleId: number;
-  regStatus: boolean;
+  isPendingApproval: boolean;
 };
 
 type ProjectUser = {
@@ -18,8 +18,7 @@ type ProjectUser = {
   roleId: number;
 };
 
-export const JWT_TOKEN_DUMMY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const USER_INFO_DUMMY = {
   provider: 'LOCAL',
@@ -226,117 +225,117 @@ export const TEAM_USER_DUMMY: TeamUser[] = [
     teamId: 1,
     userId: 1,
     roleId: 1,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 3,
-    roleId: 1,
-    regStatus: true,
+    roleId: 2,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 4,
     roleId: 3,
-    regStatus: false,
+    isPendingApproval: false,
   },
   {
     teamId: 1,
     userId: 8,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 9,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 11,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 12,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 13,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 14,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 1,
     userId: 15,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   // 팀2 소속 유저 정보
   {
     teamId: 2,
     userId: 3,
     roleId: 2,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 2,
     userId: 4,
     roleId: 1,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 2,
     userId: 5,
     roleId: 3,
-    regStatus: false,
+    isPendingApproval: false,
   },
   {
     teamId: 2,
     userId: 7,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 2,
     userId: 10,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   // 팀3 소속 유저 정보
   {
     teamId: 3,
     userId: 1,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 3,
     userId: 2,
     roleId: 3,
-    regStatus: true,
+    isPendingApproval: true,
   },
   {
     teamId: 3,
     userId: 5,
     roleId: 2,
-    regStatus: false,
+    isPendingApproval: false,
   },
   {
     teamId: 3,
     userId: 6,
     roleId: 1,
-    regStatus: true,
+    isPendingApproval: true,
   },
 ] as const;
 
@@ -345,17 +344,20 @@ export const TEAM_DUMMY: Team[] = [
   {
     teamId: 1,
     name: 'GU99',
-    content: '사이드 프로젝트 팀원 모집 / 프로젝트 관리 서비스 등을 만드는 팀',
+    content: '사이드 프로젝트 팀원 모집 / 프로젝트 관리 서비스 등을 만드는 팀  ',
+    creatorId: 1,
   },
   {
     teamId: 2,
     name: '오늘볼래',
     content: '모임/이벤트/소개팅 등 사람과 사람을 이어주는 서비스를 만드는 팀',
+    creatorId: 4,
   },
   {
     teamId: 3,
     name: '고인물',
     content: '게임 리뷰/정보공유/모임 등을 위한 서바스를 개발하고 있는 팀',
+    creatorId: 6,
   },
 ] as const;
 
