@@ -1,41 +1,31 @@
-import Timer from '@/components/common/Timer';
+import Timer from '@components/common/Timer';
 
 type VerificationButtonProps = {
   isVerificationRequested: boolean;
-  isTimerVisible: boolean;
   isSubmitting: boolean;
   requestCode: () => void;
-  handleTimerTimeout: () => void;
+  expireVerificationCode: () => void;
   buttonLabel: string;
 };
 
 export default function VerificationButton({
   isVerificationRequested,
-  isTimerVisible,
   isSubmitting,
   requestCode,
-  handleTimerTimeout,
+  expireVerificationCode,
   buttonLabel,
 }: VerificationButtonProps) {
   return (
-    <div className="flex flex-col gap-8 text-center">
+    <div>
       {!isVerificationRequested ? (
-        <button
-          type="submit"
-          className="flex h-25 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-          onClick={requestCode}
-        >
+        <button type="submit" className="h-25 w-full rounded-lg bg-sub px-8 font-bold" onClick={requestCode}>
           <span>인증요청</span>
         </button>
       ) : (
-        <button
-          type="submit"
-          className="relative flex h-25 items-center justify-center rounded-lg bg-sub px-8 font-bold"
-          disabled={isSubmitting}
-        >
-          {isTimerVisible && (
+        <button type="submit" className="relative h-25 w-full rounded-lg bg-sub px-8 font-bold" disabled={isSubmitting}>
+          {isVerificationRequested && (
             <div className="absolute left-10">
-              <Timer time={180} onTimeout={handleTimerTimeout} />
+              <Timer time={180} onTimeout={expireVerificationCode} />
             </div>
           )}
           <span>{buttonLabel}</span>

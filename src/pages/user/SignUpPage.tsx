@@ -5,17 +5,17 @@ import { Link } from 'react-router-dom';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
+import ProfileImageContainer from '@components/user/auth-form/ProfileImageContainer';
+import LinkContainer from '@components/user/auth-form/LinkContainer';
 import useToast from '@hooks/useToast';
 import useEmailVerification from '@hooks/useEmailVerification';
 import reduceImageSize from '@utils/reduceImageSize';
-import ProfileImageContainer from '@/components/user/auth-form/ProfileImageContainer';
-import LinkContainer from '@/components/user/auth-form/LinkContainer';
 import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
   const [imageUrl, setImageUrl] = useState('');
   const { toastSuccess, toastError } = useToast();
-  const { isVerificationRequested, isTimerVisible, requestVerificationCode, verifyCode, handleTimerTimeout } =
+  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
     useEmailVerification();
 
   const methods = useForm<UserSignUpForm>({
@@ -147,10 +147,9 @@ export default function SignUpPage() {
         <div className="space-y-8 text-center">
           <VerificationButton
             isVerificationRequested={isVerificationRequested}
-            isTimerVisible={isTimerVisible}
             isSubmitting={methods.formState.isSubmitting}
             requestCode={methods.handleSubmit(requestVerificationCode)}
-            handleTimerTimeout={handleTimerTimeout}
+            expireVerificationCode={expireVerificationCode}
             buttonLabel="회원가입"
           />
           <Link to="/signin" className="block cursor-pointer font-bold">
