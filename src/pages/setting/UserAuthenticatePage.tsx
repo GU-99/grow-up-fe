@@ -6,7 +6,7 @@ import VerificationButton from '@components/user/auth-form/VerificationButton';
 import { EmailVerificationForm } from '@/types/UserType';
 
 function UserAuthenticatePage() {
-  const { isVerificationRequested, isTimerVisible, requestVerificationCode, verifyCode, handleTimerTimeout } =
+  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
     useEmailVerification();
 
   const {
@@ -55,10 +55,9 @@ function UserAuthenticatePage() {
           {/* 인증 요청 및 확인 버튼 */}
           <VerificationButton
             isVerificationRequested={isVerificationRequested}
-            isTimerVisible={isTimerVisible}
             isSubmitting={isSubmitting}
             requestCode={handleSubmit(requestVerificationCode)}
-            handleTimerTimeout={handleTimerTimeout}
+            expireVerificationCode={expireVerificationCode}
             buttonLabel="확인"
           />
         </form>

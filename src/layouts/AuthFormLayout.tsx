@@ -14,7 +14,7 @@ export default function AuthFormLayout({ children, onSubmit, marginTop }: AuthFo
         <br />
         Grow Up your Life with us.
       </section>
-      <form onSubmit={onSubmit} className={`${marginTop} flex h-screen w-300 flex-col justify-center gap-8 py-30`}>
+      <form onSubmit={onSubmit} className={`flex h-screen w-300 flex-col justify-center gap-8 py-30 ${marginTop}`}>
         {children}
       </form>
     </>

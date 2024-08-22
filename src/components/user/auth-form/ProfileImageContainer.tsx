@@ -37,11 +37,11 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   };
 
   return (
-    <section className="flex flex-col items-center gap-8">
-      <div className="group relative flex h-100 w-100 items-center justify-center overflow-hidden rounded-full border border-input">
+    <section className="flex flex-col items-center">
+      <div className="group relative flex size-100 items-center justify-center overflow-hidden rounded-full border border-input">
         {imageUrl ? (
           <>
-            <img src={imageUrl} alt="profileImage" className="h-full w-full object-cover" />
+            <img src={imageUrl} alt="profileImage" className="size-full object-cover" />
             <div className="absolute inset-0 hidden items-center justify-center bg-black bg-opacity-50 group-hover:flex">
               <p role="presentation" className="cursor-pointer" onClick={handleRemoveImg} onKeyDown={handleRemoveImg}>
                 <FaRegTrashCan className="size-15 text-white" />
