@@ -30,7 +30,6 @@ const userServiceHandler = [
 
     // 유저가 속한 모든 팀 목록 추출
     const teamUserList = TEAM_USER_DUMMY.filter((row) => row.userId === Number(userId));
-    console.log(teamUserList);
     // 유저 정보 Hash 형태로 추출
     const USERS: { [key: string | number]: User } = {};
     USER_DUMMY.forEach((user) => (USERS[user.userId] = user));
@@ -48,11 +47,14 @@ const userServiceHandler = [
       const role = ROLES[teamUser.roleId];
       const team = TEAMS[teamUser.teamId];
 
+      const creatorUser = USERS[team.creatorId];
+      const creatorNickname = creatorUser ? creatorUser.nickname : 'Unknown';
+
       return {
         teamId: team.teamId,
         name: team.name,
         content: team.content,
-        creator: user.nickname,
+        creator: creatorNickname,
         isPendingApproval: teamUser.isPendingApproval,
         roleName: role.roleName,
       };
