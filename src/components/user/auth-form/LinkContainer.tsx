@@ -59,11 +59,10 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
             <button
               type="button"
               onClick={() => handleRemoveLink(linkItem)}
-              className="flex size-18 items-center justify-center rounded-lg bg-sub px-8"
+              className="flex size-18 items-center justify-center rounded-lg bg-sub"
               aria-label="삭제"
             >
-              {/* TODO: 버튼 내부 아이콘 사이즈 적절히 조절할 것 */}
-              <FaMinus />
+              <FaMinus className="size-8" />
             </button>
           </div>
         ))}
@@ -84,11 +83,10 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
           <button
             type="button"
             onClick={() => handleAddLink(link)}
-            className="flex size-18 items-center justify-center rounded-lg bg-sub px-8"
+            className="flex size-18 items-center justify-center rounded-lg bg-sub"
             aria-label="추가"
           >
-            {/* TODO: 버튼 내부 아이콘 사이즈 적절히 조절할 것 */}
-            <FaPlus />
+            <FaPlus className="size-8" />
           </button>
         </label>
       </div>
