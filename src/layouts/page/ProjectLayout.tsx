@@ -26,7 +26,7 @@ export default function ProjectLayout() {
         <ListSidebar label="team" title="팀 이름...">
           <ListProject data={PROJECT_DUMMY} targetId={projectId} />
         </ListSidebar>
-        <section className="flex w-2/3 flex-col border border-list bg-contents-box">
+        <section className="flex grow flex-col border border-list bg-contents-box">
           <header className="flex h-30 items-center justify-between border-b p-10">
             {/* ToDo: LabelTitle 공통 컴포넌트로 추출할 것 */}
             <div>
