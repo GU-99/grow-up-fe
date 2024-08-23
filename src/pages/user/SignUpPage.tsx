@@ -21,7 +21,7 @@ export default function SignUpPage() {
   const methods = useForm<UserSignUpForm>({
     mode: 'onChange',
     defaultValues: {
-      id: '',
+      username: '',
       email: '',
       code: '',
       nickname: '',
@@ -34,7 +34,7 @@ export default function SignUpPage() {
 
   // form 전송 함수
   const onSubmit = async (data: UserSignUpForm) => {
-    const { id, code, checkPassword, ...filteredData } = data;
+    const { username, code, checkPassword, ...filteredData } = data;
     console.log(data);
 
     const verifyResult = verifyCode(methods.watch('code'), methods.setError);
@@ -43,8 +43,8 @@ export default function SignUpPage() {
     // TODO: 폼 제출 로직 수정 필요
     try {
       // 회원가입 폼
-      const formData = { ...filteredData, id, code };
-      const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${id}`, formData);
+      const formData = { ...filteredData, username, code };
+      const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${username}`, formData);
       if (registrationResponse.status !== 200) return toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
 
       // 이미지 폼
@@ -54,7 +54,7 @@ export default function SignUpPage() {
         const jpeg = await reduceImageSize(imageUrl);
         const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
         imgFormData.append('profileUrl', file);
-        imgFormData.append('id', id ?? '');
+        imgFormData.append('username', username ?? '');
 
         const imageResponse = await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -80,8 +80,8 @@ export default function SignUpPage() {
         {/* 아이디 */}
         <ValidationInput
           label="아이디"
-          errors={methods.formState.errors?.id?.message}
-          register={methods.register('id', USER_AUTH_VALIDATION_RULES.ID)}
+          errors={methods.formState.errors?.username?.message}
+          register={methods.register('username', USER_AUTH_VALIDATION_RULES.ID)}
         />
 
         {/* 이메일 */}

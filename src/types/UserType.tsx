@@ -2,7 +2,7 @@ import type { Role } from '@/types/RoleType';
 
 export type User = {
   userId: number;
-  id: string | null;
+  username: string | null;
   email: string;
   provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
   nickname: string;
@@ -21,13 +21,13 @@ export type UserSignUpForm = Omit<User, 'userId' | 'provider'> & {
   checkPassword: string;
 };
 
-export type UserSignInForm = Pick<User, 'id'> & {
+export type UserSignInForm = Pick<User, 'username'> & {
   password: string;
 };
 
 export type EmailVerificationForm = Pick<User, 'email'> & { code: string };
 
-export type SearchPasswordForm = Pick<User, 'id' | 'email'> & { code: string };
+export type SearchPasswordForm = Pick<User, 'username' | 'email'> & { code: string };
 
 export type EditPasswordForm = {
   password: string;
