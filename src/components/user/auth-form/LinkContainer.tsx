@@ -48,7 +48,7 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
       <label className="font-bold" htmlFor="link">
         링크
       </label>
-      <div className="space-y-4" id="link">
+      <div className="space-y-4">
         {links.map((linkItem) => (
           <div key={linkItem} className="flex h-25 items-center space-x-8 rounded-lg border border-input px-6 text-sm">
             <div className="grow overflow-hidden">
