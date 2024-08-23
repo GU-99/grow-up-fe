@@ -7,6 +7,7 @@ import { IoMdCloseCircle } from 'react-icons/io';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import RoleIcon from '@components/common/RoleIcon';
 import ToggleButton from '@components/common/ToggleButton';
+import CustomMarkdown from '@components/common/CustomMarkdown';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
@@ -30,9 +31,11 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const { projectId, startDate, endDate } = project;
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
   const [hasDeadline, setHasDeadline] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [workers, setWorkers] = useState<UserWithRole[]>([]);
+  const [preview, setPreview] = useState(false);
 
   const { statusList } = useStatusQuery(projectId, taskId);
   const { taskNameList } = useTaskQuery(projectId);
@@ -85,6 +88,8 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     clearErrors('endDate');
     setHasDeadline((prev) => !prev);
   };
+
+  const handlePreviewToggle = () => setPreview((prev) => !prev);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
@@ -169,8 +174,8 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           </div>
         </label>
         <label htmlFor="endDate" className="w-1/2">
-          <h3 className="flex items-center text-large">
-            <span className="mr-2">종료일</span>
+          <h3 className="flex items-center space-x-2 text-large">
+            <span>종료일</span>
             <ToggleButton id="deadline" checked={hasDeadline} onChange={handleDeadlineToggle} />
           </h3>
           <input
@@ -247,10 +252,25 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           ))}
         </section>
       </div>
+
       <label htmlFor="content" className="mb-20">
-        <h3 className="text-large">내용</h3>
-        <textarea name="content" id="content" className="w-full border" rows={5} />
+        <h3 className="flex items-center space-x-2">
+          <span className="text-large">내용</span>
+          <ToggleButton id="preview" checked={preview} onChange={handlePreviewToggle} />
+        </h3>
+        {preview ? (
+          <CustomMarkdown markdown={watch('content')} />
+        ) : (
+          <textarea
+            id="content"
+            rows={10}
+            className="w-full border border-input p-10 placeholder:text-xs"
+            placeholder="마크다운 형식으로 입력해주세요."
+            {...register('content')}
+          />
+        )}
       </label>
+
       <label htmlFor="files">
         <h3 className="text-large">첨부파일</h3>
         <input type="file" id="files" />
