@@ -66,19 +66,19 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
             </button>
           </div>
         ))}
-        <label
-          htmlFor="newLink"
+        <div
           className={`flex h-25 items-center space-x-8 rounded-lg border border-input px-6 text-sm ${isFocused ? 'bg-white' : 'bg-disable'}`}
         >
           <input
-            id="newLink"
+            id="link"
             placeholder="ex) www.github.com"
             value={link}
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={handleLinkChange}
             type="text"
-            className="grow bg-inherit outline-none placeholder:text-emphasis"
+            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정...
+            className="h-full grow bg-inherit outline-none placeholder:text-emphasis"
           />
           <button
             type="button"
@@ -88,7 +88,7 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
           >
             <FaPlus className="size-8" />
           </button>
-        </label>
+        </div>
       </div>
     </section>
   );
