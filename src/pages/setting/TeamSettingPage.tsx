@@ -19,8 +19,8 @@ export default function TeamSettingPage() {
   }, [fetchData]);
 
   return (
-    <div>
-      <div className="mt-10 space-x-4 border-b-2 px-10">
+    <main>
+      <section className="mt-10 space-x-4 border-b-2 px-10">
         <button
           type="button"
           onClick={() => setView(TeamStatus.JOINED)}
@@ -35,29 +35,29 @@ export default function TeamSettingPage() {
         >
           대기현황
         </button>
-      </div>
+      </section>
 
-      <div className="mt-6 px-10">
+      <section className="mt-6 px-10">
         {/* 가입현황 레이아웃 */}
         {view === TeamStatus.JOINED && (
-          <div>
+          <article>
             <ul className="min-w-300 space-y-2 text-sm">
               {joinedTeamList?.map((team) => (
                 <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8">
                   <div className="flex max-h-full gap-4">
                     <div className="max-h-full w-45 shrink-0">
-                      <div className="text-xs font-bold text-main">team</div>
-                      <div className="break-all">{team.name}</div>
+                      <small className="text-xs font-bold text-main">team</small>
+                      <p className="break-all">{team.name}</p>
                     </div>
 
                     <div className="flex max-h-full w-45 shrink-0 flex-col">
-                      <div className="h-10 text-xs font-bold text-main">head</div>
-                      <div className="grow overflow-y-auto break-all scrollbar-hide">{team.creator}</div>
+                      <small className="h-10 text-xs font-bold text-main">head</small>
+                      <p className="grow overflow-y-auto break-all scrollbar-hide">{team.creator}</p>
                     </div>
                   </div>
 
                   <div className="flex h-full flex-grow items-center overflow-y-auto break-all px-4 scrollbar-hide">
-                    <div className="max-h-full">{team.content}</div>
+                    <p className="max-h-full">{team.content}</p>
                   </div>
                   <div className="w-45 shrink-0">
                     <button
@@ -70,29 +70,28 @@ export default function TeamSettingPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </article>
         )}
-
         {/* 대기현황 레이아웃 */}
         {view === TeamStatus.INVITED && (
-          <div>
+          <article>
             <ul className="min-w-300 space-y-2 text-sm">
               {invitedTeamList?.map((invite) => (
                 <li key={invite.teamId} className="flex h-50 items-center gap-4 border p-8">
                   <div className="flex max-h-full gap-4">
                     <div className="max-h-full w-45 shrink-0">
-                      <div className="text-xs font-bold text-main">team</div>
-                      <div className="break-all">{invite.name}</div>
+                      <small className="text-xs font-bold text-main">team</small>
+                      <p className="break-all">{invite.name}</p>
                     </div>
 
                     <div className="flex max-h-full w-45 shrink-0 flex-col">
-                      <div className="h-10 text-xs font-bold text-main">head</div>
-                      <div className="grow overflow-y-auto break-all scrollbar-hide">{invite.creator}</div>
+                      <small className="h-10 text-xs font-bold text-main">head</small>
+                      <p className="grow overflow-y-auto break-all scrollbar-hide">{invite.creator}</p>
                     </div>
                   </div>
 
                   <div className="flex h-full flex-grow items-center overflow-y-auto break-all px-4 scrollbar-hide">
-                    <div className="max-h-full">{invite.content}</div>
+                    <p className="max-h-full">{invite.content}</p>
                   </div>
                   <div className="flex shrink-0 flex-col gap-4">
                     <button
@@ -111,9 +110,9 @@ export default function TeamSettingPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </article>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
