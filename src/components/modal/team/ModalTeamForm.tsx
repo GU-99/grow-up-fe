@@ -5,10 +5,11 @@ import type { Team } from '@/types/TeamType';
 
 type ModalTeamFormProps = {
   formId: string;
+  teamId: Team['teamId'];
   onSubmit: SubmitHandler<Team>;
 };
 
-export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) {
+export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFormProps) {
   const { handleSubmit } = useForm<Team>();
 
   return (

@@ -14,7 +14,7 @@ export type Task = {
   taskId: number;
   name: string;
   userId: number;
-  // content: string;
+  content: string;
   startDate: string;
   endDate: string;
   files: string[];

@@ -13,7 +13,7 @@ const navList = [
     route: 'password',
   },
   {
-    label: 'My Teams',
+    label: '팀 관리',
     route: 'teams',
   },
 ];
@@ -33,8 +33,8 @@ export default function SettingLayout() {
       <ListSidebar title={`${USER_INFO_DUMMY.nickname} 님의 정보`}>
         <ListSetting navList={navList} />
       </ListSidebar>
-      <section className="flex w-2/3 flex-col border border-list bg-contents-box">
-        <header className="flex h-25 items-center justify-between border-b p-10">
+      <section className="flex grow flex-col border border-list bg-contents-box">
+        <header className="flex h-30 items-center justify-between border-b p-10">
           <div>
             <small className="font-bold text-category">{getTitle()}</small>
           </div>
