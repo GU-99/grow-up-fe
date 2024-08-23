@@ -5,9 +5,17 @@ import ValidationInput from '@components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import AuthFormLayout from '@layouts/AuthFormLayout';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import type { UserSignInForm } from '@/types/UserType';
+import { authAxios, defaultAxios } from '@/services/axiosProvider';
+import useToast from '@/hooks/useToast';
+import { setCookie } from '@/utils/cookies';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function SignInPage() {
+  const { toastError } = useToast();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -20,8 +28,28 @@ export default function SignInPage() {
     },
   });
 
-  const onSubmit = (data: UserSignInForm) => {
+  const onSubmit = async (data: UserSignInForm) => {
     console.log(data);
+    try {
+      const response = await defaultAxios.post('user/login', data, { withCredentials: true });
+
+      if (response.status === 200) {
+        const { accessToken } = response.data;
+
+        authAxios.defaults.headers.Authorization = `Bearer ${accessToken}`;
+        setCookie('accessToken', accessToken, { path: '/' });
+        console.log(document.cookie);
+        useAuthStore.getState().Login();
+
+        navigate('/', { replace: true });
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
+      }
+      console.error('로그인 도중 오류가 발생했습니다.', error);
+      toastError('로그인 도중 오류가 발생했습니다.');
+    }
   };
 
   return (
