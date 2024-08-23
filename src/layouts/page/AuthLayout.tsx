@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import AuthGULogo from '@/assets/auth_logo.svg';
+import AuthGULogo from '@assets/auth_logo.svg';
 
 export default function AuthLayout() {
   return (

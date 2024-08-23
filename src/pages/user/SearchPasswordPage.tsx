@@ -1,9 +1,9 @@
 import { useForm } from 'react-hook-form';
-import ValidationInput from '@/components/common/ValidationInput';
-import { USER_AUTH_VALIDATION_RULES } from '@/constants/formValidationRules';
-import AuthForm from '@/components/user/authForm/AuthForm';
-import FooterLinks from '@/components/user/authForm/FooterLinks';
-import { SearchPasswordForm } from '@/types/UserType';
+import AuthFormLayout from '@layouts/AuthFormLayout';
+import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
+import ValidationInput from '@components/common/ValidationInput';
+import FooterLinks from '@components/user/auth-form/FooterLinks';
+import type { SearchPasswordForm } from '@/types/UserType';
 
 export default function SearchPasswordPage() {
   const {
@@ -24,7 +24,7 @@ export default function SearchPasswordPage() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit(onSubmit)} marginTop="mt-34.9">
+    <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-34.9">
       {/* 아이디 */}
       <ValidationInput
         placeholder="아이디"
@@ -48,13 +48,11 @@ export default function SearchPasswordPage() {
         register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
       />
 
-      <div className="flex flex-col text-center">
-        <button type="submit" className="auth-btn" disabled={isSubmitting}>
-          비밀번호 찾기
-        </button>
-      </div>
+      <button type="submit" className="auth-btn" disabled={isSubmitting}>
+        비밀번호 찾기
+      </button>
 
       <FooterLinks type="searchPassword" />
-    </AuthForm>
+    </AuthFormLayout>
   );
 }

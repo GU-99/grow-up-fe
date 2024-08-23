@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import ListSidebar from '@components/sidebar/ListSidebar';
+import ListSetting from '@components/sidebar/ListSetting';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
-import ListSetting from '@/components/sidebar/ListSetting';
 
 const navList = [
   {
@@ -13,7 +13,7 @@ const navList = [
     route: 'password',
   },
   {
-    label: 'My Teams',
+    label: '팀 관리',
     route: 'teams',
   },
 ];
@@ -39,7 +39,7 @@ export default function SettingLayout() {
             <small className="font-bold text-category">{getTitle()}</small>
           </div>
         </header>
-        <div className="h-screen overflow-auto">
+        <div className="grow overflow-auto">
           <Outlet />
         </div>
       </section>
