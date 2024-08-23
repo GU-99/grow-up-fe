@@ -29,7 +29,6 @@ export default function SignInPage() {
   });
 
   const onSubmit = async (data: UserSignInForm) => {
-    console.log(data);
     try {
       const response = await defaultAxios.post('user/login', data, { withCredentials: true });
 
@@ -37,9 +36,7 @@ export default function SignInPage() {
         const { accessToken } = response.data;
 
         authAxios.defaults.headers.Authorization = `Bearer ${accessToken}`;
-        setCookie('accessToken', accessToken, { path: '/' });
-        console.log(document.cookie);
-        useAuthStore.getState().Login();
+        useAuthStore.getState().Login(accessToken);
 
         navigate('/', { replace: true });
       }
@@ -47,8 +44,7 @@ export default function SignInPage() {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
         return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
-      console.error('로그인 도중 오류가 발생했습니다.', error);
-      toastError('로그인 도중 오류가 발생했습니다.');
+      toastError(`로그인 도중 오류가 발생했습니다: ${error}`);
     }
   };
 

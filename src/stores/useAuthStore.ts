@@ -1,10 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 import { createStore } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { removeCookie, setCookie } from '@/utils/cookies';
 
 type AuthStore = {
   isAuthenticated: boolean;
-  Login: () => void;
+  Login: (accessToken: string) => void;
   Logout: () => void;
 };
 
@@ -12,13 +13,13 @@ export const useAuthStore = createStore(
   persist<AuthStore>(
     (set) => ({
       isAuthenticated: false,
-      accessToken: null,
-      Login: () => {
+      Login: (accessToken: string) => {
         set({ isAuthenticated: true });
+        setCookie('accessToken', accessToken, { path: '/' });
       },
       Logout: () => {
         set({ isAuthenticated: false });
-        document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        removeCookie('accessToken');
       },
     }),
     {
