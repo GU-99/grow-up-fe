@@ -125,7 +125,7 @@ const component: Partial<Components> = {
     const language = className?.split('-')[1] || '';
     const mappedLanguage = languageMap[language] || 'plaintext';
 
-    if (language && node?.position?.start.line === node?.position?.end.line) {
+    if (!language && node?.position?.start.line === node?.position?.end.line) {
       return <code className={`${className} rounded-sm border-none bg-[#E9ECEF] px-2`}>{children}</code>;
     }
     return (
