@@ -15,15 +15,13 @@ const authServiceHandler = [
       const accessToken = 'mockedAccessToken';
       const refreshToken = 'mockedRefreshToken';
 
-      return HttpResponse.json(
-        { accessToken },
-        {
-          status: 200,
-          headers: {
-            'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/;`,
-          },
+      return HttpResponse.json(null, {
+        status: 200,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Set-Cookie': `refreshToken=${refreshToken}`,
         },
-      );
+      });
     }
     return new HttpResponse(JSON.stringify({ message: '아이디 또는 비밀번호가 잘못되었습니다.' }), { status: 400 });
   }),

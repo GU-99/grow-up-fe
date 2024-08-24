@@ -10,7 +10,6 @@ import axios from 'axios';
 import type { UserSignInForm } from '@/types/UserType';
 import { authAxios, defaultAxios } from '@/services/axiosProvider';
 import useToast from '@/hooks/useToast';
-import { setCookie } from '@/utils/cookies';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function SignInPage() {
@@ -33,7 +32,13 @@ export default function SignInPage() {
       const response = await defaultAxios.post('user/login', data, { withCredentials: true });
 
       if (response.status === 200) {
-        const { accessToken } = response.data;
+        console.log(response.headers);
+        const accessToken = response.headers.authorization?.replace('Bearer ', '');
+
+        if (!accessToken) {
+          console.error('Access Token이 응답에 포함되지 않았습니다.');
+          return toastError('로그인에 실패했습니다.');
+        }
 
         authAxios.defaults.headers.Authorization = `Bearer ${accessToken}`;
         useAuthStore.getState().Login(accessToken);

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { SECOND } from '@constants/units';
 import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { getCookie } from '@/utils/cookies';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const defaultConfigOptions: AxiosRequestConfig = {
@@ -23,3 +24,18 @@ export const authAxios = axiosProvider({
   },
   withCredentials: true,
 });
+
+// 요청 인터셉터
+authAxios.interceptors.request.use(
+  (config) => {
+    const modifiedConfig = { ...config };
+
+    const accessToken = getCookie('accessToken');
+    if (accessToken) modifiedConfig.headers.Authorization = `Bearer ${accessToken}`;
+
+    return modifiedConfig;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
