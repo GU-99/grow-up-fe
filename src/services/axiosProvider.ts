@@ -2,7 +2,7 @@ import axios from 'axios';
 import { SECOND } from '@constants/units';
 import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { getCookie } from '@/utils/cookies';
+import { getCookie, setCookie } from '@/utils/cookies';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const defaultConfigOptions: AxiosRequestConfig = {
@@ -36,6 +36,30 @@ authAxios.interceptors.request.use(
     return modifiedConfig;
   },
   (error) => {
+    return Promise.reject(error);
+  },
+);
+
+// 응답 인터셉터
+authAxios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401) {
+      try {
+        const refreshResponse = await defaultAxios.post('user/login/refresh', null, { withCredentials: true });
+        const newAccessToken = refreshResponse.headers.Authorization?.replace('Bearer ', '');
+
+        authAxios.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
+        setCookie('accessToken', newAccessToken, { path: '/' });
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return await axios(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
     return Promise.reject(error);
   },
 );
