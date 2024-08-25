@@ -2,7 +2,7 @@ import axios from 'axios';
 import { SECOND } from '@constants/units';
 import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { getCookie, setCookie } from '@/utils/cookies';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const defaultConfigOptions: AxiosRequestConfig = {
@@ -30,7 +30,7 @@ authAxios.interceptors.request.use(
   (config) => {
     const modifiedConfig = { ...config };
 
-    const accessToken = getCookie('accessToken');
+    const accessToken = useAuthStore.getState();
     if (accessToken) modifiedConfig.headers.Authorization = `Bearer ${accessToken}`;
 
     return modifiedConfig;
@@ -52,7 +52,7 @@ authAxios.interceptors.response.use(
         const newAccessToken = refreshResponse.headers.Authorization?.replace('Bearer ', '');
 
         authAxios.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
-        setCookie('accessToken', newAccessToken, { path: '/' });
+        useAuthStore.getState().setAccessToken(newAccessToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return await axios(originalRequest);
