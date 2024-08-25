@@ -49,12 +49,12 @@ authAxios.interceptors.response.use(
     if (error.response?.status === 401) {
       try {
         const refreshResponse = await defaultAxios.post('user/login/refresh', null, { withCredentials: true });
-        const newAccessToken = refreshResponse.headers.Authorization?.replace('Bearer ', '');
+        const newAccessToken = refreshResponse.headers.Authorization; // 응답값: `Bearer ${newAccessToken}`
 
-        authAxios.defaults.headers.Authorization = `Bearer ${newAccessToken}`;
-        useAuthStore.getState().setAccessToken(newAccessToken);
+        authAxios.defaults.headers.Authorization = newAccessToken;
+        useAuthStore.getState().setAccessToken(newAccessToken.replace('Bearer ', ''));
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = newAccessToken;
         return await axios(originalRequest);
       } catch (refreshError) {
         return Promise.reject(refreshError);
