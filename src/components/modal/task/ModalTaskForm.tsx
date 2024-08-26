@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import { useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
+import { GoPlusCircle } from 'react-icons/go';
 import { IoMdCloseCircle } from 'react-icons/io';
 
+import { TASK_SETTINGS } from '@constants/settings';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import RoleIcon from '@components/common/RoleIcon';
 import ToggleButton from '@components/common/ToggleButton';
@@ -13,6 +15,7 @@ import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
 import useTaskQuery from '@hooks/query/useTaskQuery';
 import useStatusQuery from '@hooks/query/useStatusQuery';
+import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
@@ -20,6 +23,7 @@ import type { UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 
+type CustomFile = { id: string; file: File };
 type ModalTaskFormProps = {
   formId: string;
   project: Project;
@@ -36,11 +40,12 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const [keyword, setKeyword] = useState('');
   const [workers, setWorkers] = useState<UserWithRole[]>([]);
   const [preview, setPreview] = useState(false);
+  const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList } = useStatusQuery(projectId, taskId);
   const { taskNameList } = useTaskQuery(projectId);
   const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
-  const { toastInfo } = useToast();
+  const { toastInfo, toastWarn } = useToast();
 
   // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
   const {
@@ -114,11 +119,47 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     clearData();
   };
 
-  const handleDeleteClick = (user: UserWithRole) => {
+  const handleWorkerDeleteClick = (user: UserWithRole) => {
     const filteredWorker = workers.filter((worker) => worker.userId !== user.userId);
     const workersIdList = filteredWorker.map((worker) => worker.userId);
     setWorkers(filteredWorker);
     setValue('userId', workersIdList);
+  };
+
+  const handleFileDeleteClick = (fileId: string) => {
+    const filteredFiles = files.filter((file) => file.id !== fileId);
+    setFiles(filteredFiles);
+  };
+
+  const updateFiles = (newFiles: FileList) => {
+    // 최대 파일 등록 개수 확인
+    if (files.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
+      return toastWarn(`최대로 등록 가능한 파일수는 ${TASK_SETTINGS.MAX_FILE_COUNT}개입니다.`);
+    }
+
+    // 새로운 파일별 파일 크기 확인 & 고유 ID 부여
+    const customFiles: CustomFile[] = [];
+    for (let i = 0; i < newFiles.length; i++) {
+      const file = newFiles[i];
+      if (file.size > TASK_SETTINGS.MAX_FILE_SIZE) {
+        return toastWarn(`최대 ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`);
+      }
+      customFiles.push({ id: `${file.name}_${file.size}_${Date.now()}`, file });
+    }
+
+    setFiles((prev) => [...prev, ...customFiles]);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (!files || files.length === 0) return;
+    updateFiles(files);
+  };
+
+  const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
+    const { files } = e.dataTransfer;
+    if (!files || files.length === 0) return;
+    updateFiles(files);
   };
 
   return (
@@ -132,7 +173,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             <label
               key={statusId}
               htmlFor={name}
-              className={`flex items-center rounded-lg border px-5 py-3 text-emphasis ${isChecked ? 'border-input bg-white' : 'bg-button'}`}
+              className={`flex cursor-pointer items-center rounded-lg border px-5 py-3 text-emphasis ${isChecked ? 'border-input bg-white' : 'bg-button'}`}
             >
               <input
                 id={name}
@@ -245,7 +286,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             <div key={user.userId} className="flex items-center space-x-4 rounded-md bg-button px-5">
               <RoleIcon roleName={user.roleName} />
               <div>{user.nickname}</div>
-              <button type="button" aria-label="delete-worker" onClick={() => handleDeleteClick(user)}>
+              <button type="button" aria-label="delete-worker" onClick={() => handleWorkerDeleteClick(user)}>
                 <IoMdCloseCircle className="text-error" />
               </button>
             </div>
@@ -273,7 +314,29 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
       <label htmlFor="files">
         <h3 className="text-large">첨부파일</h3>
-        <input type="file" id="files" />
+        <input type="file" id="files" className="h-0 w-0 opacity-0" multiple hidden onChange={handleFileChange} />
+        <section
+          className="flex cursor-pointer items-center gap-4 rounded-sl border-2 border-dashed border-input p-10"
+          onDrop={handleFileDrop}
+        >
+          <ul className="flex grow flex-wrap gap-4">
+            {files.map(({ id, file }) => (
+              <li key={id} className="flex items-center gap-4 rounded-md bg-button px-4 py-2">
+                <span>{file.name}</span>
+                <IoMdCloseCircle
+                  className="text-error"
+                  onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
+                    e.preventDefault();
+                    handleFileDeleteClick(id);
+                  }}
+                />
+              </li>
+            ))}
+          </ul>
+          <div>
+            <GoPlusCircle className="size-15 text-[#5E5E5E]" />
+          </div>
+        </section>
       </label>
     </form>
   );
