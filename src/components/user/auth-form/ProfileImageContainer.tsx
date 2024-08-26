@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@utils/converter';
 import { USER_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
+import { useEffect, useRef } from 'react';
 
 type ProfileImageContainerProps = {
   imageUrl: string;
@@ -13,8 +14,15 @@ type ProfileImageContainerProps = {
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
   const { setValue } = useFormContext();
   const { toastWarn } = useToast();
+  const imageRef = useRef<string | null>(null);
 
-  // 이미지 관련 코드
+  // 컴포넌트 언마운트 시 이미지 URL 해제
+  useEffect(() => {
+    return () => {
+      if (imageRef.current) URL.revokeObjectURL(imageRef.current);
+    };
+  }, []);
+
   const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
@@ -29,9 +37,15 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
     const image = URL.createObjectURL(file);
     setImageUrl(image);
     setValue('profileUrl', image);
+    imageRef.current = image;
   };
 
   const handleRemoveImg = () => {
+    if (imageRef.current) {
+      URL.revokeObjectURL(imageRef.current);
+      imageRef.current = null;
+    }
+
     setImageUrl('');
     setValue('profileUrl', '');
   };
