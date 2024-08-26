@@ -1,9 +1,9 @@
 import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
-import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from './regex';
-import { USER_SETTINGS } from './userSettings';
-import { Project } from '@/types/ProjectType';
-import { Task } from '@/types/TaskType';
+import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from '@constants/regex';
+import { USER_SETTINGS } from '@constants/settings';
+import type { Project } from '@/types/ProjectType';
+import type { Task } from '@/types/TaskType';
 
 type ValidateOption = { [key: string]: (value: string) => string | boolean };
 

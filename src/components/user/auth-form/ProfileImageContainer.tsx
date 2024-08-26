@@ -2,7 +2,7 @@ import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@utils/converter';
-import { USER_SETTINGS } from '@constants/userSettings';
+import { USER_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
 
 type ProfileImageContainerProps = {

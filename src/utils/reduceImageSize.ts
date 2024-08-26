@@ -1,4 +1,4 @@
-import { USER_SETTINGS } from '@/constants/userSettings';
+import { USER_SETTINGS } from '@constants/settings';
 
 const reduceImageSize = (objUrl: string) => {
   return new Promise<Blob>((resolve, reject) => {
