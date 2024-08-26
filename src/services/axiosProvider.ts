@@ -2,7 +2,9 @@ import axios from 'axios';
 import { SECOND } from '@constants/units';
 import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
+import useToast from '@/hooks/useToast';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const defaultConfigOptions: AxiosRequestConfig = {
@@ -45,7 +47,10 @@ authAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const nav = useNavigate();
+    const { toastError } = useToast();
 
+    // Access token 만료 시 처리
     if (error.response?.status === 401) {
       try {
         const refreshResponse = await defaultAxios.post('user/login/refresh', null, { withCredentials: true });
@@ -57,6 +62,16 @@ authAxios.interceptors.response.use(
         originalRequest.headers.Authorization = newAccessToken;
         return await axios(originalRequest);
       } catch (refreshError) {
+        // Refresh token 에러/만료 시 처리
+        console.error('Refresh token error:', refreshError);
+
+        toastError('로그인 정보가 만료되었습니다. 다시 로그인 해주세요.');
+
+        // 3초 후 페이지 이동
+        setTimeout(() => {
+          useAuthStore.getState().Logout();
+          nav('/signin');
+        }, 3000);
         return Promise.reject(refreshError);
       }
     }

@@ -30,21 +30,15 @@ export default function SignInPage() {
   const onSubmit = async (data: UserSignInForm) => {
     try {
       const response = await defaultAxios.post('user/login', data, { withCredentials: true });
+      if (response.status !== 200) return toastError('잘못된 응답입니다. 다시 로그인 해주세요.');
 
-      if (response.status === 200) {
-        console.log(response.headers);
-        const accessToken = response.headers.authorization?.replace('Bearer ', '');
+      const accessToken = response.headers.authorization;
+      if (!accessToken) return toastError('로그인에 실패했습니다.');
 
-        if (!accessToken) {
-          console.error('Access Token이 응답에 포함되지 않았습니다.');
-          return toastError('로그인에 실패했습니다.');
-        }
+      authAxios.defaults.headers.Authorization = accessToken;
+      useAuthStore.getState().Login(accessToken.replace('Bearer ', ''));
 
-        authAxios.defaults.headers.Authorization = `Bearer ${accessToken}`;
-        useAuthStore.getState().Login(accessToken);
-
-        navigate('/', { replace: true });
-      }
+      navigate('/', { replace: true });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
         return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
