@@ -287,7 +287,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
               <RoleIcon roleName={user.roleName} />
               <div>{user.nickname}</div>
               <button type="button" aria-label="delete-worker" onClick={() => handleWorkerDeleteClick(user)}>
-                <IoMdCloseCircle className="text-error" />
+                <IoMdCloseCircle className="text-close" />
               </button>
             </div>
           ))}
@@ -324,7 +324,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
               <li key={id} className="flex items-center gap-4 rounded-md bg-button px-4 py-2">
                 <span>{file.name}</span>
                 <IoMdCloseCircle
-                  className="text-error"
+                  className="text-close"
                   onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
                     e.preventDefault();
                     handleFileDeleteClick(id);
