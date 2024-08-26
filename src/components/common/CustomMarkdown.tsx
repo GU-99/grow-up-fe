@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { hybrid } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { languageMap } from '@constants/language';
 import type { Components } from 'react-markdown';
 
 type CustomMarkdownProps = {
@@ -14,29 +17,29 @@ const component: Partial<Components> = {
     return (
       <>
         <h1 className="text-3xl">{children}</h1>
-        <hr className="my-3" />
+        <hr className="my-5" />
       </>
     );
   },
   h2(props) {
     const { children } = props;
-    return <h2 className="mb-3 text-2xl">{children}</h2>;
+    return <h2 className="mb-5 text-2xl">{children}</h2>;
   },
   h3(props) {
     const { children } = props;
-    return <h3 className="mb-3 text-xl">{children}</h3>;
+    return <h3 className="mb-5 text-xl">{children}</h3>;
   },
   h4(props) {
     const { children } = props;
-    return <h3 className="mb-3 text-lg">{children}</h3>;
+    return <h3 className="mb-5 text-lg">{children}</h3>;
   },
   h5(props) {
     const { children } = props;
-    return <h3 className="mb-3 text-base">{children}</h3>;
+    return <h3 className="mb-5 text-base">{children}</h3>;
   },
   h6(props) {
     const { children } = props;
-    return <h3 className="mb-3 text-sm">{children}</h3>;
+    return <h3 className="mb-5 text-sm">{children}</h3>;
   },
   hr() {
     return <hr className="my-5" />;
@@ -51,15 +54,15 @@ const component: Partial<Components> = {
   },
   img(props) {
     const { src, alt } = props;
-    return <img src={src} alt={alt} className="m-auto" />;
+    return <img src={src} alt={alt} className="m-auto my-5" />;
   },
   blockquote(props) {
     const { children } = props;
-    return <blockquote className="border-l-[3px] border-[#20C997] bg-[#F8F9FA] p-4">{children}</blockquote>;
+    return <blockquote className="my-5 border-l-[3px] border-[#20C997] bg-[#F8F9FA] p-8">{children}</blockquote>;
   },
   table(props) {
     const { children } = props;
-    return <table className="border-collapse overflow-hidden rounded-md shadow-md">{children}</table>;
+    return <table className="my-5 border-collapse overflow-hidden rounded-md shadow-md">{children}</table>;
   },
   th(props) {
     const { children, style } = props;
@@ -118,17 +121,40 @@ const component: Partial<Components> = {
     return <section className={className}>{children}</section>;
   },
   code(props) {
-    const { children, className } = props;
-    return <code className={`${className} rounded-sm border-none bg-[#E9ECEF] px-2`}>{children}</code>;
+    const { children, className, node } = props;
+    const language = className?.split('-')[1] || '';
+    const mappedLanguage = languageMap[language] || 'plaintext';
+
+    if (!language && node?.position?.start.line === node?.position?.end.line) {
+      return <code className={`${className} rounded-sm border-none bg-[#E9ECEF] px-2`}>{children}</code>;
+    }
+    return (
+      <SyntaxHighlighter style={hybrid} language={mappedLanguage} className="my-5">
+        {children as string}
+      </SyntaxHighlighter>
+    );
   },
 };
 
+function getChangedMarkdownForLineBreak(markdown: string) {
+  return markdown
+    .split('\n')
+    .map((sentence) => (sentence === '' ? '\n<br />\n' : sentence))
+    .join('\n');
+}
+
 export default function CustomMarkdown({ markdown }: CustomMarkdownProps) {
+  const changedMarkdown = useMemo(() => getChangedMarkdownForLineBreak(markdown), [markdown]);
+
   return (
     <section className="rounded-md border border-input p-10 text-sm">
-      <Markdown components={component} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-        {markdown}
-      </Markdown>
+      {markdown.trim().length === 0 ? (
+        <div className="text-xs text-gray-400/90">입력된 내용이 없습니다.</div>
+      ) : (
+        <Markdown components={component} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+          {changedMarkdown}
+        </Markdown>
+      )}
     </section>
   );
 }

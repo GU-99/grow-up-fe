@@ -1,4 +1,4 @@
-import { USER_SETTINGS } from './userSettings';
+import { USER_SETTINGS } from '@constants/settings';
 
 export const EMAIL_REGEX = /^[a-z0-9._%+-]+@[a-z0-9-]+\.[a-z]{2,3}(?:\.[a-z]{2,3})?$/i;
 export const PHONE_REGEX = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;

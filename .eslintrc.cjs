@@ -25,6 +25,8 @@ module.exports = {
     'no-param-reassign': 'warn',
     'no-return-assign': 'warn',
     'no-unused-vars': 'warn',
+    'no-cond-assign': 'off',
+    'no-plusplus': 'warn',
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'react/require-default-props': 'off',

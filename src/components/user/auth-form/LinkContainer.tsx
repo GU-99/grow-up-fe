@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
-import { USER_SETTINGS } from '@constants/userSettings';
+import { USER_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
 
 type LinkContainerProps = {
