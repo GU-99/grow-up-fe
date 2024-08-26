@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -136,14 +136,23 @@ const component: Partial<Components> = {
   },
 };
 
+function getChangedMarkdownForLineBreak(markdown: string) {
+  return markdown
+    .split('\n')
+    .map((sentence) => (sentence === '' ? '\n<br />\n' : sentence))
+    .join('\n');
+}
+
 export default function CustomMarkdown({ markdown }: CustomMarkdownProps) {
+  const changedMarkdown = useMemo(() => getChangedMarkdownForLineBreak(markdown), [markdown]);
+
   return (
     <section className="rounded-md border border-input p-10 text-sm">
       {markdown.trim().length === 0 ? (
         <div className="text-xs text-gray-400/90">입력된 내용이 없습니다.</div>
       ) : (
         <Markdown components={component} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {markdown}
+          {changedMarkdown}
         </Markdown>
       )}
     </section>
