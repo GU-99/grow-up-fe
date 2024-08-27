@@ -7,10 +7,12 @@ import FooterLinks from '@components/user/auth-form/FooterLinks';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import type { UserSignInForm } from '@/types/UserType';
-import { authAxios, defaultAxios } from '@/services/axiosProvider';
+import { authAxios } from '@/services/axiosProvider';
 import useToast from '@/hooks/useToast';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { login } from '@/services/authService';
 
 export default function SignInPage() {
   const { toastError } = useToast();
@@ -27,11 +29,9 @@ export default function SignInPage() {
     },
   });
 
-  const onSubmit = async (data: UserSignInForm) => {
-    try {
-      const response = await defaultAxios.post('user/login', data, { withCredentials: true });
-      if (response.status !== 200) return toastError('잘못된 응답입니다. 다시 로그인 해주세요.');
-
+  const signIn = useMutation({
+    mutationFn: (data: UserSignInForm) => login(data),
+    onSuccess: (response) => {
       const accessToken = response.headers.authorization;
       if (!accessToken) return toastError('로그인에 실패했습니다.');
 
@@ -39,12 +39,17 @@ export default function SignInPage() {
       useAuthStore.getState().Login(accessToken.replace('Bearer ', ''));
 
       navigate('/', { replace: true });
-    } catch (error) {
+    },
+    onError: (error: Error) => {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
         return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
       toastError(`로그인 도중 오류가 발생했습니다: ${error}`);
-    }
+    },
+  });
+
+  const onSubmit = async (data: UserSignInForm) => {
+    signIn.mutate(data);
   };
 
   return (

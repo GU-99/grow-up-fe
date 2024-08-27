@@ -23,7 +23,6 @@ export const useAuthStore = createStore(
       },
       Logout: () => {
         set({ isAuthenticated: false, accessToken: null });
-        // TODO: 로그아웃 로직 요청 코드 추가
       },
     }),
     {
