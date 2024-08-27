@@ -16,10 +16,14 @@ const queryClientOptions: QueryClientConfig = {
   },
   queryCache: new QueryCache({
     onError: (error) => {
-      console.error(`${error.name}:${error.message}:${error.stack}`);
+      console.error(`Query: ${error.name}:${error.message}:${error.stack}`);
     },
   }),
-  mutationCache: new MutationCache({}),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      console.error(`Mutation: ${error.name}:${error.message}:${error.stack}`);
+    },
+  }),
 };
 
 export const queryClient = new QueryClient(queryClientOptions);
