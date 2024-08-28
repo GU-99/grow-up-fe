@@ -31,5 +31,5 @@ export type TaskForm = {
   statusId: number;
 };
 
-export type TaskWithStatus = RenameKeys<ProjectStatus, StatusKeyMapping> & Task;
-export type TaskListWithStatus = ProjectStatus & { tasks: Task[] };
+export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
+export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };

@@ -8,7 +8,7 @@ import UpdateModalTask from '@components/modal/task/UpdateModalTask';
 import useModal from '@hooks/useModal';
 import useProjectContext from '@hooks/useProjectContext';
 import Validator from '@utils/Validator';
-import { TASK_DUMMY } from '@mocks/mockData';
+import { TASK_SPECIAL_DUMMY } from '@mocks/mockData';
 import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
 import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -74,7 +74,7 @@ export default function CalendarPage() {
   );
 
   const state = {
-    events: getCalendarTask(TASK_DUMMY)
+    events: getCalendarTask(TASK_SPECIAL_DUMMY)
       .map((task) => ({
         title: task.name,
         start: new Date(task.startDate),

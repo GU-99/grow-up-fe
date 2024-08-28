@@ -4,7 +4,7 @@ import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContain
 import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
-import { TASK_DUMMY } from '@mocks/mockData';
+import { TASK_SPECIAL_DUMMY } from '@mocks/mockData';
 import type { Task, TaskListWithStatus } from '@/types/TaskType';
 
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
@@ -50,7 +50,7 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
 
 // ToDo: DnD시 가시성을 위한 애니메이션 처리 추가할 것
 export default function KanbanPage() {
-  const [statusTasks, setStatusTasks] = useState<TaskListWithStatus[]>(TASK_DUMMY);
+  const [statusTasks, setStatusTasks] = useState<TaskListWithStatus[]>(TASK_SPECIAL_DUMMY);
 
   const handleDragEnd = (dropResult: DropResult) => {
     const { source, destination, type } = dropResult;

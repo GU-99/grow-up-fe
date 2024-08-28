@@ -1,8 +1,10 @@
+import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
+
 import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
-import type { TaskListWithStatus } from '@/types/TaskType';
+import type { Task, TaskListWithStatus } from '@/types/TaskType';
 import type { Role } from '@/types/RoleType';
 
 type TeamUser = {
@@ -284,6 +286,12 @@ export const TEAM_USER_DUMMY: TeamUser[] = [
   // 팀2 소속 유저 정보
   {
     teamId: 2,
+    userId: 1,
+    roleId: 2,
+    isPendingApproval: true,
+  },
+  {
+    teamId: 2,
     userId: 3,
     roleId: 2,
     isPendingApproval: true,
@@ -463,7 +471,7 @@ export const PROJECT_DUMMY: Project[] = [
     startDate: new Date('2024-05-15 00:00:00'),
     endDate: new Date('2024-09-01  00:00:00'),
     createAt: new Date('2024-05-15'),
-    updateAt: new Date('2025-05-15'),
+    updateAt: new Date('2024-05-15'),
   },
   {
     projectId: 3,
@@ -478,30 +486,170 @@ export const PROJECT_DUMMY: Project[] = [
 ] as const;
 
 // 프로젝트 상태 테이블 Mock
-// ToDo: 프로젝트 상태 테이블용 더미 데이터 변경 필요
 export const STATUS_DUMMY: ProjectStatus[] = [
+  // 프로젝트1 상태
   {
     statusId: 1,
-    name: 'To Do',
-    color: '#c83c00',
+    projectId: 1,
+    name: '할일',
+    color: PROJECT_STATUS_COLORS.RED,
     order: 1,
   },
   {
     statusId: 2,
-    name: 'In Progress',
-    color: '#dab700',
+    projectId: 1,
+    name: '진행중',
+    color: PROJECT_STATUS_COLORS.YELLOW,
     order: 2,
   },
   {
     statusId: 3,
-    name: 'Done',
-    color: '#237700',
+    projectId: 1,
+    name: '완료',
+    color: PROJECT_STATUS_COLORS.GREEN,
     order: 3,
+  },
+  // 프로젝트2 상태
+  {
+    statusId: 4,
+    projectId: 2,
+    name: '할일',
+    color: PROJECT_STATUS_COLORS.RED,
+    order: 1,
+  },
+  {
+    statusId: 5,
+    projectId: 2,
+    name: '진행중',
+    color: PROJECT_STATUS_COLORS.YELLOW,
+    order: 2,
+  },
+  {
+    statusId: 6,
+    projectId: 2,
+    name: '완료',
+    color: PROJECT_STATUS_COLORS.GREEN,
+    order: 3,
+  },
+  // 프로젝트3 상태
+  {
+    statusId: 7,
+    projectId: 3,
+    name: 'To Do',
+    color: PROJECT_STATUS_COLORS.YELLOW,
+    order: 1,
+  },
+  {
+    statusId: 8,
+    projectId: 3,
+    name: 'In Progress',
+    color: PROJECT_STATUS_COLORS.ORANGE,
+    order: 2,
+  },
+  {
+    statusId: 9,
+    projectId: 3,
+    name: 'In Review',
+    color: PROJECT_STATUS_COLORS.RED,
+    order: 3,
+  },
+  {
+    statusId: 10,
+    projectId: 3,
+    name: 'Done',
+    color: PROJECT_STATUS_COLORS.BLUE,
+    order: 4,
   },
 ] as const;
 
+export const TASK_DUMMY: Task[] = [
+  // 프로젝트3 완료 상태
+  {
+    taskId: 1,
+    name: 'task 상태 추가 모달 작업하기',
+    order: 1,
+    userId: 1,
+    content: '',
+    files: [],
+    startDate: '2024-06-22',
+    endDate: '2024-06-26',
+  },
+  {
+    taskId: 2,
+    name: 'project layout 작성하기',
+    order: 2,
+    userId: 3,
+    content: '',
+    files: [],
+    startDate: '2024-06-18',
+    endDate: '2024-06-21',
+  },
+  {
+    taskId: 3,
+    name: 'tailwindcss 설정하기',
+    order: 3,
+    userId: 9,
+    content: '',
+    files: [],
+    startDate: '2024-06-14',
+    endDate: '2024-06-18',
+  },
+  // 프로젝트2 진행중 상태
+  {
+    taskId: 4,
+    name: 'API 명세서 작성하기',
+    order: 2,
+    userId: 1,
+    content: '',
+    files: [],
+    startDate: '2024-06-27',
+    endDate: '2024-06-29',
+  },
+  {
+    taskId: 5,
+    name: 'DnD 기술 조사하기',
+    order: 1,
+    userId: 3,
+    content: `# AITalk\n## 주제\nDnD 기술 조사하기\n\n※\`DnD\`란 Drag and Drop의 약자다\n\n## 라이브러리 선정\n[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) 등과 같이 다양한 라이브러리 중 어느 것을 선정할 것인가?`,
+    files: [],
+    startDate: '2024-06-27',
+    endDate: '2024-06-29',
+  },
+  // 프로젝트2 할일 상태
+  {
+    taskId: 6,
+    name: '할일 추가 모달 구현하기',
+    order: 1,
+    userId: 1,
+    content: '',
+    files: [],
+    startDate: '2024-06-26',
+    endDate: '2024-07-02',
+  },
+  {
+    taskId: 7,
+    name: 'ID 찾기 페이지 작성하기',
+    order: 2,
+    userId: 3,
+    content: '',
+    files: [],
+    startDate: '2024-07-03',
+    endDate: '2024-07-05',
+  },
+  {
+    taskId: 8,
+    name: 'DnD 구현하기',
+    order: 3,
+    userId: 9,
+    content: '',
+    files: [],
+    startDate: '2024-06-30',
+    endDate: '2024-07-02',
+  },
+];
+
 // 특수 케이스: 할일 목록을 프로젝트 상태별로 정리하여 내려준 Mock
-export const TASK_DUMMY: TaskListWithStatus[] = [
+export const TASK_SPECIAL_DUMMY: TaskListWithStatus[] = [
   {
     statusId: 1,
     name: 'To Do',
@@ -509,17 +657,17 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
     order: 1,
     tasks: [
       {
-        taskId: 7,
+        taskId: 6,
         name: '할일 추가 모달 구현하기',
         order: 1,
-        userId: 3,
+        userId: 1,
         content: '',
         files: [],
         startDate: '2024-06-26',
         endDate: '2024-07-02',
       },
       {
-        taskId: 8,
+        taskId: 7,
         name: 'ID 찾기 페이지 작성하기',
         order: 2,
         userId: 3,
@@ -529,10 +677,10 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
         endDate: '2024-07-05',
       },
       {
-        taskId: 9,
+        taskId: 8,
         name: 'DnD 구현하기',
         order: 3,
-        userId: 1,
+        userId: 9,
         content: '',
         files: [],
         startDate: '2024-06-30',
@@ -550,8 +698,8 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
         taskId: 5,
         name: 'DnD 기술 조사하기',
         order: 1,
-        userId: 1,
-        content: '',
+        userId: 3,
+        content: `# AITalk\n## 주제\nDnD 기술 조사하기\n\n※\`DnD\`란 Drag and Drop의 약자다\n\n## 라이브러리 선정\n[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) 등과 같이 다양한 라이브러리 중 어느 것을 선정할 것인가?`,
         files: [],
         startDate: '2024-06-27',
         endDate: '2024-06-29',
@@ -560,7 +708,7 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
         taskId: 4,
         name: 'API 명세서 작성하기',
         order: 2,
-        userId: 2,
+        userId: 1,
         content: '',
         files: [],
         startDate: '2024-06-27',
@@ -578,7 +726,7 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
         taskId: 1,
         name: 'task 상태 추가 모달 작업하기',
         order: 1,
-        userId: 2,
+        userId: 1,
         content: '',
         files: [],
         startDate: '2024-06-22',
@@ -588,7 +736,7 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
         taskId: 2,
         name: 'project layout 작성하기',
         order: 2,
-        userId: 1,
+        userId: 3,
         content: '',
         files: [],
         startDate: '2024-06-18',
@@ -598,7 +746,7 @@ export const TASK_DUMMY: TaskListWithStatus[] = [
         taskId: 3,
         name: 'tailwindcss 설정하기',
         order: 3,
-        userId: 3,
+        userId: 9,
         content: '',
         files: [],
         startDate: '2024-06-14',
