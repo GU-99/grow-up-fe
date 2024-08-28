@@ -1,4 +1,4 @@
-import { defaultAxios } from '@services/axiosProvider';
+import { authAxios } from '@services/axiosProvider';
 import type { User, UserSignInForm } from '@/types/UserType';
 
 /**
@@ -10,5 +10,5 @@ import type { User, UserSignInForm } from '@/types/UserType';
  * @returns {Promise<AxiosResponse<User>>}
  */
 export async function login(loginForm: UserSignInForm) {
-  return defaultAxios.post<User>('user/login', loginForm, { withCredentials: true });
+  return authAxios.post<User>('user/login', loginForm, { withCredentials: true });
 }
