@@ -4,7 +4,7 @@ export type ProjectStatus = {
   projectId: number;
   name: string;
   colorCode: string;
-  order: number;
+  sortOrder: number;
 };
 
 export type ProjectStatusForm = Pick<ProjectStatus, 'colorCode' | 'name'>;

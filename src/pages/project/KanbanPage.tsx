@@ -17,7 +17,7 @@ function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: Drop
 
   newStatusTasks.splice(source.index, 1);
   newStatusTasks.splice(destination.index, 0, stausTask);
-  newStatusTasks.forEach((status, index) => (status.order = index + 1));
+  newStatusTasks.forEach((status, index) => (status.sortOrder = index + 1));
 
   return newStatusTasks;
 }

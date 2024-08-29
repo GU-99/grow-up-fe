@@ -493,21 +493,21 @@ export const STATUS_DUMMY: ProjectStatus[] = [
     projectId: 1,
     name: '할일',
     colorCode: PROJECT_STATUS_COLORS.RED,
-    order: 1,
+    sortOrder: 1,
   },
   {
     statusId: 2,
     projectId: 1,
     name: '진행중',
     colorCode: PROJECT_STATUS_COLORS.YELLOW,
-    order: 2,
+    sortOrder: 2,
   },
   {
     statusId: 3,
     projectId: 1,
     name: '완료',
     colorCode: PROJECT_STATUS_COLORS.GREEN,
-    order: 3,
+    sortOrder: 3,
   },
   // 프로젝트2 상태
   {
@@ -515,21 +515,21 @@ export const STATUS_DUMMY: ProjectStatus[] = [
     projectId: 2,
     name: '할일',
     colorCode: PROJECT_STATUS_COLORS.RED,
-    order: 1,
+    sortOrder: 1,
   },
   {
     statusId: 5,
     projectId: 2,
     name: '진행중',
     colorCode: PROJECT_STATUS_COLORS.YELLOW,
-    order: 2,
+    sortOrder: 2,
   },
   {
     statusId: 6,
     projectId: 2,
     name: '완료',
     colorCode: PROJECT_STATUS_COLORS.GREEN,
-    order: 3,
+    sortOrder: 3,
   },
   // 프로젝트3 상태
   {
@@ -537,28 +537,28 @@ export const STATUS_DUMMY: ProjectStatus[] = [
     projectId: 3,
     name: 'To Do',
     colorCode: PROJECT_STATUS_COLORS.YELLOW,
-    order: 1,
+    sortOrder: 1,
   },
   {
     statusId: 8,
     projectId: 3,
     name: 'In Progress',
     colorCode: PROJECT_STATUS_COLORS.ORANGE,
-    order: 2,
+    sortOrder: 2,
   },
   {
     statusId: 9,
     projectId: 3,
     name: 'In Review',
     colorCode: PROJECT_STATUS_COLORS.RED,
-    order: 3,
+    sortOrder: 3,
   },
   {
     statusId: 10,
     projectId: 3,
     name: 'Done',
     colorCode: PROJECT_STATUS_COLORS.BLUE,
-    order: 4,
+    sortOrder: 4,
   },
 ] as const;
 
@@ -662,7 +662,7 @@ export const TASK_SPECIAL_DUMMY: TaskListWithStatus[] = [
     statusId: 1,
     name: 'To Do',
     colorCode: '#c83c00',
-    order: 1,
+    sortOrder: 1,
     tasks: [
       {
         taskId: 6,
@@ -700,7 +700,7 @@ export const TASK_SPECIAL_DUMMY: TaskListWithStatus[] = [
     statusId: 2,
     name: 'In Progress',
     colorCode: '#dab700',
-    order: 2,
+    sortOrder: 2,
     tasks: [
       {
         taskId: 5,
@@ -728,7 +728,7 @@ export const TASK_SPECIAL_DUMMY: TaskListWithStatus[] = [
     statusId: 3,
     name: 'Done',
     colorCode: '#237700',
-    order: 3,
+    sortOrder: 3,
     tasks: [
       {
         taskId: 1,

@@ -6,7 +6,7 @@ type RenameKeys<T, R extends { [K in keyof R]: K extends keyof T ? string : neve
 
 type StatusKeyMapping = {
   name: 'statusName';
-  order: 'statusOrder';
+  sortOrder: 'statusOrder';
 };
 
 // ToDo: API 설계 완료시 데이터 타입 변경할 것
