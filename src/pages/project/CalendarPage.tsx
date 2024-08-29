@@ -8,11 +8,11 @@ import UpdateModalTask from '@components/modal/task/UpdateModalTask';
 import useModal from '@hooks/useModal';
 import useProjectContext from '@hooks/useProjectContext';
 import Validator from '@utils/Validator';
-import { TASK_DUMMY } from '@mocks/mockData';
 import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
 import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '@/customReactBigCalendar.css';
+import { useTasksQuery } from '@/hooks/query/useTaskQuery';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
@@ -31,11 +31,14 @@ const dt = DateTime.local();
 Settings.defaultZone = dt.zoneName;
 const localizer = luxonLocalizer(DateTime, { firstDayOfWeek: 7 });
 
+// ToDo: Loading시 infinite spinner UI 보이도록 변경할 것
+// ToDo: Error 발생시 처리 추가할 것
 export default function CalendarPage() {
   const { project } = useProjectContext();
   const { showModal, openModal, closeModal } = useModal();
   const [selectedTask, setSelectedTask] = useState<TaskWithStatus>();
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
+  const { taskList, isTaskLoading, isTaskError, taskError } = useTasksQuery(project.projectId);
 
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
@@ -74,7 +77,7 @@ export default function CalendarPage() {
   );
 
   const state = {
-    events: getCalendarTask(TASK_DUMMY)
+    events: getCalendarTask(taskList)
       .map((task) => ({
         title: task.name,
         start: new Date(task.startDate),
