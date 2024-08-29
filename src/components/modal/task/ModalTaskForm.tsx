@@ -167,7 +167,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       {/* ToDo: 상태 선택 리팩토링 할 것 */}
       <div className="flex items-center justify-start gap-4">
         {statusList.map((status) => {
-          const { statusId, name, color } = status;
+          const { statusId, name, colorCode } = status;
           const isChecked = +watch('statusId') === statusId;
           return (
             <label
@@ -183,7 +183,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
                 checked={isChecked}
                 {...register('statusId', TASK_VALIDATION_RULES.STATUS)}
               />
-              <div style={{ borderColor: color }} className="mr-3 h-8 w-8 rounded-full border" />
+              <div style={{ borderColor: colorCode }} className="mr-3 h-8 w-8 rounded-full border" />
               <h3 className="text-xs">{name}</h3>
             </label>
           );

@@ -3,10 +3,10 @@ export type ProjectStatus = {
   statusId: number;
   projectId: number;
   name: string;
-  color: string;
+  colorCode: string;
   order: number;
 };
 
-export type ProjectStatusForm = Pick<ProjectStatus, 'color' | 'name'>;
+export type ProjectStatusForm = Pick<ProjectStatus, 'colorCode' | 'name'>;
 
-export type UsableColor = Pick<ProjectStatus, 'color'> & { isUsable: boolean };
+export type UsableColor = Pick<ProjectStatus, 'colorCode'> & { isUsable: boolean };
