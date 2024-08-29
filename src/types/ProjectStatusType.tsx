@@ -1,12 +1,11 @@
-// ToDo: API 설계 완료시 데이터 타입 변경할 것
 export type ProjectStatus = {
   statusId: number;
   projectId: number;
   name: string;
-  color: string;
-  order: number;
+  colorCode: string;
+  sortOrder: number;
 };
 
-export type ProjectStatusForm = Pick<ProjectStatus, 'color' | 'name'>;
+export type ProjectStatusForm = Pick<ProjectStatus, 'name' | 'colorCode'>;
 
-export type UsableColor = Pick<ProjectStatus, 'color'> & { isUsable: boolean };
+export type UsableColor = Pick<ProjectStatus, 'colorCode'> & { isUsable: boolean };

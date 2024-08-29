@@ -13,11 +13,11 @@ function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: Drop
   if (!destination) throw Error('Error: DnD destination is null');
 
   const newStatusTasks = deepClone(statusTasks);
-  const stausTask = newStatusTasks[source.index];
+  const statusTask = newStatusTasks[source.index];
 
   newStatusTasks.splice(source.index, 1);
-  newStatusTasks.splice(destination.index, 0, stausTask);
-  newStatusTasks.forEach((status, index) => (status.order = index + 1));
+  newStatusTasks.splice(destination.index, 0, statusTask);
+  newStatusTasks.forEach((status, index) => (status.sortOrder = index + 1));
 
   return newStatusTasks;
 }
@@ -42,8 +42,8 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
   sourceTasks.splice(source.index, 1);
   destinationTasks.splice(destination.index, 0, task);
 
-  sourceTasks.forEach((task, index) => (task.order = index + 1));
-  if (!isSameStatus) destinationTasks.forEach((task, index) => (task.order = index + 1));
+  sourceTasks.forEach((task, index) => (task.sortOrder = index + 1));
+  if (!isSameStatus) destinationTasks.forEach((task, index) => (task.sortOrder = index + 1));
 
   return newStatusTasks;
 }

@@ -16,9 +16,9 @@ type TaskStatusContainerProps = {
 export default function TaskStatusContainer({ statusTask }: TaskStatusContainerProps) {
   const { project } = useProjectContext();
   const { showModal, openModal, closeModal } = useModal();
-  const { statusId, name, color, order, tasks } = statusTask;
+  const { statusId, name, colorCode, sortOrder, tasks } = statusTask;
   const draggableId = useMemo(() => generatePrefixId(statusId, DND_DRAGGABLE_PREFIX.STATUS), [statusId]);
-  const index = useMemo(() => order - 1, [order]);
+  const index = useMemo(() => sortOrder - 1, [sortOrder]);
 
   return (
     <>
@@ -38,7 +38,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
                 />
               </span>
             </header>
-            <TaskItemList statusId={statusId} color={color} tasks={tasks} />
+            <TaskItemList statusId={statusId} colorCode={colorCode} tasks={tasks} />
           </article>
         )}
       </Draggable>
