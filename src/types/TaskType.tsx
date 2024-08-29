@@ -14,6 +14,7 @@ export type Task = {
   taskId: number;
   name: string;
   userId: number;
+  statusId: number;
   content: string;
   startDate: string;
   endDate: string;
@@ -32,4 +33,4 @@ export type TaskForm = {
 };
 
 export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
-export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };
+export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Omit<Task, 'statusId'>[] };
