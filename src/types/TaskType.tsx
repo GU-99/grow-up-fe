@@ -19,7 +19,7 @@ export type Task = {
   startDate: string;
   endDate: string;
   files: string[];
-  order: number;
+  sortOrder: number;
 };
 
 // ToDo: Task 추가 모달 작업시 같이 정의할 것

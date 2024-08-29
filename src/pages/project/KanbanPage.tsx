@@ -42,8 +42,8 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
   sourceTasks.splice(source.index, 1);
   destinationTasks.splice(destination.index, 0, task);
 
-  sourceTasks.forEach((task, index) => (task.order = index + 1));
-  if (!isSameStatus) destinationTasks.forEach((task, index) => (task.order = index + 1));
+  sourceTasks.forEach((task, index) => (task.sortOrder = index + 1));
+  if (!isSameStatus) destinationTasks.forEach((task, index) => (task.sortOrder = index + 1));
 
   return newStatusTasks;
 }
