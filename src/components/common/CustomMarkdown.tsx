@@ -137,10 +137,25 @@ const component: Partial<Components> = {
 };
 
 function getChangedMarkdownForLineBreak(markdown: string) {
-  return markdown
-    .split('\n')
-    .map((sentence) => (sentence === '' ? '\n<br />\n' : sentence))
-    .join('\n');
+  const lines = markdown.split('\n');
+
+  let inCodeBlock = false;
+  const resultLines: string[] = [];
+  lines.forEach((line) => {
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      resultLines.push(line);
+      return;
+    }
+
+    if (!inCodeBlock && line.trim() === '') {
+      resultLines.push('\n<br/>\n');
+    } else {
+      resultLines.push(line);
+    }
+  });
+
+  return resultLines.join('\n');
 }
 
 export default function CustomMarkdown({ markdown }: CustomMarkdownProps) {
