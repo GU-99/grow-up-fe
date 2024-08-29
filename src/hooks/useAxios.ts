@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { useState, useCallback } from 'react';
+import errorHandler from '@hooks/errorHandler';
 import type { AxiosResponse } from 'axios';
 
 type PromiseCallback<T, P extends unknown[]> = (...args: P) => Promise<AxiosResponse<T>>;
@@ -40,16 +40,7 @@ export default function useAxios<T, P extends unknown[]>(fetchCallback: PromiseC
         setData(response.data);
       } catch (error: unknown) {
         setError(error as Error);
-
-        if (!axios.isAxiosError(error)) return;
-
-        if (error.request) {
-          // ToDo: 네트워크 요청을 보냈지만 응답이 없는 경우 에러 처리
-        } else if (error.response) {
-          // ToDo: 요청후 응답을 받았지만 200 이외의 응답 코드인 경우 예외 처리
-        } else {
-          // ToDo: request 설정 오류
-        }
+        errorHandler(error as Error);
       } finally {
         setLoading(false);
       }
