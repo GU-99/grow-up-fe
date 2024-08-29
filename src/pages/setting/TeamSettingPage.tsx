@@ -19,7 +19,7 @@ export default function TeamSettingPage() {
   }, [fetchData]);
 
   return (
-    <main>
+    <section>
       <section className="mt-10 space-x-4 border-b-2 px-10">
         <button
           type="button"
@@ -44,7 +44,7 @@ export default function TeamSettingPage() {
             <ul className="min-w-300 space-y-2 text-sm">
               {joinedTeamList?.map((team) => (
                 <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8">
-                  <div className="flex max-h-full flex-grow gap-4">
+                  <div className="flex max-h-full grow gap-4">
                     <div className="max-h-full w-50 shrink-0">
                       <small className="flex flex-col text-xs font-bold text-category">team</small>
                       <p className="truncate">{team.name}</p>
@@ -80,19 +80,19 @@ export default function TeamSettingPage() {
             <ul className="min-w-300 space-y-2 text-sm">
               {invitedTeamList?.map((invite) => (
                 <li key={invite.teamId} className="flex h-50 items-center gap-4 border p-8">
-                  <div className="flex max-h-full flex-grow gap-4">
+                  <div className="flex max-h-full grow gap-4">
                     <div className="max-h-full w-50 shrink-0">
-                      <small className="flex flex-col text-xs font-bold text-main">team</small>
+                      <small className="flex flex-col text-xs font-bold text-category">team</small>
                       <p className="truncate">{invite.name}</p>
                     </div>
 
                     <div className="flex max-h-full w-50 shrink-0 flex-col">
-                      <small className="h-10 text-xs font-bold text-main">head</small>
+                      <small className="h-10 text-xs font-bold text-category">head</small>
                       <p className="truncate">{invite.creator}</p>
                     </div>
 
                     <div className="flex max-h-full max-w-300 flex-col px-4">
-                      <small className="text-xs font-bold text-main">desc</small>
+                      <small className="text-xs font-bold text-category">desc</small>
                       <p className="truncate">{invite.content}</p>
                     </div>
                   </div>
@@ -117,6 +117,6 @@ export default function TeamSettingPage() {
           </article>
         )}
       </section>
-    </main>
+    </section>
   );
 }

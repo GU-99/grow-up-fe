@@ -28,8 +28,8 @@ export default function ListTeam({ data, targetId }: ListTeamProps) {
             className={`relative cursor-pointer border-b bg-white hover:brightness-90 ${targetId === team.teamId.toString() ? 'selected' : ''}`}
           >
             <div className="flex justify-between">
-              <Link to={`/teams/${team.teamId}`} className="flex h-30 flex-grow flex-col justify-center px-10">
-                <small className="font-bold text-category">Team</small>
+              <Link to={`/teams/${team.teamId}`} className="flex h-30 grow flex-col justify-center px-10">
+                <small className="font-bold text-category">team</small>
                 <span>{team.name}</span>
               </Link>
               <button

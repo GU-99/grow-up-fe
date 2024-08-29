@@ -33,18 +33,18 @@ export default function TeamPage() {
   };
 
   return (
-    <main className="flex h-full flex-col">
+    <section className="flex h-full flex-col">
       <header className="flex justify-between border-b">
         <div className="flex h-30 items-center justify-center space-x-4 px-10">
-          <small className="text-xs font-bold text-main">team</small>
+          <small className="text-xs font-bold text-category">team</small>
           <span> {teamName}</span>
         </div>
-        <button type="button" onClick={openProjectModal} className="hover:brightness-70 mr-10 text-main">
+        <button type="button" onClick={openProjectModal} className="hover:brightness-70 text-section mr-10">
           + 프로젝트 생성
         </button>
       </header>
 
-      <section className="flex-1 overflow-y-auto">
+      <section className="overflow-y-auto">
         {/* ToDo: 컴포넌트 분리필요 */}
         {teamProjects.length > 0 ? (
           <ul>
@@ -54,8 +54,8 @@ export default function TeamPage() {
                   to={`/teams/${teamId}/projects/${project.projectId}`}
                   className="flex h-50 items-center gap-4 border p-8"
                 >
-                  <div className="flex max-h-full flex-grow gap-4">
-                    <div className="ax-h-full w-60 shrink-0">
+                  <div className="flex max-h-full grow gap-4">
+                    <div className="max-h-full w-60 shrink-0">
                       <small className="flex flex-col text-xs font-bold text-category">project</small>
                       <p className="truncate">{project.name}</p>
                     </div>
@@ -105,6 +105,6 @@ export default function TeamPage() {
       {showUpdateModal && selectedProjectId && (
         <UpdateModalProject projectId={selectedProjectId} onClose={closeUpdateModal} />
       )}
-    </main>
+    </section>
   );
 }
