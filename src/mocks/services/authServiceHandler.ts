@@ -39,7 +39,7 @@ const authServiceHandler = [
         status: 200,
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          'Set-Cookie': `refreshToken=${refreshToken}; Max-Age=${REFRESH_TOKEN_EXPIRATION / 1000}; HttpOnly; SameSite=Strict`,
+          'Set-Cookie': `refreshToken=${refreshToken}; Max-Age=${REFRESH_TOKEN_EXPIRATION / 1000}; HttpOnly; SameSite=Strict; Secure`,
         },
       });
     }
@@ -67,7 +67,7 @@ const authServiceHandler = [
         status: 200,
         headers: {
           Authorization: `Bearer ${newAccessToken}`,
-          'Set-Cookie': `refreshToken=${refreshToken}; Max-Age=${REFRESH_TOKEN_EXPIRATION / 1000}; HttpOnly; SameSite=Strict`,
+          'Set-Cookie': `refreshToken=${refreshToken}; Max-Age=${REFRESH_TOKEN_EXPIRATION / 1000}; HttpOnly; SameSite=Strict; Secure`,
         },
       });
     }

@@ -15,6 +15,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { login } from '@/services/authService';
 
 export default function SignInPage() {
+  const { Login } = useAuthStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
   const {
@@ -29,6 +30,7 @@ export default function SignInPage() {
     },
   });
 
+  // TODO: react-query 코드 분리하기
   const signIn = useMutation({
     mutationFn: (data: UserSignInForm) => login(data),
     onSuccess: (response) => {
@@ -36,7 +38,7 @@ export default function SignInPage() {
       if (!accessToken) return toastError('로그인에 실패했습니다.');
 
       authAxios.defaults.headers.Authorization = accessToken;
-      useAuthStore.getState().Login(accessToken.replace('Bearer ', ''));
+      Login(accessToken.replace('Bearer ', ''));
 
       navigate('/', { replace: true });
     },
