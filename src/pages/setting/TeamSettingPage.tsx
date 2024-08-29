@@ -44,21 +44,23 @@ export default function TeamSettingPage() {
             <ul className="min-w-300 space-y-2 text-sm">
               {joinedTeamList?.map((team) => (
                 <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8">
-                  <div className="flex max-h-full gap-4">
-                    <div className="max-h-full w-45 shrink-0">
-                      <small className="text-xs font-bold text-main">team</small>
-                      <p className="break-all">{team.name}</p>
+                  <div className="flex max-h-full flex-grow gap-4">
+                    <div className="max-h-full w-50 shrink-0">
+                      <small className="flex flex-col text-xs font-bold text-main">team</small>
+                      <p className="truncate">{team.name}</p>
                     </div>
 
-                    <div className="flex max-h-full w-45 shrink-0 flex-col">
+                    <div className="flex max-h-full w-50 shrink-0 flex-col">
                       <small className="h-10 text-xs font-bold text-main">head</small>
-                      <p className="grow overflow-y-auto break-all scrollbar-hide">{team.creator}</p>
+                      <p className="truncate">{team.creator}</p>
+                    </div>
+
+                    <div className="flex max-h-full max-w-300 flex-col px-4">
+                      <small className="text-xs font-bold text-main">desc</small>
+                      <p className="truncate">{team.content}</p>
                     </div>
                   </div>
 
-                  <div className="flex h-full flex-grow items-center overflow-y-auto break-all px-4 scrollbar-hide">
-                    <p className="max-h-full">{team.content}</p>
-                  </div>
                   <div className="w-45 shrink-0">
                     <button
                       type="button"
@@ -78,21 +80,23 @@ export default function TeamSettingPage() {
             <ul className="min-w-300 space-y-2 text-sm">
               {invitedTeamList?.map((invite) => (
                 <li key={invite.teamId} className="flex h-50 items-center gap-4 border p-8">
-                  <div className="flex max-h-full gap-4">
-                    <div className="max-h-full w-45 shrink-0">
-                      <small className="text-xs font-bold text-main">team</small>
-                      <p className="break-all">{invite.name}</p>
+                  <div className="flex max-h-full flex-grow gap-4">
+                    <div className="max-h-full w-50 shrink-0">
+                      <small className="flex flex-col text-xs font-bold text-main">team</small>
+                      <p className="truncate">{invite.name}</p>
                     </div>
 
-                    <div className="flex max-h-full w-45 shrink-0 flex-col">
+                    <div className="flex max-h-full w-50 shrink-0 flex-col">
                       <small className="h-10 text-xs font-bold text-main">head</small>
-                      <p className="grow overflow-y-auto break-all scrollbar-hide">{invite.creator}</p>
+                      <p className="truncate">{invite.creator}</p>
+                    </div>
+
+                    <div className="flex max-h-full max-w-300 flex-col px-4">
+                      <small className="text-xs font-bold text-main">desc</small>
+                      <p className="truncate">{invite.content}</p>
                     </div>
                   </div>
 
-                  <div className="flex h-full flex-grow items-center overflow-y-auto break-all px-4 scrollbar-hide">
-                    <p className="max-h-full">{invite.content}</p>
-                  </div>
                   <div className="flex shrink-0 flex-col gap-4">
                     <button
                       type="button"
