@@ -48,6 +48,7 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
   return newStatusTasks;
 }
 
+// ToDo: TASK_SPECIAL_DUMMY 부분을 react query로 변경할 것, mutation 작업이 같이 들어가야함
 // ToDo: DnD시 가시성을 위한 애니메이션 처리 추가할 것
 export default function KanbanPage() {
   const [statusTasks, setStatusTasks] = useState<TaskListWithStatus[]>(TASK_SPECIAL_DUMMY);
