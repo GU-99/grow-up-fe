@@ -9,12 +9,11 @@ type StatusKeyMapping = {
   sortOrder: 'statusOrder';
 };
 
-// ToDo: API 설계 완료시 데이터 타입 변경할 것
 export type Task = {
   taskId: number;
-  name: string;
-  userId: number;
+  userId: number[];
   statusId: number;
+  name: string;
   content: string;
   startDate: string;
   endDate: string;
@@ -22,15 +21,8 @@ export type Task = {
   sortOrder: number;
 };
 
-// ToDo: Task 추가 모달 작업시 같이 정의할 것
-export type TaskForm = {
-  name: string;
-  content: string;
-  userId: number[];
-  startDate: string;
-  endDate: string;
-  statusId: number;
-};
+export type TaskForm = Omit<Task, 'taskId' | 'files'>;
 
-export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Omit<Task, 'statusId'>;
-export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Omit<Task, 'statusId'>[] };
+export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
+
+export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };

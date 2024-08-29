@@ -23,9 +23,9 @@ export default function TaskItemList({ statusId, colorCode, tasks }: TaskItemLis
           {...taskDropProvided.droppableProps}
         >
           {tasks.map((task) => {
-            const { taskId, name, order } = task;
+            const { taskId, name, sortOrder } = task;
             const draggableId = generatePrefixId(taskId, DND_DRAGGABLE_PREFIX.TASK);
-            const index = order - 1;
+            const index = sortOrder - 1;
             return <TaskItem key={taskId} draggableId={draggableId} colorCode={colorCode} index={index} name={name} />;
           })}
           {taskDropProvided.placeholder}
