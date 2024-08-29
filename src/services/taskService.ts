@@ -1,6 +1,6 @@
 import { authAxios } from '@services/axiosProvider';
 
-import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 import type { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
 
