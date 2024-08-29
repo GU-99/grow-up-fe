@@ -46,17 +46,17 @@ export default function TeamSettingPage() {
                 <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8">
                   <div className="flex max-h-full flex-grow gap-4">
                     <div className="max-h-full w-50 shrink-0">
-                      <small className="flex flex-col text-xs font-bold text-main">team</small>
+                      <small className="flex flex-col text-xs font-bold text-category">team</small>
                       <p className="truncate">{team.name}</p>
                     </div>
 
                     <div className="flex max-h-full w-50 shrink-0 flex-col">
-                      <small className="h-10 text-xs font-bold text-main">head</small>
+                      <small className="h-10 text-xs font-bold text-category">head</small>
                       <p className="truncate">{team.creator}</p>
                     </div>
 
                     <div className="flex max-h-full max-w-300 flex-col px-4">
-                      <small className="text-xs font-bold text-main">desc</small>
+                      <small className="text-xs font-bold text-category">desc</small>
                       <p className="truncate">{team.content}</p>
                     </div>
                   </div>
