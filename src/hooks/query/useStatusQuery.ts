@@ -14,8 +14,8 @@ function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectSt
   return [...statusNameSet.values()];
 }
 
-function getStatusColorList(statusList: ProjectStatus[], excludedColor?: ProjectStatus['color']) {
-  const statusColorList = statusList.map((projectStatus) => projectStatus.color);
+function getStatusColorList(statusList: ProjectStatus[], excludedColor?: ProjectStatus['colorCode']) {
+  const statusColorList = statusList.map((projectStatus) => projectStatus.colorCode);
 
   const statusColorSet = new Set(statusColorList);
   if (excludedColor && statusColorSet.has(excludedColor)) {
@@ -25,17 +25,20 @@ function getStatusColorList(statusList: ProjectStatus[], excludedColor?: Project
   return [...statusColorSet.values()];
 }
 
-function getUsableStatusColorList(statusList: ProjectStatus[], excludedColor?: ProjectStatus['color']): UsableColor[] {
+function getUsableStatusColorList(
+  statusList: ProjectStatus[],
+  excludedColor?: ProjectStatus['colorCode'],
+): UsableColor[] {
   const statusColorMap = new Map();
   Object.values(PROJECT_STATUS_COLORS).forEach((color) => {
     statusColorMap.set(color, { color, isUsable: true });
   });
 
-  statusList.forEach(({ color }) => {
-    if (!statusColorMap.has(color)) throw Error('[Error] 등록되지 않은 색상입니다.');
+  statusList.forEach(({ colorCode }) => {
+    if (!statusColorMap.has(colorCode)) throw Error('[Error] 등록되지 않은 색상입니다.');
 
-    if (excludedColor === color) return;
-    statusColorMap.set(color, { ...statusColorMap.get(color), isUsable: false });
+    if (excludedColor === colorCode) return;
+    statusColorMap.set(colorCode, { ...statusColorMap.get(colorCode), isUsable: false });
   });
 
   return [...statusColorMap.values()];
@@ -47,10 +50,10 @@ export default function useStatusQuery(projectId: Project['projectId'], statusId
   const statusList = STATUS_DUMMY;
 
   const status = statusList.find((status) => status.statusId === statusId);
-  const initialValue = { name: status?.name || '', color: status?.color || '' };
+  const initialValue = { name: status?.name || '', color: status?.colorCode || '' };
   const nameList = getStatusNameList(statusList, status?.name);
-  const colorList = getStatusColorList(statusList, status?.color);
-  const usableColorList = getUsableStatusColorList(statusList, status?.color);
+  const colorList = getStatusColorList(statusList, status?.colorCode);
+  const usableColorList = getUsableStatusColorList(statusList, status?.colorCode);
 
   return { statusList, initialValue, nameList, colorList, usableColorList };
 }

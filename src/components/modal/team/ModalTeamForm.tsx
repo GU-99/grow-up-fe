@@ -5,7 +5,7 @@ import type { Team } from '@/types/TeamType';
 
 type ModalTeamFormProps = {
   formId: string;
-  teamId: Team['teamId'];
+  teamId?: Team['teamId'];
   onSubmit: SubmitHandler<Team>;
 };
 

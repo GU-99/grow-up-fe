@@ -5,10 +5,11 @@ import type { Project } from '@/types/ProjectType';
 
 type ModalProjectFormProps = {
   formId: string;
+  projectId?: Project['projectId'];
   onSubmit: SubmitHandler<Project>;
 };
 
-export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormProps) {
+export default function ModalProjectForm({ formId, projectId, onSubmit }: ModalProjectFormProps) {
   const { handleSubmit } = useForm<Project>();
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>

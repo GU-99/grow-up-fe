@@ -27,7 +27,7 @@ export default function CustomEventWrapper(props: EventWrapperProps<CustomEvent>
 
   return (
     <div
-      style={{ backgroundColor: event.task.color }}
+      style={{ backgroundColor: event.task.colorCode }}
       className={`overflow-hidden text-ellipsis rounded-md px-3 py-1 ${continuesClass}`}
     >
       {children}

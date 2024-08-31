@@ -6,6 +6,4 @@ export type Project = {
   content: string;
   startDate: Date | null;
   endDate: Date | null;
-  createAt: Date;
-  updateAt: Date;
 };

@@ -39,27 +39,27 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
       />
       <h3 className="text-large">색상</h3>
       <section className="grid grid-cols-8 gap-4">
-        {usableColorList.map(({ color, isUsable }, index) => (
+        {usableColorList.map(({ colorCode, isUsable }, index) => (
           <div className="group relative m-auto" key={index}>
             <label
-              htmlFor={color}
-              style={{ backgroundColor: color }}
-              className={`inline-block size-20 cursor-pointer rounded-full ${isUsable && watch('color') === color ? 'border-4 border-selected' : ''}`}
+              htmlFor={colorCode}
+              style={{ backgroundColor: colorCode }}
+              className={`inline-block size-20 cursor-pointer rounded-full ${isUsable && watch('colorCode') === colorCode ? 'border-4 border-selected' : ''}`}
             >
               <input
                 type="radio"
-                id={color}
-                value={color}
+                id={colorCode}
+                value={colorCode}
                 className="hidden"
                 disabled={!isUsable}
-                {...register('color', STATUS_VALIDATION_RULES.COLOR(colorList))}
+                {...register('colorCode', STATUS_VALIDATION_RULES.COLOR(colorList))}
               />
               {!isUsable && <RiProhibited2Fill className="size-20 text-white" />}
             </label>
           </div>
         ))}
       </section>
-      {errors.color && <div className="mt-5 text-xs text-error">{errors.color.message}</div>}
+      {errors.colorCode && <div className="mt-5 text-xs text-error">{errors.colorCode.message}</div>}
     </form>
   );
 }
