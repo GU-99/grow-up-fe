@@ -1,5 +1,11 @@
 import { MB } from '@constants/units';
 
+export const AUTH_SETTINGS = Object.freeze({
+  // ACCESS_TOKEN_EXPIRATION: 3000, // 테스트용 3초
+  ACCESS_TOKEN_EXPIRATION: 15 * 60 * 1000, // 15분
+  REFRESH_TOKEN_EXPIRATION: 7 * 24 * 60 * 60 * 1000, // 7일
+});
+
 export const USER_SETTINGS = Object.freeze({
   MAX_IMAGE_SIZE: 2 * MB,
   MAX_LINK_COUNT: 5,

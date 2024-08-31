@@ -9,15 +9,15 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import type { UserSignInForm } from '@/types/UserType';
-import { authAxios } from '@/services/axiosProvider';
 import useToast from '@/hooks/useToast';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { login } from '@/services/authService';
 
 export default function SignInPage() {
-  const { Login } = useAuthStore();
+  const { onLogin } = useAuthStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -37,13 +37,12 @@ export default function SignInPage() {
       const accessToken = response.headers.authorization;
       if (!accessToken) return toastError('로그인에 실패했습니다.');
 
-      authAxios.defaults.headers.Authorization = accessToken;
-      Login(accessToken.replace('Bearer ', ''));
+      onLogin(accessToken.split(' ')[1]);
 
       navigate('/', { replace: true });
     },
     onError: (error: Error) => {
-      if (axios.isAxiosError(error) && error.response?.status === 400) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
         return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
       toastError(`로그인 도중 오류가 발생했습니다: ${error}`);

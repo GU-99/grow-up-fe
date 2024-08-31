@@ -6,8 +6,8 @@ type AuthStore = {
   accessToken: string | null;
   setAccessToken: (token: string) => void;
   // clearAccessToken: () => void;
-  Login: (token: string) => void;
-  Logout: () => void;
+  onLogin: (token: string) => void;
+  onLogout: () => void;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -15,10 +15,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
   accessToken: null,
   setAccessToken: (token: string) => set({ accessToken: token }),
   // clearAccessToken: () => set({ accessToken: null }),
-  Login: (token: string) => {
+  onLogin: (token: string) => {
     set({ isAuthenticated: true, accessToken: token });
   },
-  Logout: () => {
+  onLogout: () => {
     set({ isAuthenticated: false, accessToken: null });
   },
 }));

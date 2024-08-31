@@ -4,6 +4,7 @@ import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 import useToast from '@/hooks/useToast';
+import { getAccessToken } from './authService';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const defaultConfigOptions: AxiosRequestConfig = {
@@ -29,9 +30,9 @@ export const authAxios = axiosProvider({
 // 요청 인터셉터
 authAxios.interceptors.request.use(
   (config) => {
-    const modifiedConfig = { ...config };
+    const { accessToken } = useAuthStore();
 
-    const { accessToken } = useAuthStore.getState();
+    const modifiedConfig = { ...config };
     if (accessToken) modifiedConfig.headers.Authorization = `Bearer ${accessToken}`;
 
     return modifiedConfig;
@@ -45,33 +46,34 @@ authAxios.interceptors.request.use(
 authAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-    const { toastError } = useToast();
-
-    // Access token 만료 시 처리
+    // 액세스 토큰 만료 시 처리
     if (error.response?.status === 401) {
+      const { toastError } = useToast();
+      const { onLogout, setAccessToken } = useAuthStore();
+
+      // 에러 객체의 설정 객체 추출
+      const originalRequest = error.config;
+
       try {
-        // Refresh token을 이용해 새로운 Access token 발급
-        const refreshResponse = await defaultAxios.post('user/login/refresh', null, { withCredentials: true });
-        const newAccessToken = refreshResponse.headers.Authorization; // 응답값: `Bearer ${newAccessToken}`
+        // 리프레시 토큰을 이용해 새로운 액세스 토큰 발급
+        const refreshResponse = await getAccessToken();
+        const newAccessToken = refreshResponse.headers.Authorization; // 응답값: `Bearer newAccessToken`
 
         if (!newAccessToken) {
           toastError('토큰 발급에 실패했습니다. 다시 로그인 해주세요.');
-          useAuthStore.getState().Logout();
+          onLogout();
           return;
         }
 
-        authAxios.defaults.headers.Authorization = newAccessToken;
-        useAuthStore.getState().setAccessToken(newAccessToken.replace('Bearer ', ''));
+        setAccessToken(newAccessToken.split(' ')[1]);
 
-        // 기존 요청에 새로운 Access token 적용
+        // 기존 설정 객체에 새로운 액세스 토큰 적용
         originalRequest.headers.Authorization = newAccessToken;
-        return await axios(originalRequest);
+        return await authAxios(originalRequest);
       } catch (refreshError) {
-        // Refresh token 에러 시 처리
-        console.error('Refresh token error:', refreshError);
+        // 리프레시 토큰 에러 시 처리
         toastError('로그인 정보가 만료되었습니다. 다시 로그인 해주세요.');
-        useAuthStore.getState().Logout();
+        onLogout();
         return Promise.reject(refreshError);
       }
     }
