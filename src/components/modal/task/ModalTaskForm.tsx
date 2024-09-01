@@ -7,6 +7,7 @@ import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_SETTINGS } from '@constants/settings';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import ToggleButton from '@components/common/ToggleButton';
 import CustomMarkdown from '@components/common/CustomMarkdown';
@@ -31,6 +32,7 @@ type ModalTaskFormProps = {
   onSubmit: SubmitHandler<TaskForm>;
 };
 
+// ToDo: React Query Error시 처리 추가할 것
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
   const { projectId, startDate, endDate } = project;
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,7 +44,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const [preview, setPreview] = useState(false);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
-  const { statusList } = useStatusQuery(projectId, taskId);
+  const { statusList, isStatusLoading } = useStatusQuery(projectId, taskId);
   const { taskNameList } = useTasksQuery(projectId);
   const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
@@ -64,7 +66,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       userId: [],
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
-      statusId: statusList[0].statusId,
+      statusId: statusList[0]?.statusId,
     },
   });
 
@@ -77,6 +79,12 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
     fetchData(projectId, keyword, { signal });
   }, [fetchData, projectId, keyword]);
+
+  useEffect(() => {
+    if (!isStatusLoading && statusList) {
+      setValue('statusId', statusList[0].statusId);
+    }
+  }, [isStatusLoading, statusList]);
 
   useEffect(() => {
     if (keyword) {
@@ -161,6 +169,14 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     if (!files || files.length === 0) return;
     updateFiles(files);
   };
+
+  if (isStatusLoading) {
+    return (
+      <section className="flex grow items-center justify-center">
+        <Spinner />
+      </section>
+    );
+  }
 
   return (
     <form id={formId} className="mb-20 flex w-4/5 grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>

@@ -1,5 +1,6 @@
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
-import { STATUS_DUMMY } from '@mocks/mockData';
+import { useQuery } from '@tanstack/react-query';
+import { getStatusList } from '@services/statusService';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus, UsableColor } from '@/types/ProjectStatusType';
 
@@ -30,8 +31,8 @@ function getUsableStatusColorList(
   excludedColor?: ProjectStatus['colorCode'],
 ): UsableColor[] {
   const statusColorMap = new Map();
-  Object.values(PROJECT_STATUS_COLORS).forEach((color) => {
-    statusColorMap.set(color, { color, isUsable: true });
+  Object.values(PROJECT_STATUS_COLORS).forEach((colorCode) => {
+    statusColorMap.set(colorCode, { colorCode, isUsable: true });
   });
 
   statusList.forEach(({ colorCode }) => {
@@ -45,9 +46,19 @@ function getUsableStatusColorList(
 }
 
 // ToDo: ProjectStatus 관련 Query 로직 작성하기
-// Query Key: project, projectId, status
 export default function useStatusQuery(projectId: Project['projectId'], statusId?: ProjectStatus['statusId']) {
-  const statusList = STATUS_DUMMY;
+  const {
+    data: statusList = [],
+    isLoading: isStatusLoading,
+    isError: isStatusError,
+    error: statusError,
+  } = useQuery({
+    queryKey: ['projects', projectId, 'statuses'],
+    queryFn: async () => {
+      const { data } = await getStatusList(projectId);
+      return data;
+    },
+  });
 
   const status = statusList.find((status) => status.statusId === statusId);
   const initialValue = { name: status?.name || '', color: status?.colorCode || '' };
@@ -55,5 +66,14 @@ export default function useStatusQuery(projectId: Project['projectId'], statusId
   const colorList = getStatusColorList(statusList, status?.colorCode);
   const usableColorList = getUsableStatusColorList(statusList, status?.colorCode);
 
-  return { statusList, initialValue, nameList, colorList, usableColorList };
+  return {
+    statusList,
+    isStatusLoading,
+    isStatusError,
+    statusError,
+    initialValue,
+    nameList,
+    colorList,
+    usableColorList,
+  };
 }
