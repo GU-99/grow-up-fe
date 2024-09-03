@@ -59,11 +59,7 @@ authAxios.interceptors.response.use(
         const refreshResponse = await getAccessToken();
         const newAccessToken = refreshResponse.headers.Authorization; // 응답값: `Bearer newAccessToken`
 
-        if (!newAccessToken) {
-          toastError('토큰 발급에 실패했습니다. 다시 로그인 해주세요.');
-          onLogout();
-          return;
-        }
+        if (!newAccessToken) throw new Error('토큰 발급에 실패했습니다.');
 
         setAccessToken(newAccessToken.split(' ')[1]);
 

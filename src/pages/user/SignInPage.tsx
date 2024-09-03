@@ -30,7 +30,6 @@ export default function SignInPage() {
     },
   });
 
-  // TODO: react-query 코드 분리하기
   const signIn = useMutation({
     mutationFn: (data: UserSignInForm) => login(data),
     onSuccess: (response) => {
