@@ -13,7 +13,7 @@ import type { UserSignInForm } from '@/types/UserType';
  * @returns {Promise<AxiosResponse>}
  */
 export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/login', loginForm, { ...axiosConfig, withCredentials: true });
+  return defaultAxios.post('user/login', loginForm, axiosConfig);
 }
 
 /**

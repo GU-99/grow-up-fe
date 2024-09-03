@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { AUTH_SETTINGS } from '@/constants/settings';
+import { AUTH_SETTINGS } from '@constants/settings';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -44,7 +44,7 @@ const authServiceHandler = [
         },
       });
     }
-    return HttpResponse.json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' }, { status: 400 });
+    return HttpResponse.json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' }, { status: 401 });
   }),
 
   // 액세스 토큰 갱신 API

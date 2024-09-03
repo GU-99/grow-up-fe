@@ -7,7 +7,6 @@ import FooterLinks from '@components/user/auth-form/FooterLinks';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
 import type { UserSignInForm } from '@/types/UserType';
 import useToast from '@/hooks/useToast';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -30,26 +29,21 @@ export default function SignInPage() {
     },
   });
 
-  const signIn = useMutation({
-    mutationFn: (data: UserSignInForm) => login(data),
-    onSuccess: (response) => {
+  const onSubmit = async (data: UserSignInForm) => {
+    try {
+      const response = await login(data);
       const accessToken = response.headers.authorization;
       if (!accessToken) return toastError('로그인에 실패했습니다.');
 
       onLogin(accessToken.split(' ')[1]);
 
       navigate('/', { replace: true });
-    },
-    onError: (error: Error) => {
+    } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
       toastError(`로그인 도중 오류가 발생했습니다: ${error}`);
-    },
-  });
-
-  const onSubmit = async (data: UserSignInForm) => {
-    signIn.mutate(data);
+    }
   };
 
   return (
