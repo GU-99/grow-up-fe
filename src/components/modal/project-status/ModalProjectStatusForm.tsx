@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { RiProhibited2Fill } from 'react-icons/ri';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
+import Spinner from '@components/common/Spinner';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useStatusQuery from '@hooks/query/useStatusQuery';
 
@@ -16,7 +17,11 @@ type ModalProjectStatusFormProps = {
 };
 
 export default function ModalProjectStatusForm({ formId, project, statusId, onSubmit }: ModalProjectStatusFormProps) {
-  const { initialValue, nameList, colorList, usableColorList } = useStatusQuery(project.projectId, statusId);
+  const { isStatusLoading, initialValue, nameList, colorList, usableColorList } = useStatusQuery(
+    project.projectId,
+    statusId,
+  );
+
   const {
     register,
     watch,
@@ -26,6 +31,14 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
     mode: 'onChange',
     defaultValues: initialValue,
   });
+
+  if (isStatusLoading) {
+    return (
+      <section className="flex grow items-center justify-center">
+        <Spinner />
+      </section>
+    );
+  }
 
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
