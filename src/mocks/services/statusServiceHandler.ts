@@ -44,6 +44,7 @@ const statusServiceHandler = [
 
     status.statusName = formData.statusName;
     status.colorCode = formData.colorCode;
+    status.sortOrder = formData.sortOrder;
     return new HttpResponse(null, { status: 204 });
   }),
 ];
