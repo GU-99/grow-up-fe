@@ -11,6 +11,7 @@ import type { UserSignInForm } from '@/types/UserType';
 import useToast from '@/hooks/useToast';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { login } from '@/services/authService';
+import { AUTH_SETTINGS } from '@/constants/settings';
 
 export default function SignInPage() {
   const { onLogin } = useAuthStore();
@@ -35,14 +36,16 @@ export default function SignInPage() {
       const accessToken = response.headers.authorization;
       if (!accessToken) return toastError('로그인에 실패했습니다.');
 
-      onLogin(accessToken.split(' ')[1]);
+      const token = accessToken.split(' ')[1];
+      const expiresAt = Date.now() + AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION;
+      onLogin(token, expiresAt);
 
       navigate('/', { replace: true });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         return toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
-      toastError(`로그인 도중 오류가 발생했습니다: ${error}`);
+      return toastError(`로그인 도중 오류가 발생했습니다: ${error}`);
     }
   };
 
