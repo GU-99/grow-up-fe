@@ -67,7 +67,7 @@ export function useReadStatuses(projectId: Project['projectId'], statusId?: Proj
   const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList, statusId]);
   const initialValue = useMemo(
     () => ({
-      name: status?.statusName || '',
+      statusName: status?.statusName || '',
       colorCode: status?.colorCode || '',
       sortOrder: status?.sortOrder || statusList.length,
     }),
