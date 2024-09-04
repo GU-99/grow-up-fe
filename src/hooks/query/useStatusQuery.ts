@@ -1,8 +1,9 @@
+import { queryClient } from '@hooks/query/queryClient';
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
-import { createStatus, getStatusList } from '@services/statusService';
+import { createStatus, getStatusList, updateStatus } from '@services/statusService';
 
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus, ProjectStatusForm, UsableColor } from '@/types/ProjectStatusType';
@@ -100,6 +101,23 @@ export function useCreateStatus(projectId: Project['projectId']) {
     mutationFn: (formData: ProjectStatusForm) => createStatus(projectId, formData),
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 추가하였습니다.');
+      queryClient.invalidateQueries({
+        queryKey: ['projects', projectId, 'statuses'],
+      });
+    },
+  });
+
+  return mutation;
+}
+
+export function useUpdateStatus(projectId: Project['projectId'], statusId: ProjectStatus['statusId']) {
+  const { toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (formData: ProjectStatusForm) => updateStatus(projectId, statusId, formData),
+    onSuccess: () => {
+      toastSuccess('프로젝트 상태를 수정했습니다.');
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'statuses'],
       });
