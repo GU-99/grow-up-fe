@@ -16,7 +16,7 @@ type TaskStatusContainerProps = {
 export default function TaskStatusContainer({ statusTask }: TaskStatusContainerProps) {
   const { project } = useProjectContext();
   const { showModal, openModal, closeModal } = useModal();
-  const { statusId, name, colorCode, sortOrder, tasks } = statusTask;
+  const { statusId, statusName, colorCode, sortOrder, tasks } = statusTask;
   const draggableId = useMemo(() => generatePrefixId(statusId, DND_DRAGGABLE_PREFIX.STATUS), [statusId]);
   const index = useMemo(() => sortOrder - 1, [sortOrder]);
 
@@ -30,7 +30,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
             {...statusDragProvided.draggableProps}
           >
             <header className="flex items-center gap-4" {...statusDragProvided.dragHandleProps}>
-              <h2 className="select-none font-bold text-emphasis">{name}</h2>
+              <h2 className="select-none font-bold text-emphasis">{statusName}</h2>
               <span>
                 <BsPencil
                   className="cursor-pointer hover:scale-110 hover:text-main hover:duration-150"
