@@ -11,7 +11,6 @@ import type { UserSignInForm } from '@/types/UserType';
 import useToast from '@/hooks/useToast';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { login } from '@/services/authService';
-import { AUTH_SETTINGS } from '@/constants/settings';
 
 export default function SignInPage() {
   const { onLogin } = useAuthStore();
@@ -37,8 +36,7 @@ export default function SignInPage() {
       if (!accessToken) return toastError('로그인에 실패했습니다.');
 
       const token = accessToken.split(' ')[1];
-      const expiresAt = Date.now() + AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION;
-      onLogin(token, expiresAt);
+      onLogin(token);
 
       navigate('/', { replace: true });
     } catch (error) {

@@ -1,28 +1,30 @@
-/* eslint-disable import/prefer-default-export */
 import { create } from 'zustand';
+import { AUTH_SETTINGS } from '@/constants/settings';
 
 type AuthStore = {
   isAuthenticated: boolean;
   accessToken: string | null;
-  accessTokenExpiresAt: number | null;
 
-  setAccessToken: (token: string, expiresAt: number) => void;
-  onLogin: (token: string, expiresAt: number) => void;
+  setAccessToken: (token: string) => void;
+  onLogin: (token: string) => void;
   onLogout: () => void;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
   isAuthenticated: false,
   accessToken: null,
-  accessTokenExpiresAt: null,
 
-  setAccessToken: (token: string, expiresAt: number) => set({ accessToken: token, accessTokenExpiresAt: expiresAt }),
+  setAccessToken: (token: string) => set({ accessToken: token }),
 
-  onLogin: (token: string, expiresAt: number) => {
-    set({ isAuthenticated: true, accessToken: token, accessTokenExpiresAt: expiresAt });
+  onLogin: (token: string) => {
+    set({ isAuthenticated: true, accessToken: token });
+
+    setTimeout(() => {
+      set({ isAuthenticated: false, accessToken: null });
+    }, AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION);
   },
 
   onLogout: () => {
-    set({ isAuthenticated: false, accessToken: null, accessTokenExpiresAt: null });
+    set({ isAuthenticated: false, accessToken: null });
   },
 }));

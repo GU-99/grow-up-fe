@@ -43,7 +43,7 @@ const authServiceHandler = [
       return new HttpResponse(null, {
         status: 200,
         headers: {
-          Authorization: `Bearer ${accessToken}; Expires=${accessTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION / 1000}`,
+          Authorization: `Bearer ${accessToken}`,
           'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
         },
       });
@@ -79,7 +79,7 @@ const authServiceHandler = [
       return new HttpResponse(null, {
         status: 200,
         headers: {
-          Authorization: `Bearer ${newAccessToken}; Expires=${accessTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION / 1000}`,
+          Authorization: `Bearer ${newAccessToken}`,
           'Set-Cookie': `refreshToken=${refreshToken}; HttpOnly; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
         },
       });
