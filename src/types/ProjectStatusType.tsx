@@ -6,6 +6,6 @@ export type ProjectStatus = {
   sortOrder: number;
 };
 
-export type ProjectStatusForm = Pick<ProjectStatus, 'statusName' | 'colorCode'>;
+export type ProjectStatusForm = Pick<ProjectStatus, 'statusName' | 'colorCode' | 'sortOrder'>;
 
 export type UsableColor = Pick<ProjectStatus, 'colorCode'> & { isUsable: boolean };
