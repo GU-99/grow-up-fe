@@ -3,9 +3,10 @@ import { RiProhibited2Fill } from 'react-icons/ri';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import useStatusQuery from '@hooks/query/useStatusQuery';
+import { useReadStatuses } from '@hooks/query/useStatusQuery';
 
 import type { SubmitHandler } from 'react-hook-form';
+import { useEffect } from 'react';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Project } from '@/types/ProjectType';
 
@@ -17,7 +18,7 @@ type ModalProjectStatusFormProps = {
 };
 
 export default function ModalProjectStatusForm({ formId, project, statusId, onSubmit }: ModalProjectStatusFormProps) {
-  const { isStatusLoading, initialValue, nameList, colorList, usableColorList } = useStatusQuery(
+  const { isStatusLoading, initialValue, nameList, colorList, usableColorList } = useReadStatuses(
     project.projectId,
     statusId,
   );
@@ -25,12 +26,17 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
   const {
     register,
     watch,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<ProjectStatusForm>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
+
+  useEffect(() => {
+    reset(initialValue);
+  }, [initialValue, reset]);
 
   if (isStatusLoading) {
     return (

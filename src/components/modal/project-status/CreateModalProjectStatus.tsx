@@ -6,6 +6,7 @@ import ModalFormButton from '@components/modal/ModalFormButton';
 import type { SubmitHandler } from 'react-hook-form';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatusForm } from '@/types/ProjectStatusType';
+import { useCreateStatus } from '@/hooks/query/useStatusQuery';
 
 type CreateModalProjectStatusProps = {
   project: Project;
@@ -13,10 +14,12 @@ type CreateModalProjectStatusProps = {
 };
 
 export default function CreateModalProjectStatus({ project, onClose: handleClose }: CreateModalProjectStatusProps) {
-  // ToDo: 상태 생성을 위한 네트워크 로직 추가
+  const statusMutation = useCreateStatus(project.projectId);
+
+  // ToDo: Error 처리 추가할 것
   const handleSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
-    console.log('생성 폼 제출');
-    console.log(data);
+    statusMutation.mutate(data);
+    statusMutation.reset();
     handleClose();
   };
   return (
