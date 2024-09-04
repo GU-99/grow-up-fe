@@ -45,10 +45,10 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
       <DuplicationCheckInput
         id="name"
         label="상태명"
-        value={watch('name')}
+        value={watch('statusName')}
         placeholder="상태명을 입력하세요."
-        errors={errors.name?.message}
-        register={register('name', STATUS_VALIDATION_RULES.STATUS_NAME(nameList))}
+        errors={errors.statusName?.message}
+        register={register('statusName', STATUS_VALIDATION_RULES.STATUS_NAME(nameList))}
       />
       <h3 className="text-large">색상</h3>
       <section className="grid grid-cols-8 gap-4">

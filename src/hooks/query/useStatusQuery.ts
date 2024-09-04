@@ -4,8 +4,8 @@ import { getStatusList } from '@services/statusService';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus, UsableColor } from '@/types/ProjectStatusType';
 
-function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectStatus['name']) {
-  const statusNameList = statusList.map((projectStatus) => projectStatus.name);
+function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectStatus['statusName']) {
+  const statusNameList = statusList.map((projectStatus) => projectStatus.statusName);
 
   const statusNameSet = new Set(statusNameList);
   if (excludedName && statusNameSet.has(excludedName)) {
@@ -61,8 +61,8 @@ export default function useStatusQuery(projectId: Project['projectId'], statusId
   });
 
   const status = statusList.find((status) => status.statusId === statusId);
-  const initialValue = { name: status?.name || '', color: status?.colorCode || '' };
-  const nameList = getStatusNameList(statusList, status?.name);
+  const initialValue = { name: status?.statusName || '', colorCode: status?.colorCode || '' };
+  const nameList = getStatusNameList(statusList, status?.statusName);
   const colorList = getStatusColorList(statusList, status?.colorCode);
   const usableColorList = getUsableStatusColorList(statusList, status?.colorCode);
 
