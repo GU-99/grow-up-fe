@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AUTH_SETTINGS } from '@/constants/settings';
+import { AUTH_SETTINGS } from '@constants/settings';
 
 type AuthStore = {
   isAuthenticated: boolean;
