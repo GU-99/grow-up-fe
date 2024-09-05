@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
+import { UserSignInForm } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -11,11 +12,6 @@ type Tokens = {
   refreshTokenExpiresAt: number;
 };
 
-type LoginRequestBody = {
-  username: string;
-  password: string;
-};
-
 // TODO: 토큰 관리 변수 분리
 let tokens: Tokens | null = null;
 
@@ -25,7 +21,7 @@ const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN
 const authServiceHandler = [
   // 로그인 API
   http.post(`${BASE_URL}/user/login`, async ({ request }) => {
-    const { username, password } = (await request.json()) as LoginRequestBody;
+    const { username, password } = (await request.json()) as UserSignInForm;
 
     if (username === 'test' && password === 'test@123') {
       const accessToken = 'mockedAccessToken';

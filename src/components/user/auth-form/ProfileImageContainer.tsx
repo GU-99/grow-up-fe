@@ -38,10 +38,6 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   };
 
   const handleRemoveImg = () => {
-    if (imageUrl) {
-      URL.revokeObjectURL(imageUrl);
-    }
-
     setImageUrl('');
     setValue('profileUrl', '');
   };
