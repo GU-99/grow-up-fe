@@ -37,14 +37,14 @@ export default function TeamPage() {
       <header className="flex justify-between border-b">
         <div className="flex h-30 items-center justify-center space-x-4 px-10">
           <small className="text-xs font-bold text-category">team</small>
-          <span> {teamName}</span>
+          <span>{teamName}</span>
         </div>
         <button type="button" onClick={openProjectModal} className="hover:brightness-70 text-section mr-10">
           + 프로젝트 생성
         </button>
       </header>
 
-      <section className="overflow-y-auto">
+      <section className="h-full overflow-y-auto">
         {/* ToDo: 컴포넌트 분리필요 */}
         {teamProjects.length > 0 ? (
           <ul>
@@ -52,9 +52,9 @@ export default function TeamPage() {
               <li key={project.projectId} className="min-w-300 space-y-2 text-sm">
                 <Link
                   to={`/teams/${teamId}/projects/${project.projectId}`}
-                  className="flex h-50 items-center gap-4 border p-8"
+                  className="flex h-50 items-center border p-8"
                 >
-                  <div className="flex max-h-full grow gap-4">
+                  <div className="flex max-h-full grow">
                     <div className="max-h-full w-60 shrink-0">
                       <small className="flex flex-col text-xs font-bold text-category">project</small>
                       <p className="truncate">{project.name}</p>
