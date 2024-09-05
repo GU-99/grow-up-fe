@@ -38,13 +38,7 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
     reset(initialValue);
   }, [initialValue, reset]);
 
-  if (isStatusLoading) {
-    return (
-      <section className="flex grow items-center justify-center">
-        <Spinner />
-      </section>
-    );
-  }
+  if (isStatusLoading) return <Spinner />;
 
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
