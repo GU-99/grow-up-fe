@@ -170,13 +170,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     updateFiles(files);
   };
 
-  if (isStatusLoading) {
-    return (
-      <section className="flex grow items-center justify-center">
-        <Spinner />
-      </section>
-    );
-  }
+  if (isStatusLoading) return <Spinner />;
 
   return (
     <form id={formId} className="mb-20 flex w-4/5 grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
