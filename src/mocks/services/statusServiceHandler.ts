@@ -29,6 +29,24 @@ const statusServiceHandler = [
 
     return new HttpResponse(null, { status: 200 });
   }),
+  // 프로젝트 상태 수정 API
+  http.patch(`${BASE_URL}/project/:projectId/status/:statusId`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, statusId } = params;
+    const formData = (await request.json()) as ProjectStatusForm;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const status = STATUS_DUMMY.find(
+      (status) => status.projectId === Number(projectId) && status.statusId === Number(statusId),
+    );
+    if (!status) return new HttpResponse(null, { status: 404 });
+
+    status.statusName = formData.statusName;
+    status.colorCode = formData.colorCode;
+    status.sortOrder = formData.sortOrder;
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];
 
 export default statusServiceHandler;

@@ -2,6 +2,7 @@ import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
 import ModalFormButton from '@components/modal/ModalFormButton';
+import { useUpdateStatus } from '@hooks/query/useStatusQuery';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { Project } from '@/types/ProjectType';
@@ -18,10 +19,12 @@ export default function UpdateModalProjectStatus({
   statusId,
   onClose: handleClose,
 }: UpdateModalProjectStatusProps) {
-  // ToDo: 상태 수정을 위한 네트워크 로직 추가
+  const updateMutation = useUpdateStatus(project.projectId, statusId);
+
+  // ToDo: Error 처리 추가
   const handleSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
-    console.log(statusId, '수정 폼 제출');
-    console.log(data);
+    updateMutation.mutate(data);
+    updateMutation.reset();
     handleClose();
   };
 
