@@ -63,7 +63,7 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
             <label
               htmlFor={colorCode}
               style={{ backgroundColor: colorCode }}
-              className={`inline-block size-20 cursor-pointer rounded-full ${isUsable && watch('colorCode') === colorCode ? 'border-4 border-selected' : ''}`}
+              className={`inline-block size-25 cursor-pointer rounded-full ${isUsable && watch('colorCode') === colorCode ? 'border-4 border-selected' : ''}`}
             >
               <input
                 type="radio"
@@ -73,7 +73,7 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
                 disabled={!isUsable}
                 {...register('colorCode', STATUS_VALIDATION_RULES.COLOR(colorList))}
               />
-              {!isUsable && <RiProhibited2Fill className="size-20 text-white" />}
+              {!isUsable && <RiProhibited2Fill className="size-25 text-white" />}
             </label>
           </div>
         ))}
