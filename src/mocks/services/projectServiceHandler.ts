@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { PROJECT_USER_DUMMY, ROLE_DUMMY, USER_DUMMY } from '@mocks/mockData';
+import { PROJECT_DUMMY, PROJECT_USER_DUMMY, ROLE_DUMMY, USER_DUMMY } from '@mocks/mockData';
 import type { Role } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
 
@@ -34,6 +34,17 @@ const projectServiceHandler = [
     const matchedUserList = userList.filter((user) => prefixRegex.test(user.nickname)).slice(0, 5);
 
     return HttpResponse.json(matchedUserList);
+  }),
+  // 프로젝트 목록 조회 API
+  http.get(`${BASE_URL}/team/:teamId/project`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const projectList = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId));
+
+    return HttpResponse.json(projectList);
   }),
 ];
 
