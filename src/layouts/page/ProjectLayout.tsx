@@ -1,21 +1,23 @@
 import { useMemo } from 'react';
 import { Navigate, NavLink, Outlet, useParams } from 'react-router-dom';
+import { RiSettings5Fill } from 'react-icons/ri';
+import { ProjectContext } from '@hooks/useProjectContext';
 import useModal from '@hooks/useModal';
+import useReadProjects from '@hooks/query/useProjectQuery';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
 import CreateModalTask from '@components/modal/task/CreateModalTask';
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
-import { ProjectContext } from '@hooks/useProjectContext';
-import { PROJECT_DUMMY } from '@mocks/mockData';
-import { RiSettings5Fill } from 'react-icons/ri';
 
 export default function ProjectLayout() {
-  const { projectId } = useParams();
+  const { teamId, projectId } = useParams();
+  const { projectList } = useReadProjects(Number(teamId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
+
   const project = useMemo(
-    () => PROJECT_DUMMY.find((project) => project.projectId.toString() === projectId),
-    [projectId],
+    () => projectList?.find((project) => project.projectId.toString() === projectId),
+    [projectList, projectId],
   );
 
   if (!project) return <Navigate to="/error" replace />;
@@ -24,7 +26,7 @@ export default function ProjectLayout() {
     <>
       <section className="flex h-full p-15">
         <ListSidebar label="team" title="팀 이름...">
-          <ListProject data={PROJECT_DUMMY} targetId={projectId} />
+          <ListProject data={projectList} targetId={projectId} />
         </ListSidebar>
         <section className="flex grow flex-col border border-list bg-contents-box">
           <header className="flex h-30 items-center justify-between border-b p-10">
