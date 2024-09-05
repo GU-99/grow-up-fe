@@ -1,10 +1,15 @@
+import { queryClient } from '@hooks/query/queryClient';
+import { useMemo } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import useToast from '@hooks/useToast';
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
-import { STATUS_DUMMY } from '@mocks/mockData';
-import type { Project } from '@/types/ProjectType';
-import type { ProjectStatus, UsableColor } from '@/types/ProjectStatusType';
+import { createStatus, getStatusList, updateStatus } from '@services/statusService';
 
-function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectStatus['name']) {
-  const statusNameList = statusList.map((projectStatus) => projectStatus.name);
+import type { Project } from '@/types/ProjectType';
+import type { ProjectStatus, ProjectStatusForm, UsableColor } from '@/types/ProjectStatusType';
+
+function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectStatus['statusName']) {
+  const statusNameList = statusList.map((projectStatus) => projectStatus.statusName);
 
   const statusNameSet = new Set(statusNameList);
   if (excludedName && statusNameSet.has(excludedName)) {
@@ -30,8 +35,8 @@ function getUsableStatusColorList(
   excludedColor?: ProjectStatus['colorCode'],
 ): UsableColor[] {
   const statusColorMap = new Map();
-  Object.values(PROJECT_STATUS_COLORS).forEach((color) => {
-    statusColorMap.set(color, { color, isUsable: true });
+  Object.values(PROJECT_STATUS_COLORS).forEach((colorCode) => {
+    statusColorMap.set(colorCode, { colorCode, isUsable: true });
   });
 
   statusList.forEach(({ colorCode }) => {
@@ -45,15 +50,79 @@ function getUsableStatusColorList(
 }
 
 // ToDo: ProjectStatus 관련 Query 로직 작성하기
-// Query Key: project, projectId, status
-export default function useStatusQuery(projectId: Project['projectId'], statusId?: ProjectStatus['statusId']) {
-  const statusList = STATUS_DUMMY;
+// ToDo: React Query 로직과 initialValue, nameList 등을 구하는 로직이 사실 관련이 없는 것 같음. 분리 고려하기.
+export function useReadStatuses(projectId: Project['projectId'], statusId?: ProjectStatus['statusId']) {
+  const {
+    data: statusList = [],
+    isLoading: isStatusLoading,
+    isError: isStatusError,
+    error: statusError,
+  } = useQuery({
+    queryKey: ['projects', projectId, 'statuses'],
+    queryFn: async () => {
+      const { data } = await getStatusList(projectId);
+      return data;
+    },
+  });
 
-  const status = statusList.find((status) => status.statusId === statusId);
-  const initialValue = { name: status?.name || '', color: status?.colorCode || '' };
-  const nameList = getStatusNameList(statusList, status?.name);
-  const colorList = getStatusColorList(statusList, status?.colorCode);
-  const usableColorList = getUsableStatusColorList(statusList, status?.colorCode);
+  const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList, statusId]);
+  const initialValue = useMemo(
+    () => ({
+      statusName: status?.statusName || '',
+      colorCode: status?.colorCode || '',
+      sortOrder: status?.sortOrder || statusList.length,
+    }),
+    [status],
+  );
+  const nameList = useMemo(() => getStatusNameList(statusList, status?.statusName), [statusList, status?.statusName]);
+  const colorList = useMemo(() => getStatusColorList(statusList, status?.colorCode), [statusList, status?.colorCode]);
+  const usableColorList = useMemo(
+    () => getUsableStatusColorList(statusList, status?.colorCode),
+    [statusList, status?.colorCode],
+  );
 
-  return { statusList, initialValue, nameList, colorList, usableColorList };
+  return {
+    statusList,
+    isStatusLoading,
+    isStatusError,
+    statusError,
+    initialValue,
+    nameList,
+    colorList,
+    usableColorList,
+  };
+}
+
+export function useCreateStatus(projectId: Project['projectId']) {
+  const { toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (formData: ProjectStatusForm) => createStatus(projectId, formData),
+    onSuccess: () => {
+      toastSuccess('프로젝트 상태를 추가하였습니다.');
+      queryClient.invalidateQueries({
+        queryKey: ['projects', projectId, 'statuses'],
+      });
+    },
+  });
+
+  return mutation;
+}
+
+export function useUpdateStatus(projectId: Project['projectId'], statusId: ProjectStatus['statusId']) {
+  const { toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (formData: ProjectStatusForm) => updateStatus(projectId, statusId, formData),
+    onSuccess: () => {
+      toastSuccess('프로젝트 상태를 수정했습니다.');
+      queryClient.invalidateQueries({
+        queryKey: ['projects', projectId, 'statuses'],
+      });
+    },
+  });
+
+  return mutation;
 }

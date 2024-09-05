@@ -1,10 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { RiProhibited2Fill } from 'react-icons/ri';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
+import Spinner from '@components/common/Spinner';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import useStatusQuery from '@hooks/query/useStatusQuery';
+import { useReadStatuses } from '@hooks/query/useStatusQuery';
 
 import type { SubmitHandler } from 'react-hook-form';
+import { useEffect } from 'react';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Project } from '@/types/ProjectType';
 
@@ -16,10 +18,15 @@ type ModalProjectStatusFormProps = {
 };
 
 export default function ModalProjectStatusForm({ formId, project, statusId, onSubmit }: ModalProjectStatusFormProps) {
-  const { initialValue, nameList, colorList, usableColorList } = useStatusQuery(project.projectId, statusId);
+  const { isStatusLoading, initialValue, nameList, colorList, usableColorList } = useReadStatuses(
+    project.projectId,
+    statusId,
+  );
+
   const {
     register,
     watch,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<ProjectStatusForm>({
@@ -27,15 +34,27 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
     defaultValues: initialValue,
   });
 
+  useEffect(() => {
+    reset(initialValue);
+  }, [initialValue, reset]);
+
+  if (isStatusLoading) {
+    return (
+      <section className="flex grow items-center justify-center">
+        <Spinner />
+      </section>
+    );
+  }
+
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
       <DuplicationCheckInput
         id="name"
         label="상태명"
-        value={watch('name')}
+        value={watch('statusName')}
         placeholder="상태명을 입력하세요."
-        errors={errors.name?.message}
-        register={register('name', STATUS_VALIDATION_RULES.STATUS_NAME(nameList))}
+        errors={errors.statusName?.message}
+        register={register('statusName', STATUS_VALIDATION_RULES.STATUS_NAME(nameList))}
       />
       <h3 className="text-large">색상</h3>
       <section className="grid grid-cols-8 gap-4">

@@ -7,6 +7,7 @@ import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_SETTINGS } from '@constants/settings';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import ToggleButton from '@components/common/ToggleButton';
 import CustomMarkdown from '@components/common/CustomMarkdown';
@@ -14,7 +15,7 @@ import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
 import { useTasksQuery } from '@hooks/query/useTaskQuery';
-import useStatusQuery from '@hooks/query/useStatusQuery';
+import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
 
@@ -31,6 +32,7 @@ type ModalTaskFormProps = {
   onSubmit: SubmitHandler<TaskForm>;
 };
 
+// ToDo: React Query Error시 처리 추가할 것
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
   const { projectId, startDate, endDate } = project;
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -42,7 +44,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const [preview, setPreview] = useState(false);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
-  const { statusList } = useStatusQuery(projectId, taskId);
+  const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
   const { taskNameList } = useTasksQuery(projectId);
   const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
@@ -64,7 +66,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       userId: [],
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
-      statusId: statusList[0].statusId,
+      statusId: statusList[0]?.statusId,
     },
   });
 
@@ -77,6 +79,12 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
     fetchData(projectId, keyword, { signal });
   }, [fetchData, projectId, keyword]);
+
+  useEffect(() => {
+    if (!isStatusLoading && statusList) {
+      setValue('statusId', statusList[0].statusId);
+    }
+  }, [isStatusLoading, statusList]);
 
   useEffect(() => {
     if (keyword) {
@@ -162,21 +170,29 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     updateFiles(files);
   };
 
+  if (isStatusLoading) {
+    return (
+      <section className="flex grow items-center justify-center">
+        <Spinner />
+      </section>
+    );
+  }
+
   return (
     <form id={formId} className="mb-20 flex w-4/5 grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
       {/* ToDo: 상태 선택 리팩토링 할 것 */}
       <div className="flex items-center justify-start gap-4">
         {statusList.map((status) => {
-          const { statusId, name, colorCode } = status;
+          const { statusId, statusName, colorCode } = status;
           const isChecked = +watch('statusId') === statusId;
           return (
             <label
               key={statusId}
-              htmlFor={name}
+              htmlFor={statusName}
               className={`flex cursor-pointer items-center rounded-lg border px-5 py-3 text-emphasis ${isChecked ? 'border-input bg-white' : 'bg-button'}`}
             >
               <input
-                id={name}
+                id={statusName}
                 type="radio"
                 className="invisible h-0 w-0"
                 value={statusId}
@@ -184,7 +200,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
                 {...register('statusId', TASK_VALIDATION_RULES.STATUS)}
               />
               <div style={{ borderColor: colorCode }} className="mr-3 h-8 w-8 rounded-full border" />
-              <h3 className="text-xs">{name}</h3>
+              <h3 className="text-xs">{statusName}</h3>
             </label>
           );
         })}

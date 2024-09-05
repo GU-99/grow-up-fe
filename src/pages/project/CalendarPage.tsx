@@ -18,7 +18,7 @@ function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
 
   statusTasks.forEach((statusTask) => {
-    const { name: statusName, colorCode, sortOrder: statusOrder, tasks } = statusTask;
+    const { statusName, colorCode, sortOrder: statusOrder, tasks } = statusTask;
     tasks.forEach((task) => {
       calendarTasks.push({ statusName, colorCode, statusOrder, ...task });
     });
