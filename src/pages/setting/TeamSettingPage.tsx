@@ -37,7 +37,7 @@ export default function TeamSettingPage() {
           대기현황
         </button>
       </section>
-
+      {/* ToDo: 가입현황 대기현황 컴포넌트 분리 */}
       <section className="mt-6 h-full overflow-y-auto px-10">
         {/* 가입현황 레이아웃 */}
         {view === TeamStatus.JOINED && (
