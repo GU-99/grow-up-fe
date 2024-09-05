@@ -4,6 +4,7 @@ import { RiSettings5Fill } from 'react-icons/ri';
 import { ProjectContext } from '@hooks/useProjectContext';
 import useModal from '@hooks/useModal';
 import useReadProjects from '@hooks/query/useProjectQuery';
+import Spinner from '@components/common/Spinner';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
 import CreateModalTask from '@components/modal/task/CreateModalTask';
@@ -11,7 +12,7 @@ import CreateModalProjectStatus from '@components/modal/project-status/CreateMod
 
 export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
-  const { projectList } = useReadProjects(Number(teamId));
+  const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
 
@@ -19,6 +20,8 @@ export default function ProjectLayout() {
     () => projectList?.find((project) => project.projectId.toString() === projectId),
     [projectList, projectId],
   );
+
+  if (isProjectLoading) return <Spinner />;
 
   if (!project) return <Navigate to="/error" replace />;
 
