@@ -2,10 +2,10 @@ import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
 import type { Project } from '@/types/ProjectType';
-import type { TaskListWithStatus } from '@/types/TaskType';
+import type { TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
 
 /**
- * 프로젝트에 속한 모든 할일 목록 조회 API
+ * 프로젝트에 속한 모든 일정 목록 조회 API
  *
  * @export
  * @async
@@ -15,4 +15,22 @@ import type { TaskListWithStatus } from '@/types/TaskType';
  */
 export async function findTaskList(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<TaskListWithStatus[]>(`project/${projectId}/task`, axiosConfig);
+}
+
+/**
+ * 일정 순서 변경 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId
+ * @param {TaskOrder} newOrder
+ * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function updateTaskOrder(
+  projectId: Project['projectId'],
+  newOrderData: TaskOrderForm,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.patch(`project/${projectId}/task/order`, newOrderData, axiosConfig);
 }

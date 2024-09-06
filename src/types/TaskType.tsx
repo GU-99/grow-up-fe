@@ -20,8 +20,10 @@ export type Task = {
   sortOrder: number;
 };
 
+export type TaskOrder = Pick<Task, 'statusId' | 'taskId' | 'sortOrder'>;
+export type TaskOrderForm = { tasks: TaskOrder[] };
+
 export type TaskForm = Omit<Task, 'taskId' | 'files'>;
 
 export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
-
 export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };
