@@ -14,9 +14,9 @@ function getTaskNameList(taskList: TaskListWithStatus[]) {
 }
 
 // Todo: Task Query CUD로직 작성하기
-export function useTasksQuery(projectId: Project['projectId']) {
+export function useReadStatusTasks(projectId: Project['projectId']) {
   const {
-    data: taskList = [],
+    data: statusTaskList = [],
     isLoading: isTaskLoading,
     isError: isTaskError,
     error: taskError,
@@ -28,7 +28,7 @@ export function useTasksQuery(projectId: Project['projectId']) {
     },
   });
 
-  const taskNameList = getTaskNameList(taskList);
+  const taskNameList = getTaskNameList(statusTaskList);
 
-  return { taskList, taskNameList, isTaskLoading, isTaskError, taskError };
+  return { statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
 }
