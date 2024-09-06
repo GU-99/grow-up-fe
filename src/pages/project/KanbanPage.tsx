@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
-import { TASK_SPECIAL_DUMMY } from '@mocks/mockData';
+import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
+import useProjectContext from '@hooks/useProjectContext';
 import type { Task, TaskListWithStatus } from '@/types/TaskType';
 
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
@@ -48,10 +48,10 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
   return newStatusTasks;
 }
 
-// ToDo: TASK_SPECIAL_DUMMY 부분을 react query로 변경할 것, mutation 작업이 같이 들어가야함
 // ToDo: DnD시 가시성을 위한 애니메이션 처리 추가할 것
 export default function KanbanPage() {
-  const [statusTasks, setStatusTasks] = useState<TaskListWithStatus[]>(TASK_SPECIAL_DUMMY);
+  const { project } = useProjectContext();
+  const { statusTaskList } = useReadStatusTasks(project.projectId);
 
   const handleDragEnd = (dropResult: DropResult) => {
     const { source, destination, type } = dropResult;
@@ -60,14 +60,14 @@ export default function KanbanPage() {
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
     if (type === DND_TYPE.STATUS) {
-      const newStatusTasks = createChangedStatus(statusTasks, dropResult);
-      return setStatusTasks(newStatusTasks);
+      const newStatusList = createChangedStatus(statusTaskList, dropResult);
+      // return setStatusTasks(newStatusList);
     }
 
     if (type === DND_TYPE.TASK) {
       const isSameStatus = source.droppableId === destination.droppableId;
-      const newStatusTasks = createChangedTasks(statusTasks, dropResult, isSameStatus);
-      return setStatusTasks(newStatusTasks);
+      const newStatusList = createChangedTasks(statusTaskList, dropResult, isSameStatus);
+      // return setStatusTasks(newStatusTasks);
     }
   };
 
@@ -80,7 +80,7 @@ export default function KanbanPage() {
             ref={statusDropProvided.innerRef}
             {...statusDropProvided.droppableProps}
           >
-            {statusTasks.map((statusTask) => (
+            {statusTaskList.map((statusTask) => (
               <ProjectStatusContainer key={statusTask.statusId} statusTask={statusTask} />
             ))}
             {statusDropProvided.placeholder}
