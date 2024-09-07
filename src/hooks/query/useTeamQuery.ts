@@ -18,7 +18,6 @@ export default function useTeamList() {
 
   const joinedTeamList = data.filter((team) => team.isPendingApproval === true);
   const invitedTeamList = data.filter((team) => team.isPendingApproval === false);
-  console.log('Joined Teams:', joinedTeamList);
-  console.log('Invited Teams:', invitedTeamList);
+
   return { joinedTeamList, invitedTeamList, isLoading, isError, error };
 }
