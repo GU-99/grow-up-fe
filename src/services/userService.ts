@@ -24,6 +24,6 @@ async function findUser(nickname: string, axiosConfig: AxiosRequestConfig = {}) 
  * @param {AxiosRequestConfig} [axiosConnfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<TeamListWithApproval[]>>}
  */
-export async function findTeamList(axiosConnfig: AxiosRequestConfig = {}) {
-  return authAxios.get<TeamListWithApproval[]>('/user/team', axiosConnfig);
+export async function getTeamList(axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get<TeamListWithApproval[]>('/user/team', axiosConfig);
 }

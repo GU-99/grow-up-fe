@@ -351,19 +351,19 @@ export const TEAM_USER_DUMMY: TeamUser[] = [
 export const TEAM_DUMMY: Team[] = [
   {
     teamId: 1,
-    name: 'GU99',
+    teamName: 'GU99',
     content: '사이드 프로젝트 팀원 모집 / 프로젝트 관리 서비스 등을 만드는 팀  ',
     creatorId: 1,
   },
   {
     teamId: 2,
-    name: '오늘볼래',
+    teamName: '오늘볼래',
     content: '모임/이벤트/소개팅 등 사람과 사람을 이어주는 서비스를 만드는 팀',
     creatorId: 4,
   },
   {
     teamId: 3,
-    name: '고인물',
+    teamName: '고인물',
     content: '게임 리뷰/정보공유/모임 등을 위한 서바스를 개발하고 있는 팀',
     creatorId: 6,
   },

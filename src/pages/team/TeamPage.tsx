@@ -23,7 +23,7 @@ export default function TeamPage() {
 
     const team = TEAM_DUMMY.find((team) => team.teamId.toString() === teamId);
     if (team) {
-      setTeamName(team.name);
+      setTeamName(team.teamName);
     }
   }, [teamId]);
 

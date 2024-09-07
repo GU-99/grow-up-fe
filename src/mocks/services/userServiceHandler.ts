@@ -42,23 +42,29 @@ const userServiceHandler = [
     const TEAMS: { [key: string | number]: Team } = {};
     TEAM_DUMMY.forEach((team) => (TEAMS[team.teamId] = team));
 
-    const teamJoinStatusList = teamUserList.map((teamUser) => {
-      const user = USERS[teamUser.userId];
-      const role = ROLES[teamUser.roleId];
-      const team = TEAMS[teamUser.teamId];
+    const teamJoinStatusList = teamUserList
+      .map((teamUser) => {
+        const user = USERS[teamUser.userId];
+        const role = ROLES[teamUser.roleId];
+        const team = TEAMS[teamUser.teamId];
 
-      const creatorUser = USERS[team.creatorId];
-      const creatorNickname = creatorUser ? creatorUser.nickname : 'Unknown';
+        if (!team) {
+          return null;
+        }
 
-      return {
-        teamId: team.teamId,
-        name: team.name,
-        content: team.content,
-        creator: creatorNickname,
-        isPendingApproval: teamUser.isPendingApproval,
-        roleName: role.roleName,
-      };
-    });
+        const creatorUser = USERS[team.creatorId];
+        const creatorNickname = creatorUser ? creatorUser.nickname : 'Unknown';
+
+        return {
+          teamId: team.teamId,
+          teamName: team.teamName,
+          content: team.content,
+          creator: creatorNickname,
+          isPendingApproval: teamUser.isPendingApproval,
+          roleName: role.roleName,
+        };
+      })
+      .filter((item) => item !== null);
 
     return HttpResponse.json(teamJoinStatusList);
   }),

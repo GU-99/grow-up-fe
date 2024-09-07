@@ -22,7 +22,7 @@ export default function SettingLayout() {
   const location = useLocation();
 
   const getTitle = () => {
-    const currentPath = location.pathname.split('/').slice(-1)[0];
+    const currentPath = location.pathname.split('/')[2];
     const currentNavItem = navList.find((item) => item.route === currentPath);
 
     return currentNavItem ? currentNavItem.label : '이메일 인증';

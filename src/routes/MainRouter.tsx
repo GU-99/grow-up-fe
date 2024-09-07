@@ -22,6 +22,8 @@ import ErrorPage from '@pages/ErrorPage';
 import NotFoundPage from '@pages/NotFoundPage';
 import UserAuthenticatePage from '@/pages/setting/UserAuthenticatePage';
 import UserPasswordSettingPage from '@/pages/setting/UserPasswordSettingPage';
+import TeamJoinedPage from '@/pages/setting/TeamJoinedPage';
+import TeamInvitedPage from '@/pages/setting/TeamInvitedPage';
 
 export default function MainRouter() {
   const router = createBrowserRouter([
@@ -62,7 +64,14 @@ export default function MainRouter() {
             { path: 'user', element: <UserSettingPage /> },
             { path: 'auth', element: <UserAuthenticatePage /> },
             { path: 'password', element: <UserPasswordSettingPage /> },
-            { path: 'teams', element: <TeamSettingPage /> },
+            {
+              path: 'teams',
+              element: <TeamSettingPage />, // TeamSettingPage가 부모 컴포넌트
+              children: [
+                { path: 'joined', element: <TeamJoinedPage /> }, // 가입현황 페이지
+                { path: 'invited', element: <TeamInvitedPage /> }, // 대기현황 페이지
+              ],
+            },
           ],
         },
         {
