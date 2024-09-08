@@ -9,7 +9,7 @@ import type { TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
  *
  * @export
  * @async
- * @param {Project['projectId']} projectId - 대상 프로젝트 ID
+ * @param {Project['projectId']} projectId      - 대상 프로젝트 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<TaskListWithStatus[]>>}
  */
@@ -22,9 +22,9 @@ export async function findTaskList(projectId: Project['projectId'], axiosConfig:
  *
  * @export
  * @async
- * @param {Project['projectId']} projectId
- * @param {TaskOrder} newOrder
- * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {TaskOrder} newOrderData              - 새로 정렬된 일정 목록 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateTaskOrder(
