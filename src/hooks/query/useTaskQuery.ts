@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { findTaskList, updateTaskOrder } from '@services/taskService';
+import useToast from '@hooks/useToast';
 
 import type { TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
@@ -34,6 +35,7 @@ export function useReadStatusTasks(projectId: Project['projectId']) {
 }
 
 export function useUpdateTasksOrder(projectId: Project['projectId']) {
+  const { toastError } = useToast();
   const queryClient = useQueryClient();
   const queryKey = ['projects', projectId, 'tasks'];
 
@@ -42,8 +44,7 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
       const taskOrders: TaskOrder[] = newStatusTaskList
         .map((statusTask) => {
           const { statusId, tasks } = statusTask;
-          const taskOrder = tasks.map(({ taskId, sortOrder }) => ({ statusId, taskId, sortOrder }));
-          return taskOrder;
+          return tasks.map(({ taskId, sortOrder }) => ({ statusId, taskId, sortOrder }));
         })
         .flat();
       return updateTaskOrder(projectId, { tasks: taskOrders });
@@ -57,9 +58,9 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
       return { previousStatusTaskList };
     },
     onError: (err, newStatusTaskList, context) => {
+      toastError('일정 순서 변경에 실패 하였습니다. 잠시후 다시 진행해주세요.');
       queryClient.setQueryData(queryKey, context?.previousStatusTaskList);
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 
   return mutation;

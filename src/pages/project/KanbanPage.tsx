@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
+import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
-import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import useProjectContext from '@hooks/useProjectContext';
+import { useReadStatusTasks, useUpdateTasksOrder } from '@hooks/query/useTaskQuery';
 import type { Task, TaskListWithStatus } from '@/types/TaskType';
 
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
@@ -52,6 +53,14 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
 export default function KanbanPage() {
   const { project } = useProjectContext();
   const { statusTaskList } = useReadStatusTasks(project.projectId);
+  const { mutate: updateTaskOrderMutate } = useUpdateTasksOrder(project.projectId);
+  const [localStatusTaskList, setLocalStatusTaskList] = useState(statusTaskList);
+
+  useEffect(() => {
+    if (statusTaskList) {
+      setLocalStatusTaskList(statusTaskList);
+    }
+  }, [statusTaskList]);
 
   const handleDragEnd = (dropResult: DropResult) => {
     const { source, destination, type } = dropResult;
@@ -60,14 +69,15 @@ export default function KanbanPage() {
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
     if (type === DND_TYPE.STATUS) {
-      const newStatusList = createChangedStatus(statusTaskList, dropResult);
+      const newStatusList = createChangedStatus(localStatusTaskList, dropResult);
       // return setStatusTasks(newStatusList);
     }
 
     if (type === DND_TYPE.TASK) {
       const isSameStatus = source.droppableId === destination.droppableId;
-      const newStatusList = createChangedTasks(statusTaskList, dropResult, isSameStatus);
-      // return setStatusTasks(newStatusTasks);
+      const newStatusTaskList = createChangedTasks(localStatusTaskList, dropResult, isSameStatus);
+      setLocalStatusTaskList(newStatusTaskList);
+      updateTaskOrderMutate(newStatusTaskList);
     }
   };
 
@@ -80,7 +90,7 @@ export default function KanbanPage() {
             ref={statusDropProvided.innerRef}
             {...statusDropProvided.droppableProps}
           >
-            {statusTaskList.map((statusTask) => (
+            {localStatusTaskList.map((statusTask) => (
               <ProjectStatusContainer key={statusTask.statusId} statusTask={statusTask} />
             ))}
             {statusDropProvided.placeholder}
