@@ -18,5 +18,5 @@ async function findUserByTeam(
   nickname: User['nickname'],
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<User[]>(`team/${teamId}/user/search?nickname=${nickname}`, axiosConfig);
+  return authAxios.get<User[]>(`/team/${teamId}/user/search?nickname=${nickname}`, axiosConfig);
 }
