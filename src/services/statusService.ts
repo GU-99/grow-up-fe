@@ -70,5 +70,5 @@ export async function updateStatusesOrder(
   newOrderData: StatusOrderForm,
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.patch(`/project/${projectId}/statusss/order`, newOrderData, axiosConfig);
+  return authAxios.patch(`/project/${projectId}/status/order`, newOrderData, axiosConfig);
 }
