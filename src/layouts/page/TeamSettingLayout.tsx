@@ -1,12 +1,12 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import Spinner from '@/components/common/Spinner';
-import useTeamList from '@/hooks/query/useTeamQuery';
+import Spinner from '@components/common/Spinner';
+import { useReadTeams } from '@hooks/query/useTeamQuery';
 
-export default function TeamSettingPage() {
+export default function TeamSettingLayout() {
   const navigate = useNavigate();
 
-  const { joinedTeamList, invitedTeamList, isLoading } = useTeamList();
+  const { joinedTeamList, invitedTeamList, isLoading } = useReadTeams();
 
   useEffect(() => {
     navigate('/setting/teams/joined');

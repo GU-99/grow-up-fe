@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { getTeamList } from '@/services/userService';
+import { getTeamList } from '@services/userService';
 import type { TeamListWithApproval } from '@/types/TeamType';
 
-export default function useTeamList() {
+export function useReadTeams() {
   const {
     data = [],
     isLoading,

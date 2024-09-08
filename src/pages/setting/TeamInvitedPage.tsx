@@ -1,12 +1,10 @@
-import Spinner from '@/components/common/Spinner';
-import useTeamList from '@/hooks/query/useTeamQuery';
+import Spinner from '@components/common/Spinner';
+import { useReadTeams } from '@hooks/query/useTeamQuery';
 
 export default function InvitedTeamPage() {
-  const { invitedTeamList, isLoading } = useTeamList();
+  const { invitedTeamList, isLoading } = useReadTeams();
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   return (
     <article className="h-full">

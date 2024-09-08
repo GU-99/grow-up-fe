@@ -30,6 +30,7 @@ const userServiceHandler = [
 
     // 유저가 속한 모든 팀 목록 추출
     const teamUserList = TEAM_USER_DUMMY.filter((row) => row.userId === Number(userId));
+    console.log(userId, teamUserList);
     // 유저 정보 Hash 형태로 추출
     const USERS: { [key: string | number]: User } = {};
     USER_DUMMY.forEach((user) => (USERS[user.userId] = user));
@@ -42,29 +43,22 @@ const userServiceHandler = [
     const TEAMS: { [key: string | number]: Team } = {};
     TEAM_DUMMY.forEach((team) => (TEAMS[team.teamId] = team));
 
-    const teamJoinStatusList = teamUserList
-      .map((teamUser) => {
-        const user = USERS[teamUser.userId];
-        const role = ROLES[teamUser.roleId];
-        const team = TEAMS[teamUser.teamId];
+    const teamJoinStatusList = teamUserList.map((teamUser) => {
+      const role = ROLES[teamUser.roleId];
+      const team = TEAMS[teamUser.teamId];
 
-        if (!team) {
-          return null;
-        }
+      const creatorUser = USERS[team.creatorId];
+      const creatorNickname = creatorUser ? creatorUser.nickname : 'Unknown';
 
-        const creatorUser = USERS[team.creatorId];
-        const creatorNickname = creatorUser ? creatorUser.nickname : 'Unknown';
-
-        return {
-          teamId: team.teamId,
-          teamName: team.teamName,
-          content: team.content,
-          creator: creatorNickname,
-          isPendingApproval: teamUser.isPendingApproval,
-          roleName: role.roleName,
-        };
-      })
-      .filter((item) => item !== null);
+      return {
+        teamId: team.teamId,
+        teamName: team.teamName,
+        content: team.content,
+        creator: creatorNickname,
+        isPendingApproval: teamUser.isPendingApproval,
+        roleName: role.roleName,
+      };
+    });
 
     return HttpResponse.json(teamJoinStatusList);
   }),

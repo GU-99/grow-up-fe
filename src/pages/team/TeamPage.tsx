@@ -2,10 +2,10 @@ import { IoIosSettings } from 'react-icons/io';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { PROJECT_DUMMY, TEAM_DUMMY } from '@/mocks/mockData';
-import CreateModalProject from '@/components/modal/project/CreateModalProject';
-import useModal from '@/hooks/useModal';
-import UpdateModalProject from '@/components/modal/project/UpdateModalProject';
+import { PROJECT_DUMMY, TEAM_DUMMY } from '@mocks/mockData';
+import CreateModalProject from '@components/modal/project/CreateModalProject';
+import useModal from '@hooks/useModal';
+import UpdateModalProject from '@components/modal/project/UpdateModalProject';
 import type { Project } from '@/types/ProjectType';
 
 export default function TeamPage() {
