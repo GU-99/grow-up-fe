@@ -102,7 +102,7 @@ export function useCreateStatus(projectId: Project['projectId']) {
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 추가하였습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['projects', projectId, 'statuses'],
+        queryKey: ['projects', projectId],
       });
     },
   });
@@ -119,7 +119,7 @@ export function useUpdateStatus(projectId: Project['projectId'], statusId: Proje
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 수정했습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['projects', projectId, 'statuses'],
+        queryKey: ['projects', projectId],
       });
     },
   });

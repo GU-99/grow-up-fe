@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import { findTaskList } from '@services/taskService';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { findTaskList, updateTaskOrder } from '@services/taskService';
+import useToast from '@hooks/useToast';
 
-import type { TaskListWithStatus } from '@/types/TaskType';
+import type { TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 
 function getTaskNameList(taskList: TaskListWithStatus[]) {
@@ -14,9 +15,9 @@ function getTaskNameList(taskList: TaskListWithStatus[]) {
 }
 
 // Todo: Task Query CUD로직 작성하기
-export function useTasksQuery(projectId: Project['projectId']) {
+export function useReadStatusTasks(projectId: Project['projectId']) {
   const {
-    data: taskList = [],
+    data: statusTaskList = [],
     isLoading: isTaskLoading,
     isError: isTaskError,
     error: taskError,
@@ -28,7 +29,39 @@ export function useTasksQuery(projectId: Project['projectId']) {
     },
   });
 
-  const taskNameList = getTaskNameList(taskList);
+  const taskNameList = getTaskNameList(statusTaskList);
 
-  return { taskList, taskNameList, isTaskLoading, isTaskError, taskError };
+  return { statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
+}
+
+export function useUpdateTasksOrder(projectId: Project['projectId']) {
+  const { toastError } = useToast();
+  const queryClient = useQueryClient();
+  const queryKey = ['projects', projectId, 'tasks'];
+
+  const mutation = useMutation({
+    mutationFn: (newStatusTaskList: TaskListWithStatus[]) => {
+      const taskOrders: TaskOrder[] = newStatusTaskList
+        .map((statusTask) => {
+          const { statusId, tasks } = statusTask;
+          return tasks.map(({ taskId, sortOrder }) => ({ statusId, taskId, sortOrder }));
+        })
+        .flat();
+      return updateTaskOrder(projectId, { tasks: taskOrders });
+    },
+    onMutate: async (newStatusTaskList: TaskListWithStatus[]) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousStatusTaskList = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData(queryKey, newStatusTaskList);
+
+      return { previousStatusTaskList };
+    },
+    onError: (err, newStatusTaskList, context) => {
+      toastError('일정 순서 변경에 실패 하였습니다. 잠시후 다시 진행해주세요.');
+      queryClient.setQueryData(queryKey, context?.previousStatusTaskList);
+    },
+  });
+
+  return mutation;
 }
