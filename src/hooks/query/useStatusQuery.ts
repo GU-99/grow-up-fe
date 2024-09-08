@@ -1,12 +1,12 @@
-import { queryClient } from '@hooks/query/queryClient';
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
-import { createStatus, getStatusList, updateStatus } from '@services/statusService';
+import { createStatus, getStatusList, updateStatus, updateStatusesOrder } from '@services/statusService';
 
 import type { Project } from '@/types/ProjectType';
-import type { ProjectStatus, ProjectStatusForm, UsableColor } from '@/types/ProjectStatusType';
+import type { TaskListWithStatus } from '@/types/TaskType';
+import type { ProjectStatus, ProjectStatusForm, StatusOrder, UsableColor } from '@/types/ProjectStatusType';
 
 function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectStatus['statusName']) {
   const statusNameList = statusList.map((projectStatus) => projectStatus.statusName);
@@ -121,6 +121,37 @@ export function useUpdateStatus(projectId: Project['projectId'], statusId: Proje
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId],
       });
+    },
+  });
+
+  return mutation;
+}
+
+export function useUpdateStatusesOrder(projectId: Project['projectId']) {
+  const { toastError } = useToast();
+  const queryClient = useQueryClient();
+  const queryKeyTasks = ['projects', projectId, 'tasks'];
+  const queryKeyStatuses = ['projects', projectId, 'statuses'];
+
+  const mutation = useMutation({
+    mutationFn: (newStatusTaskList: TaskListWithStatus[]) => {
+      const statusOrders: StatusOrder[] = newStatusTaskList.map(({ statusId, sortOrder }) => ({ statusId, sortOrder }));
+      return updateStatusesOrder(projectId, { statuses: statusOrders });
+    },
+    onMutate: async (newStatusTaskList: TaskListWithStatus[]) => {
+      await queryClient.cancelQueries({ queryKey: queryKeyTasks });
+
+      const previousStatusTaskList = queryClient.getQueryData(queryKeyTasks);
+      queryClient.setQueryData(queryKeyTasks, newStatusTaskList);
+
+      return { previousStatusTaskList };
+    },
+    onError: (error, newStatusTaskList, context) => {
+      toastError('프로젝트 상태 순서 변경에 실패 하였습니다. 잠시후 다시 진행해주세요.');
+      queryClient.setQueryData(queryKeyTasks, context?.previousStatusTaskList);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeyStatuses, type: 'all' });
     },
   });
 

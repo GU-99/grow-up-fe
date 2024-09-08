@@ -14,7 +14,7 @@ import type { TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
  * @returns {Promise<AxiosResponse<TaskListWithStatus[]>>}
  */
 export async function findTaskList(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get<TaskListWithStatus[]>(`project/${projectId}/task`, axiosConfig);
+  return authAxios.get<TaskListWithStatus[]>(`/project/${projectId}/task`, axiosConfig);
 }
 
 /**
@@ -32,5 +32,5 @@ export async function updateTaskOrder(
   newOrderData: TaskOrderForm,
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.patch(`project/${projectId}/task/order`, newOrderData, axiosConfig);
+  return authAxios.patch(`/project/${projectId}/task/order`, newOrderData, axiosConfig);
 }

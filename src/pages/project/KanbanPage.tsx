@@ -5,13 +5,14 @@ import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContain
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
 import useProjectContext from '@hooks/useProjectContext';
+import { useUpdateStatusesOrder } from '@hooks/query/useStatusQuery';
 import { useReadStatusTasks, useUpdateTasksOrder } from '@hooks/query/useTaskQuery';
 import type { Task, TaskListWithStatus } from '@/types/TaskType';
 
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
   const { source, destination } = dropResult;
 
-  if (!destination) throw Error('Error: DnD destination is null');
+  if (!destination) throw Error('원하는 영역에 확실히 넣어주세요.');
 
   const newStatusTasks = deepClone(statusTasks);
   const statusTask = newStatusTasks[source.index];
@@ -26,8 +27,7 @@ function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: Drop
 function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropResult, isSameStatus: boolean) {
   const { source, destination, draggableId } = dropResult;
 
-  // ToDo: 메세지 포맷 정하고 수정하기
-  if (!destination) throw Error('Error: DnD destination is null');
+  if (!destination) throw Error('원하는 영역에 확실히 넣어주세요.');
 
   const sourceStatusId = Number(parsePrefixId(source.droppableId));
   const destinationStatusId = Number(parsePrefixId(destination.droppableId));
@@ -54,6 +54,7 @@ export default function KanbanPage() {
   const { project } = useProjectContext();
   const { statusTaskList } = useReadStatusTasks(project.projectId);
   const { mutate: updateTaskOrderMutate } = useUpdateTasksOrder(project.projectId);
+  const { mutate: updateStatusOrderMutate } = useUpdateStatusesOrder(project.projectId);
   const [localStatusTaskList, setLocalStatusTaskList] = useState(statusTaskList);
 
   useEffect(() => {
@@ -69,8 +70,9 @@ export default function KanbanPage() {
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
     if (type === DND_TYPE.STATUS) {
-      const newStatusList = createChangedStatus(localStatusTaskList, dropResult);
-      // return setStatusTasks(newStatusList);
+      const newStatusTaskList = createChangedStatus(localStatusTaskList, dropResult);
+      setLocalStatusTaskList(newStatusTaskList);
+      updateStatusOrderMutate(newStatusTaskList);
     }
 
     if (type === DND_TYPE.TASK) {

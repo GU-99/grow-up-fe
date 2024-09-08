@@ -1,7 +1,8 @@
 import { authAxios } from '@services/axiosProvider';
+
 import type { AxiosRequestConfig } from 'axios';
 import type { Project } from '@/types/ProjectType';
-import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
+import type { ProjectStatus, ProjectStatusForm, StatusOrderForm } from '@/types/ProjectStatusType';
 
 /**
  * 프로젝트 상태 목록 조회 API
@@ -52,4 +53,22 @@ export async function updateStatus(
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.patch(`/project/${projectId}/status/${statusId}`, formData, axiosConfig);
+}
+
+/**
+ * 상태 순서 변경 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {StatusOrderForm} newOrderData        - 새로 정렬된 상태 목록 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function updateStatusesOrder(
+  projectId: Project['projectId'],
+  newOrderData: StatusOrderForm,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.patch(`/project/${projectId}/status/order`, newOrderData, axiosConfig);
 }
