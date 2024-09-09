@@ -66,10 +66,10 @@ export default function MainRouter() {
             { path: 'password', element: <UserPasswordSettingPage /> },
             {
               path: 'teams',
-              element: <TeamSettingLayout />, // TeamSettingPage가 부모 컴포넌트
+              element: <TeamSettingLayout />,
               children: [
-                { path: 'joined', element: <TeamJoinedPage /> }, // 가입현황 페이지
-                { path: 'invited', element: <TeamInvitedPage /> }, // 대기현황 페이지
+                { path: 'joined', element: <TeamJoinedPage /> },
+                { path: 'invited', element: <TeamInvitedPage /> },
               ],
             },
           ],
