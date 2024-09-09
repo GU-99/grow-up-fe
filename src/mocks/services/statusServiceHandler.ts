@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { STATUS_DUMMY } from '@mocks/mockData';
-import { STATUSES_HASH } from '@mocks/mockHash';
+import { getStatusHash } from '@mocks/mockHash';
 
 import type { ProjectStatusForm, StatusOrderForm } from '@/types/ProjectStatusType';
 
@@ -43,7 +43,8 @@ const statusServiceHandler = [
     for (let i = 0; i < statusOrders.length; i++) {
       const { statusId, sortOrder } = statusOrders[i];
 
-      const target = STATUSES_HASH[statusId];
+      const statusHash = getStatusHash();
+      const target = statusHash[statusId];
       if (!target) return new HttpResponse(null, { status: 404 });
       if (target.projectId !== Number(projectId)) return new HttpResponse(null, { status: 400 });
 

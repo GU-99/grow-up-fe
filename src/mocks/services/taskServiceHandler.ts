@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { STATUS_DUMMY, TASK_DUMMY } from '@mocks/mockData';
-import { STATUSES_HASH, TASK_HASH } from '@mocks/mockHash';
+import { getStatusHash, getTaskHash } from '@mocks/mockHash';
 import type { TaskOrderForm } from '@/types/TaskType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -34,10 +34,12 @@ const taskServiceHandler = [
     for (let i = 0; i < taskOrders.length; i++) {
       const { taskId, statusId, sortOrder } = taskOrders[i];
 
-      const target = TASK_HASH[taskId];
+      const taskHash = getTaskHash();
+      const target = taskHash[taskId];
       if (!target) return new HttpResponse(null, { status: 404 });
 
-      const status = STATUSES_HASH[statusId];
+      const statusHash = getStatusHash();
+      const status = statusHash[statusId];
       if (status.projectId !== Number(projectId)) return new HttpResponse(null, { status: 400 });
 
       target.statusId = statusId;

@@ -70,9 +70,9 @@ export function useReadStatuses(projectId: Project['projectId'], statusId?: Proj
     () => ({
       statusName: status?.statusName || '',
       colorCode: status?.colorCode || '',
-      sortOrder: status?.sortOrder || statusList.length,
+      sortOrder: status?.sortOrder || statusList.length + 1,
     }),
-    [status],
+    [status, statusList],
   );
   const nameList = useMemo(() => getStatusNameList(statusList, status?.statusName), [statusList, status?.statusName]);
   const colorList = useMemo(() => getStatusColorList(statusList, status?.colorCode), [statusList, status?.colorCode]);
