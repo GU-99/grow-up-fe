@@ -13,7 +13,9 @@ const taskServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId));
+    const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId)).sort(
+      (a, b) => a.sortOrder - b.sortOrder,
+    );
     const statusTaskList = statusList.map((status) => {
       const tasks = TASK_DUMMY.filter((task) => task.statusId === status.statusId).sort(
         (a, b) => a.sortOrder - b.sortOrder,
