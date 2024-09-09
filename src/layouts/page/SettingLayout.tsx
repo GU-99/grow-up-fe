@@ -29,7 +29,7 @@ export default function SettingLayout() {
   };
 
   return (
-    <section className="flex h-full p-15">
+    <section className="flex h-full gap-10 p-15">
       <ListSidebar title={`${USER_INFO_DUMMY.nickname} 님의 정보`}>
         <ListSetting navList={navList} />
       </ListSidebar>

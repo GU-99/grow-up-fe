@@ -94,7 +94,7 @@ export default function CalendarPage() {
   // ToDo: 캘린더 크기 전체적으로 조정
   // ToDo: 코드 리팩토링
   return (
-    <div className="flex h-full min-h-375 min-w-260 flex-col">
+    <div className="flex h-full min-h-375 w-full min-w-260 flex-col">
       <CalendarToolbar date={date} startDate={startDate} onClick={handleNavigate} />
       <Calendar
         toolbar={false}

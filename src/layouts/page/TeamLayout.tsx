@@ -21,7 +21,7 @@ export default function TeamLayout() {
 
   return (
     <>
-      <section className="flex h-full p-15">
+      <section className="flex h-full gap-10 p-15">
         <ListSidebar title="팀 목록" showButton text="팀 생성" onClick={openTeamModal}>
           <ListTeam data={TEAM_DUMMY} targetId={teamId} />
         </ListSidebar>
