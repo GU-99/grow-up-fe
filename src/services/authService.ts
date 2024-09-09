@@ -29,6 +29,18 @@ export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
 }
 
 /**
+ * 로그인 한 사용자 조회 API
+ *
+ * @export
+ * @async
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get('user/me', axiosConfig);
+}
+
+/**
  * 사용자 액세스 토큰 갱신 테스트 API
  *
  * @export

@@ -2,10 +2,13 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '@assets/logo.svg';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
+import { useReadUserInfo } from '@/hooks/query/useUserInfoQuery';
 
 export default function Header() {
   // ToDo: 로그인 기능 구현 후, 로그아웃 로직 연결하기
-  // ToDo: 유저 정보를 토대로 응원 아이디 변경하기
+  const { data } = useReadUserInfo();
+  const nickName = data?.nickname || 'User';
+
   return (
     <header className="flex h-header items-center justify-between bg-main px-15">
       <div>
@@ -14,7 +17,7 @@ export default function Header() {
         </Link>
       </div>
       <nav className="flex items-center">
-        <div className="tracking-tight text-white">User 님의 Grow Up! 응원합니다.</div>
+        <div className="tracking-tight text-white">{nickName}님의 Grow Up! 응원합니다.</div>
         <NavLink to="/" className="ml-10 hover:brightness-90">
           {({ isActive }) => <FiHome className={`size-20 ${isActive ? 'text-selected' : 'text-white'}`} />}
         </NavLink>

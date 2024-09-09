@@ -8,7 +8,7 @@ import LinkContainer from '@/components/user/auth-form/LinkContainer';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
-  const [imageUrl, setImageUrl] = useState(USER_INFO_DUMMY.profileUrl);
+  const [imageUrl, setImageUrl] = useState(USER_INFO_DUMMY.profileImageUrl);
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
@@ -17,13 +17,13 @@ export default function UserSettingPage() {
       nickname: USER_INFO_DUMMY.nickname,
       bio: USER_INFO_DUMMY.bio,
       links: USER_INFO_DUMMY.links,
-      profileUrl: USER_INFO_DUMMY.profileUrl,
+      profileImageUrl: USER_INFO_DUMMY.profileImageUrl,
     },
   });
 
   // form 전송 함수
   const onSubmit = async (data: EditUserInfoForm) => {
-    const { username, email, profileUrl, ...filteredData } = data;
+    const { username, email, profileImageUrl, ...filteredData } = data;
     console.log(data);
 
     // TODO: 폼 제출 로직 작성

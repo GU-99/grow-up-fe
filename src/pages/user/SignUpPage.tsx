@@ -53,7 +53,7 @@ export default function SignUpPage() {
       try {
         const jpeg = await reduceImageSize(imageUrl);
         const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
-        imgFormData.append('profileUrl', file);
+        imgFormData.append('profileImageUrl', file);
         imgFormData.append('username', username ?? '');
 
         const imageResponse = await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {

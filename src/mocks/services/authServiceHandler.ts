@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { UserSignInForm } from '@/types/UserType';
+import { USER_INFO_DUMMY } from '../mockData';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
@@ -58,6 +59,14 @@ const authServiceHandler = [
       });
     }
     return HttpResponse.json({ message: '리프레시 토큰이 유효하지 않습니다.' }, { status: 401 });
+  }),
+
+  // 로그인 한 사용자 조회 API
+  http.get(`${BASE_URL}/user/me`, async ({ request }) => {
+    const accessToken = request.headers.get('Authorization');
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    return HttpResponse.json(USER_INFO_DUMMY, { status: 200 });
   }),
 
   // 액세스 토큰 테스트용 API
