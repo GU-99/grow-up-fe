@@ -88,7 +88,7 @@ export default function KanbanPage() {
       <Droppable droppableId={DND_DROPPABLE_PREFIX.STATUS} type={DND_TYPE.STATUS} direction="horizontal">
         {(statusDropProvided) => (
           <section
-            className="flex grow gap-10 pt-10"
+            className="flex grow gap-10"
             ref={statusDropProvided.innerRef}
             {...statusDropProvided.droppableProps}
           >

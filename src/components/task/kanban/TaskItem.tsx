@@ -17,8 +17,8 @@ export default function TaskItem({ draggableId, name, colorCode, index }: TaskIt
           {...dragProvided.draggableProps}
           {...dragProvided.dragHandleProps}
         >
-          <div style={{ borderColor: colorCode }} className="h-8 w-8 rounded-full border" />
-          <div className="select-none overflow-hidden text-ellipsis text-nowrap">{name}</div>
+          <div style={{ borderColor: colorCode }} className="size-8 shrink-0 rounded-full border" />
+          <div className="select-none truncate">{name}</div>
         </div>
       )}
     </Draggable>
