@@ -1,14 +1,14 @@
 import { DAY, MB, MINUTE, SECOND } from '@constants/units';
 
 export const AUTH_SETTINGS = Object.freeze({
-  // ACCESS_TOKEN_EXPIRATION: 5 * SECOND, // 테스트용 5초
-  ACCESS_TOKEN_EXPIRATION: 15 * MINUTE, // 15분
+  ACCESS_TOKEN_EXPIRATION: 5 * SECOND, // 테스트용 5초
+  // ACCESS_TOKEN_EXPIRATION: 15 * MINUTE, // 15분
   REFRESH_TOKEN_EXPIRATION: 7 * DAY, // 7일
 });
 
 export const USER_SETTINGS = Object.freeze({
   MAX_IMAGE_SIZE: 2 * MB,
-  MAX_LINK_COUNT: 5,
+  MAX_LINK_COUNT: 3,
   MIN_ID_LENGTH: 2,
   MAX_ID_LENGTH: 32,
   MIN_PW_LENGTH: 8,

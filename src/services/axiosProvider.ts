@@ -53,12 +53,15 @@ authAxios.interceptors.response.use(
 
       // 에러 객체의 설정 객체 추출
       const originalRequest = error.config;
+      console.log('여기서 작동중입니다');
 
       try {
         // 리프레시 토큰을 이용해 새로운 액세스 토큰 발급
         const refreshResponse = await getAccessToken();
-        const newAccessToken = refreshResponse.headers.Authorization; // 응답값: `Bearer newAccessToken`
+        const newAccessToken = refreshResponse.headers.authorization; // 응답값: `Bearer newAccessToken`
 
+        console.log(refreshResponse);
+        console.log(newAccessToken);
         if (!newAccessToken) throw new Error('토큰 발급에 실패했습니다.');
 
         setAccessToken(newAccessToken.split(' ')[1]);
