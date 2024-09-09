@@ -3,26 +3,26 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
+import { useQueryClient } from '@tanstack/react-query';
 import ProfileImageContainer from '@/components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@/components/user/auth-form/LinkContainer';
 import type { EditUserInfoForm } from '@/types/UserType';
-import { useReadUserInfo } from '@/hooks/query/useUserInfoQuery';
 
 export default function UserSettingPage() {
-  // TODO: 유저 데이터 불러오기
-  const { data: userInfoData } = useReadUserInfo();
+  const queryClient = useQueryClient();
+  const userInfoData = queryClient.getQueryData<EditUserInfoForm>(['userInfo']);
 
   const [imageUrl, setImageUrl] = useState(userInfoData?.profileImageUrl || '');
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      username: userInfoData?.username,
-      email: userInfoData?.email,
-      nickname: userInfoData?.nickname,
-      bio: userInfoData?.bio,
-      links: userInfoData?.links,
-      profileImageUrl: userInfoData?.profileImageUrl,
+      username: userInfoData?.username || '',
+      email: userInfoData?.email || '',
+      nickname: userInfoData?.nickname || '',
+      bio: userInfoData?.bio || '',
+      links: userInfoData?.links || [],
+      profileImageUrl: userInfoData?.profileImageUrl || '',
     },
   });
 

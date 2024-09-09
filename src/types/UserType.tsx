@@ -1,10 +1,10 @@
 import type { Role } from '@/types/RoleType';
 
 export type User = {
-  userId?: number;
+  userId: number;
   username: string | null;
   email: string;
-  provider?: 'LOCAL' | 'KAKAO' | 'GOOGLE';
+  provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
   nickname: string;
   bio: string | null;
   links: string[];
