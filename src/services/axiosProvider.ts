@@ -17,7 +17,6 @@ export function axiosProvider(configOptions: AxiosRequestConfig = {}): AxiosInst
   return axios.create({ ...defaultConfigOptions, ...configOptions });
 }
 
-// ToDo: authAxios에 로그인 기능 완료시 AccessToken, RefreshToken 처리 Interceptor 추가할 것
 export const defaultAxios = axiosProvider();
 export const authAxios = axiosProvider({
   headers: {
@@ -53,15 +52,12 @@ authAxios.interceptors.response.use(
 
       // 에러 객체의 설정 객체 추출
       const originalRequest = error.config;
-      console.log('여기서 작동중입니다');
 
       try {
         // 리프레시 토큰을 이용해 새로운 액세스 토큰 발급
         const refreshResponse = await getAccessToken();
         const newAccessToken = refreshResponse.headers.authorization; // 응답값: `Bearer newAccessToken`
 
-        console.log(refreshResponse);
-        console.log(newAccessToken);
         if (!newAccessToken) throw new Error('토큰 발급에 실패했습니다.');
 
         setAccessToken(newAccessToken.split(' ')[1]);

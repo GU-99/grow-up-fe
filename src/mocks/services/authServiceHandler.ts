@@ -32,10 +32,8 @@ const authServiceHandler = [
   // 액세스 토큰 갱신 API
   http.post(`${BASE_URL}/user/login/refresh`, async ({ cookies }) => {
     const { refreshToken, refreshTokenExpiresAt } = cookies;
-    console.log(cookies);
 
     const cookieRefreshToken = Cookies.get('refreshToken');
-    console.log(cookieRefreshToken);
 
     if (!refreshToken || !refreshTokenExpiresAt) {
       return HttpResponse.json({ message: '로그인 세션이 존재하지 않습니다.' }, { status: 401 });
