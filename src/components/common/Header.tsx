@@ -6,7 +6,7 @@ import { useReadUserInfo } from '@/hooks/query/useUserInfoQuery';
 
 export default function Header() {
   // ToDo: 로그인 기능 구현 후, 로그아웃 로직 연결하기
-  const { data } = useReadUserInfo();
+  const { userInfoData } = useReadUserInfo();
 
   return (
     <header className="flex h-header items-center justify-between bg-main px-15">
@@ -16,7 +16,7 @@ export default function Header() {
         </Link>
       </div>
       <nav className="flex items-center">
-        <div className="tracking-tight text-white">{data?.nickname || 'User'}님의 Grow Up! 응원합니다.</div>
+        <div className="tracking-tight text-white">{userInfoData?.nickname || 'User'}님의 Grow Up! 응원합니다.</div>
         <NavLink to="/" className="ml-10 hover:brightness-90">
           {({ isActive }) => <FiHome className={`size-20 ${isActive ? 'text-selected' : 'text-white'}`} />}
         </NavLink>
