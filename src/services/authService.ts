@@ -1,7 +1,7 @@
 import { authAxios, defaultAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
-import type { UserSignInForm } from '@/types/UserType';
+import type { EditUserInfoForm, UserSignInForm } from '@/types/UserType';
 
 /**
  * 사용자 로그인 API
@@ -34,10 +34,10 @@ export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
  * @export
  * @async
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<EditUserInfoForm>>}
  */
 export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get('user/me', axiosConfig);
+  return authAxios.get<EditUserInfoForm>('user/me', axiosConfig);
 }
 
 /**
