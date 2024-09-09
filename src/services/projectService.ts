@@ -20,7 +20,7 @@ export async function findUserByProject(
   nickname: User['nickname'],
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<UserWithRole[]>(`project/${projectId}/user/search?nickname=${nickname}`, axiosConfig);
+  return authAxios.get<UserWithRole[]>(`/project/${projectId}/user/search?nickname=${nickname}`, axiosConfig);
 }
 
 /**
@@ -33,5 +33,5 @@ export async function findUserByProject(
  * @returns {Promise<AxiosResponse<Project[]>>}
  */
 export async function getProjectList(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get<Project[]>(`team/${teamId}/project`, axiosConfig);
+  return authAxios.get<Project[]>(`/team/${teamId}/project`, axiosConfig);
 }

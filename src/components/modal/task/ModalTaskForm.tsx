@@ -14,7 +14,7 @@ import CustomMarkdown from '@components/common/CustomMarkdown';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
-import { useTasksQuery } from '@hooks/query/useTaskQuery';
+import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
@@ -45,7 +45,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
-  const { taskNameList } = useTasksQuery(projectId);
+  const { taskNameList } = useReadStatusTasks(projectId);
   const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
 

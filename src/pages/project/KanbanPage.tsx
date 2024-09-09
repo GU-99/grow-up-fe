@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
+import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
-import { TASK_SPECIAL_DUMMY } from '@mocks/mockData';
+import useProjectContext from '@hooks/useProjectContext';
+import { useUpdateStatusesOrder } from '@hooks/query/useStatusQuery';
+import { useReadStatusTasks, useUpdateTasksOrder } from '@hooks/query/useTaskQuery';
 import type { Task, TaskListWithStatus } from '@/types/TaskType';
 
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
   const { source, destination } = dropResult;
 
-  if (!destination) throw Error('Error: DnD destination is null');
+  if (!destination) throw Error('원하는 영역에 확실히 넣어주세요.');
 
   const newStatusTasks = deepClone(statusTasks);
   const statusTask = newStatusTasks[source.index];
@@ -25,8 +27,7 @@ function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: Drop
 function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropResult, isSameStatus: boolean) {
   const { source, destination, draggableId } = dropResult;
 
-  // ToDo: 메세지 포맷 정하고 수정하기
-  if (!destination) throw Error('Error: DnD destination is null');
+  if (!destination) throw Error('원하는 영역에 확실히 넣어주세요.');
 
   const sourceStatusId = Number(parsePrefixId(source.droppableId));
   const destinationStatusId = Number(parsePrefixId(destination.droppableId));
@@ -48,10 +49,19 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
   return newStatusTasks;
 }
 
-// ToDo: TASK_SPECIAL_DUMMY 부분을 react query로 변경할 것, mutation 작업이 같이 들어가야함
 // ToDo: DnD시 가시성을 위한 애니메이션 처리 추가할 것
 export default function KanbanPage() {
-  const [statusTasks, setStatusTasks] = useState<TaskListWithStatus[]>(TASK_SPECIAL_DUMMY);
+  const { project } = useProjectContext();
+  const { statusTaskList } = useReadStatusTasks(project.projectId);
+  const { mutate: updateTaskOrderMutate } = useUpdateTasksOrder(project.projectId);
+  const { mutate: updateStatusOrderMutate } = useUpdateStatusesOrder(project.projectId);
+  const [localStatusTaskList, setLocalStatusTaskList] = useState(statusTaskList);
+
+  useEffect(() => {
+    if (statusTaskList) {
+      setLocalStatusTaskList(statusTaskList);
+    }
+  }, [statusTaskList]);
 
   const handleDragEnd = (dropResult: DropResult) => {
     const { source, destination, type } = dropResult;
@@ -60,14 +70,16 @@ export default function KanbanPage() {
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
     if (type === DND_TYPE.STATUS) {
-      const newStatusTasks = createChangedStatus(statusTasks, dropResult);
-      return setStatusTasks(newStatusTasks);
+      const newStatusTaskList = createChangedStatus(localStatusTaskList, dropResult);
+      setLocalStatusTaskList(newStatusTaskList);
+      updateStatusOrderMutate(newStatusTaskList);
     }
 
     if (type === DND_TYPE.TASK) {
       const isSameStatus = source.droppableId === destination.droppableId;
-      const newStatusTasks = createChangedTasks(statusTasks, dropResult, isSameStatus);
-      return setStatusTasks(newStatusTasks);
+      const newStatusTaskList = createChangedTasks(localStatusTaskList, dropResult, isSameStatus);
+      setLocalStatusTaskList(newStatusTaskList);
+      updateTaskOrderMutate(newStatusTaskList);
     }
   };
 
@@ -80,7 +92,7 @@ export default function KanbanPage() {
             ref={statusDropProvided.innerRef}
             {...statusDropProvided.droppableProps}
           >
-            {statusTasks.map((statusTask) => (
+            {localStatusTaskList.map((statusTask) => (
               <ProjectStatusContainer key={statusTask.statusId} statusTask={statusTask} />
             ))}
             {statusDropProvided.placeholder}

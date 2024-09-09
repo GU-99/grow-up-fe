@@ -7,12 +7,12 @@ import CustomEventWrapper from '@components/task/calendar/CustomEventWrapper';
 import UpdateModalTask from '@components/modal/task/UpdateModalTask';
 import useModal from '@hooks/useModal';
 import useProjectContext from '@hooks/useProjectContext';
+import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import Validator from '@utils/Validator';
 import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
 import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '@/customReactBigCalendar.css';
-import { useTasksQuery } from '@/hooks/query/useTaskQuery';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
@@ -38,7 +38,7 @@ export default function CalendarPage() {
   const { showModal, openModal, closeModal } = useModal();
   const [selectedTask, setSelectedTask] = useState<TaskWithStatus>();
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
-  const { taskList, isTaskLoading, isTaskError, taskError } = useTasksQuery(project.projectId);
+  const { statusTaskList, isTaskLoading, isTaskError, taskError } = useReadStatusTasks(project.projectId);
 
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
@@ -77,7 +77,7 @@ export default function CalendarPage() {
   );
 
   const state = {
-    events: getCalendarTask(taskList)
+    events: getCalendarTask(statusTaskList)
       .map((task) => ({
         title: task.name,
         start: new Date(task.startDate),
