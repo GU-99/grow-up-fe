@@ -43,7 +43,6 @@ const userServiceHandler = [
     TEAM_DUMMY.forEach((team) => (TEAMS[team.teamId] = team));
 
     const teamJoinStatusList = teamUserList.map((teamUser) => {
-      const user = USERS[teamUser.userId];
       const role = ROLES[teamUser.roleId];
       const team = TEAMS[teamUser.teamId];
 
@@ -52,7 +51,7 @@ const userServiceHandler = [
 
       return {
         teamId: team.teamId,
-        name: team.name,
+        teamName: team.teamName,
         content: team.content,
         creator: creatorNickname,
         isPendingApproval: teamUser.isPendingApproval,

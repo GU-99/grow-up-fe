@@ -14,14 +14,16 @@ import SignInPage from '@pages/user/SignInPage';
 import SearchIdPage from '@pages/user/SearchIdPage';
 import SearchPasswordPage from '@pages/user/SearchPasswordPage';
 import UserSettingPage from '@pages/setting/UserSettingPage';
-import TeamSettingPage from '@pages/setting/TeamSettingPage';
 import TeamPage from '@pages/team/TeamPage';
 import CalendarPage from '@pages/project/CalendarPage';
 import KanbanPage from '@pages/project/KanbanPage';
 import ErrorPage from '@pages/ErrorPage';
 import NotFoundPage from '@pages/NotFoundPage';
-import UserAuthenticatePage from '@/pages/setting/UserAuthenticatePage';
-import UserPasswordSettingPage from '@/pages/setting/UserPasswordSettingPage';
+import TeamSettingLayout from '@layouts/page/TeamSettingLayout';
+import UserAuthenticatePage from '@pages/setting/UserAuthenticatePage';
+import UserPasswordSettingPage from '@pages/setting/UserPasswordSettingPage';
+import TeamJoinedPage from '@pages/setting/TeamJoinedPage';
+import TeamInvitedPage from '@pages/setting/TeamInvitedPage';
 
 export default function MainRouter() {
   const router = createBrowserRouter([
@@ -62,7 +64,14 @@ export default function MainRouter() {
             { path: 'user', element: <UserSettingPage /> },
             { path: 'auth', element: <UserAuthenticatePage /> },
             { path: 'password', element: <UserPasswordSettingPage /> },
-            { path: 'teams', element: <TeamSettingPage /> },
+            {
+              path: 'teams',
+              element: <TeamSettingLayout />,
+              children: [
+                { path: 'joined', element: <TeamJoinedPage /> },
+                { path: 'invited', element: <TeamInvitedPage /> },
+              ],
+            },
           ],
         },
         {

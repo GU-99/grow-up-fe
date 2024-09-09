@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoIosSettings } from 'react-icons/io';
-import UpdateModalTeam from '@/components/modal/team/UpdateModalTeam'; // Import the UpdateModalTeam component
-import useModal from '@/hooks/useModal';
+import UpdateModalTeam from '@components/modal/team/UpdateModalTeam'; // Import the UpdateModalTeam component
+import useModal from '@hooks/useModal';
 import type { Team } from '@/types/TeamType';
 
 type ListTeamProps = {
@@ -28,9 +28,9 @@ export default function ListTeam({ data, targetId }: ListTeamProps) {
             className={`relative cursor-pointer border-b bg-white hover:brightness-90 ${targetId === team.teamId.toString() ? 'selected' : ''}`}
           >
             <div className="flex justify-between">
-              <Link to={`/teams/${team.teamId}`} className="flex h-30 flex-grow flex-col justify-center px-10">
-                <small className="font-bold text-category">Team</small>
-                <span>{team.name}</span>
+              <Link to={`/teams/${team.teamId}`} className="flex h-30 grow flex-col justify-center px-10">
+                <small className="font-bold text-category">team</small>
+                <span>{team.teamName}</span>
               </Link>
               <button
                 className="mr-6 flex items-center text-main hover:brightness-50"

@@ -2,10 +2,10 @@ import { IoIosSettings } from 'react-icons/io';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { PROJECT_DUMMY, TEAM_DUMMY } from '@/mocks/mockData';
-import CreateModalProject from '@/components/modal/project/CreateModalProject';
-import useModal from '@/hooks/useModal';
-import UpdateModalProject from '@/components/modal/project/UpdateModalProject';
+import { PROJECT_DUMMY, TEAM_DUMMY } from '@mocks/mockData';
+import CreateModalProject from '@components/modal/project/CreateModalProject';
+import useModal from '@hooks/useModal';
+import UpdateModalProject from '@components/modal/project/UpdateModalProject';
 import type { Project } from '@/types/ProjectType';
 
 export default function TeamPage() {
@@ -23,7 +23,7 @@ export default function TeamPage() {
 
     const team = TEAM_DUMMY.find((team) => team.teamId.toString() === teamId);
     if (team) {
-      setTeamName(team.name);
+      setTeamName(team.teamName);
     }
   }, [teamId]);
 
@@ -33,32 +33,40 @@ export default function TeamPage() {
   };
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex justify-between border-b">
+    <section className="flex h-full flex-col">
+      <header className="flex justify-between border-b">
         <div className="flex h-30 items-center justify-center space-x-4 px-10">
-          <small className="text-xs font-bold text-main">Team</small>
-          <span> {teamName}</span>
+          <small className="text-xs font-bold text-category">team</small>
+          <span>{teamName}</span>
         </div>
-        <button type="button" onClick={openProjectModal} className="hover:brightness-70 mr-10 text-main">
+        <button type="button" onClick={openProjectModal} className="hover:brightness-70 text-section mr-10">
           + 프로젝트 생성
         </button>
-      </div>
-      <div className="flex-1 overflow-y-auto">
+      </header>
+
+      <section className="h-full overflow-y-auto">
         {/* ToDo: 컴포넌트 분리필요 */}
         {teamProjects.length > 0 ? (
           <ul>
             {teamProjects.map((project) => (
-              <li key={project.projectId} className="border-b border-opacity-95">
-                <Link to={`/teams/${teamId}/projects/${project.projectId}`} className="flex h-40 items-center">
-                  <div className="flex h-30 basis-3/12 flex-col justify-center px-10">
-                    <small className="font-bold text-category">Project</small>
-                    <span>{project.name}</span>
+              <li key={project.projectId} className="min-w-300 space-y-2 text-sm">
+                <Link
+                  to={`/teams/${teamId}/projects/${project.projectId}`}
+                  className="flex h-50 items-center border p-8"
+                >
+                  <div className="flex max-h-full grow">
+                    <div className="max-h-full w-60 shrink-0">
+                      <small className="flex flex-col text-xs font-bold text-category">project</small>
+                      <p className="truncate">{project.name}</p>
+                    </div>
+
+                    <div className="flex max-h-full max-w-350 flex-col px-4">
+                      <small className="text-xs font-bold text-category">desc</small>
+                      <p className="truncate">{project.content}</p>
+                    </div>
                   </div>
-                  <div className="flex h-30 basis-8/12 flex-col justify-center px-10">
-                    <small className="font-bold text-category">desc</small>
-                    <span>{project.content}</span>
-                  </div>
-                  <div className="mr-6 flex basis-1/12 space-x-10">
+
+                  <div className="mr-6 flex shrink-0 space-x-10">
                     <button
                       className="flex items-center text-main hover:brightness-50"
                       aria-label="Settings"
@@ -71,6 +79,7 @@ export default function TeamPage() {
                       <IoIosSettings size={20} className="mr-2" />
                       setting
                     </button>
+
                     {/* ToDo: 프로젝트 삭제 기능 */}
                     <button
                       className="hover:brightness-200"
@@ -91,11 +100,11 @@ export default function TeamPage() {
             새로운 프로젝트를 생성해보세요 😄
           </div>
         )}
-      </div>
+      </section>
       {showProjectModal && <CreateModalProject onClose={closeProjectModal} />}
       {showUpdateModal && selectedProjectId && (
         <UpdateModalProject projectId={selectedProjectId} onClose={closeUpdateModal} />
       )}
-    </div>
+    </section>
   );
 }

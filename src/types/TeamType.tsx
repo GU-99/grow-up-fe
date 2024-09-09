@@ -4,7 +4,7 @@ import { Role } from './RoleType';
 export type Team = {
   teamId: number;
   creatorId: number;
-  name: string;
+  teamName: string;
   content: string;
 };
 
