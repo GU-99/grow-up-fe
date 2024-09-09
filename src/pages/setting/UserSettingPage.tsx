@@ -6,18 +6,23 @@ import ValidationInput from '@components/common/ValidationInput';
 import ProfileImageContainer from '@/components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@/components/user/auth-form/LinkContainer';
 import type { EditUserInfoForm } from '@/types/UserType';
+import { useReadUserInfo } from '@/hooks/query/useUserInfoQuery';
 
 export default function UserSettingPage() {
-  const [imageUrl, setImageUrl] = useState(USER_INFO_DUMMY.profileImageUrl);
+  // TODO: 유저 데이터 불러오기
+  const { data: userInfoData } = useReadUserInfo();
+
+  const [imageUrl, setImageUrl] = useState(userInfoData?.profileImageUrl || '');
+
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      username: USER_INFO_DUMMY.username,
-      email: USER_INFO_DUMMY.email,
-      nickname: USER_INFO_DUMMY.nickname,
-      bio: USER_INFO_DUMMY.bio,
-      links: USER_INFO_DUMMY.links,
-      profileImageUrl: USER_INFO_DUMMY.profileImageUrl,
+      username: userInfoData?.username,
+      email: userInfoData?.email,
+      nickname: userInfoData?.nickname,
+      bio: userInfoData?.bio,
+      links: userInfoData?.links,
+      profileImageUrl: userInfoData?.profileImageUrl,
     },
   });
 
