@@ -1,4 +1,4 @@
-import { defaultAxios } from '@services/axiosProvider';
+import { authAxios, defaultAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
 import type { UserSignInForm } from '@/types/UserType';
@@ -26,4 +26,16 @@ export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequest
  */
 export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/login/refresh', null, { ...axiosConfig, withCredentials: true });
+}
+
+/**
+ * 사용자 액세스 토큰 갱신 테스트 API
+ *
+ * @export
+ * @async
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post('test', null, axiosConfig);
 }
