@@ -30,7 +30,6 @@ const userServiceHandler = [
 
     // 유저가 속한 모든 팀 목록 추출
     const teamUserList = TEAM_USER_DUMMY.filter((row) => row.userId === Number(userId));
-    console.log(userId, teamUserList);
     // 유저 정보 Hash 형태로 추출
     const USERS: { [key: string | number]: User } = {};
     USER_DUMMY.forEach((user) => (USERS[user.userId] = user));

@@ -9,7 +9,7 @@ export function useReadTeams() {
     isError,
     error,
   } = useQuery<TeamListWithApproval[], Error>({
-    queryKey: ['teamList'],
+    queryKey: ['teams'],
     queryFn: async () => {
       const { data } = await getTeamList();
       return data;
