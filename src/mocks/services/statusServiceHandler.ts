@@ -1,7 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { STATUS_DUMMY } from '@mocks/mockData';
+import { STATUSES_HASH } from '@mocks/mockHash';
 
-import type { ProjectStatusForm } from '@/types/ProjectStatusType';
+import type { ProjectStatusForm, StatusOrderForm } from '@/types/ProjectStatusType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -13,7 +14,9 @@ const statusServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId));
+    const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId)).sort(
+      (a, b) => a.sortOrder - b.sortOrder,
+    );
 
     return HttpResponse.json(statusList);
   }),
@@ -28,6 +31,27 @@ const statusServiceHandler = [
     STATUS_DUMMY.push({ statusId: STATUS_DUMMY.length, projectId: Number(projectId), ...formData });
 
     return new HttpResponse(null, { status: 200 });
+  }),
+  // 상태 순서 변경 API
+  http.patch(`${BASE_URL}/project/:projectId/status/order`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { statuses: statusOrders } = (await request.json()) as StatusOrderForm;
+    const { projectId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    for (let i = 0; i < statusOrders.length; i++) {
+      const { statusId, sortOrder } = statusOrders[i];
+
+      const target = STATUSES_HASH[statusId];
+      if (!target) return new HttpResponse(null, { status: 404 });
+      if (target.projectId !== Number(projectId)) return new HttpResponse(null, { status: 400 });
+
+      target.statusId = statusId;
+      target.sortOrder = sortOrder;
+    }
+
+    return new HttpResponse(null, { status: 204 });
   }),
   // 프로젝트 상태 수정 API
   http.patch(`${BASE_URL}/project/:projectId/status/:statusId`, async ({ request, params }) => {

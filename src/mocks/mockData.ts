@@ -25,7 +25,7 @@ export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature'
 export const USER_INFO_DUMMY = {
   provider: 'LOCAL',
   userId: 1,
-  id: 'test123',
+  username: 'test123',
   email: 'momoco@gmail.com',
   nickname: 'momoco',
   profileUrl: '',
@@ -37,7 +37,7 @@ export const USER_INFO_DUMMY = {
 export const USER_DUMMY: User[] = [
   {
     userId: 1,
-    id: null,
+    username: null,
     email: 'one@naver.com',
     provider: 'GOOGLE',
     nickname: '판다',
@@ -47,7 +47,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 2,
-    id: null,
+    username: null,
     email: 'two@naver.com',
     provider: 'KAKAO',
     nickname: '카멜레온',
@@ -57,7 +57,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 3,
-    id: null,
+    username: null,
     email: 'three@naver.com',
     provider: 'GOOGLE',
     nickname: '랫서판다',
@@ -67,7 +67,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 4,
-    id: null,
+    username: null,
     email: 'four@naver.com',
     provider: 'KAKAO',
     nickname: '북금곰',
@@ -77,7 +77,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 5,
-    id: null,
+    username: null,
     email: 'five@naver.com',
     provider: 'KAKAO',
     nickname: '호랑이',
@@ -87,7 +87,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 6,
-    id: null,
+    username: null,
     email: 'six@naver.com',
     provider: 'GOOGLE',
     nickname: '나무늘보',
@@ -97,7 +97,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 7,
-    id: null,
+    username: null,
     email: 'seven@naver.com',
     provider: 'KAKAO',
     nickname: '웜뱃',
@@ -107,7 +107,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 8,
-    id: null,
+    username: null,
     email: 'eight@naver.com',
     provider: 'GOOGLE',
     nickname: '벨루가',
@@ -117,7 +117,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 9,
-    id: null,
+    username: null,
     email: 'nine@naver.com',
     provider: 'KAKAO',
     nickname: '펭귄',
@@ -127,7 +127,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 10,
-    id: null,
+    username: null,
     email: 'ten@naver.com',
     provider: 'GOOGLE',
     nickname: '비버',
@@ -137,7 +137,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 11,
-    id: 'eleven',
+    username: 'eleven',
     email: 'eleven@naver.com',
     provider: 'LOCAL',
     nickname: '판다아빠',
@@ -147,7 +147,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 12,
-    id: 'twelve',
+    username: 'twelve',
     email: 'twelve@naver.com',
     provider: 'LOCAL',
     nickname: '판다엄마',
@@ -157,7 +157,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 13,
-    id: 'thirteen',
+    username: 'thirteen',
     email: 'thirteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다형',
@@ -167,7 +167,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 14,
-    id: 'fourteen',
+    username: 'fourteen',
     email: 'fourteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다누나',
@@ -177,7 +177,7 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 15,
-    id: 'fifteen',
+    username: 'fifteen',
     email: 'fifteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다동생',

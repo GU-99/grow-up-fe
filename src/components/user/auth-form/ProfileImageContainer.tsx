@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@utils/converter';
 import { USER_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
+import { useEffect } from 'react';
 
 type ProfileImageContainerProps = {
   imageUrl: string;
@@ -14,7 +15,12 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   const { setValue } = useFormContext();
   const { toastWarn } = useToast();
 
-  // 이미지 관련 코드
+  useEffect(() => {
+    return () => {
+      if (imageUrl) URL.revokeObjectURL(imageUrl);
+    };
+  }, [imageUrl]);
+
   const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 

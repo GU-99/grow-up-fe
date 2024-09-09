@@ -12,7 +12,7 @@ export default function UserSettingPage() {
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      id: USER_INFO_DUMMY.id,
+      username: USER_INFO_DUMMY.username,
       email: USER_INFO_DUMMY.email,
       nickname: USER_INFO_DUMMY.nickname,
       bio: USER_INFO_DUMMY.bio,
@@ -23,7 +23,7 @@ export default function UserSettingPage() {
 
   // form 전송 함수
   const onSubmit = async (data: EditUserInfoForm) => {
-    const { id, email, profileUrl, ...filteredData } = data;
+    const { username, email, profileUrl, ...filteredData } = data;
     console.log(data);
 
     // TODO: 폼 제출 로직 작성
@@ -41,8 +41,8 @@ export default function UserSettingPage() {
             disabled
             label="아이디"
             required={false}
-            errors={methods.formState.errors.id?.message}
-            register={methods.register('id', USER_AUTH_VALIDATION_RULES.ID)}
+            errors={methods.formState.errors.username?.message}
+            register={methods.register('username', USER_AUTH_VALIDATION_RULES.ID)}
           />
 
           {/* 이메일 */}
