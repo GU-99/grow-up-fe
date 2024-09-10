@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { decrypt, encrypt } from '@utils/cryptoHelper';
 import { EditUserInfoForm } from '@/types/UserType';
 
 type UserStore = {
@@ -26,6 +27,19 @@ export const useUserStore = create<UserStore>()(
     }),
     {
       name: 'user-storage',
+      storage: createJSONStorage(() => ({
+        getItem: (key) => {
+          const encryptedData = localStorage.getItem(key);
+          return encryptedData ? decrypt(encryptedData) : null;
+        },
+        setItem: (key, value) => {
+          const encryptedData = encrypt(value);
+          localStorage.setItem(key, encryptedData);
+        },
+        removeItem: (key) => {
+          localStorage.removeItem(key);
+        },
+      })),
     },
   ),
 );
