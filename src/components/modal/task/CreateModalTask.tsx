@@ -3,12 +3,12 @@ import ModalPortal from '@components/modal/ModalPortal';
 import ModalTaskForm from '@components/modal/task/ModalTaskForm';
 import ModalFormButton from '@components/modal/ModalFormButton';
 import { useCreateStatusTask, useReadStatusTasks } from '@hooks/query/useTaskQuery';
+import useToast from '@hooks/useToast';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { TaskForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
-import { ProjectStatus } from '@/types/ProjectStatusType';
-import useToast from '@/hooks/useToast';
+import type { ProjectStatus } from '@/types/ProjectStatusType';
 
 type CreateModalTaskProps = {
   project: Project;
