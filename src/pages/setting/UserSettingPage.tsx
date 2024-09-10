@@ -3,26 +3,25 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
-import { useQueryClient } from '@tanstack/react-query';
 import ProfileImageContainer from '@/components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@/components/user/auth-form/LinkContainer';
 import type { EditUserInfoForm } from '@/types/UserType';
+import { useUserStore } from '@/stores/useUserStore';
 
 export default function UserSettingPage() {
-  const queryClient = useQueryClient();
-  const userInfoData = queryClient.getQueryData<EditUserInfoForm>(['userInfo']);
+  const userInfoData = useUserStore((state) => state.userInfo);
 
-  const [imageUrl, setImageUrl] = useState(userInfoData?.profileImageUrl || '');
+  const [imageUrl, setImageUrl] = useState(userInfoData.profileImageUrl || '');
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      username: userInfoData?.username || '',
-      email: userInfoData?.email || '',
-      nickname: userInfoData?.nickname || '',
-      bio: userInfoData?.bio || '',
-      links: userInfoData?.links || [],
-      profileImageUrl: userInfoData?.profileImageUrl || '',
+      username: userInfoData.username,
+      email: userInfoData.email,
+      nickname: userInfoData.nickname,
+      bio: userInfoData.bio,
+      links: userInfoData.links,
+      profileImageUrl: userInfoData.profileImageUrl,
     },
   });
 
