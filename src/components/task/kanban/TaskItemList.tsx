@@ -18,7 +18,7 @@ export default function TaskItemList({ statusId, colorCode, tasks }: TaskItemLis
       {(taskDropProvided) => (
         <article
           style={{ borderColor: colorCode }}
-          className="h-full w-full grow border-l-[3px] bg-scroll"
+          className="h-full overflow-auto border-l-[3px] bg-scroll"
           ref={taskDropProvided.innerRef}
           {...taskDropProvided.droppableProps}
         >

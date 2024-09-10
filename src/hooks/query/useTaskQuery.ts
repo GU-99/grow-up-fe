@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { findTaskList, updateTaskOrder } from '@services/taskService';
+import { createTask, findTaskList, updateTaskOrder } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
-import type { TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type { TaskForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 
 function getTaskNameList(taskList: TaskListWithStatus[]) {
@@ -14,7 +14,23 @@ function getTaskNameList(taskList: TaskListWithStatus[]) {
     : [];
 }
 
-// Todo: Task Query CUD로직 작성하기
+// Todo: Task Query UD로직 작성하기
+export function useCreateStatusTask(projectId: Project['projectId']) {
+  const { toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+  const queryKey = ['projects', projectId, 'tasks'];
+
+  const mutation = useMutation({
+    mutationFn: (formData: TaskForm) => createTask(projectId, formData),
+    onSuccess: () => {
+      toastSuccess('프로젝트 일정을 등록하였습니다.');
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
+  return mutation;
+}
+
 export function useReadStatusTasks(projectId: Project['projectId']) {
   const {
     data: statusTaskList = [],

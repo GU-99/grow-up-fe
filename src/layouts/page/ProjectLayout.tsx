@@ -27,11 +27,11 @@ export default function ProjectLayout() {
 
   return (
     <>
-      <section className="flex h-full p-15">
+      <section className="flex h-full gap-10 p-15">
         <ListSidebar label="team" title="팀 이름...">
           <ListProject data={projectList} targetId={projectId} />
         </ListSidebar>
-        <section className="flex grow flex-col border border-list bg-contents-box">
+        <section className="flex w-2/3 grow flex-col border border-list bg-contents-box">
           <header className="flex h-30 items-center justify-between border-b p-10">
             {/* ToDo: LabelTitle 공통 컴포넌트로 추출할 것 */}
             <div>
@@ -42,8 +42,8 @@ export default function ProjectLayout() {
               <RiSettings5Fill /> Project Setting
             </div>
           </header>
-          <div className="flex grow flex-col overflow-auto p-10 pt-0">
-            <div className="sticky top-0 z-10 mb-10 flex items-center justify-between border-b bg-contents-box pt-10">
+          <div className="flex grow flex-col overflow-auto">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-contents-box p-10 pb-0">
               <ul className="*:mr-15">
                 <li className="inline">
                   {/* ToDo: nav 옵션사항을 정리하여 map으로 정리할 것 */}
@@ -66,7 +66,9 @@ export default function ProjectLayout() {
                 </button>
               </div>
             </div>
-            <Outlet context={{ project } satisfies ProjectContext} />
+            <div className="flex grow overflow-auto p-10">
+              <Outlet context={{ project } satisfies ProjectContext} />
+            </div>
           </div>
         </section>
       </section>
