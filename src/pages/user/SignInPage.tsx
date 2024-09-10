@@ -8,12 +8,14 @@ import AuthFormLayout from '@layouts/AuthFormLayout';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import useToast from '@hooks/useToast';
-import { login } from '@services/authService';
+import { getUserInfo, login } from '@services/authService';
 import type { UserSignInForm } from '@/types/UserType';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useUserStore } from '@/stores/useUserStore';
 
 export default function SignInPage() {
   const { onLogin } = useAuthStore();
+  const { setUserInfo } = useUserStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
 
@@ -29,26 +31,41 @@ export default function SignInPage() {
     },
   });
 
-  const onSubmit = async (formData: UserSignInForm) => {
+  const fetchUserInfo = async () => {
+    try {
+      const response = await getUserInfo();
+      setUserInfo(response.data);
+    } catch (error) {
+      throw new Error('유저 정보를 가져오는 데 실패했습니다.');
+    }
+  };
+
+  const handleLogin = async (formData: UserSignInForm) => {
     try {
       const response = await login(formData);
-      if (!response.headers) return;
+      if (!response.headers) throw new Error('헤더가 존재하지 않습니다.');
 
       const accessToken = response.headers.authorization;
-      if (!accessToken) {
-        toastError('로그인에 실패했습니다.');
-        return;
-      }
+      if (!accessToken) throw new Error('토큰이 존재하지 않습니다.');
 
       onLogin(accessToken.split(' ')[1]);
-      navigate('/', { replace: true });
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 401) {
-        toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
-        return;
+        throw new Error('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
-      toastError(`로그인 도중 오류가 발생했습니다: ${axiosError.message}`);
+      throw new Error(`로그인 도중 오류가 발생했습니다: ${axiosError.message}`);
+    }
+  };
+
+  const onSubmit = async (formData: UserSignInForm) => {
+    try {
+      await handleLogin(formData);
+      await fetchUserInfo();
+      navigate('/', { replace: true });
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      toastError(axiosError.message);
     }
   };
 
