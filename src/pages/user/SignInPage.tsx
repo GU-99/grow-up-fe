@@ -1,17 +1,17 @@
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
 import ValidationInput from '@components/common/ValidationInput';
-import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import AuthFormLayout from '@layouts/AuthFormLayout';
-import { useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
+import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
 import { getUserInfo, login } from '@services/authService';
-import type { UserSignInForm } from '@/types/UserType';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useUserStore } from '@/stores/useUserStore';
+import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
   const { onLogin } = useAuthStore();

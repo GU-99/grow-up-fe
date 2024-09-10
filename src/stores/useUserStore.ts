@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { decrypt, encrypt } from '@utils/cryptoHelper';

@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
+import { USER_INFO_DUMMY } from '@mocks/mockData';
 import { UserSignInForm } from '@/types/UserType';
-import { USER_INFO_DUMMY } from '../mockData';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
