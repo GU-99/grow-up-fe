@@ -218,7 +218,12 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           <input
             type="date"
             id="startDate"
-            {...register('startDate', TASK_VALIDATION_RULES.START_DATE(startDate, endDate))}
+            {...register('startDate', {
+              ...TASK_VALIDATION_RULES.START_DATE(startDate, endDate),
+              onChange: (e) => {
+                if (!hasDeadline) setValue('endDate', e.target.value);
+              },
+            })}
           />
           <div className={`my-5 h-10 grow text-xs text-error ${errors.startDate ? 'visible' : 'invisible'}`}>
             {errors.startDate?.message}
