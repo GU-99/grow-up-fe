@@ -1,8 +1,9 @@
 import Spinner from '@components/common/Spinner';
-import { useReadTeams } from '@hooks/query/useTeamQuery';
+import { useLeaveTeam, useReadTeams } from '@hooks/query/useTeamQuery';
 
 export default function JoinedTeamPage() {
   const { joinedTeamList, isLoading } = useReadTeams();
+  const { mutate: leaveTeam } = useLeaveTeam();
 
   if (isLoading) return <Spinner />;
 
@@ -27,9 +28,11 @@ export default function JoinedTeamPage() {
                 </div>
               </div>
               <div className="w-45 shrink-0">
+                {/* TODO: 삭제하기 (creatorId와 로그인한 유저 아이디와 동일시에만 보임) */}
                 <button
                   type="button"
                   className="rounded-md bg-red-500 px-5 py-2 text-sm text-white hover:brightness-90"
+                  onClick={() => leaveTeam(String(team.teamId))}
                 >
                   탈퇴하기
                 </button>

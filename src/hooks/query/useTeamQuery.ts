@@ -1,6 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTeamList } from '@services/userService';
+import { leaveTeam } from '@services/teamService';
 import type { TeamListWithApproval } from '@/types/TeamType';
+import useToast from '../useToast';
 
 export function useReadTeams() {
   const {
@@ -20,4 +22,20 @@ export function useReadTeams() {
   const invitedTeamList = data.filter((team) => team.isPendingApproval === false);
 
   return { joinedTeamList, invitedTeamList, isLoading, isError, error };
+}
+
+export function useLeaveTeam() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+
+  return useMutation({
+    mutationFn: (teamId: string) => leaveTeam(teamId),
+    onSuccess: () => {
+      toastSuccess('팀에서 탈퇴했습니다.');
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+    onError: () => {
+      toastError('탈퇴에 실패했습니다. 다시 시도해 주세요.');
+    },
+  });
 }

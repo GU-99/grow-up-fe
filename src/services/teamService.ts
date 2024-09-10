@@ -20,3 +20,13 @@ async function findUserByTeam(
 ) {
   return authAxios.get<User[]>(`/team/${teamId}/user/search?nickname=${nickname}`, axiosConfig);
 }
+
+/**
+ * 팀에서 탈퇴하기
+ * @param {string} teamId - 팀 아이디
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<void>}
+ */
+export async function leaveTeam(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post(`/team/${teamId}/leave`, {}, axiosConfig);
+}
