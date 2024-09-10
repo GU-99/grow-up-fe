@@ -8,7 +8,6 @@ import AuthFormLayout from '@layouts/AuthFormLayout';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import useToast from '@hooks/useToast';
-import useAxios from '@hooks/useAxios';
 import { login } from '@services/authService';
 import type { UserSignInForm } from '@/types/UserType';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -17,7 +16,6 @@ export default function SignInPage() {
   const { onLogin } = useAuthStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
-  const { fetchData } = useAxios(login);
 
   const {
     register,
@@ -33,7 +31,7 @@ export default function SignInPage() {
 
   const onSubmit = async (formData: UserSignInForm) => {
     try {
-      const response = await fetchData(formData);
+      const response = await login(formData);
       if (!response.headers) return;
 
       const accessToken = response.headers.authorization;
