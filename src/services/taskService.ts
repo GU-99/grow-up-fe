@@ -2,19 +2,32 @@ import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
 import type { Project } from '@/types/ProjectType';
-import type { TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
+import type { TaskForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
 
 /**
  * 프로젝트에 속한 모든 일정 목록 조회 API
  *
  * @export
  * @async
- * @param {Project['projectId']} projectId      - 대상 프로젝트 ID
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<TaskListWithStatus[]>>}
  */
 export async function findTaskList(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<TaskListWithStatus[]>(`/project/${projectId}/task`, axiosConfig);
+}
+
+/**
+ * 일정 생성 API
+ *
+ * @export
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {TaskForm} formData                   - 새로운 일정 정보 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export function createTask(projectId: Project['projectId'], formData: TaskForm, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post(`/project/${projectId}/task`, formData, axiosConfig);
 }
 
 /**
