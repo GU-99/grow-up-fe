@@ -42,9 +42,11 @@ export default function useAxios<T, P extends unknown[]>(fetchCallback: PromiseC
         const response = await fetchCallback(...params);
         setHeaders(response.headers);
         setData(response.data);
+        return response;
       } catch (error: unknown) {
         setError(error as Error);
         errorHandler(error as Error);
+        throw error;
       } finally {
         setLoading(false);
       }
