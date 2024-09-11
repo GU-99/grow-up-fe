@@ -9,8 +9,8 @@ import AuthFormLayout from '@layouts/AuthFormLayout';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
 import { getUserInfo, login } from '@services/authService';
-import { useAuthStore } from '@/stores/useAuthStore';
-import { useUserStore } from '@/stores/useUserStore';
+import { useAuthStore } from '@stores/useAuthStore';
+import { useUserStore } from '@stores/useUserStore';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {

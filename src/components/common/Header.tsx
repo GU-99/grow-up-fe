@@ -2,7 +2,7 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '@assets/logo.svg';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
-import { useUserStore } from '@/stores/useUserStore';
+import { useUserStore } from '@stores/useUserStore';
 
 export default function Header() {
   // ToDo: 로그인 기능 구현 후, 로그아웃 로직 연결하기
