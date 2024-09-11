@@ -30,3 +30,13 @@ async function findUserByTeam(
 export async function leaveTeam(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/leave`, {}, axiosConfig);
 }
+
+/**
+ * 팀 삭제하기
+ * @param {string} teamId - 팀 아이디
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<void>}
+ */
+export async function deleteTeam(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.delete(`/team/${teamId}`, axiosConfig);
+}

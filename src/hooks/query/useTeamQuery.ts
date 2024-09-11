@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTeamList } from '@services/userService';
-import { leaveTeam } from '@services/teamService';
+import { deleteTeam, leaveTeam } from '@services/teamService';
 import type { TeamListWithApproval } from '@/types/TeamType';
 import useToast from '../useToast';
 
@@ -36,6 +36,26 @@ export function useLeaveTeam() {
     },
     onError: () => {
       toastError('탈퇴에 실패했습니다. 다시 시도해 주세요.');
+    },
+  });
+}
+
+export function useDeleteTeam() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+
+  return useMutation({
+    mutationFn: async (teamId: string) => {
+      const response = await deleteTeam(teamId);
+
+      return response;
+    },
+    onSuccess: () => {
+      toastSuccess('팀을 삭제하였습니다.');
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+    onError: () => {
+      toastError('팀 삭제를 실패했습니다. 다시 시도해 주세요.');
     },
   });
 }

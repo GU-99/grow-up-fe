@@ -1,10 +1,13 @@
 import Spinner from '@components/common/Spinner';
-import { useLeaveTeam, useReadTeams } from '@hooks/query/useTeamQuery';
+import { useDeleteTeam, useLeaveTeam, useReadTeams } from '@hooks/query/useTeamQuery';
+import { deleteTeam } from '@services/teamService';
 
 export default function JoinedTeamPage() {
   const { joinedTeamList, isLoading } = useReadTeams();
   const { mutate: leaveTeam } = useLeaveTeam();
-
+  const { mutate: deleteTeam } = useDeleteTeam();
+  // TODO: 실제 userId로 넣어주기
+  const userId = 4;
   if (isLoading) return <Spinner />;
 
   return (
@@ -27,8 +30,17 @@ export default function JoinedTeamPage() {
                   <p className="truncate">{team.content}</p>
                 </div>
               </div>
-              <div className="w-45 shrink-0">
+              <div className="flex shrink-0 flex-col gap-4">
                 {/* TODO: 삭제하기 (creatorId와 로그인한 유저 아이디와 동일시에만 보임) */}
+                {team.creatorId === userId && (
+                  <button
+                    type="button"
+                    className="ml-2 rounded-md bg-red-700 px-5 py-2 text-sm text-white hover:brightness-90"
+                    onClick={() => deleteTeam(String(team.teamId))}
+                  >
+                    삭제하기
+                  </button>
+                )}
                 <button
                   type="button"
                   className="rounded-md bg-red-500 px-5 py-2 text-sm text-white hover:brightness-90"

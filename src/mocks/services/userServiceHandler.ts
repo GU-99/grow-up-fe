@@ -54,6 +54,7 @@ const userServiceHandler = [
         teamName: team.teamName,
         content: team.content,
         creator: creatorNickname,
+        creatorId: team.creatorId,
         isPendingApproval: teamUser.isPendingApproval,
         roleName: role.roleName,
       };
