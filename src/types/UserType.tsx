@@ -8,7 +8,7 @@ export type User = {
   nickname: string;
   bio: string | null;
   links: string[];
-  profileImageUrl: string | null;
+  profileImageUrl: string;
 };
 
 export type UserWithRole = User & Role;

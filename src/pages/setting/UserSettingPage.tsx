@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
@@ -10,8 +9,6 @@ import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
   const userInfoData = useUserStore((state) => state.userInfo);
-
-  const [imageUrl, setImageUrl] = useState(userInfoData.profileImageUrl || '');
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
@@ -38,7 +35,10 @@ export default function UserSettingPage() {
       <div className="my-30">
         <form onSubmit={methods.handleSubmit(onSubmit)} className="mx-auto max-w-300 space-y-8">
           {/* 프로필 이미지 */}
-          <ProfileImageContainer imageUrl={imageUrl} setImageUrl={setImageUrl} />
+          <ProfileImageContainer
+            imageUrl={methods.watch('profileImageUrl')}
+            setImageUrl={(url: string) => methods.setValue('profileImageUrl', url)}
+          />
 
           {/* 아이디 */}
           <ValidationInput

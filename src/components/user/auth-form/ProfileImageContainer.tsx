@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 type ProfileImageContainerProps = {
   imageUrl: string;
-  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  setImageUrl: (url: string) => void;
 };
 
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
