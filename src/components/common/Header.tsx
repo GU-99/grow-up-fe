@@ -2,11 +2,11 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '@assets/logo.svg';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
-import { useUserStore } from '@stores/useUserStore';
+import { useStore } from '@stores/useStore';
 
 export default function Header() {
   // ToDo: 로그인 기능 구현 후, 로그아웃 로직 연결하기
-  const userInfoData = useUserStore((state) => state.userInfo);
+  const userInfoData = useStore((state) => state.user.userInfo);
 
   return (
     <header className="flex h-header items-center justify-between bg-main px-15">

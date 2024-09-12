@@ -4,11 +4,11 @@ import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import ProfileImageContainer from '@components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
-import { useUserStore } from '@stores/useUserStore';
+import { useStore } from '@stores/useStore';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
-  const userInfoData = useUserStore((state) => state.userInfo);
+  const userInfoData = useStore((state) => state.user.userInfo);
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',

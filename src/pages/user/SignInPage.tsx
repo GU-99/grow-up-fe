@@ -9,13 +9,12 @@ import AuthFormLayout from '@layouts/AuthFormLayout';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
 import { getUserInfo, login } from '@services/authService';
-import { useAuthStore } from '@stores/useAuthStore';
-import { useUserStore } from '@stores/useUserStore';
+import { useStore } from '@/stores/useStore';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
-  const { onLogin } = useAuthStore();
-  const { setUserInfo } = useUserStore();
+  const { onLogin } = useStore().auth;
+  const { setUserInfo } = useStore().user;
   const { toastError } = useToast();
   const navigate = useNavigate();
 
