@@ -1,9 +1,10 @@
 import Spinner from '@components/common/Spinner';
-import { useReadTeams } from '@hooks/query/useTeamQuery';
+import { useApproveTeamInvitation, useRejectTeamInvitation, useReadTeams } from '@hooks/query/useTeamQuery';
 
 export default function InvitedTeamPage() {
   const { invitedTeamList, isLoading } = useReadTeams();
-
+  const { mutate: ApproveInvitation } = useApproveTeamInvitation();
+  const { mutate: RejectInvitation } = useRejectTeamInvitation();
   if (isLoading) return <Spinner />;
 
   return (
@@ -27,12 +28,17 @@ export default function InvitedTeamPage() {
                 </div>
               </div>
               <div className="flex shrink-0 flex-col gap-4">
-                <button type="button" className="rounded-md bg-main px-5 py-2 text-sm text-white hover:brightness-90">
+                <button
+                  type="button"
+                  className="rounded-md bg-main px-5 py-2 text-sm text-white hover:brightness-90"
+                  onClick={() => ApproveInvitation(String(invite.teamId))}
+                >
                   수락하기
                 </button>
                 <button
                   type="button"
                   className="rounded-md bg-red-500 px-5 py-2 text-sm text-white hover:brightness-90"
+                  onClick={() => RejectInvitation(String(invite.teamId))}
                 >
                   거부하기
                 </button>

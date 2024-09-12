@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTeamList } from '@services/userService';
-import { deleteTeam, leaveTeam } from '@services/teamService';
+import { acceptTeamInvitation, declineTeamInvitation, deleteTeam, leaveTeam } from '@services/teamService';
 import type { TeamListWithApproval } from '@/types/TeamType';
 import useToast from '../useToast';
 
@@ -56,6 +56,38 @@ export function useDeleteTeam() {
     },
     onError: () => {
       toastError('팀 삭제를 실패했습니다. 다시 시도해 주세요.');
+    },
+  });
+}
+
+export function useApproveTeamInvitation() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+
+  return useMutation({
+    mutationFn: (teamId: string) => acceptTeamInvitation(teamId),
+    onSuccess: () => {
+      toastSuccess('초대를 수락했습니다.');
+      queryClient.invalidateQueries({ queryKey: ['teams'] }); // 팀 목록을 다시 불러오기
+    },
+    onError: () => {
+      toastError('초대 수락에 실패했습니다. 다시 시도해 주세요.');
+    },
+  });
+}
+
+export function useRejectTeamInvitation() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+
+  return useMutation({
+    mutationFn: (teamId: string) => declineTeamInvitation(teamId),
+    onSuccess: () => {
+      toastSuccess('초대를 거절했습니다.');
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+    onError: () => {
+      toastError('초대 거절에 실패했습니다. 다시 시도해 주세요.');
     },
   });
 }
