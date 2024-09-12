@@ -29,7 +29,7 @@ export const authAxios = axiosProvider({
 // 요청 인터셉터
 authAxios.interceptors.request.use(
   (config) => {
-    const { accessToken } = useStore.getState().auth;
+    const { accessToken } = useStore.getState();
 
     const modifiedConfig = { ...config };
     if (accessToken) modifiedConfig.headers.Authorization = `Bearer ${accessToken}`;
@@ -48,7 +48,7 @@ authAxios.interceptors.response.use(
     // 액세스 토큰 만료 시 처리
     if (error.response?.status === 401) {
       const { toastError } = useToast();
-      const { onLogout, setAccessToken } = useStore.getState().auth;
+      const { onLogout, setAccessToken } = useStore.getState();
 
       // 에러 객체의 설정 객체 추출
       const originalRequest = error.config;

@@ -8,7 +8,7 @@ import { useStore } from '@stores/useStore';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
-  const userInfoData = useStore((state) => state.user.userInfo);
+  const userInfoData = useStore((state) => state.userInfo);
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',

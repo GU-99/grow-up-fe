@@ -6,7 +6,7 @@ import { useStore } from '@stores/useStore';
 
 export default function Header() {
   // ToDo: 로그인 기능 구현 후, 로그아웃 로직 연결하기
-  const userInfoData = useStore((state) => state.user.userInfo);
+  const userInfoData = useStore((state) => state.userInfo);
 
   return (
     <header className="flex h-header items-center justify-between bg-main px-15">

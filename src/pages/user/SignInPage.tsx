@@ -13,8 +13,7 @@ import { useStore } from '@/stores/useStore';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
-  const { onLogin } = useStore().auth;
-  const { setUserInfo } = useStore().user;
+  const { onLogin, setUserInfo } = useStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
 
