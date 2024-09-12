@@ -41,10 +41,10 @@ export default function SignInPage() {
   const handleLogin = async (formData: UserSignInForm) => {
     try {
       const response = await login(formData);
-      if (!response.headers) throw new Error('헤더가 존재하지 않습니다.');
+      if (!response.headers) throw new Error();
 
       const accessToken = response.headers.authorization;
-      if (!accessToken) throw new Error('토큰이 존재하지 않습니다.');
+      if (!accessToken) throw new Error();
 
       onLogin(accessToken.split(' ')[1]);
     } catch (error) {
@@ -52,7 +52,7 @@ export default function SignInPage() {
       if (axiosError.response?.status === 401) {
         throw new Error('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
-      throw new Error(`로그인 도중 오류가 발생했습니다: ${axiosError.message}`);
+      throw new Error('로그인 도중 오류가 발생했습니다.');
     }
   };
 
@@ -62,7 +62,7 @@ export default function SignInPage() {
       await fetchUserInfo();
       navigate('/', { replace: true });
     } catch (error) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as Error;
       toastError(axiosError.message);
     }
   };
