@@ -58,12 +58,12 @@ const createAuthSlice: StateCreator<Store, [], [], AuthStore> = (set) => ({
 // User Slice Creator
 const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
   userInfo: {
-    username: '',
+    username: null,
     email: '',
     nickname: '',
     bio: '',
     links: [],
-    profileImageUrl: '',
+    profileImageName: null,
   },
   setUserInfo: (newUserInfo: EditUserInfoForm) =>
     set({

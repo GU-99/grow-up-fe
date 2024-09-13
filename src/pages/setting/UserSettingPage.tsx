@@ -18,13 +18,13 @@ export default function UserSettingPage() {
       nickname: userInfoData.nickname,
       bio: userInfoData.bio,
       links: userInfoData.links,
-      profileImageUrl: userInfoData.profileImageUrl,
+      profileImageName: userInfoData.profileImageName,
     },
   });
 
   // form 전송 함수
   const onSubmit = async (data: EditUserInfoForm) => {
-    const { username, email, profileImageUrl, ...filteredData } = data;
+    const { username, email, profileImageName, ...filteredData } = data;
     console.log(data);
 
     // TODO: 폼 제출 로직 작성
@@ -36,8 +36,8 @@ export default function UserSettingPage() {
         <form onSubmit={methods.handleSubmit(onSubmit)} className="mx-auto max-w-300 space-y-8">
           {/* 프로필 이미지 */}
           <ProfileImageContainer
-            imageUrl={methods.watch('profileImageUrl')}
-            setImageUrl={(url: string) => methods.setValue('profileImageUrl', url)}
+            imageUrl={methods.watch('profileImageName')}
+            setImageUrl={(url: string) => methods.setValue('profileImageName', url)}
           />
 
           {/* 아이디 */}

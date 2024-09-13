@@ -7,7 +7,7 @@ import useToast from '@hooks/useToast';
 import { useEffect } from 'react';
 
 type ProfileImageContainerProps = {
-  imageUrl: string;
+  imageUrl: string | null;
   setImageUrl: (url: string) => void;
 };
 
@@ -34,12 +34,12 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
 
     const image = URL.createObjectURL(file);
     setImageUrl(image);
-    setValue('profileImageUrl', image);
+    setValue('profileImageName', image);
   };
 
   const handleRemoveImg = () => {
     setImageUrl('');
-    setValue('profileImageUrl', '');
+    setValue('profileImageName', '');
   };
 
   return (
