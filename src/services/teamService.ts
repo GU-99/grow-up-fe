@@ -23,6 +23,9 @@ async function findUserByTeam(
 
 /**
  * 팀 탈퇴 API
+ *
+ * @export
+ * @async
  * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
@@ -33,6 +36,9 @@ export async function leaveTeam(teamId: number, axiosConfig: AxiosRequestConfig 
 
 /**
  * 팀 삭제 API
+ *
+ * @export
+ * @async
  * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
@@ -43,6 +49,9 @@ export async function deleteTeam(teamId: number, axiosConfig: AxiosRequestConfig
 
 /**
  * 팀 초대 수락 API
+ *
+ * @export
+ * @async
  * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
@@ -53,6 +62,9 @@ export async function acceptTeamInvitation(teamId: number, axiosConfig: AxiosReq
 
 /**
  * 팀 초대 거절 API
+ *
+ * @export
+ * @async
  * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
