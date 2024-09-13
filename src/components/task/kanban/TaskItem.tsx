@@ -6,17 +6,19 @@ import useModal from '@hooks/useModal';
 import useProjectContext from '@hooks/useProjectContext';
 import DetailModalTask from '@components/modal/task/DetailModalTask';
 import type { Task } from '@/types/TaskType';
+import type { ProjectStatus } from '@/types/ProjectStatusType';
 
 type TaskItemProps = {
-  taskId: Task['taskId'];
-  name: string;
-  colorCode: string;
-  index: number;
+  task: Task;
+  colorCode: ProjectStatus['colorCode'];
 };
 
-export default function TaskItem({ taskId, name, colorCode, index }: TaskItemProps) {
+export default function TaskItem({ task, colorCode }: TaskItemProps) {
   const { project } = useProjectContext();
   const { showModal, openModal, closeModal } = useModal();
+
+  const { taskId, name, sortOrder } = task;
+  const index = useMemo(() => sortOrder - 1, [sortOrder]);
   const draggableId = useMemo(() => generatePrefixId(taskId, DND_DRAGGABLE_PREFIX.TASK), [taskId]);
 
   const handleTaskClick = () => openModal();
@@ -29,7 +31,7 @@ export default function TaskItem({ taskId, name, colorCode, index }: TaskItemPro
             role="menuitem"
             tabIndex={0}
             onClick={handleTaskClick}
-            onKeyUp={handleTaskClick}
+            onKeyUp={undefined}
             className="m-5 flex h-30 items-center justify-start gap-5 rounded-sl bg-[#FEFEFE] p-5"
             ref={dragProvided.innerRef}
             {...dragProvided.draggableProps}
@@ -40,7 +42,7 @@ export default function TaskItem({ taskId, name, colorCode, index }: TaskItemPro
           </div>
         )}
       </Draggable>
-      {showModal && <DetailModalTask project={project} taskId={taskId} onClose={closeModal} />}
+      {showModal && <DetailModalTask project={project} task={task} onClose={closeModal} />}
     </>
   );
 }

@@ -22,11 +22,9 @@ export default function TaskItemList({ statusId, colorCode, tasks }: TaskItemLis
           ref={taskDropProvided.innerRef}
           {...taskDropProvided.droppableProps}
         >
-          {tasks.map((task) => {
-            const { taskId, name, sortOrder } = task;
-            const index = sortOrder - 1;
-            return <TaskItem key={taskId} taskId={taskId} colorCode={colorCode} index={index} name={name} />;
-          })}
+          {tasks.map((task) => (
+            <TaskItem key={task.taskId} task={task} colorCode={colorCode} />
+          ))}
           {taskDropProvided.placeholder}
         </article>
       )}
