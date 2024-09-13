@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Droppable } from '@hello-pangea/dnd';
 import TaskItem from '@components/task/kanban/TaskItem';
 import { generatePrefixId } from '@utils/converter';
-import { DND_DRAGGABLE_PREFIX, DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
+import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
 import type { Task } from '@/types/TaskType';
 
 type TaskItemListProps = {
@@ -24,9 +24,8 @@ export default function TaskItemList({ statusId, colorCode, tasks }: TaskItemLis
         >
           {tasks.map((task) => {
             const { taskId, name, sortOrder } = task;
-            const draggableId = generatePrefixId(taskId, DND_DRAGGABLE_PREFIX.TASK);
             const index = sortOrder - 1;
-            return <TaskItem key={taskId} draggableId={draggableId} colorCode={colorCode} index={index} name={name} />;
+            return <TaskItem key={taskId} taskId={taskId} colorCode={colorCode} index={index} name={name} />;
           })}
           {taskDropProvided.placeholder}
         </article>
