@@ -7,13 +7,26 @@ import type { FieldError } from 'react-hook-form';
 import type { Project } from '@/types/ProjectType';
 
 type PeriodDateInputProps = {
+  startDateLabel: string;
+  endDateLabel: string;
+  startDateId: string;
+  endDateId: string;
   startDate: Project['startDate'];
   endDate: Project['endDate'];
   startDateName: string;
   endDateName: string;
 };
 
-export default function PeriodDateInput({ startDate, endDate, startDateName, endDateName }: PeriodDateInputProps) {
+export default function PeriodDateInput({
+  startDateLabel,
+  endDateLabel,
+  startDateId,
+  endDateId,
+  startDate,
+  endDate,
+  startDateName,
+  endDateName,
+}: PeriodDateInputProps) {
   const [hasDeadline, setHasDeadline] = useState(false);
   const {
     setValue,
@@ -32,10 +45,10 @@ export default function PeriodDateInput({ startDate, endDate, startDateName, end
 
   return (
     <div className="flex items-center justify-center gap-10">
-      <label htmlFor={startDateName} className="w-1/2">
-        <h3 className="text-large">시작일</h3>
+      <label htmlFor={startDateId} className="w-1/2">
+        <h3 className="text-large">{startDateLabel}</h3>
         <input
-          id={startDateName}
+          id={startDateId}
           type="date"
           {...register(startDateName, {
             ...TASK_VALIDATION_RULES.START_DATE(startDate, endDate),
@@ -48,13 +61,13 @@ export default function PeriodDateInput({ startDate, endDate, startDateName, end
           {(errors[startDateName] as FieldError | undefined)?.message}
         </div>
       </label>
-      <label htmlFor={endDateName} className="w-1/2">
+      <label htmlFor={endDateId} className="w-1/2">
         <h3 className="flex items-center space-x-2 text-large">
-          <span>종료일</span>
+          <span>{endDateLabel}</span>
           <ToggleButton id="deadline" checked={hasDeadline} onChange={handleDeadlineToggle} />
         </h3>
         <input
-          id={endDateName}
+          id={endDateId}
           type="date"
           className={`${hasDeadline ? '' : '!bg-disable'}`}
           disabled={!hasDeadline}

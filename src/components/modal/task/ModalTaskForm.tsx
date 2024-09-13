@@ -181,7 +181,16 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
         />
 
-        <PeriodDateInput startDate={startDate} endDate={endDate} startDateName="startDate" endDateName="endDate" />
+        <PeriodDateInput
+          startDateLabel="시작일"
+          endDateLabel="종료일"
+          startDateId="startDate"
+          endDateId="endDate"
+          startDate={startDate}
+          endDate={endDate}
+          startDateName="startDate"
+          endDateName="endDate"
+        />
 
         {/* ToDo: 검색UI 공용 컴포넌트로 추출할 것 */}
         <div className="mb-20">
