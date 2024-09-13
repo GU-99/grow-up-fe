@@ -31,14 +31,14 @@ export default function InvitedTeamPage() {
                 <button
                   type="button"
                   className="rounded-md bg-main px-5 py-2 text-sm text-white hover:brightness-90"
-                  onClick={() => ApproveInvitation(String(invite.teamId))}
+                  onClick={() => ApproveInvitation(invite.teamId)}
                 >
                   수락하기
                 </button>
                 <button
                   type="button"
                   className="rounded-md bg-red-500 px-5 py-2 text-sm text-white hover:brightness-90"
-                  onClick={() => RejectInvitation(String(invite.teamId))}
+                  onClick={() => RejectInvitation(invite.teamId)}
                 >
                   거부하기
                 </button>

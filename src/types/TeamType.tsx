@@ -12,5 +12,5 @@ export type TeamListWithApproval = Omit<Team, 'creatorId'> &
   Pick<Role, 'roleName'> & {
     isPendingApproval: boolean;
     creator: string;
-    creatorId: number; // 추가된 필드
+    creatorId: number;
   };

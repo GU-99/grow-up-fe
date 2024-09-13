@@ -22,41 +22,41 @@ async function findUserByTeam(
 }
 
 /**
- * 팀에서 탈퇴하기
- * @param {string} teamId - 팀 아이디
+ * 팀 탈퇴 API
+ * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<void>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
-export async function leaveTeam(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
+export async function leaveTeam(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/leave`, {}, axiosConfig);
 }
 
 /**
- * 팀 삭제하기
- * @param {string} teamId - 팀 아이디
+ * 팀 삭제 API
+ * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<void>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
-export async function deleteTeam(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
+export async function deleteTeam(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.delete(`/team/${teamId}`, axiosConfig);
 }
 
 /**
- * 팀 초대 수락하기
- * @param {string} teamId - 팀 아이디
+ * 팀 초대 수락 API
+ * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<void>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
-export async function acceptTeamInvitation(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
+export async function acceptTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/invitation/accept`, {}, axiosConfig);
 }
 
 /**
- * 팀 초대 거절하기
- * @param {string} teamId - 팀 아이디
+ * 팀 초대 거절 API
+ * @param {number} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<void>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
-export async function declineTeamInvitation(teamId: string, axiosConfig: AxiosRequestConfig = {}) {
+export async function declineTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/invitation/decline`, {}, axiosConfig);
 }
