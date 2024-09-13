@@ -10,8 +10,7 @@ import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import StatusRadio from '@components/common/StatusRadio';
-import ToggleButton from '@components/common/ToggleButton';
-import CustomMarkdown from '@components/common/CustomMarkdown';
+import MarkdownEditor from '@components/common/MarkdownEditor';
 import PeriodDateInput from '@components/common/PeriodDateInput';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
@@ -42,7 +41,6 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
   const [keyword, setKeyword] = useState('');
   const [workers, setWorkers] = useState<UserWithRole[]>([]);
-  const [preview, setPreview] = useState(false);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
@@ -95,8 +93,6 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       if (abortControllerRef.current) abortControllerRef.current.abort();
     };
   }, [searchUsers, keyword]);
-
-  const handlePreviewToggle = () => setPreview((prev) => !prev);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
@@ -246,23 +242,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           </section>
         </div>
 
-        <label htmlFor="content" className="mb-20">
-          <h3 className="flex items-center space-x-2">
-            <span className="text-large">내용</span>
-            <ToggleButton id="preview" checked={preview} onChange={handlePreviewToggle} />
-          </h3>
-          {preview ? (
-            <CustomMarkdown markdown={watch('content')} />
-          ) : (
-            <textarea
-              id="content"
-              rows={10}
-              className="w-full border border-input p-10 placeholder:text-xs"
-              placeholder="마크다운 형식으로 입력해주세요."
-              {...register('content')}
-            />
-          )}
-        </label>
+        <MarkdownEditor contentName="content" />
 
         <label htmlFor="files">
           <h3 className="text-large">첨부파일</h3>
