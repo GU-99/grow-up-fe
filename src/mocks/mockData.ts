@@ -23,12 +23,12 @@ type ProjectUser = {
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const USER_INFO_DUMMY = {
-  // provider: 'LOCAL',
-  // userId: 1,
+  provider: 'LOCAL',
+  userId: 1,
   username: 'test123',
   email: 'momoco@gmail.com',
   nickname: 'momoco',
-  profileImageUrl: '',
+  profileImageName: null,
   bio: "Hi, I'm Momoco!",
   links: ['momoco@github.com'],
 };
@@ -43,7 +43,7 @@ export const USER_DUMMY: User[] = [
     nickname: '판다',
     bio: '풀스택 개발자를 목표중',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 2,
@@ -53,7 +53,7 @@ export const USER_DUMMY: User[] = [
     nickname: '카멜레온',
     bio: '디자이너 + 프론트엔드 육각형 인재',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 3,
@@ -63,7 +63,7 @@ export const USER_DUMMY: User[] = [
     nickname: '랫서판다',
     bio: '급성장중인 프론트엔드 취준생',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 4,
@@ -73,7 +73,7 @@ export const USER_DUMMY: User[] = [
     nickname: '북금곰',
     bio: '힘을 숨긴 프론트엔드 취준생',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 5,
@@ -83,7 +83,7 @@ export const USER_DUMMY: User[] = [
     nickname: '호랑이',
     bio: '백엔드 5년차',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 6,
@@ -93,7 +93,7 @@ export const USER_DUMMY: User[] = [
     nickname: '나무늘보',
     bio: '식스센스 초감각형 풀스택 개발자',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 7,
@@ -103,7 +103,7 @@ export const USER_DUMMY: User[] = [
     nickname: '웜뱃',
     bio: '초럭키비키 백엔드 개발자',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 8,
@@ -113,7 +113,7 @@ export const USER_DUMMY: User[] = [
     nickname: '벨루가',
     bio: '팔방미인 디자이너',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 9,
@@ -123,7 +123,7 @@ export const USER_DUMMY: User[] = [
     nickname: '펭귄',
     bio: 'MySQL, Postgre SQL DBA',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 10,
@@ -133,7 +133,7 @@ export const USER_DUMMY: User[] = [
     nickname: '비버',
     bio: 'DevOps 3년차',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 11,
@@ -143,7 +143,7 @@ export const USER_DUMMY: User[] = [
     nickname: '판다아빠',
     bio: '풀스택 개발자 10년차',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 12,
@@ -153,7 +153,7 @@ export const USER_DUMMY: User[] = [
     nickname: '판다엄마',
     bio: '디자이너 10년차',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 13,
@@ -163,7 +163,7 @@ export const USER_DUMMY: User[] = [
     nickname: '판다형',
     bio: 'DevOps 2년차',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 14,
@@ -173,7 +173,7 @@ export const USER_DUMMY: User[] = [
     nickname: '판다누나',
     bio: 'DBA 2년차',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
   {
     userId: 15,
@@ -183,7 +183,7 @@ export const USER_DUMMY: User[] = [
     nickname: '판다동생',
     bio: '미래의 슈퍼 개발자',
     links: [],
-    profileImageUrl: null,
+    profileImageName: null,
   },
 ] as const;
 
