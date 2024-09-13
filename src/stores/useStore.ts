@@ -63,7 +63,7 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
     username: null,
     email: '',
     nickname: '',
-    bio: '',
+    bio: null,
     links: [],
     profileImageName: null,
   },
