@@ -9,11 +9,11 @@ import AuthFormLayout from '@layouts/AuthFormLayout';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
 import { getUserInfo, login } from '@services/authService';
-import { useStore } from '@/stores/useStore';
+import { useStore } from '@stores/useStore';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
-  const { onLogin, setUserInfo } = useStore();
+  const { onLogin, onLogout, setUserInfo, clearUserInfo } = useStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
 
@@ -62,6 +62,9 @@ export default function SignInPage() {
       await fetchUserInfo();
       navigate('/', { replace: true });
     } catch (error) {
+      onLogout();
+      clearUserInfo();
+      navigate('/signin', { replace: true });
       const axiosError = error as Error;
       toastError(axiosError.message);
     }
