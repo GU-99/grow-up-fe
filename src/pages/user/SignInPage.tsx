@@ -1,24 +1,21 @@
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
 import ValidationInput from '@components/common/ValidationInput';
-import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import AuthFormLayout from '@layouts/AuthFormLayout';
-import { useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
+import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
-import { login } from '@services/authService';
-import { useEffect } from 'react';
+import { getUserInfo, login } from '@services/authService';
+import { useStore } from '@/stores/useStore';
 import type { UserSignInForm } from '@/types/UserType';
-import { useAuthStore } from '@/stores/useAuthStore';
-import useAxios from '@/hooks/useAxios';
 
 export default function SignInPage() {
-  const { onLogin } = useAuthStore();
+  const { onLogin, setUserInfo } = useStore();
   const { toastError } = useToast();
   const navigate = useNavigate();
-  const { error, fetchData, headers, loading } = useAxios(login);
 
   const {
     register,
@@ -32,31 +29,43 @@ export default function SignInPage() {
     },
   });
 
-  const onSubmit = async (formData: UserSignInForm) => {
-    await fetchData(formData);
+  const fetchUserInfo = async () => {
+    try {
+      const response = await getUserInfo();
+      setUserInfo(response.data);
+    } catch (error) {
+      throw new Error('유저 정보를 가져오는 데 실패했습니다.');
+    }
   };
 
-  useEffect(() => {
-    if (headers) {
-      const accessToken = headers.authorization;
-      if (!accessToken) {
-        toastError('로그인에 실패했습니다.');
-        return;
-      }
+  const handleLogin = async (formData: UserSignInForm) => {
+    try {
+      const response = await login(formData);
+      if (!response.headers) throw new Error();
+
+      const accessToken = response.headers.authorization;
+      if (!accessToken) throw new Error();
 
       onLogin(accessToken.split(' ')[1]);
-      navigate('/', { replace: true });
-      return;
-    }
-
-    if (error instanceof AxiosError) {
-      if (error.response?.status === 401) {
-        toastError('아이디와 비밀번호를 한번 더 확인해 주세요.');
-        return;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.status === 401) {
+        throw new Error('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
-      toastError(`로그인 도중 오류가 발생했습니다: ${error.message}`);
+      throw new Error('로그인 도중 오류가 발생했습니다.');
     }
-  }, [headers, error]);
+  };
+
+  const onSubmit = async (formData: UserSignInForm) => {
+    try {
+      await handleLogin(formData);
+      await fetchUserInfo();
+      navigate('/', { replace: true });
+    } catch (error) {
+      const axiosError = error as Error;
+      toastError(axiosError.message);
+    }
+  };
 
   return (
     <>
