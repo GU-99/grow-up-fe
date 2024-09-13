@@ -39,6 +39,7 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
     ? sourceTasks
     : newStatusTasks.find((data) => data.statusId === destinationStatusId)!.tasks;
   const task = sourceTasks.find((data) => data.taskId === taskId)! as Task;
+  task.statusId = destinationStatusId;
 
   sourceTasks.splice(source.index, 1);
   destinationTasks.splice(destination.index, 0, task);

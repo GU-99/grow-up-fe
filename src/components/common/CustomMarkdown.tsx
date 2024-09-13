@@ -162,7 +162,7 @@ export default function CustomMarkdown({ markdown }: CustomMarkdownProps) {
   const changedMarkdown = useMemo(() => getChangedMarkdownForLineBreak(markdown), [markdown]);
 
   return (
-    <section className="rounded-md border border-input p-10 text-sm">
+    <section className="min-h-80 rounded-md border border-input p-10 text-sm">
       {markdown.trim().length === 0 ? (
         <div className="text-xs text-gray-400/90">입력된 내용이 없습니다.</div>
       ) : (
