@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
-import { GoPlusCircle } from 'react-icons/go';
 import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_SETTINGS } from '@constants/settings';
@@ -10,6 +9,7 @@ import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import StatusRadio from '@components/common/StatusRadio';
+import FileDropZone from '@components/common/FileDropZone';
 import MarkdownEditor from '@components/common/MarkdownEditor';
 import PeriodDateInput from '@components/common/PeriodDateInput';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
@@ -24,8 +24,8 @@ import type { SubmitHandler } from 'react-hook-form';
 import type { UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
+import type { CustomFile } from '@/types/FileType';
 
-type CustomFile = { id: string; file: File };
 type ModalTaskFormProps = {
   formId: string;
   project: Project;
@@ -124,11 +124,6 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setValue('userId', workersIdList);
   };
 
-  const handleFileDeleteClick = (fileId: string) => {
-    const filteredFiles = files.filter((file) => file.id !== fileId);
-    setFiles(filteredFiles);
-  };
-
   const updateFiles = (newFiles: FileList) => {
     // 최대 파일 등록 개수 확인
     if (files.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
@@ -158,6 +153,11 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     const { files } = e.dataTransfer;
     if (!files || files.length === 0) return;
     updateFiles(files);
+  };
+
+  const handleFileDeleteClick = (fileId: string) => {
+    const filteredFiles = files.filter((file) => file.id !== fileId);
+    setFiles(filteredFiles);
   };
 
   if (isStatusLoading) return <Spinner />;
@@ -244,32 +244,14 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
         <MarkdownEditor contentName="content" />
 
-        <label htmlFor="files">
-          <h3 className="text-large">첨부파일</h3>
-          <input type="file" id="files" className="h-0 w-0 opacity-0" multiple hidden onChange={handleFileChange} />
-          <section
-            className="flex cursor-pointer items-center gap-4 rounded-sl border-2 border-dashed border-input p-10"
-            onDrop={handleFileDrop}
-          >
-            <ul className="flex grow flex-wrap gap-4">
-              {files.map(({ id, file }) => (
-                <li key={id} className="flex items-center gap-4 rounded-md bg-button px-4 py-2">
-                  <span>{file.name}</span>
-                  <IoMdCloseCircle
-                    className="text-close"
-                    onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
-                      e.preventDefault();
-                      handleFileDeleteClick(id);
-                    }}
-                  />
-                </li>
-              ))}
-            </ul>
-            <div>
-              <GoPlusCircle className="size-15 text-[#5E5E5E]" />
-            </div>
-          </section>
-        </label>
+        <FileDropZone
+          id="files"
+          label="첨부파일"
+          files={files}
+          onFileChange={handleFileChange}
+          onFileDrop={handleFileDrop}
+          onFileDeleteClick={handleFileDeleteClick}
+        />
       </form>
     </FormProvider>
   );
