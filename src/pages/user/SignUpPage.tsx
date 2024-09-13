@@ -25,7 +25,7 @@ export default function SignUpPage() {
       nickname: '',
       password: '',
       checkPassword: '',
-      bio: '',
+      bio: null,
       links: [],
       profileImageName: null,
     },
