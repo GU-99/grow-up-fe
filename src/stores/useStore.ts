@@ -74,6 +74,18 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
     }),
 
   clearUserInfo: () => {
+    set({
+      userInfo: {
+        provider: 'LOCAL',
+        userId: 0,
+        username: null,
+        email: '',
+        nickname: '',
+        bio: null,
+        links: [],
+        profileImageName: null,
+      },
+    });
     localStorage.removeItem('user-storage');
   },
 });
