@@ -165,12 +165,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   return (
     <FormProvider {...methods}>
       <form id={formId} className="mb-20 flex w-4/5 grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
-        <StatusRadio
-          statusList={statusList}
-          selectedStatusId={Number(watch('statusId'))}
-          errorMessage={errors.statusId?.message}
-          register={register('statusId', TASK_VALIDATION_RULES.STATUS)}
-        />
+        <StatusRadio statusFieldName="statusId" statusList={statusList} />
 
         <DuplicationCheckInput
           id="name"
