@@ -49,7 +49,7 @@ export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function logout(axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.post('user/logout', null, axiosConfig);
+  return defaultAxios.post('user/logout', null, { ...axiosConfig, withCredentials: true });
 }
 
 /**

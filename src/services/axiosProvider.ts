@@ -48,7 +48,7 @@ authAxios.interceptors.response.use(
     // 액세스 토큰 만료 시 처리
     if (error.response?.status === 401) {
       const { toastError } = useToast();
-      const { onLogout, setAccessToken } = useStore.getState();
+      const { onLogout, setAccessToken, clearUserInfo } = useStore.getState();
 
       // 에러 객체의 설정 객체 추출
       const originalRequest = error.config;
@@ -68,7 +68,11 @@ authAxios.interceptors.response.use(
       } catch (refreshError) {
         // 리프레시 토큰 에러 시 처리
         toastError('로그인 정보가 만료되었습니다. 다시 로그인 해주세요.');
-        onLogout();
+        setTimeout(() => {
+          onLogout();
+          clearUserInfo();
+          window.location.replace('/signin');
+        }, 2000);
         return Promise.reject(refreshError);
       }
     }

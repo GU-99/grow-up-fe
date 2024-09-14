@@ -7,7 +7,6 @@ import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
-import useLogout from '@hooks/useLogout';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { getUserInfo, login } from '@services/authService';
 import { useStore } from '@stores/useStore';
@@ -16,7 +15,6 @@ import type { UserSignInForm } from '@/types/UserType';
 export default function SignInPage() {
   const { onLogin, setUserInfo } = useStore();
   const { toastError } = useToast();
-  const { handleLogout } = useLogout();
 
   const navigate = useNavigate();
 
@@ -67,7 +65,6 @@ export default function SignInPage() {
     } catch (error) {
       const axiosError = error as Error;
       toastError(axiosError.message);
-      handleLogout();
     }
   };
 
