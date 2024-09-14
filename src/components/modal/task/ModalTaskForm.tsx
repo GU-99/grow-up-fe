@@ -246,7 +246,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           </section>
         </div>
 
-        <MarkdownEditor id="content" label="내용" contentName="content" />
+        <MarkdownEditor id="content" label="내용" contentFieldName="content" />
 
         <FileDropZone
           id="files"
