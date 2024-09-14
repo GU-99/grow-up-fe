@@ -25,7 +25,7 @@ export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequest
  * @returns {Promise<AxiosResponse>}
  */
 export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/login/refresh', null, { ...axiosConfig, withCredentials: true });
+  return defaultAxios.post('user/refresh', null, { ...axiosConfig, withCredentials: true });
 }
 
 /**
@@ -38,6 +38,18 @@ export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
  */
 export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<User>('user/me', axiosConfig);
+}
+
+/**
+ * 로그아웃 API
+ *
+ * @export
+ * @async
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function logout(axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post('user/logout', null, axiosConfig);
 }
 
 /**

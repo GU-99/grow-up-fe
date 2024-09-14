@@ -1,24 +1,13 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import logo from '@assets/logo.svg';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
 import { useStore } from '@stores/useStore';
-import useToast from '@hooks/useToast';
+import useLogout from '@hooks/useLogout';
 
 export default function Header() {
-  const nav = useNavigate();
-  const { toastSuccess } = useToast();
-  const { userInfo: userInfoData, onLogout, clearUserInfo } = useStore();
-
-  const handleLogout = () => {
-    // RT 조기 만료하는 네트워크 통신 코드. 백에서 RT 삭제(조기만료). 만료된 RT를 응답으로 보내줌.
-    onLogout();
-    clearUserInfo();
-    toastSuccess('로그아웃이 완료되었습니다.');
-    setTimeout(() => {
-      nav('/signin', { replace: true });
-    }, 1000);
-  };
+  const { userInfo: userInfoData } = useStore();
+  const { handleLogout } = useLogout();
 
   return (
     <header className="flex h-header items-center justify-between bg-main px-15">
