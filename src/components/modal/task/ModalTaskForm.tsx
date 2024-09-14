@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import { FormProvider, useForm } from 'react-hook-form';
-import { IoSearch } from 'react-icons/io5';
-import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_SETTINGS } from '@constants/settings';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
-import RoleIcon from '@components/common/RoleIcon';
 import StatusRadio from '@components/common/StatusRadio';
+import AssigneeList from '@components/common/AssigneeList';
 import FileDropZone from '@components/common/FileDropZone';
 import MarkdownEditor from '@components/common/MarkdownEditor';
 import PeriodDateInput from '@components/common/PeriodDateInput';
+import SearchUserInput from '@components/common/SearchUserInput';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
@@ -40,12 +39,12 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const [keyword, setKeyword] = useState('');
-  const [workers, setWorkers] = useState<UserWithRole[]>([]);
+  const [assignees, setAssignees] = useState<UserWithRole[]>([]);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
   const { taskNameList } = useReadStatusTasks(projectId);
-  const { data, loading, clearData, fetchData } = useAxios(findUserByProject);
+  const { data = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
 
   // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
@@ -85,9 +84,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   }, [isStatusLoading, statusList]);
 
   useEffect(() => {
-    if (keyword) {
-      debounceRef.current = setTimeout(() => searchUsers(), 500);
-    }
+    if (keyword) debounceRef.current = setTimeout(() => searchUsers(), 500);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
       if (abortControllerRef.current) abortControllerRef.current.abort();
@@ -106,22 +103,22 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   };
 
   const handleUserClick = (user: UserWithRole) => {
-    const isIncludedUser = workers.find((worker) => worker.userId === user.userId);
+    const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
-    const updatedWorkers = [...workers, user];
-    const workersIdList = updatedWorkers.map((worker) => worker.userId);
-    setWorkers(updatedWorkers);
-    setValue('userId', workersIdList);
+    const updatedAssignees = [...assignees, user];
+    const assigneesIdList = updatedAssignees.map((worker) => worker.userId);
+    setAssignees(updatedAssignees);
+    setValue('userId', assigneesIdList);
     setKeyword('');
     clearData();
   };
 
-  const handleWorkerDeleteClick = (user: UserWithRole) => {
-    const filteredWorker = workers.filter((worker) => worker.userId !== user.userId);
-    const workersIdList = filteredWorker.map((worker) => worker.userId);
-    setWorkers(filteredWorker);
-    setValue('userId', workersIdList);
+  const handleAssigneeDeleteClick = (user: UserWithRole) => {
+    const filteredAssignees = assignees.filter((assignee) => assignee.userId !== user.userId);
+    const assigneesIdList = filteredAssignees.map((assignee) => assignee.userId);
+    setAssignees(filteredAssignees);
+    setValue('userId', assigneesIdList);
   };
 
   const updateFiles = (newFiles: FileList) => {
@@ -189,61 +186,18 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
         {/* ToDo: 검색UI 공용 컴포넌트로 추출할 것 */}
         <div className="mb-20">
-          <label htmlFor="search" className="group mb-10 flex items-center gap-5">
-            <h3 className="text-large">수행자</h3>
-            <section className="relative grow">
-              <input
-                type="text"
-                id="search"
-                className="h-25 w-full rounded-md border border-input pl-10 pr-25 text-regular placeholder:text-xs"
-                value={keyword}
-                onChange={handleKeywordChange}
-                onKeyDown={handleSearchKeyUp}
-                placeholder="닉네임을 검색해주세요."
-              />
-              <button
-                type="button"
-                aria-label="search"
-                className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer"
-                onClick={handleSearchClick}
-              >
-                <IoSearch className="size-15 text-emphasis hover:text-black" />
-              </button>
-              {keyword && !loading && (
-                <ul className="invisible absolute left-0 right-0 z-10 max-h-110 overflow-auto rounded-md border-2 bg-white group-focus-within:visible">
-                  {data && data.length === 0 ? (
-                    <div className="h-20 border px-10 leading-8">&apos;{keyword}&apos; 의 검색 결과가 없습니다.</div>
-                  ) : (
-                    data?.map((user) => (
-                      <li className="h-20 border" key={user.userId}>
-                        <button
-                          type="button"
-                          className="h-full w-full px-10 text-left hover:bg-sub"
-                          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                            e.currentTarget.blur();
-                            handleUserClick(user);
-                          }}
-                        >
-                          {user.nickname}
-                        </button>
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )}
-            </section>
-          </label>
-          <section className="flex w-full flex-wrap items-center gap-4">
-            {workers.map((user) => (
-              <div key={user.userId} className="flex items-center space-x-4 rounded-md bg-button px-5">
-                <RoleIcon roleName={user.roleName} />
-                <div>{user.nickname}</div>
-                <button type="button" aria-label="delete-worker" onClick={() => handleWorkerDeleteClick(user)}>
-                  <IoMdCloseCircle className="text-close" />
-                </button>
-              </div>
-            ))}
-          </section>
+          <SearchUserInput
+            id="search"
+            label="수행자"
+            keyword={keyword}
+            loading={loading}
+            userList={data}
+            onKeywordChange={handleKeywordChange}
+            onSearchKeyup={handleSearchKeyUp}
+            onSearchClick={handleSearchClick}
+            onUserClick={handleUserClick}
+          />
+          <AssigneeList assigneeList={assignees} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
         </div>
 
         <MarkdownEditor id="content" label="내용" contentFieldName="content" />
