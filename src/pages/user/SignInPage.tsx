@@ -65,9 +65,9 @@ export default function SignInPage() {
       await fetchUserInfo();
       navigate('/', { replace: true });
     } catch (error) {
-      handleLogout();
       const axiosError = error as Error;
       toastError(axiosError.message);
+      handleLogout();
     }
   };
 

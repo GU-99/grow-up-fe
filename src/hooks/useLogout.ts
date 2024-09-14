@@ -5,7 +5,7 @@ import { logout } from '@services/authService';
 
 export default function useLogout() {
   const navigate = useNavigate();
-  const { toastSuccess, toastError } = useToast();
+  const { toastSuccess } = useToast();
   const { onLogout, clearUserInfo } = useStore();
 
   const handleLogout = async () => {
@@ -14,9 +14,11 @@ export default function useLogout() {
       onLogout();
       clearUserInfo();
       navigate('/signin', { replace: true });
-      toastSuccess('로그아웃이 완료되었습니다.');
+      setTimeout(() => {
+        toastSuccess('로그아웃이 완료되었습니다.');
+      }, 100);
     } catch (error) {
-      toastError('로그아웃에 실패했습니다. 다시 시도해 주세요.');
+      console.error('로그아웃 도중 에러가 발생했습니다.');
     }
   };
 
