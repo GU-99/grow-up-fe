@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DateTime } from 'luxon';
 import { FormProvider, useForm } from 'react-hook-form';
-import { IoMdCloseCircle } from 'react-icons/io';
 
 import { TASK_SETTINGS } from '@constants/settings';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
-import RoleIcon from '@components/common/RoleIcon';
 import StatusRadio from '@components/common/StatusRadio';
+import AssigneeList from '@components/common/AssigneeList';
 import FileDropZone from '@components/common/FileDropZone';
 import MarkdownEditor from '@components/common/MarkdownEditor';
 import PeriodDateInput from '@components/common/PeriodDateInput';
@@ -40,7 +39,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const [keyword, setKeyword] = useState('');
-  const [workers, setWorkers] = useState<UserWithRole[]>([]);
+  const [assignees, setAssignees] = useState<UserWithRole[]>([]);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
@@ -104,22 +103,22 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   };
 
   const handleUserClick = (user: UserWithRole) => {
-    const isIncludedUser = workers.find((worker) => worker.userId === user.userId);
+    const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
-    const updatedWorkers = [...workers, user];
-    const workersIdList = updatedWorkers.map((worker) => worker.userId);
-    setWorkers(updatedWorkers);
-    setValue('userId', workersIdList);
+    const updatedAssignees = [...assignees, user];
+    const assigneesIdList = updatedAssignees.map((worker) => worker.userId);
+    setAssignees(updatedAssignees);
+    setValue('userId', assigneesIdList);
     setKeyword('');
     clearData();
   };
 
-  const handleWorkerDeleteClick = (user: UserWithRole) => {
-    const filteredWorker = workers.filter((worker) => worker.userId !== user.userId);
-    const workersIdList = filteredWorker.map((worker) => worker.userId);
-    setWorkers(filteredWorker);
-    setValue('userId', workersIdList);
+  const handleAssigneeDeleteClick = (user: UserWithRole) => {
+    const filteredAssignees = assignees.filter((assignee) => assignee.userId !== user.userId);
+    const assigneesIdList = filteredAssignees.map((assignee) => assignee.userId);
+    setAssignees(filteredAssignees);
+    setValue('userId', assigneesIdList);
   };
 
   const updateFiles = (newFiles: FileList) => {
@@ -198,17 +197,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             onSearchClick={handleSearchClick}
             onUserClick={handleUserClick}
           />
-          <section className="flex w-full flex-wrap items-center gap-4">
-            {workers.map((user) => (
-              <div key={user.userId} className="flex items-center space-x-4 rounded-md bg-button px-5">
-                <RoleIcon roleName={user.roleName} />
-                <div>{user.nickname}</div>
-                <button type="button" aria-label="delete-worker" onClick={() => handleWorkerDeleteClick(user)}>
-                  <IoMdCloseCircle className="text-close" />
-                </button>
-              </div>
-            ))}
-          </section>
+          <AssigneeList assigneeList={assignees} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
         </div>
 
         <MarkdownEditor id="content" label="내용" contentFieldName="content" />
