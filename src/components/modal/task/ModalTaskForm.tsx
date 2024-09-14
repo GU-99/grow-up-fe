@@ -183,8 +183,8 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           endDateId="endDate"
           startDate={startDate}
           endDate={endDate}
-          startDateName="startDate"
-          endDateName="endDate"
+          startDateFieldName="startDate"
+          endDateFieldName="endDate"
         />
 
         {/* ToDo: 검색UI 공용 컴포넌트로 추출할 것 */}

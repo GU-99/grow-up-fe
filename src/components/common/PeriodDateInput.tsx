@@ -13,8 +13,8 @@ type PeriodDateInputProps = {
   endDateId: string;
   startDate: Project['startDate'];
   endDate: Project['endDate'];
-  startDateName: string;
-  endDateName: string;
+  startDateFieldName: string;
+  endDateFieldName: string;
 };
 
 export default function PeriodDateInput({
@@ -24,8 +24,8 @@ export default function PeriodDateInput({
   endDateId,
   startDate,
   endDate,
-  startDateName,
-  endDateName,
+  startDateFieldName,
+  endDateFieldName,
 }: PeriodDateInputProps) {
   const [hasDeadline, setHasDeadline] = useState(false);
   const {
@@ -38,8 +38,8 @@ export default function PeriodDateInput({
   } = useFormContext();
 
   const handleDeadlineToggle = () => {
-    setValue(endDateName, getValues(startDateName));
-    clearErrors(endDateName);
+    setValue(endDateFieldName, getValues(startDateFieldName));
+    clearErrors(endDateFieldName);
     setHasDeadline((prev) => !prev);
   };
 
@@ -50,15 +50,15 @@ export default function PeriodDateInput({
         <input
           id={startDateId}
           type="date"
-          {...register(startDateName, {
+          {...register(startDateFieldName, {
             ...TASK_VALIDATION_RULES.START_DATE(startDate, endDate),
             onChange: (e) => {
-              if (!hasDeadline) setValue(endDateName, e.target.value);
+              if (!hasDeadline) setValue(endDateFieldName, e.target.value);
             },
           })}
         />
-        <div className={`my-5 h-10 grow text-xs text-error ${errors[startDateName] ? 'visible' : 'invisible'}`}>
-          {(errors[startDateName] as FieldError | undefined)?.message}
+        <div className={`my-5 h-10 grow text-xs text-error ${errors[startDateFieldName] ? 'visible' : 'invisible'}`}>
+          {(errors[startDateFieldName] as FieldError | undefined)?.message}
         </div>
       </label>
       <label htmlFor={endDateId} className="w-1/2">
@@ -72,12 +72,12 @@ export default function PeriodDateInput({
           className={`${hasDeadline ? '' : '!bg-disable'}`}
           disabled={!hasDeadline}
           {...register(
-            endDateName,
-            TASK_VALIDATION_RULES.END_DATE(hasDeadline, startDate, endDate, watch(startDateName)),
+            endDateFieldName,
+            TASK_VALIDATION_RULES.END_DATE(hasDeadline, startDate, endDate, watch(startDateFieldName)),
           )}
         />
-        <div className={`my-5 h-10 grow text-xs text-error ${errors[endDateName] ? 'visible' : 'invisible'}`}>
-          {(errors[endDateName] as FieldError | undefined)?.message}
+        <div className={`my-5 h-10 grow text-xs text-error ${errors[endDateFieldName] ? 'visible' : 'invisible'}`}>
+          {(errors[endDateFieldName] as FieldError | undefined)?.message}
         </div>
       </label>
     </div>
