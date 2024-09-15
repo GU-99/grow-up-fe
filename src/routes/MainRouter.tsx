@@ -24,7 +24,8 @@ import UserAuthenticatePage from '@pages/setting/UserAuthenticatePage';
 import UserPasswordSettingPage from '@pages/setting/UserPasswordSettingPage';
 import TeamJoinedPage from '@pages/setting/TeamJoinedPage';
 import TeamInvitedPage from '@pages/setting/TeamInvitedPage';
-import { Interceptor } from '@/services/axiosProvider';
+
+import { Interceptor } from '@services/axiosProvider';
 
 export default function MainRouter() {
   const router = createBrowserRouter([
