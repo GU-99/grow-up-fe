@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { DateTime, Settings } from 'luxon';
-import { Calendar, DayPropGetter, EventPropGetter, luxonLocalizer, Views } from 'react-big-calendar';
+import { Calendar, luxonLocalizer, Views } from 'react-big-calendar';
 import CalendarToolbar from '@components/task/calendar/CalendarToolbar';
 import CustomDateHeader from '@components/task/calendar/CustomDateHeader';
 import CustomEventWrapper from '@components/task/calendar/CustomEventWrapper';
@@ -9,10 +9,12 @@ import useModal from '@hooks/useModal';
 import useProjectContext from '@hooks/useProjectContext';
 import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import Validator from '@utils/Validator';
-import { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
-import { CustomEvent } from '@/types/CustomEventType';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '@/customReactBigCalendar.css';
+
+import type { DayPropGetter, EventPropGetter } from 'react-big-calendar';
+import type { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
+import type { CustomEvent } from '@/types/CustomEventType';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];

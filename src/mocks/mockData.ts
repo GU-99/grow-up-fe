@@ -577,7 +577,7 @@ export const TASK_DUMMY: Task[] = [
     userId: [3],
     content: '',
     files: [],
-    startDate: '2024-06-18',
+    startDate: '2024-06-21',
     endDate: '2024-06-21',
   },
   {

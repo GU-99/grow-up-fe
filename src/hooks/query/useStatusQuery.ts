@@ -82,6 +82,7 @@ export function useReadStatuses(projectId: Project['projectId'], statusId?: Proj
   );
 
   return {
+    status,
     statusList,
     isStatusLoading,
     isStatusError,
