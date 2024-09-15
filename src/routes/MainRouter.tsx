@@ -24,17 +24,20 @@ import UserAuthenticatePage from '@pages/setting/UserAuthenticatePage';
 import UserPasswordSettingPage from '@pages/setting/UserPasswordSettingPage';
 import TeamJoinedPage from '@pages/setting/TeamJoinedPage';
 import TeamInvitedPage from '@pages/setting/TeamInvitedPage';
+import { Interceptor } from '@/services/axiosProvider';
 
 export default function MainRouter() {
   const router = createBrowserRouter([
     {
       path: '/',
       element: (
-        <BeforeLoginRoute>
-          <ToastLayout>
-            <AuthLayout />
-          </ToastLayout>
-        </BeforeLoginRoute>
+        <Interceptor>
+          <BeforeLoginRoute>
+            <ToastLayout>
+              <AuthLayout />
+            </ToastLayout>
+          </BeforeLoginRoute>
+        </Interceptor>
       ),
       errorElement: <ErrorPage />,
       children: [
@@ -47,11 +50,13 @@ export default function MainRouter() {
     {
       path: '/',
       element: (
-        <AfterLoginRoute>
-          <ToastLayout>
-            <DefaultLayout />
-          </ToastLayout>
-        </AfterLoginRoute>
+        <Interceptor>
+          <AfterLoginRoute>
+            <ToastLayout>
+              <DefaultLayout />
+            </ToastLayout>
+          </AfterLoginRoute>
+        </Interceptor>
       ),
       errorElement: <ErrorPage />,
       children: [
