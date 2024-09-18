@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
-import { UserSignInForm } from '@/types/UserType';
+import { EmailVerificationForm, UserSignInForm } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
@@ -87,6 +87,25 @@ const authServiceHandler = [
 
     console.log('유효하지 않은 토큰입니다. 401 응답을 반환합니다.');
     return new HttpResponse(null, { status: 401 });
+  }),
+
+  // 아이디 찾기 API
+  http.post(`${BASE_URL}/user/recover/username`, async ({ request }) => {
+    const { email, code } = (await request.json()) as EmailVerificationForm;
+
+    // email: 'momoco@gmail.com'
+    if (email === USER_INFO_DUMMY.email && code === '1234') {
+      return HttpResponse.json({ username: USER_INFO_DUMMY.username }, { status: 200 });
+    }
+
+    if (code !== '1234') {
+      return HttpResponse.json(
+        { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    return HttpResponse.json({ message: '이메일을 다시 한 번 확인해 주세요.' }, { status: 400 });
   }),
 ];
 
