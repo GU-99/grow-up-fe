@@ -61,7 +61,7 @@ const authServiceHandler = [
     return HttpResponse.json({ message: '리프레시 토큰이 유효하지 않습니다.' }, { status: 401 });
   }),
 
-  // 로그인 한 사용자 조회 API
+  // 로그인 한 사용자 정보 조회 API
   http.get(`${BASE_URL}/user/me`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -111,7 +111,7 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/recover/password`, async ({ request }) => {
     const { username, email, code } = (await request.json()) as SearchPasswordForm;
 
-    const tempPassword = 'abcd@123';
+    const tempPassword = '!1p2l3nqlz';
 
     if (code !== '1234') {
       return HttpResponse.json(

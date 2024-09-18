@@ -31,6 +31,7 @@ export default function SearchIdPage() {
     },
   });
 
+  // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: EmailVerificationForm) => {
     setLoading(true);
     try {
@@ -42,8 +43,9 @@ export default function SearchIdPage() {
       } else {
         toastError('예상치 못한 에러가 발생했습니다.');
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -51,13 +53,12 @@ export default function SearchIdPage() {
       {loading && <Spinner />}
 
       {!loading && searchIdResult && (
-        <div className="space-y-20">
-          <div className="text-center">
-            회원님의 아이디는
-            <br />
-            <b>{searchIdResult}</b>
-            <br />
-            입니다.
+        <div className="space-y-20 text-center">
+          <div className="space-y-5">
+            <p>아이디</p>
+            <p>
+              <b>{searchIdResult}</b>
+            </p>
           </div>
           <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
             로그인으로 돌아가기

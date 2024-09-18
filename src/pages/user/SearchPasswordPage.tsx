@@ -32,6 +32,7 @@ export default function SearchPasswordPage() {
     },
   });
 
+  // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: SearchPasswordForm) => {
     setLoading(true);
     try {
@@ -43,8 +44,9 @@ export default function SearchPasswordPage() {
       } else {
         toastError('예상치 못한 에러가 발생했습니다.');
       }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -53,11 +55,12 @@ export default function SearchPasswordPage() {
 
       {!loading && tempPassword && (
         <div className="space-y-20 text-center">
-          <p>
-            임시 비밀번호
-            <br />
-            <b>{tempPassword}</b>
-          </p>
+          <div className="space-y-5">
+            <p>임시 비밀번호</p>
+            <p>
+              <b>{tempPassword}</b>
+            </p>
+          </div>
           <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
             로그인으로 돌아가기
           </button>
