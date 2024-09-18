@@ -11,6 +11,7 @@ import useEmailVerification from '@hooks/useEmailVerification';
 import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { searchUserId } from '@services/authService';
+import { generateSecureUserId } from '@utils/converter';
 import { EmailVerificationForm } from '@/types/UserType';
 
 export default function SearchIdPage() {
@@ -57,7 +58,7 @@ export default function SearchIdPage() {
           <div className="space-y-5">
             <p>아이디</p>
             <p>
-              <strong>{searchIdResult}</strong>
+              <strong>{generateSecureUserId(searchIdResult)}</strong>
             </p>
           </div>
           <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
