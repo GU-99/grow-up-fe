@@ -32,6 +32,7 @@ export default function MainRouter() {
     {
       path: '/',
       element: (
+        // ToDo: Interceptor 컴포넌트 적용 방식 리팩토링 고려
         <Interceptor>
           <BeforeLoginRoute>
             <ToastLayout>
@@ -51,6 +52,7 @@ export default function MainRouter() {
     {
       path: '/',
       element: (
+        // ToDo: Intercepter 컴포넌트 적용 방식 리팩토링 고려
         <Interceptor>
           <AfterLoginRoute>
             <ToastLayout>
