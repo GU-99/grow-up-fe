@@ -54,17 +54,17 @@ export default function SearchPasswordPage() {
       {loading && <Spinner />}
 
       {!loading && tempPassword && (
-        <div className="space-y-20 text-center">
+        <section className="space-y-20 text-center">
           <div className="space-y-5">
             <p>임시 비밀번호</p>
             <p>
-              <b>{tempPassword}</b>
+              <strong>{tempPassword}</strong>
             </p>
           </div>
           <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
             로그인으로 돌아가기
           </button>
-        </div>
+        </section>
       )}
 
       {!loading && !tempPassword && (

@@ -53,17 +53,17 @@ export default function SearchIdPage() {
       {loading && <Spinner />}
 
       {!loading && searchIdResult && (
-        <div className="space-y-20 text-center">
+        <section className="space-y-20 text-center">
           <div className="space-y-5">
             <p>아이디</p>
             <p>
-              <b>{searchIdResult}</b>
+              <strong>{searchIdResult}</strong>
             </p>
           </div>
           <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
             로그인으로 돌아가기
           </button>
-        </div>
+        </section>
       )}
 
       {!loading && !searchIdResult && (

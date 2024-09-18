@@ -11,6 +11,7 @@ import { useStore } from '@stores/useStore';
 type InterceptorProps = {
   children: ReactNode;
 };
+
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const defaultConfigOptions: AxiosRequestConfig = {
   baseURL: BASE_URL,
