@@ -19,7 +19,6 @@ export default function SearchIdPage() {
   const [loading, setLoading] = useState(false);
   const { toastError } = useToast();
   const nav = useNavigate();
-
   const {
     register,
     handleSubmit,

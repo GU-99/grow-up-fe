@@ -36,3 +36,7 @@ export type EditPasswordForm = {
 };
 
 export type SearchIdResult = Pick<User, 'username'>;
+
+export type SearchPasswordResult = {
+  password: string;
+};

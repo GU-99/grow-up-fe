@@ -1,18 +1,23 @@
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
+import Spinner from '@components/common/Spinner';
 import useEmailVerification from '@hooks/useEmailVerification';
 import AuthFormLayout from '@layouts/AuthFormLayout';
+import { searchUserPassword } from '@services/authService';
+import useToast from '@hooks/useToast';
 import type { SearchPasswordForm } from '@/types/UserType';
 
 export default function SearchPasswordPage() {
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
-  // const [tempPassword, setTempPassword] = useState(null);
-  const [tempPassword, settempPassword] = useState('abce@123');
+  const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { toastError } = useToast();
   const nav = useNavigate();
   const {
     register,
@@ -27,13 +32,26 @@ export default function SearchPasswordPage() {
     },
   });
 
-  const onSubmit = (data: SearchPasswordForm) => {
-    console.log(data);
+  const onSubmit = async (data: SearchPasswordForm) => {
+    setLoading(true);
+    try {
+      const fetchData = await searchUserPassword(data);
+      setTempPassword(fetchData.data.password);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        toastError(error.response.data.message);
+      } else {
+        toastError('예상치 못한 에러가 발생했습니다.');
+      }
+    }
+    setLoading(false);
   };
 
   return (
     <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
-      {tempPassword ? (
+      {loading && <Spinner />}
+
+      {!loading && tempPassword && (
         <div className="space-y-20 text-center">
           <p>
             임시 비밀번호
@@ -44,7 +62,9 @@ export default function SearchPasswordPage() {
             로그인으로 돌아가기
           </button>
         </div>
-      ) : (
+      )}
+
+      {!loading && !tempPassword && (
         <>
           {/* 아이디 */}
           <ValidationInput
