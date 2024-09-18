@@ -12,7 +12,7 @@ import type { SearchPasswordForm } from '@/types/UserType';
 export default function SearchPasswordPage() {
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
   // const [tempPassword, setTempPassword] = useState(null);
-  const [tempPassword, settempPassword] = useState('abce@qwer');
+  const [tempPassword, settempPassword] = useState('abce@123');
   const nav = useNavigate();
   const {
     register,

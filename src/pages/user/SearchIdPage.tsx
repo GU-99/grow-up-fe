@@ -7,13 +7,12 @@ import FooterLinks from '@components/user/auth-form/FooterLinks';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
 import useEmailVerification from '@hooks/useEmailVerification';
 import AuthFormLayout from '@layouts/AuthFormLayout';
-
 import { EmailVerificationForm } from '@/types/UserType';
 
 export default function SearchIdPage() {
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
   const [searchIdResult, setSearchIdResult] = useState(null);
-  // const [searchIdResult, setSearchIdResult] = useState("abc@naver.com");
+  // const [searchIdResult, setSearchIdResult] = useState("tiniping");
   const nav = useNavigate();
 
   const {
