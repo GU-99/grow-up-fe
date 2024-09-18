@@ -20,6 +20,11 @@ type ProjectUser = {
   roleId: number;
 };
 
+type TaskUser = {
+  taskId: number;
+  userId: number;
+};
+
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const USER_INFO_DUMMY = {
@@ -556,6 +561,41 @@ export const STATUS_DUMMY: ProjectStatus[] = [
   },
 ] as const;
 
+export const TASK_USER_DUMMY: TaskUser[] = [
+  {
+    taskId: 1,
+    userId: 1,
+  },
+  {
+    taskId: 2,
+    userId: 3,
+  },
+  {
+    taskId: 3,
+    userId: 9,
+  },
+  {
+    taskId: 4,
+    userId: 1,
+  },
+  {
+    taskId: 5,
+    userId: 3,
+  },
+  {
+    taskId: 6,
+    userId: 1,
+  },
+  {
+    taskId: 7,
+    userId: 3,
+  },
+  {
+    taskId: 8,
+    userId: 9,
+  },
+];
+
 export const TASK_DUMMY: Task[] = [
   // 프로젝트2 완료 상태
   {
@@ -563,7 +603,6 @@ export const TASK_DUMMY: Task[] = [
     name: 'task 상태 추가 모달 작업하기',
     sortOrder: 1,
     statusId: 6,
-    userId: [1],
     content: '',
     files: [],
     startDate: '2024-06-22',
@@ -574,7 +613,6 @@ export const TASK_DUMMY: Task[] = [
     name: 'project layout 작성하기',
     sortOrder: 2,
     statusId: 6,
-    userId: [3],
     content: '',
     files: [],
     startDate: '2024-06-21',
@@ -585,7 +623,6 @@ export const TASK_DUMMY: Task[] = [
     name: 'tailwindcss 설정하기',
     sortOrder: 3,
     statusId: 6,
-    userId: [9],
     content: '',
     files: [],
     startDate: '2024-06-14',
@@ -597,7 +634,6 @@ export const TASK_DUMMY: Task[] = [
     name: 'API 명세서 작성하기',
     sortOrder: 2,
     statusId: 5,
-    userId: [1],
     content: '',
     files: [],
     startDate: '2024-06-27',
@@ -608,7 +644,6 @@ export const TASK_DUMMY: Task[] = [
     name: 'DnD 기술 조사하기',
     sortOrder: 1,
     statusId: 5,
-    userId: [3],
     content: `# AITalk\n## 주제\nDnD 기술 조사하기\n\n※\`DnD\`란 Drag and Drop의 약자다\n\n## 라이브러리 선정\n[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) 등과 같이 다양한 라이브러리 중 어느 것을 선정할 것인가?`,
     files: [],
     startDate: '2024-06-27',
@@ -620,7 +655,6 @@ export const TASK_DUMMY: Task[] = [
     name: '할일 추가 모달 구현하기',
     sortOrder: 1,
     statusId: 4,
-    userId: [1],
     content: '',
     files: [],
     startDate: '2024-06-26',
@@ -631,7 +665,6 @@ export const TASK_DUMMY: Task[] = [
     name: 'ID 찾기 페이지 작성하기',
     sortOrder: 2,
     statusId: 4,
-    userId: [3],
     content: '',
     files: [],
     startDate: '2024-07-03',
@@ -642,126 +675,9 @@ export const TASK_DUMMY: Task[] = [
     name: 'DnD 구현하기',
     sortOrder: 3,
     statusId: 4,
-    userId: [9],
     content: '',
     files: [],
     startDate: '2024-06-30',
     endDate: '2024-07-02',
   },
 ];
-
-// 특수 케이스: 할일 목록을 프로젝트 상태별로 정리하여 내려준 Mock
-export const TASK_SPECIAL_DUMMY: TaskListWithStatus[] = [
-  {
-    statusId: 1,
-    statusName: 'To Do',
-    colorCode: '#c83c00',
-    sortOrder: 1,
-    tasks: [
-      {
-        taskId: 6,
-        name: '할일 추가 모달 구현하기',
-        sortOrder: 1,
-        statusId: 1,
-        userId: [1],
-        content: '',
-        files: [],
-        startDate: '2024-06-26',
-        endDate: '2024-07-02',
-      },
-      {
-        taskId: 7,
-        name: 'ID 찾기 페이지 작성하기',
-        sortOrder: 2,
-        statusId: 1,
-        userId: [3],
-        content: '',
-        files: [],
-        startDate: '2024-07-03',
-        endDate: '2024-07-05',
-      },
-      {
-        taskId: 8,
-        name: 'DnD 구현하기',
-        sortOrder: 3,
-        statusId: 1,
-        userId: [9],
-        content: '',
-        files: [],
-        startDate: '2024-06-30',
-        endDate: '2024-07-02',
-      },
-    ],
-  },
-  {
-    statusId: 2,
-    statusName: 'In Progress',
-    colorCode: '#dab700',
-    sortOrder: 2,
-    tasks: [
-      {
-        taskId: 5,
-        name: 'DnD 기술 조사하기',
-        sortOrder: 1,
-        statusId: 2,
-        userId: [3],
-        content: `# AITalk\n## 주제\nDnD 기술 조사하기\n\n※\`DnD\`란 Drag and Drop의 약자다\n\n## 라이브러리 선정\n[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) 등과 같이 다양한 라이브러리 중 어느 것을 선정할 것인가?`,
-        files: [],
-        startDate: '2024-06-27',
-        endDate: '2024-06-29',
-      },
-      {
-        taskId: 4,
-        name: 'API 명세서 작성하기',
-        sortOrder: 2,
-        statusId: 2,
-        userId: [1],
-        content: '',
-        files: [],
-        startDate: '2024-06-27',
-        endDate: '2024-06-29',
-      },
-    ],
-  },
-  {
-    statusId: 3,
-    statusName: 'Done',
-    colorCode: '#237700',
-    sortOrder: 3,
-    tasks: [
-      {
-        taskId: 1,
-        name: 'task 상태 추가 모달 작업하기',
-        sortOrder: 1,
-        statusId: 3,
-        userId: [1],
-        content: '',
-        files: [],
-        startDate: '2024-06-22',
-        endDate: '2024-06-26',
-      },
-      {
-        taskId: 2,
-        name: 'project layout 작성하기',
-        sortOrder: 2,
-        statusId: 3,
-        userId: [3],
-        content: '',
-        files: [],
-        startDate: '2024-06-18',
-        endDate: '2024-06-21',
-      },
-      {
-        taskId: 3,
-        name: 'tailwindcss 설정하기',
-        sortOrder: 3,
-        statusId: 3,
-        userId: [9],
-        content: '',
-        files: [],
-        startDate: '2024-06-14',
-        endDate: '2024-06-18',
-      },
-    ],
-  },
-] as const;
