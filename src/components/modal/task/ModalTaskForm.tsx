@@ -53,7 +53,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     defaultValues: {
       name: '',
       content: '',
-      userId: [],
+      assignees: [],
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       statusId: statusList[0]?.statusId,
@@ -109,7 +109,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     const updatedAssignees = [...assignees, user];
     const assigneesIdList = updatedAssignees.map((worker) => worker.userId);
     setAssignees(updatedAssignees);
-    setValue('userId', assigneesIdList);
+    setValue('assignees', assigneesIdList);
     setKeyword('');
     clearData();
   };
@@ -118,7 +118,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     const filteredAssignees = assignees.filter((assignee) => assignee.userId !== user.userId);
     const assigneesIdList = filteredAssignees.map((assignee) => assignee.userId);
     setAssignees(filteredAssignees);
-    setValue('userId', assigneesIdList);
+    setValue('assignees', assigneesIdList);
   };
 
   const updateFiles = (newFiles: FileList) => {

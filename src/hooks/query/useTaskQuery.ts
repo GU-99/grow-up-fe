@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createTask, findTaskList, updateTaskOrder } from '@services/taskService';
+import { createTask, findAssignees, findTaskList, updateTaskOrder } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
-import type { TaskForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type { Task, TaskForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 
 function getTaskNameList(taskList: TaskListWithStatus[]) {
@@ -15,6 +15,8 @@ function getTaskNameList(taskList: TaskListWithStatus[]) {
 }
 
 // Todo: Task Query UD로직 작성하기
+
+// 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
   const { toastSuccess } = useToast();
   const queryClient = useQueryClient();
@@ -31,6 +33,7 @@ export function useCreateStatusTask(projectId: Project['projectId']) {
   return mutation;
 }
 
+// 상태별 일정 목록 조회
 export function useReadStatusTasks(projectId: Project['projectId']) {
   const {
     data: statusTaskList = [],
@@ -50,6 +53,7 @@ export function useReadStatusTasks(projectId: Project['projectId']) {
   return { statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
 }
 
+// 일정 목록 순서 변경
 export function useUpdateTasksOrder(projectId: Project['projectId']) {
   const { toastError } = useToast();
   const queryClient = useQueryClient();
@@ -80,4 +84,22 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
   });
 
   return mutation;
+}
+
+// 일정 수행자 목록 조회
+export function useReadAssignees(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const {
+    data: assigneeList,
+    isLoading: isAssigneeLoading,
+    error: assigneeError,
+    isError: isAssigneeError,
+  } = useQuery({
+    queryKey: ['projects', projectId, 'tasks', taskId, 'assignees'],
+    queryFn: async () => {
+      const { data } = await findAssignees(projectId, taskId);
+      return data;
+    },
+  });
+
+  return { assigneeList, isAssigneeLoading, assigneeError, isAssigneeError };
 }

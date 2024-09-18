@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
-import { STATUS_DUMMY, TASK_DUMMY } from '@mocks/mockData';
-import { getStatusHash, getTaskHash } from '@mocks/mockHash';
+import { PROJECT_USER_DUMMY, STATUS_DUMMY, TASK_DUMMY, TASK_USER_DUMMY } from '@mocks/mockData';
+import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
+
+import type { Assignee } from '@/types/AssigneeType';
 import type { TaskForm, TaskOrderForm } from '@/types/TaskType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -28,17 +30,19 @@ const taskServiceHandler = [
   // 일정 생성 API
   http.post(`${BASE_URL}/project/:projectId/task`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const formData = (await request.json()) as TaskForm;
+    const { assignees, ...restFormData } = (await request.json()) as TaskForm;
     const { projectId } = params;
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId));
-    if (!statusList.find((status) => status.statusId === Number(formData.statusId))) {
+    if (!statusList.find((status) => status.statusId === Number(restFormData.statusId))) {
       return new HttpResponse(null, { status: 400 });
     }
 
-    TASK_DUMMY.push({ ...formData, statusId: +formData.statusId, taskId: TASK_DUMMY.length + 1, files: [] });
+    const taskId = TASK_DUMMY.length + 1;
+    assignees.forEach((userId) => TASK_USER_DUMMY.push({ taskId, userId }));
+    TASK_DUMMY.push({ ...restFormData, statusId: +restFormData.statusId, taskId, files: [] });
     return new HttpResponse(null, { status: 201 });
   }),
   // 일정 순서 변경 API
@@ -64,6 +68,38 @@ const taskServiceHandler = [
       target.sortOrder = sortOrder;
     }
     return new HttpResponse(null, { status: 204 });
+  }),
+  // 일정 수행자 목록 조회
+  http.get(`${BASE_URL}/project/:projectId/task/:taskId/taskuser`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const taskUserList = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId === Number(taskId));
+    if (taskUserList.length === 0) return new HttpResponse(null, { status: 404 });
+
+    const assigneeList: Assignee[] = [];
+
+    for (let i = 0; i < taskUserList.length; i++) {
+      const { userId } = taskUserList[i];
+
+      const userHash = getUserHash();
+      const user = userHash[userId];
+
+      const projectUser = PROJECT_USER_DUMMY.find(
+        (projectUser) => projectUser.userId === userId && projectUser.projectId === Number(projectId),
+      );
+      if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+      const roleHash = getRoleHash();
+      const role = roleHash[projectUser.roleId];
+
+      const assignee = { userId: user.userId, nickname: user.nickname, roleName: role.roleName };
+      assigneeList.push(assignee);
+    }
+
+    return HttpResponse.json(assigneeList);
   }),
 ];
 
