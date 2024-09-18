@@ -38,21 +38,27 @@ const teamServiceHandler = [
     TEAM_USER_DUMMY.length = 0;
     TEAM_USER_DUMMY.push(...filteredTeamUsers);
 
-    const projectIds = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId)).map(
-      (project) => project.projectId,
-    );
-
     const filteredProjectUsers = PROJECT_USER_DUMMY.filter(
-      (projectUser) => !projectIds.includes(projectUser.projectId) || projectUser.userId !== Number(userId),
+      (projectUser) => !(projectUser.projectId === Number(teamId) && projectUser.userId === Number(userId)),
     );
 
     PROJECT_USER_DUMMY.length = 0;
     PROJECT_USER_DUMMY.push(...filteredProjectUsers);
 
-    const filteredTasks = TASK_DUMMY.map((task) => ({
-      ...task,
-      userId: task.userId.filter((id) => id !== Number(userId)),
-    }));
+    const projectIds = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId)).map(
+      (project) => project.projectId,
+    );
+
+    const filteredTasks = TASK_DUMMY.map((task) => {
+      const projectId = STATUS_DUMMY.find((status) => status.statusId === task.statusId)?.projectId;
+      if (projectId && projectIds.includes(projectId)) {
+        return {
+          ...task,
+          userId: task.userId.filter((id) => id !== Number(userId)),
+        };
+      }
+      return task;
+    });
 
     TASK_DUMMY.length = 0;
     TASK_DUMMY.push(...filteredTasks);
@@ -75,23 +81,23 @@ const teamServiceHandler = [
     TEAM_USER_DUMMY.length = 0;
     TEAM_USER_DUMMY.push(...filteredTeamUsers);
 
-    const projectIdsToDelete = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId)).map(
-      (project) => project.projectId,
+    const projectIdsToDelete = new Set<number>(
+      PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId)).map((project) => project.projectId),
     );
 
-    const filteredProjects = PROJECT_DUMMY.filter((project) => !projectIdsToDelete.includes(project.projectId));
+    const statusIdsToDelete = new Set<number>(
+      STATUS_DUMMY.filter((status) => projectIdsToDelete.has(status.projectId)).map((status) => status.statusId),
+    );
+
+    const filteredProjects = PROJECT_DUMMY.filter((project) => !projectIdsToDelete.has(project.projectId));
     PROJECT_DUMMY.length = 0;
     PROJECT_DUMMY.push(...filteredProjects);
 
-    const statusIdsToDelete = STATUS_DUMMY.filter((status) => projectIdsToDelete.includes(status.projectId)).map(
-      (status) => status.statusId,
-    );
-
-    const filteredStatuses = STATUS_DUMMY.filter((status) => !statusIdsToDelete.includes(status.statusId));
+    const filteredStatuses = STATUS_DUMMY.filter((status) => !statusIdsToDelete.has(status.statusId));
     STATUS_DUMMY.length = 0;
     STATUS_DUMMY.push(...filteredStatuses);
 
-    const filteredTasks = TASK_DUMMY.filter((task) => !statusIdsToDelete.includes(task.statusId));
+    const filteredTasks = TASK_DUMMY.filter((task) => !statusIdsToDelete.has(task.statusId));
     TASK_DUMMY.length = 0;
     TASK_DUMMY.push(...filteredTasks);
 
