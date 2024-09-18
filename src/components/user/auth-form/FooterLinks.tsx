@@ -46,7 +46,7 @@ export default function FooterLinks({ type }: FooterLinksProps) {
           </div>
         ))}
       </div>
-      <div className="mb-35 mt-15 flex flex-row items-center justify-center gap-8">
+      <div className="mt-15 flex flex-row items-center justify-center gap-8">
         <p className="items-center font-bold">회원이 아니신가요?</p>
         <button type="button" className="auth-btn" onClick={() => nav('/signup')}>
           회원가입

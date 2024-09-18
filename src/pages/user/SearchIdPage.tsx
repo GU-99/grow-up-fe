@@ -48,11 +48,11 @@ export default function SearchIdPage() {
   };
 
   return (
-    <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
+    <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
       {loading && <Spinner />}
 
       {!loading && searchIdResult && (
-        <div className="mt-40 h-full space-y-20">
+        <div className="space-y-20">
           <div className="text-center">
             회원님의 아이디는
             <br />

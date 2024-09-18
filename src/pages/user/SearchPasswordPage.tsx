@@ -32,15 +32,14 @@ export default function SearchPasswordPage() {
   };
 
   return (
-    <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-34.9">
+    <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
       {tempPassword ? (
-        <div className="mt-90 h-full space-y-20">
-          <div className="space-y-5 text-center">
-            <p className="text-sm">임시 비밀번호로 로그인해주세요.</p>
-            <p>
-              임시 비밀번호: <b>{tempPassword}</b>
-            </p>
-          </div>
+        <div className="space-y-20 text-center">
+          <p>
+            임시 비밀번호
+            <br />
+            <b>{tempPassword}</b>
+          </p>
           <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
             로그인으로 돌아가기
           </button>
