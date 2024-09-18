@@ -1,12 +1,29 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '@assets/logo.svg';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
 import { useStore } from '@stores/useStore';
+import { logout } from '@services/authService';
+import useToast from '@hooks/useToast';
 
 export default function Header() {
-  // ToDo: 로그인 기능 구현 후, 로그아웃 로직 연결하기
-  const userInfoData = useStore((state) => state.userInfo);
+  const { userInfo: userInfoData, onLogout, clearUserInfo } = useStore();
+  const navigate = useNavigate();
+  const { toastSuccess } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      onLogout();
+      clearUserInfo();
+      navigate('/signin', { replace: true });
+      setTimeout(() => {
+        toastSuccess('로그아웃이 완료되었습니다.');
+      }, 100);
+    } catch (error) {
+      console.error('로그아웃 도중 에러가 발생했습니다.');
+    }
+  };
 
   return (
     <header className="flex h-header items-center justify-between bg-main px-15">
@@ -23,7 +40,11 @@ export default function Header() {
         <NavLink to="/setting/user" className="ml-10 hover:brightness-90">
           {({ isActive }) => <FaUserCircle className={`size-20 ${isActive ? 'text-selected' : 'text-white'}`} />}
         </NavLink>
-        <button type="button" className="ml-10 h-20 rounded-md bg-white px-4 tracking-tight hover:brightness-90">
+        <button
+          type="button"
+          className="ml-10 h-20 rounded-md bg-white px-4 tracking-tight hover:brightness-90"
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </nav>
