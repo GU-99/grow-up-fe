@@ -31,7 +31,7 @@ const authServiceHandler = [
   }),
 
   // 액세스 토큰 갱신 API
-  http.post(`${BASE_URL}/user/login/refresh`, async ({ cookies }) => {
+  http.post(`${BASE_URL}/user/refresh`, async ({ cookies }) => {
     const { refreshToken, refreshTokenExpiresAt } = cookies;
 
     const cookieRefreshToken = Cookies.get('refreshToken');
@@ -67,6 +67,29 @@ const authServiceHandler = [
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     return HttpResponse.json(USER_INFO_DUMMY, { status: 200 });
+  }),
+
+  // 로그아웃 API
+  http.post(`${BASE_URL}/user/logout`, async ({ cookies }) => {
+    const { refreshToken, refreshTokenExpiresAt } = cookies;
+    const currentTime = Date.now();
+
+    if (!refreshToken || !refreshTokenExpiresAt) {
+      return HttpResponse.json(
+        { message: '리프레시 토큰이 유효하지 않습니다. 다시 로그인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        'Set-Cookie': [
+          `refreshToken=${refreshToken}; SameSite=Strict; Secure; Path=/; Expires=${currentTime}; Max-Age=0`,
+          `refreshTokenExpiresAt=${currentTime}; SameSite=Strict; Secure; Path=/; Expires=${currentTime}; Max-Age=0`,
+        ].join(', '),
+      },
+    });
   }),
 
   // 액세스 토큰 테스트용 API

@@ -5,16 +5,17 @@ import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
 import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
-import AuthFormLayout from '@layouts/AuthFormLayout';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
+import AuthFormLayout from '@layouts/AuthFormLayout';
 import { getUserInfo, login } from '@services/authService';
-import { useStore } from '@/stores/useStore';
+import { useStore } from '@stores/useStore';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
   const { onLogin, setUserInfo } = useStore();
   const { toastError } = useToast();
+
   const navigate = useNavigate();
 
   const {

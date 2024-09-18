@@ -18,6 +18,7 @@ type AuthStore = {
 type UserStore = {
   userInfo: User;
   setUserInfo: (newUserInfo: User) => void;
+  clearUserInfo: () => void;
 };
 
 // Combined Store
@@ -71,6 +72,22 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
     set({
       userInfo: newUserInfo,
     }),
+
+  clearUserInfo: () => {
+    set({
+      userInfo: {
+        provider: 'LOCAL',
+        userId: 0,
+        username: null,
+        email: '',
+        nickname: '',
+        bio: null,
+        links: [],
+        profileImageName: null,
+      },
+    });
+    localStorage.removeItem('user-storage');
+  },
 });
 
 // Combined Store

@@ -25,16 +25,21 @@ import UserPasswordSettingPage from '@pages/setting/UserPasswordSettingPage';
 import TeamJoinedPage from '@pages/setting/TeamJoinedPage';
 import TeamInvitedPage from '@pages/setting/TeamInvitedPage';
 
+import { Interceptor } from '@services/axiosProvider';
+
 export default function MainRouter() {
   const router = createBrowserRouter([
     {
       path: '/',
       element: (
-        <BeforeLoginRoute>
-          <ToastLayout>
-            <AuthLayout />
-          </ToastLayout>
-        </BeforeLoginRoute>
+        // ToDo: Interceptor 컴포넌트 적용 방식 리팩토링 고려
+        <Interceptor>
+          <BeforeLoginRoute>
+            <ToastLayout>
+              <AuthLayout />
+            </ToastLayout>
+          </BeforeLoginRoute>
+        </Interceptor>
       ),
       errorElement: <ErrorPage />,
       children: [
@@ -47,11 +52,14 @@ export default function MainRouter() {
     {
       path: '/',
       element: (
-        <AfterLoginRoute>
-          <ToastLayout>
-            <DefaultLayout />
-          </ToastLayout>
-        </AfterLoginRoute>
+        // ToDo: Interceptor 컴포넌트 적용 방식 리팩토링 고려
+        <Interceptor>
+          <AfterLoginRoute>
+            <ToastLayout>
+              <DefaultLayout />
+            </ToastLayout>
+          </AfterLoginRoute>
+        </Interceptor>
       ),
       errorElement: <ErrorPage />,
       children: [
