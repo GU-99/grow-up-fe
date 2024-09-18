@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createTask, findAssignees, findTaskList, updateTaskOrder } from '@services/taskService';
+import { createTask, findAssignees, findTaskFiles, findTaskList, updateTaskOrder } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
 import type { Task, TaskForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
@@ -89,7 +89,7 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
 // 일정 수행자 목록 조회
 export function useReadAssignees(projectId: Project['projectId'], taskId: Task['taskId']) {
   const {
-    data: assigneeList,
+    data: assigneeList = [],
     isLoading: isAssigneeLoading,
     error: assigneeError,
     isError: isAssigneeError,
@@ -102,4 +102,21 @@ export function useReadAssignees(projectId: Project['projectId'], taskId: Task['
   });
 
   return { assigneeList, isAssigneeLoading, assigneeError, isAssigneeError };
+}
+
+// 일정 파일 목록 조회
+export function useReadTaskFiles(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const {
+    data: taskFileList = [],
+    isLoading: isTaskFileLoading,
+    error: taskFileError,
+    isError: isTaskFileError,
+  } = useQuery({
+    queryKey: ['projects', projectId, 'tasks', taskId, 'files'],
+    queryFn: async () => {
+      const { data } = await findTaskFiles(projectId, taskId);
+      return data;
+    },
+  });
+  return { taskFileList, isTaskFileLoading, taskFileError, isTaskFileError };
 }

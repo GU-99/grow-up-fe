@@ -1,6 +1,7 @@
 import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
+import type { TaskFile } from '@/types/FileType';
 import type { Project } from '@/types/ProjectType';
 import type { Assignee } from '@/types/AssigneeType';
 import type { Task, TaskForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
@@ -65,4 +66,22 @@ export async function findAssignees(
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.get<Assignee[]>(`/project/${projectId}/task/${taskId}/taskuser`, axiosConfig);
+}
+
+/**
+ * 일정 파일 목록 조회 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {Task['taskId']} taskId               - 일정 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<TaskFile[]>>}
+ */
+export async function findTaskFiles(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.get<TaskFile[]>(`/project/${projectId}/task/${taskId}/attachment`, axiosConfig);
 }
