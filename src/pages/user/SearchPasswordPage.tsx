@@ -14,14 +14,17 @@ import useToast from '@hooks/useToast';
 import type { SearchPasswordForm } from '@/types/UserType';
 
 export default function SearchPasswordPage() {
-  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
+  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
+    useEmailVerification();
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toastError } = useToast();
   const nav = useNavigate();
   const {
+    watch,
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<SearchPasswordForm>({
     mode: 'onChange',
@@ -34,6 +37,12 @@ export default function SearchPasswordPage() {
 
   // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: SearchPasswordForm) => {
+    const verifyResult = verifyCode(watch('code'), setError);
+    if (!verifyResult) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const fetchData = await searchUserPassword(data);

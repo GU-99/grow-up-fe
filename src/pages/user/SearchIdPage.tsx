@@ -15,14 +15,17 @@ import { generateSecureUserId } from '@utils/converter';
 import { EmailVerificationForm } from '@/types/UserType';
 
 export default function SearchIdPage() {
-  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
+  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
+    useEmailVerification();
   const [searchIdResult, setSearchIdResult] = useState<null | string>(null);
   const [loading, setLoading] = useState(false);
   const { toastError } = useToast();
   const nav = useNavigate();
   const {
+    watch,
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<EmailVerificationForm>({
     mode: 'onChange',
@@ -35,6 +38,13 @@ export default function SearchIdPage() {
   // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: EmailVerificationForm) => {
     setLoading(true);
+
+    const verifyResult = verifyCode(watch('code'), setError);
+    if (!verifyResult) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const fetchData = await searchUserId(data);
       setSearchIdResult(fetchData.data.username);

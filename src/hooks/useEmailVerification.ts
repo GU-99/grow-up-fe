@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UseFormSetError } from 'react-hook-form';
 import useToast from '@hooks/useToast';
-import type { EmailVerificationForm, UserSignUpForm } from '@/types/UserType';
+import type { UserSignUpForm } from '@/types/UserType';
 
 export default function useEmailVerification() {
   const [isVerificationRequested, setIsVerificationRequested] = useState(false);
@@ -16,7 +16,7 @@ export default function useEmailVerification() {
   };
 
   // 인증번호 확인 함수
-  const verifyCode = (verificationCode: string, setError: UseFormSetError<UserSignUpForm | EmailVerificationForm>) => {
+  const verifyCode = (verificationCode: string, setError: UseFormSetError<UserSignUpForm>) => {
     // ToDo: 이메일 인증 API 추가
     if (verificationCode === '1234') return true;
 
