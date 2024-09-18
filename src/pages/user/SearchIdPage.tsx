@@ -71,14 +71,14 @@ export default function SearchIdPage() {
         <>
           {/* 이메일 */}
           <ValidationInput
-            label="이메일"
+            placeholder="이메일"
             errors={errors.email?.message}
             register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
           />
 
           {isVerificationRequested && (
             <ValidationInput
-              label="인증번호"
+              placeholder="인증번호"
               errors={errors.code?.message}
               register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
             />
