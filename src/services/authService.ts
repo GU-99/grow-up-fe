@@ -1,7 +1,7 @@
 import { authAxios, defaultAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
-import type { UserSignInForm } from '@/types/UserType';
+import type { User, UserSignInForm } from '@/types/UserType';
 
 /**
  * 사용자 로그인 API
@@ -26,6 +26,18 @@ export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequest
  */
 export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/login/refresh', null, { ...axiosConfig, withCredentials: true });
+}
+
+/**
+ * 로그인 한 사용자 조회 API
+ *
+ * @export
+ * @async
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<User>>}
+ */
+export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get<User>('user/me', axiosConfig);
 }
 
 /**

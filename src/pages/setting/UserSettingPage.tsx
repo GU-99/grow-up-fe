@@ -1,29 +1,30 @@
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
-import ProfileImageContainer from '@/components/user/auth-form/ProfileImageContainer';
-import LinkContainer from '@/components/user/auth-form/LinkContainer';
+import ProfileImageContainer from '@components/user/auth-form/ProfileImageContainer';
+import LinkContainer from '@components/user/auth-form/LinkContainer';
+import { useStore } from '@stores/useStore';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
-  const [imageUrl, setImageUrl] = useState(USER_INFO_DUMMY.profileUrl);
+  const userInfoData = useStore((state) => state.userInfo);
+
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      username: USER_INFO_DUMMY.username,
-      email: USER_INFO_DUMMY.email,
-      nickname: USER_INFO_DUMMY.nickname,
-      bio: USER_INFO_DUMMY.bio,
-      links: USER_INFO_DUMMY.links,
-      profileUrl: USER_INFO_DUMMY.profileUrl,
+      username: userInfoData.username,
+      email: userInfoData.email,
+      nickname: userInfoData.nickname,
+      bio: userInfoData.bio,
+      links: userInfoData.links,
+      profileImageName: userInfoData.profileImageName,
     },
   });
 
   // form 전송 함수
   const onSubmit = async (data: EditUserInfoForm) => {
-    const { username, email, profileUrl, ...filteredData } = data;
+    const { username, email, profileImageName, ...filteredData } = data;
     console.log(data);
 
     // TODO: 폼 제출 로직 작성
@@ -34,7 +35,10 @@ export default function UserSettingPage() {
       <div className="my-30">
         <form onSubmit={methods.handleSubmit(onSubmit)} className="mx-auto max-w-300 space-y-8">
           {/* 프로필 이미지 */}
-          <ProfileImageContainer imageUrl={imageUrl} setImageUrl={setImageUrl} />
+          <ProfileImageContainer
+            imageUrl={methods.watch('profileImageName')}
+            setImageUrl={(url: string) => methods.setValue('profileImageName', url)}
+          />
 
           {/* 아이디 */}
           <ValidationInput

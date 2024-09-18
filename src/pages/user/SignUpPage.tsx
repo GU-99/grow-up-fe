@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -13,7 +12,6 @@ import reduceImageSize from '@utils/reduceImageSize';
 import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
-  const [imageUrl, setImageUrl] = useState('');
   const { toastSuccess, toastError } = useToast();
   const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
     useEmailVerification();
@@ -21,20 +19,21 @@ export default function SignUpPage() {
   const methods = useForm<UserSignUpForm>({
     mode: 'onChange',
     defaultValues: {
-      username: '',
+      username: null,
       email: '',
       code: '',
       nickname: '',
       password: '',
       checkPassword: '',
-      bio: '',
+      bio: null,
       links: [],
+      profileImageName: null,
     },
   });
 
   // form 전송 함수
   const onSubmit = async (data: UserSignUpForm) => {
-    const { username, code, checkPassword, ...filteredData } = data;
+    const { username, code, checkPassword, profileImageName, ...filteredData } = data;
     console.log(data);
 
     const verifyResult = verifyCode(methods.watch('code'), methods.setError);
@@ -43,17 +42,19 @@ export default function SignUpPage() {
     // TODO: 폼 제출 로직 수정 필요
     try {
       // 회원가입 폼
-      const formData = { ...filteredData, username, code };
+      const formData = { ...filteredData, username, code, profileImageName };
       const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${username}`, formData);
       if (registrationResponse.status !== 200) return toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
 
       // 이미지 폼
-      if (!imageUrl) return toastSuccess('회원가입이 완료되었습니다.');
+      if (!methods.watch('profileImageName')) return toastSuccess('회원가입이 완료되었습니다.');
       const imgFormData = new FormData();
       try {
-        const jpeg = await reduceImageSize(imageUrl);
+        if (!profileImageName) return;
+
+        const jpeg = await reduceImageSize(profileImageName);
         const file = new File([jpeg], new Date().toISOString(), { type: 'image/jpeg' });
-        imgFormData.append('profileUrl', file);
+        imgFormData.append('profileImageName', file);
         imgFormData.append('username', username ?? '');
 
         const imageResponse = await axios.post(`http://localhost:8080/api/v1/users/file`, imgFormData, {
@@ -75,7 +76,10 @@ export default function SignUpPage() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className="w-300 space-y-8">
         {/* 프로필 이미지 */}
-        <ProfileImageContainer imageUrl={imageUrl} setImageUrl={setImageUrl} />
+        <ProfileImageContainer
+          imageUrl={methods.watch('profileImageName')}
+          setImageUrl={(url: string) => methods.setValue('profileImageName', url)}
+        />
 
         {/* 아이디 */}
         <ValidationInput
