@@ -10,10 +10,6 @@ import {
 } from '@mocks/mockData';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-// TODO: 실제 userId로 넣어주기
-
-const [, payload] = JWT_TOKEN_DUMMY.split('.');
-const userId = Number(payload.replace('mocked-payload-', ''));
 
 const teamServiceHandler = [
   // 팀 소속 유저 검색 API
@@ -31,7 +27,9 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/leave`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-
+    const [, payload] = JWT_TOKEN_DUMMY.split('.');
+    // TODO: 실제 userId로 넣어주기
+    const userId = Number(payload.replace('mocked-payload-', ''));
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const filteredTeamUsers = TEAM_USER_DUMMY.filter(
@@ -111,6 +109,9 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/invitation/accept`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
+    // TODO: 실제 userId로 넣어주기
+    const [, payload] = JWT_TOKEN_DUMMY.split('.');
+    const userId = Number(payload.replace('mocked-payload-', ''));
 
     if (!accessToken) return new HttpResponse(null, { status: 403 });
 
@@ -128,6 +129,9 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/invitation/decline`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
+    // TODO: 실제 userId로 넣어주기
+    const [, payload] = JWT_TOKEN_DUMMY.split('.');
+    const userId = Number(payload.replace('mocked-payload-', ''));
 
     if (!accessToken) return new HttpResponse(null, { status: 403 });
 
