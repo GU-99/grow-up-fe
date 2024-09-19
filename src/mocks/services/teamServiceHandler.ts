@@ -6,11 +6,14 @@ import {
   TASK_DUMMY,
   TEAM_DUMMY,
   TEAM_USER_DUMMY,
-} from '@/mocks/mockData';
+  JWT_TOKEN_DUMMY,
+} from '@mocks/mockData';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 // TODO: 실제 userId로 넣어주기
-const userId = 4;
+
+const [, payload] = JWT_TOKEN_DUMMY.split('.');
+const userId = Number(payload.replace('mocked-payload-', ''));
 
 const teamServiceHandler = [
   // 팀 소속 유저 검색 API
