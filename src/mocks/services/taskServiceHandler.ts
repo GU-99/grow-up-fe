@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { PROJECT_USER_DUMMY, STATUS_DUMMY, TASK_DUMMY, TASK_USER_DUMMY } from '@mocks/mockData';
+import { PROJECT_USER_DUMMY, STATUS_DUMMY, TASK_DUMMY, TASK_FILE_DUMMY, TASK_USER_DUMMY } from '@mocks/mockData';
 import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
 
 import type { Assignee } from '@/types/AssigneeType';
@@ -42,7 +42,7 @@ const taskServiceHandler = [
 
     const taskId = TASK_DUMMY.length + 1;
     assignees.forEach((userId) => TASK_USER_DUMMY.push({ taskId, userId }));
-    TASK_DUMMY.push({ ...restFormData, statusId: +restFormData.statusId, taskId, files: [] });
+    TASK_DUMMY.push({ ...restFormData, statusId: +restFormData.statusId, taskId });
     return new HttpResponse(null, { status: 201 });
   }),
   // 일정 순서 변경 API
@@ -77,7 +77,7 @@ const taskServiceHandler = [
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const taskUserList = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId === Number(taskId));
-    if (taskUserList.length === 0) return new HttpResponse(null, { status: 404 });
+    if (taskUserList.length === 0) return HttpResponse.json([]);
 
     const assigneeList: Assignee[] = [];
 
@@ -100,6 +100,18 @@ const taskServiceHandler = [
     }
 
     return HttpResponse.json(assigneeList);
+  }),
+  // 일정 파일 목록 조회 API
+  http.get(`${BASE_URL}/project/:projectId/task/:taskId/attachment`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
+    const fileList = TASK_FILE_DUMMY.filter((taskFile) => taskFile.taskId === Number(taskId));
+    if (fileList.length === 0) return HttpResponse.json([]);
+    return HttpResponse.json(fileList.length === 0 ? [] : fileList);
   }),
 ];
 

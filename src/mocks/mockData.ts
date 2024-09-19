@@ -25,6 +25,13 @@ type TaskUser = {
   userId: number;
 };
 
+type TaskFile = {
+  fileId: number;
+  taskId: number;
+  fileName: string;
+  fileUrl: string;
+};
+
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const USER_INFO_DUMMY = {
@@ -604,7 +611,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 1,
     statusId: 6,
     content: '',
-    files: [],
     startDate: '2024-06-22',
     endDate: '2024-06-26',
   },
@@ -614,7 +620,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 2,
     statusId: 6,
     content: '',
-    files: [],
     startDate: '2024-06-21',
     endDate: '2024-06-21',
   },
@@ -624,7 +629,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 3,
     statusId: 6,
     content: '',
-    files: [],
     startDate: '2024-06-14',
     endDate: '2024-06-18',
   },
@@ -635,7 +639,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 2,
     statusId: 5,
     content: '',
-    files: [],
     startDate: '2024-06-27',
     endDate: '2024-06-29',
   },
@@ -645,7 +648,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 1,
     statusId: 5,
     content: `# AITalk\n## 주제\nDnD 기술 조사하기\n\n※\`DnD\`란 Drag and Drop의 약자다\n\n## 라이브러리 선정\n[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) 등과 같이 다양한 라이브러리 중 어느 것을 선정할 것인가?`,
-    files: [],
     startDate: '2024-06-27',
     endDate: '2024-06-29',
   },
@@ -656,7 +658,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 1,
     statusId: 4,
     content: '',
-    files: [],
     startDate: '2024-06-26',
     endDate: '2024-07-02',
   },
@@ -666,7 +667,6 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 2,
     statusId: 4,
     content: '',
-    files: [],
     startDate: '2024-07-03',
     endDate: '2024-07-05',
   },
@@ -676,8 +676,29 @@ export const TASK_DUMMY: Task[] = [
     sortOrder: 3,
     statusId: 4,
     content: '',
-    files: [],
     startDate: '2024-06-30',
     endDate: '2024-07-02',
+  },
+];
+
+// ToDo: 파일 업로드, 다운로드 구현시 더미 정보 제대로 채울 것
+export const TASK_FILE_DUMMY: TaskFile[] = [
+  {
+    fileId: 1,
+    taskId: 1,
+    fileName: '최종본.pdf',
+    fileUrl: '',
+  },
+  {
+    fileId: 2,
+    taskId: 1,
+    fileName: '참고자료.pdf',
+    fileUrl: '',
+  },
+  {
+    fileId: 3,
+    taskId: 2,
+    fileName: '명세서.pdf',
+    fileUrl: '',
   },
 ];
