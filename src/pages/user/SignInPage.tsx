@@ -70,7 +70,7 @@ export default function SignInPage() {
 
   return (
     <>
-      <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
+      <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
         {/* 아이디 */}
         <ValidationInput
           placeholder="아이디"
@@ -92,7 +92,7 @@ export default function SignInPage() {
 
         <FooterLinks type="signIn" />
       </AuthFormLayout>
-      <section className="flex h-1/6 flex-col gap-8 text-center">
+      <section className="bottom-0 flex flex-col gap-8 text-center">
         <button type="button" className="auth-btn space-x-4 bg-kakao" disabled={isSubmitting}>
           <img src={Kakao} alt="Kakao" className="size-15" />
           <span>카카오 로그인</span>

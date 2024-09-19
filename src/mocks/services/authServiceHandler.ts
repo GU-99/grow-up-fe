@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
-import { UserSignInForm } from '@/types/UserType';
+import { EmailVerificationForm, SearchPasswordForm, UserSignInForm } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
@@ -61,7 +61,7 @@ const authServiceHandler = [
     return HttpResponse.json({ message: '리프레시 토큰이 유효하지 않습니다.' }, { status: 401 });
   }),
 
-  // 로그인 한 사용자 조회 API
+  // 로그인 한 사용자 정보 조회 API
   http.get(`${BASE_URL}/user/me`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -110,6 +110,44 @@ const authServiceHandler = [
 
     console.log('유효하지 않은 토큰입니다. 401 응답을 반환합니다.');
     return new HttpResponse(null, { status: 401 });
+  }),
+
+  // 아이디 찾기 API
+  http.post(`${BASE_URL}/user/recover/username`, async ({ request }) => {
+    const { email, code } = (await request.json()) as EmailVerificationForm;
+
+    if (code !== '1234') {
+      return HttpResponse.json(
+        { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    if (email !== USER_INFO_DUMMY.email) {
+      return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
+    }
+
+    return HttpResponse.json({ username: USER_INFO_DUMMY.username }, { status: 200 });
+  }),
+
+  // 비밀번호 찾기 API
+  http.post(`${BASE_URL}/user/recover/password`, async ({ request }) => {
+    const { username, email, code } = (await request.json()) as SearchPasswordForm;
+
+    const tempPassword = '!1p2l3nqlz';
+
+    if (code !== '1234') {
+      return HttpResponse.json(
+        { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    if (username !== USER_INFO_DUMMY.username || email !== USER_INFO_DUMMY.email) {
+      return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
+    }
+
+    return HttpResponse.json({ password: tempPassword }, { status: 200 });
   }),
 ];
 

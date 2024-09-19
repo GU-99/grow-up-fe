@@ -18,3 +18,8 @@ export const convertBytesToString = (bytes: number) => {
   };
   return formatSize(bytes / value, unit);
 };
+
+export const generateSecureUserId = (id: string) => {
+  const secureLength = id.length >= 4 ? 2 : 1;
+  return `${id.slice(0, -secureLength)}${'*'.repeat(secureLength)}`;
+};

@@ -1,50 +1,61 @@
-import { useForm } from 'react-hook-form';
-import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
+import { useState } from 'react';
+import { AxiosError } from 'axios';
+import { useForm, FormProvider } from 'react-hook-form';
+import Spinner from '@components/common/Spinner';
+import SearchResultSection from '@components/user/auth-form/SearchResultSection';
+import SearchDataForm from '@components/user/auth-form/SearchDataForm';
+import useEmailVerification from '@hooks/useEmailVerification';
+import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
-import ValidationInput from '@components/common/ValidationInput';
-import FooterLinks from '@components/user/auth-form/FooterLinks';
+import { searchUserId } from '@services/authService';
+import { generateSecureUserId } from '@utils/converter';
 import { EmailVerificationForm } from '@/types/UserType';
 
 export default function SearchIdPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<EmailVerificationForm>({
+  const { verifyCode } = useEmailVerification();
+  const [searchIdResult, setSearchIdResult] = useState<null | string>(null);
+  const [loading, setLoading] = useState(false);
+  const { toastError } = useToast();
+  const methods = useForm<EmailVerificationForm>({
     mode: 'onChange',
     defaultValues: {
       email: '',
       code: '',
     },
   });
+  const { watch, handleSubmit, setError } = methods;
 
-  const onSubmit = (data: EmailVerificationForm) => {
-    console.log(data);
+  // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
+  const onSubmit = async (data: EmailVerificationForm) => {
+    const verifyResult = verifyCode(watch('code'), setError);
+    if (!verifyResult) return;
+
+    setLoading(true);
+    try {
+      const fetchData = await searchUserId(data);
+      setSearchIdResult(fetchData.data.username);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        toastError(error.response.data.message);
+      } else {
+        toastError('예상치 못한 에러가 발생했습니다.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthFormLayout onSubmit={handleSubmit(onSubmit)} marginTop="mt-40">
-      {/* 이메일 */}
-      <ValidationInput
-        isButtonInput
-        buttonLabel="인증번호 발송"
-        placeholder="이메일"
-        errors={errors.email?.message}
-        register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
-      />
+    <FormProvider {...methods}>
+      <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
+        {loading && <Spinner />}
 
-      {/* 이메일 인증 */}
-      <ValidationInput
-        placeholder="인증번호"
-        errors={errors.code?.message}
-        register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
-      />
+        {!loading && searchIdResult && (
+          <SearchResultSection label="아이디" result={generateSecureUserId(searchIdResult)} />
+        )}
 
-      <button type="submit" className="auth-btn" disabled={isSubmitting}>
-        아이디 찾기
-      </button>
-
-      <FooterLinks type="searchId" />
-    </AuthFormLayout>
+        {!loading && !searchIdResult && <SearchDataForm formType="searchId" />}
+      </AuthFormLayout>
+    </FormProvider>
   );
 }

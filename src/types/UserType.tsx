@@ -34,3 +34,9 @@ export type EditPasswordForm = {
   newPassword: string;
   checkNewPassword: string;
 };
+
+export type SearchIdResult = Pick<User, 'username'>;
+
+export type SearchPasswordResult = {
+  password: string;
+};
