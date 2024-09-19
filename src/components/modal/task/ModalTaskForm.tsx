@@ -67,6 +67,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     handleSubmit,
     formState: { errors },
   } = methods;
+  console.log(watch('files'));
 
   const searchUsers = useCallback(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -129,15 +130,17 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     }
 
     // 새로운 파일별 파일 크기 확인 & 고유 ID 부여
+    const originFiles: File[] = files.map(({ file }) => file);
     const customFiles: CustomFile[] = [];
     for (let i = 0; i < newFiles.length; i++) {
       const file = newFiles[i];
       if (file.size > TASK_SETTINGS.MAX_FILE_SIZE) {
         return toastWarn(`최대 ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`);
       }
+      originFiles.push(file);
       customFiles.push({ id: `${file.name}_${file.size}_${Date.now()}`, file });
     }
-
+    setValue('files', originFiles);
     setFiles((prev) => [...prev, ...customFiles]);
   };
 
@@ -155,6 +158,8 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
   const handleFileDeleteClick = (fileId: string) => {
     const filteredFiles = files.filter((file) => file.id !== fileId);
+    const originFiles = filteredFiles.map(({ file }) => file);
+    setValue('files', originFiles);
     setFiles(filteredFiles);
   };
 
