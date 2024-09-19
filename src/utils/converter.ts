@@ -20,8 +20,6 @@ export const convertBytesToString = (bytes: number) => {
 };
 
 export const generateSecureUserId = (id: string) => {
-  if (id.length >= 4) {
-    return `${id.slice(0, -2)}**`;
-  }
-  return `${id.slice(0, -1)}*`;
+  const secureLength = id.length >= 4 ? 2 : 1;
+  return `${id.slice(0, -secureLength)}${'*'.repeat(secureLength)}`;
 };
