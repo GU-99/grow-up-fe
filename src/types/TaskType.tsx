@@ -16,14 +16,13 @@ export type Task = {
   content: string;
   startDate: string;
   endDate: string;
-  files: string[];
   sortOrder: number;
 };
 
 export type TaskOrder = Pick<Task, 'statusId' | 'taskId' | 'sortOrder'>;
 export type TaskOrderForm = { tasks: TaskOrder[] };
 
-export type TaskForm = Omit<Task, 'taskId' | 'files'> & { assignees: Assignee['userId'][] };
+export type TaskForm = Omit<Task, 'taskId'> & { assignees: Assignee['userId'][] };
 
 export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
 export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };
