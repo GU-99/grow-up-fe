@@ -4,6 +4,7 @@ import FooterLinks from '@components/user/auth-form/FooterLinks';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useEmailVerification from '@hooks/useEmailVerification';
+import { SearchPasswordForm } from '@/types/UserType';
 
 type SearchDataFormProps = {
   formType: 'searchId' | 'searchPassword';
@@ -14,7 +15,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useFormContext();
+  } = useFormContext<SearchPasswordForm>();
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
   return (
     <>
@@ -22,7 +23,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
       {formType === 'searchPassword' && (
         <ValidationInput
           placeholder="아이디"
-          errors={errors.username?.message?.toString()}
+          errors={errors.username?.message}
           register={register('username', USER_AUTH_VALIDATION_RULES.ID)}
         />
       )}
@@ -30,7 +31,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
       {/* 이메일 */}
       <ValidationInput
         placeholder="이메일"
-        errors={errors.email?.message?.toString()}
+        errors={errors.email?.message}
         register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
       />
 
@@ -38,7 +39,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
       {isVerificationRequested && (
         <ValidationInput
           placeholder="인증번호"
-          errors={errors.code?.message?.toString()}
+          errors={errors.code?.message}
           register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
         />
       )}

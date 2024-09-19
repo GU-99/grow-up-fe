@@ -32,14 +32,14 @@ const links = {
 };
 
 export default function FooterLinks({ type }: FooterLinksProps) {
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <>
       <div className="flex flex-row justify-center">
         {links[type].map((link, index) => (
           <div key={link.text} className="flex flex-row">
-            <button type="button" className="cursor-pointer bg-inherit font-bold" onClick={() => nav(link.path)}>
+            <button type="button" className="cursor-pointer bg-inherit font-bold" onClick={() => navigate(link.path)}>
               {link.text}
             </button>
             {index < links[type].length - 1 && <p className="mx-8">|</p>}
@@ -48,7 +48,7 @@ export default function FooterLinks({ type }: FooterLinksProps) {
       </div>
       <div className="mt-15 flex flex-row items-center justify-center gap-8">
         <p className="items-center font-bold">회원이 아니신가요?</p>
-        <button type="button" className="auth-btn" onClick={() => nav('/signup')}>
+        <button type="button" className="auth-btn" onClick={() => navigate('/signup')}>
           회원가입
         </button>
       </div>
