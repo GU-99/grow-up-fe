@@ -57,6 +57,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       statusId: statusList[0]?.statusId,
+      files: [],
     },
   });
   const {
