@@ -40,3 +40,5 @@ export type SearchIdResult = Pick<User, 'username'>;
 export type SearchPasswordResult = {
   password: string;
 };
+
+export type RequestEmailCode = Pick<User, 'email'>;

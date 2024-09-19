@@ -14,6 +14,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useFormContext<SearchPasswordForm>();
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
@@ -49,7 +50,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
         <VerificationButton
           isVerificationRequested={isVerificationRequested}
           isSubmitting={isSubmitting}
-          requestCode={handleSubmit(requestVerificationCode)}
+          requestCode={handleSubmit(() => requestVerificationCode(watch('email')))}
           expireVerificationCode={expireVerificationCode}
           buttonLabel={formType === 'searchId' ? '아이디 찾기' : '비밀번호 찾기'}
         />

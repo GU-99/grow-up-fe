@@ -3,6 +3,7 @@ import { authAxios, defaultAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type {
   EmailVerificationForm,
+  RequestEmailCode,
   SearchIdResult,
   SearchPasswordForm,
   SearchPasswordResult,
@@ -69,6 +70,19 @@ export async function logout(axiosConfig: AxiosRequestConfig = {}) {
  */
 export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post('test', null, axiosConfig);
+}
+
+/**
+ * 이메일 인증 API
+ *
+ * @export
+ * @async
+ * @param {RequestEmailCode} email - 이메일
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function sendEmailCode(email: RequestEmailCode, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post('user/verify/send', email, axiosConfig);
 }
 
 /**

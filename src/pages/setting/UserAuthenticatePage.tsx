@@ -6,13 +6,11 @@ import VerificationButton from '@components/user/auth-form/VerificationButton';
 import { EmailVerificationForm } from '@/types/UserType';
 
 function UserAuthenticatePage() {
-  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
-    useEmailVerification();
+  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
 
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
     watch,
   } = useForm<EmailVerificationForm>({
@@ -20,9 +18,6 @@ function UserAuthenticatePage() {
   });
 
   const onSubmit = async (data: EmailVerificationForm) => {
-    const verifyResult = verifyCode(watch('code'), setError);
-    if (!verifyResult) return;
-
     // TODO: 인증 성공 후 전역 상태관리 및 리다이렉트 로직 작성
     console.log(data);
   };
@@ -56,7 +51,7 @@ function UserAuthenticatePage() {
           <VerificationButton
             isVerificationRequested={isVerificationRequested}
             isSubmitting={isSubmitting}
-            requestCode={handleSubmit(requestVerificationCode)}
+            requestCode={handleSubmit(() => requestVerificationCode(watch('email')))}
             expireVerificationCode={expireVerificationCode}
             buttonLabel="확인"
           />

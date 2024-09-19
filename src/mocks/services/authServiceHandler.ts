@@ -2,10 +2,11 @@ import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
-import { EmailVerificationForm, SearchPasswordForm, UserSignInForm } from '@/types/UserType';
+import { EmailVerificationForm, RequestEmailCode, SearchPasswordForm, UserSignInForm } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
+let verificationCode = '0000';
 
 const authServiceHandler = [
   // 로그인 API
@@ -112,11 +113,25 @@ const authServiceHandler = [
     return new HttpResponse(null, { status: 401 });
   }),
 
+  // 이메일 인증 API
+  http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
+    const { email } = (await request.json()) as RequestEmailCode;
+
+    if (email !== USER_INFO_DUMMY.email) {
+      return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
+    }
+
+    verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
+    console.log(verificationCode);
+
+    return HttpResponse.json(null, { status: 200 });
+  }),
+
   // 아이디 찾기 API
   http.post(`${BASE_URL}/user/recover/username`, async ({ request }) => {
     const { email, code } = (await request.json()) as EmailVerificationForm;
 
-    if (code !== '1234') {
+    if (code !== verificationCode) {
       return HttpResponse.json(
         { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
         { status: 401 },
@@ -136,7 +151,7 @@ const authServiceHandler = [
 
     const tempPassword = '!1p2l3nqlz';
 
-    if (code !== '1234') {
+    if (code !== verificationCode) {
       return HttpResponse.json(
         { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
         { status: 401 },
