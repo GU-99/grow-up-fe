@@ -52,10 +52,12 @@ const teamServiceHandler = [
     PROJECT_USER_DUMMY.length = 0;
     PROJECT_USER_DUMMY.push(...filteredProjectUsers);
 
+    // TODO: 리팩토링 필요
     const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => {
       const task = TASK_DUMMY.find((task) => task.taskId === taskUser.taskId);
       const statusId = task ? task.statusId : undefined;
       const projectId = statusId ? STATUS_DUMMY.find((status) => status.statusId === statusId)?.projectId : undefined;
+
       return !(projectId && projectIds.includes(projectId) && taskUser.userId === Number(userId));
     });
     TASK_USER_DUMMY.length = 0;
