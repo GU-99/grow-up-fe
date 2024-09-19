@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
-import ValidationInput from '@components/common/ValidationInput';
-import FooterLinks from '@components/user/auth-form/FooterLinks';
-import VerificationButton from '@components/user/auth-form/VerificationButton';
+import { useForm, FormProvider } from 'react-hook-form';
 import Spinner from '@components/common/Spinner';
+import SearchResultSection from '@components/user/auth-form/SearchResultSection';
+import SearchDataForm from '@components/user/auth-form/SearchDataForm';
 import useEmailVerification from '@hooks/useEmailVerification';
 import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
@@ -15,25 +12,18 @@ import { generateSecureUserId } from '@utils/converter';
 import { EmailVerificationForm } from '@/types/UserType';
 
 export default function SearchIdPage() {
-  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
-    useEmailVerification();
+  const { verifyCode } = useEmailVerification();
   const [searchIdResult, setSearchIdResult] = useState<null | string>(null);
   const [loading, setLoading] = useState(false);
   const { toastError } = useToast();
-  const nav = useNavigate();
-  const {
-    watch,
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<EmailVerificationForm>({
+  const methods = useForm<EmailVerificationForm>({
     mode: 'onChange',
     defaultValues: {
       email: '',
       code: '',
     },
   });
+  const { watch, handleSubmit, setError } = methods;
 
   // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: EmailVerificationForm) => {
@@ -60,53 +50,16 @@ export default function SearchIdPage() {
   };
 
   return (
-    <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
-      {loading && <Spinner />}
+    <FormProvider {...methods}>
+      <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
+        {loading && <Spinner />}
 
-      {!loading && searchIdResult && (
-        <section className="space-y-20 text-center">
-          <div className="space-y-5">
-            <p>아이디</p>
-            <p>
-              <strong>{generateSecureUserId(searchIdResult)}</strong>
-            </p>
-          </div>
-          <button type="button" className="auth-btn w-full" onClick={() => nav('/signin')}>
-            로그인으로 돌아가기
-          </button>
-        </section>
-      )}
+        {!loading && searchIdResult && (
+          <SearchResultSection label="아이디" result={generateSecureUserId(searchIdResult)} />
+        )}
 
-      {!loading && !searchIdResult && (
-        <>
-          {/* 이메일 */}
-          <ValidationInput
-            placeholder="이메일"
-            errors={errors.email?.message}
-            register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
-          />
-
-          {isVerificationRequested && (
-            <ValidationInput
-              placeholder="인증번호"
-              errors={errors.code?.message}
-              register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
-            />
-          )}
-
-          {/* 인증 요청 및 확인 버튼 */}
-          <div className="space-y-8 text-center">
-            <VerificationButton
-              isVerificationRequested={isVerificationRequested}
-              isSubmitting={isSubmitting}
-              requestCode={handleSubmit(requestVerificationCode)}
-              expireVerificationCode={expireVerificationCode}
-              buttonLabel="아이디 찾기"
-            />
-          </div>
-          <FooterLinks type="searchId" />
-        </>
-      )}
-    </AuthFormLayout>
+        {!loading && !searchIdResult && <SearchDataForm formType="searchId" />}
+      </AuthFormLayout>
+    </FormProvider>
   );
 }
