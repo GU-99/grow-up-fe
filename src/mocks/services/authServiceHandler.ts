@@ -123,11 +123,11 @@ const authServiceHandler = [
       );
     }
 
-    if (email === USER_INFO_DUMMY.email) {
-      return HttpResponse.json({ username: USER_INFO_DUMMY.username }, { status: 200 });
+    if (email !== USER_INFO_DUMMY.email) {
+      return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
     }
 
-    return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
+    return HttpResponse.json({ username: USER_INFO_DUMMY.username }, { status: 200 });
   }),
 
   // 비밀번호 찾기 API
@@ -143,11 +143,11 @@ const authServiceHandler = [
       );
     }
 
-    if (username === USER_INFO_DUMMY.username && email === USER_INFO_DUMMY.email) {
-      return HttpResponse.json({ password: tempPassword }, { status: 200 });
+    if (username !== USER_INFO_DUMMY.username || email !== USER_INFO_DUMMY.email) {
+      return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
     }
 
-    return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
+    return HttpResponse.json({ password: tempPassword }, { status: 200 });
   }),
 ];
 

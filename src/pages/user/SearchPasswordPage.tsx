@@ -28,10 +28,7 @@ export default function SearchPasswordPage() {
   // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: SearchPasswordForm) => {
     const verifyResult = verifyCode(watch('code'), setError);
-    if (!verifyResult) {
-      setLoading(false);
-      return;
-    }
+    if (!verifyResult) return;
 
     setLoading(true);
     try {
