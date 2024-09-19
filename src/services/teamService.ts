@@ -20,3 +20,55 @@ async function findUserByTeam(
 ) {
   return authAxios.get<User[]>(`/team/${teamId}/user/search?nickname=${nickname}`, axiosConfig);
 }
+
+/**
+ * 팀 탈퇴 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId - 팀 아이디
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function leaveTeam(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post(`/team/${teamId}/leave`, {}, axiosConfig);
+}
+
+/**
+ * 팀 삭제 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId - 팀 아이디
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteTeam(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.delete(`/team/${teamId}`, axiosConfig);
+}
+
+/**
+ * 팀 초대 수락 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId - 팀 아이디
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function acceptTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post(`/team/${teamId}/invitation/accept`, {}, axiosConfig);
+}
+
+/**
+ * 팀 초대 거절 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId - 팀 아이디
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function declineTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post(`/team/${teamId}/invitation/decline`, {}, axiosConfig);
+}

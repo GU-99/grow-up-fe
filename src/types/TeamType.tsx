@@ -9,4 +9,8 @@ export type Team = {
 };
 
 export type TeamListWithApproval = Omit<Team, 'creatorId'> &
-  Pick<Role, 'roleName'> & { isPendingApproval: boolean; creator: string };
+  Pick<Role, 'roleName'> & {
+    isPendingApproval: boolean;
+    creator: string;
+    creatorId: number;
+  };
