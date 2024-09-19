@@ -47,7 +47,7 @@ const component: Partial<Components> = {
   a(props) {
     const { href, children } = props;
     return (
-      <a href={href} className="text-cyan-700">
+      <a href={href} className="text-cyan-700" target="_blank" rel="noopener noreferrer">
         {children}
       </a>
     );
