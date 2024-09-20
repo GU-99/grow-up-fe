@@ -25,6 +25,16 @@ export default function SearchIdPage() {
   const { handleSubmit, setError, setValue } = methods;
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
 
+  // ToDo: useAxios 훅 적용 후 해당 함수 수정 및 삭제하기
+  const handleVerificationError = () => {
+    setError('code', {
+      type: 'manual',
+      message: '인증번호가 일치하지 않습니다.',
+    });
+    setValue('code', '');
+  };
+
+  // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: EmailVerificationForm) => {
     setLoading(true);
     try {
@@ -33,13 +43,7 @@ export default function SearchIdPage() {
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
         toastError(error.response.data.message);
-        if (error.response.status === 401) {
-          setError('code', {
-            type: 'manual',
-            message: '인증번호가 일치하지 않습니다.',
-          });
-          setValue('code', '');
-        }
+        if (error.response.status === 401) handleVerificationError();
       } else {
         toastError('예상치 못한 에러가 발생했습니다.');
       }
