@@ -2,6 +2,7 @@ import { authAxios, defaultAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
 import type {
+  UpdatePasswordForm,
   EmailVerificationForm,
   SearchIdResult,
   SearchPasswordForm,
@@ -95,4 +96,17 @@ export async function searchUserId(searchUserIdForm: EmailVerificationForm, axio
  */
 export async function searchUserPassword(searchPasswordForm: SearchPasswordForm, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post<SearchPasswordResult>('user/recover/password', searchPasswordForm, axiosConfig);
+}
+
+/**
+ * 비밀번호 변경 API
+ *
+ * @export
+ * @async
+ * @param {UpdatePasswordForm} updatePasswordForm - 비밀번호 변경 요청 데이터
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function updateUserPassword(updatePasswordForm: UpdatePasswordForm, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.patch('user/password', updatePasswordForm, axiosConfig);
 }
