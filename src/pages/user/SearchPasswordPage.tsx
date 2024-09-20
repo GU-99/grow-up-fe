@@ -7,11 +7,13 @@ import SearchDataForm from '@components/user/auth-form/SearchDataForm';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { searchUserPassword } from '@services/authService';
 import useToast from '@hooks/useToast';
+import useEmailVerification from '@hooks/useEmailVerification';
 import type { SearchPasswordForm } from '@/types/UserType';
 
 export default function SearchPasswordPage() {
   const [tempPassword, setTempPassword] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
   const { toastError } = useToast();
   const methods = useForm<SearchPasswordForm>({
     mode: 'onChange',
@@ -54,7 +56,14 @@ export default function SearchPasswordPage() {
 
         {!loading && tempPassword && <SearchResultSection label="임시 비밀번호" result={tempPassword} />}
 
-        {!loading && !tempPassword && <SearchDataForm formType="searchPassword" />}
+        {!loading && !tempPassword && (
+          <SearchDataForm
+            formType="searchPassword"
+            isVerificationRequested={isVerificationRequested}
+            requestVerificationCode={requestVerificationCode}
+            expireVerificationCode={expireVerificationCode}
+          />
+        )}
       </AuthFormLayout>
     </FormProvider>
   );

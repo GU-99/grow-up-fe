@@ -3,21 +3,28 @@ import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
-import useEmailVerification from '@hooks/useEmailVerification';
 import { SearchPasswordForm } from '@/types/UserType';
 
 type SearchDataFormProps = {
   formType: 'searchId' | 'searchPassword';
+  isVerificationRequested: boolean;
+  requestVerificationCode: (email: string) => Promise<void>;
+  expireVerificationCode: () => void;
 };
 
-export default function SearchDataForm({ formType }: SearchDataFormProps) {
+export default function SearchDataForm({
+  formType,
+  isVerificationRequested,
+  requestVerificationCode,
+  expireVerificationCode,
+}: SearchDataFormProps) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
   } = useFormContext<SearchPasswordForm>();
-  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
+
   return (
     <>
       {/* 아이디 */}
@@ -55,6 +62,7 @@ export default function SearchDataForm({ formType }: SearchDataFormProps) {
           buttonLabel={formType === 'searchId' ? '아이디 찾기' : '비밀번호 찾기'}
         />
       </div>
+
       <FooterLinks type={formType} />
     </>
   );

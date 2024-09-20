@@ -8,6 +8,7 @@ import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { searchUserId } from '@services/authService';
 import { generateSecureUserId } from '@utils/converter';
+import useEmailVerification from '@hooks/useEmailVerification';
 import { EmailVerificationForm } from '@/types/UserType';
 
 export default function SearchIdPage() {
@@ -22,8 +23,8 @@ export default function SearchIdPage() {
     },
   });
   const { handleSubmit, setError, setValue } = methods;
+  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
 
-  // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
   const onSubmit = async (data: EmailVerificationForm) => {
     setLoading(true);
     try {
@@ -56,7 +57,14 @@ export default function SearchIdPage() {
           <SearchResultSection label="아이디" result={generateSecureUserId(searchIdResult)} />
         )}
 
-        {!loading && !searchIdResult && <SearchDataForm formType="searchId" />}
+        {!loading && !searchIdResult && (
+          <SearchDataForm
+            formType="searchId"
+            isVerificationRequested={isVerificationRequested}
+            requestVerificationCode={requestVerificationCode}
+            expireVerificationCode={expireVerificationCode}
+          />
+        )}
       </AuthFormLayout>
     </FormProvider>
   );
