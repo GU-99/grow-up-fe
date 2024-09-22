@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { USER_INFO_DUMMY } from '@mocks/mockData';
-import { EmailVerificationForm, SearchPasswordForm, UpdatePasswordForm, UserSignInForm } from '@/types/UserType';
+import { EmailVerificationForm, SearchPasswordForm, UpdatePasswordRequest, UserSignInForm } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
@@ -155,9 +155,13 @@ const authServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return HttpResponse.json({ message: '인증 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    const { password, newPassword } = (await request.json()) as UpdatePasswordForm;
+    const userId = accessToken.split('.')[1].replace('mocked-payload-', '');
+    if (Number(userId) !== USER_INFO_DUMMY.userId)
+      return HttpResponse.json({ message: '해당 사용자를 찾을 수 없습니다.' }, { status: 404 });
+
+    const { password, newPassword } = (await request.json()) as UpdatePasswordRequest;
     if (password !== USER_INFO_DUMMY.password)
-      return HttpResponse.json({ message: '비밀번호가 일치하지 않습니다.' }, { status: 400 });
+      return HttpResponse.json({ message: '비밀번호를 다시 확인해주세요.' }, { status: 400 });
 
     USER_INFO_DUMMY.password = newPassword;
     console.log(USER_INFO_DUMMY);

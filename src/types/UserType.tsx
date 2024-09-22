@@ -35,6 +35,8 @@ export type UpdatePasswordForm = {
   checkNewPassword: string;
 };
 
+export type UpdatePasswordRequest = Omit<UpdatePasswordForm, 'checkNewPassword'>;
+
 export type SearchIdResult = Pick<User, 'username'>;
 
 export type SearchPasswordResult = { password: string };

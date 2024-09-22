@@ -4,10 +4,12 @@ import ValidationInput from '@components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import { updateUserPassword } from '@services/authService';
 import useToast from '@hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 import { UpdatePasswordForm } from '@/types/UserType';
 
 export default function UserPasswordSettingPage() {
-  const { toastError } = useToast();
+  const navigate = useNavigate();
+  const { toastSuccess, toastError } = useToast();
   const {
     register,
     handleSubmit,
@@ -18,8 +20,16 @@ export default function UserPasswordSettingPage() {
   });
 
   const onSubmit = async (data: UpdatePasswordForm) => {
+    if (watch('password') === watch('newPassword')) return toastError('신규 비밀번호가 현재 비밀번호와 동일합니다.');
+
+    const { checkNewPassword, ...submitData } = data;
+
     try {
-      await updateUserPassword(data);
+      await updateUserPassword(submitData);
+      toastSuccess('비밀번호가 변경되었습니다.');
+      setTimeout(() => {
+        navigate('/setting/user', { replace: true });
+      }, 2000);
     } catch (error) {
       if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
       else toastError('예상치 못한 에러가 발생했습니다.');
