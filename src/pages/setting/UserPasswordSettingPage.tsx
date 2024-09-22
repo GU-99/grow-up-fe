@@ -24,6 +24,7 @@ export default function UserPasswordSettingPage() {
 
     const { checkNewPassword, ...submitData } = data;
 
+    // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
     try {
       await updateUserPassword(submitData);
       toastSuccess('비밀번호가 변경되었습니다.');
