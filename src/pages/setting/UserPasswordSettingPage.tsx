@@ -20,8 +20,6 @@ export default function UserPasswordSettingPage() {
   });
 
   const onSubmit = async (data: UpdatePasswordForm) => {
-    if (watch('password') === watch('newPassword')) return toastError('신규 비밀번호가 현재 비밀번호와 동일합니다.');
-
     const { checkNewPassword, ...submitData } = data;
 
     // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
@@ -53,7 +51,7 @@ export default function UserPasswordSettingPage() {
           label="신규 비밀번호"
           type="password"
           errors={errors.newPassword?.message}
-          register={register('newPassword', USER_AUTH_VALIDATION_RULES.PASSWORD)}
+          register={register('newPassword', USER_AUTH_VALIDATION_RULES.NEW_PASSWORD(watch('password')))}
         />
 
         {/* 신규 비밀번호 확인 */}
