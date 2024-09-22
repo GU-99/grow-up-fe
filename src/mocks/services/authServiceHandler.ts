@@ -164,7 +164,6 @@ const authServiceHandler = [
       return HttpResponse.json({ message: '비밀번호를 다시 확인해주세요.' }, { status: 400 });
 
     USER_INFO_DUMMY.password = newPassword;
-    console.log(USER_INFO_DUMMY);
     return HttpResponse.json(null, { status: 200 });
   }),
 ];
