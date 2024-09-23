@@ -11,7 +11,8 @@ export type User = {
   profileImageName: string | null;
 };
 
-export type UserWithRole = User & Role;
+export type SearchUser = Pick<User, 'userId' | 'nickname'>;
+export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
 

@@ -20,7 +20,7 @@ import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { UserWithRole } from '@/types/UserType';
+import type { SearchUser } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 import type { CustomFile } from '@/types/FileType';
@@ -39,7 +39,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const [keyword, setKeyword] = useState('');
-  const [assignees, setAssignees] = useState<UserWithRole[]>([]);
+  const [assignees, setAssignees] = useState<SearchUser[]>([]);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
@@ -104,7 +104,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     }
   };
 
-  const handleUserClick = (user: UserWithRole) => {
+  const handleUserClick = (user: SearchUser) => {
     const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
@@ -116,7 +116,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     clearData();
   };
 
-  const handleAssigneeDeleteClick = (user: UserWithRole) => {
+  const handleAssigneeDeleteClick = (user: SearchUser) => {
     const filteredAssignees = assignees.filter((assignee) => assignee.userId !== user.userId);
     const assigneesIdList = filteredAssignees.map((assignee) => assignee.userId);
     setAssignees(filteredAssignees);

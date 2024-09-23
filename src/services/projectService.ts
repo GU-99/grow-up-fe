@@ -3,7 +3,7 @@ import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
-import type { User, UserWithRole } from '@/types/UserType';
+import type { User, SearchUser } from '@/types/UserType';
 
 /**
  * 프로젝트에 속한 유저 목록을 검색하는 API
@@ -20,7 +20,7 @@ export async function findUserByProject(
   nickname: User['nickname'],
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<UserWithRole[]>(`/project/${projectId}/user/search?nickname=${nickname}`, axiosConfig);
+  return authAxios.get<SearchUser[]>(`/project/${projectId}/user/search?nickname=${nickname}`, axiosConfig);
 }
 
 /**
