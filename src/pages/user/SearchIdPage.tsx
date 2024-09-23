@@ -42,8 +42,8 @@ export default function SearchIdPage() {
       setSearchIdResult(fetchData.data.username);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
-        toastError(error.response.data.message);
         if (error.response.status === 401) handleVerificationError();
+        else toastError(error.response.data.message);
       } else {
         toastError('예상치 못한 에러가 발생했습니다.');
       }

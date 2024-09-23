@@ -25,6 +25,12 @@ export default function SearchPasswordPage() {
   });
   const { handleSubmit, setError, setValue } = methods;
 
+  const emailVerificationProps = {
+    isVerificationRequested,
+    requestVerificationCode,
+    expireVerificationCode,
+  };
+
   // ToDo: useAxios 훅 적용 후 해당 함수 수정 및 삭제하기
   const handleVerificationError = () => {
     setError('code', {
@@ -42,8 +48,8 @@ export default function SearchPasswordPage() {
       setTempPassword(fetchData.data.password);
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
-        toastError(error.response.data.message);
         if (error.response.status === 401) handleVerificationError();
+        else toastError(error.response.data.message);
       } else {
         toastError('예상치 못한 에러가 발생했습니다.');
       }
@@ -59,14 +65,7 @@ export default function SearchPasswordPage() {
 
         {!loading && tempPassword && <SearchResultSection label="임시 비밀번호" result={tempPassword} />}
 
-        {!loading && !tempPassword && (
-          <SearchDataForm
-            formType="searchPassword"
-            isVerificationRequested={isVerificationRequested}
-            requestVerificationCode={requestVerificationCode}
-            expireVerificationCode={expireVerificationCode}
-          />
-        )}
+        {!loading && !tempPassword && <SearchDataForm formType="searchPassword" {...emailVerificationProps} />}
       </AuthFormLayout>
     </FormProvider>
   );

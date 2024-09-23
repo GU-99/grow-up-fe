@@ -116,9 +116,8 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
 
-    if (email !== USER_INFO_DUMMY.email) {
+    if (email !== USER_INFO_DUMMY.email)
       return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
-    }
 
     return HttpResponse.json(null, { status: 200 });
   }),
@@ -134,9 +133,8 @@ const authServiceHandler = [
       );
     }
 
-    if (email !== USER_INFO_DUMMY.email) {
+    if (email !== USER_INFO_DUMMY.email)
       return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
-    }
 
     return HttpResponse.json({ username: USER_INFO_DUMMY.username }, { status: 200 });
   }),
