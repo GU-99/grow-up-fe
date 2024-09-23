@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { IoSearch } from 'react-icons/io5';
+import exhaustiveCheck from '@utils/exhaustiveCheck';
 
 import type { SearchUser } from '@/types/UserType';
 import type { SearchCallback } from '@/types/SearchCallbackType';
@@ -38,9 +39,19 @@ export default function SearchUserInput({
     const { signal } = abortControllerRef.current;
 
     const { type, searchCallback } = searchCallbackInfo;
-
-    if (type === 'ALL') searchCallback(keyword, { signal });
-    else searchCallback(searchId, keyword, { signal });
+    switch (type) {
+      case 'ALL':
+        searchCallback(keyword, { signal });
+        break;
+      case 'TEAM':
+        searchCallback(searchId, keyword, { signal });
+        break;
+      case 'PROJECT':
+        searchCallback(searchId, keyword, { signal });
+        break;
+      default:
+        exhaustiveCheck(type, '사용자 검색 범위가 올바르지 않습니다.');
+    }
   }, [searchCallbackInfo, searchId, keyword]);
 
   useEffect(() => {
