@@ -3,7 +3,7 @@ import { PROJECT_USER_DUMMY, STATUS_DUMMY, TASK_DUMMY, TASK_FILE_DUMMY, TASK_USE
 import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
 
 import type { Assignee } from '@/types/AssigneeType';
-import type { TaskForm, TaskOrderForm } from '@/types/TaskType';
+import type { TaskInfoForm, TaskOrderForm } from '@/types/TaskType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -30,7 +30,7 @@ const taskServiceHandler = [
   // 일정 생성 API
   http.post(`${BASE_URL}/project/:projectId/task`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const { assignees, ...restFormData } = (await request.json()) as TaskForm;
+    const { assignees, ...restFormData } = (await request.json()) as TaskInfoForm;
     const { projectId } = params;
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });

@@ -4,7 +4,7 @@ import type { AxiosRequestConfig } from 'axios';
 import type { TaskFile } from '@/types/FileType';
 import type { Project } from '@/types/ProjectType';
 import type { Assignee } from '@/types/AssigneeType';
-import type { Task, TaskForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
+import type { Task, TaskInfoForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
 
 /**
  * 프로젝트에 속한 모든 일정 목록 조회 API
@@ -24,11 +24,15 @@ export async function findTaskList(projectId: Project['projectId'], axiosConfig:
  *
  * @export
  * @param {Project['projectId']} projectId      - 프로젝트 ID
- * @param {TaskForm} formData                   - 새로운 일정 정보 객체
+ * @param {TaskInfoForm} formData               - 새로운 일정 정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
-export function createTask(projectId: Project['projectId'], formData: TaskForm, axiosConfig: AxiosRequestConfig = {}) {
+export function createTask(
+  projectId: Project['projectId'],
+  formData: TaskInfoForm,
+  axiosConfig: AxiosRequestConfig = {},
+) {
   return authAxios.post(`/project/${projectId}/task`, formData, axiosConfig);
 }
 

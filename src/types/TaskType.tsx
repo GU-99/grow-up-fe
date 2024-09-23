@@ -22,7 +22,12 @@ export type Task = {
 export type TaskOrder = Pick<Task, 'statusId' | 'taskId' | 'sortOrder'>;
 export type TaskOrderForm = { tasks: TaskOrder[] };
 
-export type TaskForm = Omit<Task, 'taskId'> & { assignees: Assignee['userId'][] };
+export type TaskForm = Omit<Task, 'taskId'> & {
+  assignees: Assignee['userId'][];
+  files: File[];
+};
+export type TaskInfoForm = Omit<TaskForm, 'files'>;
+export type TaskFileForm = Pick<TaskForm, 'files'>;
 
 export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
 export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createTask, findAssignees, findTaskFiles, findTaskList, updateTaskOrder } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
-import type { Task, TaskForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type { Task, TaskInfoForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 
 function getTaskNameList(taskList: TaskListWithStatus[]) {
@@ -23,7 +23,7 @@ export function useCreateStatusTask(projectId: Project['projectId']) {
   const queryKey = ['projects', projectId, 'tasks'];
 
   const mutation = useMutation({
-    mutationFn: (formData: TaskForm) => createTask(projectId, formData),
+    mutationFn: (formData: TaskInfoForm) => createTask(projectId, formData),
     onSuccess: () => {
       toastSuccess('프로젝트 일정을 등록하였습니다.');
       queryClient.invalidateQueries({ queryKey });
