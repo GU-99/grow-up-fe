@@ -11,6 +11,9 @@ type FileDropZoneProps = {
   onFileDeleteClick: (fileId: string) => void;
 };
 
+const DEFAULT_BG_COLOR = 'inherit';
+const FILE_DRAG_OVER_BG_COLOR = '#e1f4d9';
+
 // ToDo: 파일 업로드 API 작업시 구조 다시 한 번 확인해보기
 export default function FileDropZone({
   id,
@@ -22,16 +25,16 @@ export default function FileDropZone({
 }: FileDropZoneProps) {
   const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
     if (e.relatedTarget instanceof Node && e.currentTarget.contains(e.relatedTarget)) return;
-    e.currentTarget.style.backgroundColor = 'inherit';
+    e.currentTarget.style.backgroundColor = DEFAULT_BG_COLOR;
   };
   const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
-    e.currentTarget.style.backgroundColor = '#e1f4d9';
+    e.currentTarget.style.backgroundColor = FILE_DRAG_OVER_BG_COLOR;
   };
 
   const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
-    e.currentTarget.style.backgroundColor = 'inherit';
+    e.currentTarget.style.backgroundColor = DEFAULT_BG_COLOR;
     onFileDrop(e);
   };
 
@@ -39,11 +42,14 @@ export default function FileDropZone({
     <label htmlFor={id}>
       <h3 className="text-large">{label}</h3>
       <input type="file" id={id} className="h-0 w-0 opacity-0" multiple hidden onChange={handleFileChange} />
-      <section
+      <div
+        role="button"
+        tabIndex={0}
         className="flex cursor-pointer items-center gap-4 rounded-sl border-2 border-dashed border-input p-10 transition duration-100"
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleFileDrop}
+        aria-label="파일을 이 영역에 드래그하거나 클릭하여 업로드하세요"
       >
         <ul className="flex grow flex-wrap gap-4">
           {files.map(({ id, file }) => (
@@ -62,7 +68,7 @@ export default function FileDropZone({
         <div>
           <GoPlusCircle className="size-15 text-[#5E5E5E]" />
         </div>
-      </section>
+      </div>
     </label>
   );
 }
