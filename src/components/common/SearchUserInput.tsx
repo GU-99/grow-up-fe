@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { IoSearch } from 'react-icons/io5';
 
 import type { SearchUser } from '@/types/UserType';
-import type { SearchCallback } from '@/types/SearhCallbackType';
+import type { SearchCallback } from '@/types/SearchCallbackType';
 
 type SearchInputProps = {
   id: string;

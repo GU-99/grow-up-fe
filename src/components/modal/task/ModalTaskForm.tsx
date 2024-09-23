@@ -25,7 +25,7 @@ import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 import type { CustomFile } from '@/types/FileType';
-import { ProjectSearchCallback } from '@/types/SearhCallbackType';
+import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 
 type ModalTaskFormProps = {
   formId: string;
@@ -82,7 +82,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
-  const handlAssigneeClick = (user: SearchUser) => {
+  const handleAssigneeClick = (user: SearchUser) => {
     const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
@@ -183,7 +183,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             userList={userList}
             searchCallbackInfo={searchCallbackInfo}
             onKeywordChange={handleKeywordChange}
-            onUserClick={handlAssigneeClick}
+            onUserClick={handleAssigneeClick}
           />
           <AssigneeList assigneeList={assignees} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
         </div>
