@@ -1,29 +1,85 @@
+import { useCallback, useEffect, useRef } from 'react';
 import { IoSearch } from 'react-icons/io5';
+import { findUser } from '@services/userService';
+import { findUserByTeam } from '@services/teamService';
+import { findUserByProject } from '@services/projectService';
+
 import type { SearchUser } from '@/types/UserType';
+
+type FetchCallback<T> = T extends (...arg: infer P) => void ? (...arg: P) => Promise<void> : never;
+
+type AllSearchCallback = {
+  type: 'ALL';
+  searchCallback: FetchCallback<typeof findUser>;
+};
+
+type TeamSearchCallback = {
+  type: 'TEAM';
+  searchCallback: FetchCallback<typeof findUserByTeam>;
+};
+
+type ProjectSearchCallback = {
+  type: 'PROJECT';
+  searchCallback: FetchCallback<typeof findUserByProject>;
+};
+
+type SearchCallback = AllSearchCallback | TeamSearchCallback | ProjectSearchCallback;
 
 type SearchInputProps = {
   id: string;
   label: string;
   keyword: string;
+  searchId: number;
   loading: boolean;
   userList: SearchUser[];
+  searchCallbackInfo: SearchCallback;
   onKeywordChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchKeyup: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  onSearchClick: () => void;
   onUserClick: (user: SearchUser) => void;
 };
 
 export default function SearchUserInput({
   id,
   label,
+  searchId,
   keyword,
   loading,
   userList,
+  searchCallbackInfo,
   onKeywordChange: handleKeywordChange,
-  onSearchKeyup: handleSearchKeyUp,
-  onSearchClick: handleSearchClick,
   onUserClick: handleUserClick,
 }: SearchInputProps) {
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const searchUsers = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+
+    abortControllerRef.current = new AbortController();
+    const { signal } = abortControllerRef.current;
+
+    const { type, searchCallback } = searchCallbackInfo;
+
+    if (type === 'ALL') searchCallback(keyword, { signal });
+    else searchCallback(searchId, keyword, { signal });
+  }, [searchCallbackInfo, searchId, keyword]);
+
+  useEffect(() => {
+    if (keyword) debounceRef.current = setTimeout(() => searchUsers(), 500);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+    };
+  }, [searchUsers, keyword]);
+
+  const handleSearchClick = () => searchUsers();
+  const handleSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key.toLowerCase() === 'enter') {
+      e.preventDefault();
+      searchUsers();
+    }
+  };
+
   return (
     <label htmlFor={id} className="group mb-10 flex items-center gap-5">
       <h3 className="text-large">{label}</h3>

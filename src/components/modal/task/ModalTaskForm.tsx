@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -36,8 +36,6 @@ type ModalTaskFormProps = {
 // ToDo: React Query Error시 처리 추가할 것
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
   const { projectId, startDate, endDate } = project;
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   const [keyword, setKeyword] = useState('');
   const [assignees, setAssignees] = useState<UserWithRole[]>([]);
@@ -49,7 +47,16 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
 
-  // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
+  type FetchCallback<T> = T extends (...arg: infer P) => void ? (...arg: P) => Promise<void> : never;
+  type ProjectSearchCallback = {
+    type: 'PROJECT';
+    searchCallback: FetchCallback<typeof findUserByProject>;
+  };
+  const searchInfo: ProjectSearchCallback = useMemo(
+    () => ({ type: 'PROJECT', searchCallback: fetchData }),
+    [fetchData],
+  );
+
   const methods = useForm<TaskForm>({
     mode: 'onChange',
     defaultValues: {
@@ -62,6 +69,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
       files: [],
     },
   });
+
   const {
     register,
     watch,
@@ -70,42 +78,15 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     formState: { errors },
   } = methods;
 
-  const searchUsers = useCallback(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (abortControllerRef.current) abortControllerRef.current.abort();
-
-    abortControllerRef.current = new AbortController();
-    const { signal } = abortControllerRef.current;
-
-    fetchData(projectId, keyword, { signal });
-  }, [fetchData, projectId, keyword]);
-
   useEffect(() => {
     if (!isStatusLoading && statusList) {
       setValue('statusId', statusList[0].statusId);
     }
   }, [isStatusLoading, statusList]);
 
-  useEffect(() => {
-    if (keyword) debounceRef.current = setTimeout(() => searchUsers(), 500);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      if (abortControllerRef.current) abortControllerRef.current.abort();
-    };
-  }, [searchUsers, keyword]);
-
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
-  const handleSearchClick = () => searchUsers();
-
-  const handleSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key.toLowerCase() === 'enter') {
-      e.preventDefault();
-      searchUsers();
-    }
-  };
-
-  const handleUserClick = (user: SearchUser) => {
+  const handlAssigneeClick = (user: SearchUser) => {
     const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
@@ -196,18 +177,17 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           endDateFieldName="endDate"
         />
 
-        {/* ToDo: 검색UI 공용 컴포넌트로 추출할 것 */}
         <div className="mb-20">
           <SearchUserInput
             id="search"
             label="수행자"
             keyword={keyword}
+            searchId={projectId}
             loading={loading}
             userList={userList}
+            searchCallbackInfo={searchInfo}
             onKeywordChange={handleKeywordChange}
-            onSearchKeyup={handleSearchKeyUp}
-            onSearchClick={handleSearchClick}
-            onUserClick={handleUserClick}
+            onUserClick={handlAssigneeClick}
           />
           <AssigneeList assigneeList={assignees} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
         </div>
