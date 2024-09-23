@@ -29,16 +29,16 @@ export type EmailVerificationForm = Pick<User, 'email'> & { code: string };
 
 export type SearchPasswordForm = Pick<User, 'username' | 'email'> & { code: string };
 
-export type EditPasswordForm = {
+export type UpdatePasswordForm = {
   password: string;
   newPassword: string;
   checkNewPassword: string;
 };
 
+export type UpdatePasswordRequest = Omit<UpdatePasswordForm, 'checkNewPassword'>;
+
 export type SearchIdResult = Pick<User, 'username'>;
 
-export type SearchPasswordResult = {
-  password: string;
-};
-
 export type RequestEmailCode = Pick<User, 'email'>;
+
+export type SearchPasswordResult = { password: string };

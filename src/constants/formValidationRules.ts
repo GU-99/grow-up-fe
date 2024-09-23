@@ -104,6 +104,10 @@ export const USER_AUTH_VALIDATION_RULES = deepFreeze({
     required: '비밀번호를 한 번 더 입력해 주세요.',
     validate: (value: string) => value === password || '비밀번호가 일치하지 않습니다.',
   }),
+  NEW_PASSWORD: (currentPassword: string) => ({
+    ...USER_AUTH_VALIDATION_RULES.PASSWORD,
+    validate: (value: string) => value !== currentPassword || '신규 비밀번호가 현재 비밀번호와 동일합니다.',
+  }),
   ID: {
     required: '아이디를 입력해 주세요.',
     minLength: {
