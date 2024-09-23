@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { PROJECT_DUMMY, PROJECT_USER_DUMMY } from '@mocks/mockData';
-import { getUserHash } from '@mocks/mockHash';
+import { getRoleHash, getUserHash } from '@mocks/mockHash';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -40,6 +40,26 @@ const projectServiceHandler = [
     const projectList = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId));
 
     return HttpResponse.json(projectList);
+  }),
+
+  // 프로젝트 팀원 목록 조회 API
+  http.get(`${BASE_URL}/project/:projectId/user`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const projectUserList = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId === Number(projectId));
+
+    const userHash = getUserHash();
+    const roleHash = getRoleHash();
+    const userRoleList = projectUserList.map((projectUser) => {
+      const { userId, nickname } = userHash[projectUser.userId];
+      const { roleName } = roleHash[projectUser.roleId];
+      return { userId, nickname, roleName };
+    });
+
+    return HttpResponse.json(userRoleList);
   }),
 ];
 
