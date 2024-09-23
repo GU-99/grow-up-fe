@@ -25,6 +25,7 @@ import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 import type { CustomFile } from '@/types/FileType';
+import { ProjectSearchCallback } from '@/types/SearhCallbackType';
 
 type ModalTaskFormProps = {
   formId: string;
@@ -47,12 +48,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
 
-  type FetchCallback<T> = T extends (...arg: infer P) => void ? (...arg: P) => Promise<void> : never;
-  type ProjectSearchCallback = {
-    type: 'PROJECT';
-    searchCallback: FetchCallback<typeof findUserByProject>;
-  };
-  const searchInfo: ProjectSearchCallback = useMemo(
+  const searchCallbackInfo: ProjectSearchCallback = useMemo(
     () => ({ type: 'PROJECT', searchCallback: fetchData }),
     [fetchData],
   );
@@ -185,7 +181,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             searchId={projectId}
             loading={loading}
             userList={userList}
-            searchCallbackInfo={searchInfo}
+            searchCallbackInfo={searchCallbackInfo}
             onKeywordChange={handleKeywordChange}
             onUserClick={handlAssigneeClick}
           />

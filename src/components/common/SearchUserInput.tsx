@@ -1,29 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { IoSearch } from 'react-icons/io5';
-import { findUser } from '@services/userService';
-import { findUserByTeam } from '@services/teamService';
-import { findUserByProject } from '@services/projectService';
 
 import type { SearchUser } from '@/types/UserType';
-
-type FetchCallback<T> = T extends (...arg: infer P) => void ? (...arg: P) => Promise<void> : never;
-
-type AllSearchCallback = {
-  type: 'ALL';
-  searchCallback: FetchCallback<typeof findUser>;
-};
-
-type TeamSearchCallback = {
-  type: 'TEAM';
-  searchCallback: FetchCallback<typeof findUserByTeam>;
-};
-
-type ProjectSearchCallback = {
-  type: 'PROJECT';
-  searchCallback: FetchCallback<typeof findUserByProject>;
-};
-
-type SearchCallback = AllSearchCallback | TeamSearchCallback | ProjectSearchCallback;
+import type { SearchCallback } from '@/types/SearhCallbackType';
 
 type SearchInputProps = {
   id: string;
