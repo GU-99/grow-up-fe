@@ -36,8 +36,9 @@ export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature'
 
 export const USER_INFO_DUMMY = {
   provider: 'LOCAL',
-  userId: 1,
+  userId: 4,
   username: 'test123',
+  password: 'qwer@1234',
   email: 'momoco@gmail.com',
   nickname: 'momoco',
   profileImageName: null,
