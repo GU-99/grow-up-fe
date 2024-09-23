@@ -14,6 +14,7 @@ import { EmailVerificationForm } from '@/types/UserType';
 export default function SearchIdPage() {
   const [searchIdResult, setSearchIdResult] = useState<null | string>(null);
   const [loading, setLoading] = useState(false);
+  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
   const { toastError } = useToast();
   const methods = useForm<EmailVerificationForm>({
     mode: 'onChange',
@@ -23,7 +24,12 @@ export default function SearchIdPage() {
     },
   });
   const { handleSubmit, setError, setValue } = methods;
-  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
+
+  const emailVerificationProps = {
+    isVerificationRequested,
+    requestVerificationCode,
+    expireVerificationCode,
+  };
 
   // ToDo: useAxios 훅 적용 후 해당 함수 수정 및 삭제하기
   const handleVerificationError = () => {
@@ -61,14 +67,7 @@ export default function SearchIdPage() {
           <SearchResultSection label="아이디" result={generateSecureUserId(searchIdResult)} />
         )}
 
-        {!loading && !searchIdResult && (
-          <SearchDataForm
-            formType="searchId"
-            isVerificationRequested={isVerificationRequested}
-            requestVerificationCode={requestVerificationCode}
-            expireVerificationCode={expireVerificationCode}
-          />
-        )}
+        {!loading && !searchIdResult && <SearchDataForm formType="searchId" {...emailVerificationProps} />}
       </AuthFormLayout>
     </FormProvider>
   );
