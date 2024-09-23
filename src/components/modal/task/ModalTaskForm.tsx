@@ -14,13 +14,14 @@ import SearchUserInput from '@components/common/SearchUserInput';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
-import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
+import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
+import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { UserWithRole } from '@/types/UserType';
+import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
 import type { CustomFile } from '@/types/FileType';
@@ -43,8 +44,9 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
-  const { taskNameList } = useReadStatusTasks(projectId);
-  const { data = [], loading, clearData, fetchData } = useAxios(findUserByProject);
+  const { taskNameList, isTaskLoading } = useReadStatusTasks(projectId);
+  const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(projectId);
+  const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const { toastInfo, toastWarn } = useToast();
 
   // ToDo: 상태 수정 모달 작성시 기본값 설정 방식 변경할 것
@@ -67,7 +69,6 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     handleSubmit,
     formState: { errors },
   } = methods;
-  console.log(watch('files'));
 
   const searchUsers = useCallback(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -104,19 +105,24 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     }
   };
 
-  const handleUserClick = (user: UserWithRole) => {
+  const handleUserClick = (user: SearchUser) => {
     const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
-    const updatedAssignees = [...assignees, user];
-    const assigneesIdList = updatedAssignees.map((worker) => worker.userId);
+    const userWithRole = projectUserRoleList.find((projectUser) => projectUser.userId === user.userId);
+    if (!userWithRole) {
+      return toastWarn('프로젝트 팀원 목록에서 추가한 사용자를 찾을 수 없습니다. 확인 후 다시 시도해주세요.');
+    }
+
+    const updatedAssignees = [...assignees, userWithRole];
+    const assigneesIdList = updatedAssignees.map((assignee) => assignee.userId);
     setAssignees(updatedAssignees);
     setValue('assignees', assigneesIdList);
     setKeyword('');
     clearData();
   };
 
-  const handleAssigneeDeleteClick = (user: UserWithRole) => {
+  const handleAssigneeDeleteClick = (user: SearchUser) => {
     const filteredAssignees = assignees.filter((assignee) => assignee.userId !== user.userId);
     const assigneesIdList = filteredAssignees.map((assignee) => assignee.userId);
     setAssignees(filteredAssignees);
@@ -163,7 +169,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setFiles(filteredFiles);
   };
 
-  if (isStatusLoading) return <Spinner />;
+  if (isStatusLoading || isTaskLoading || isProjectUserRoleLoading) return <Spinner />;
 
   return (
     <FormProvider {...methods}>
@@ -197,7 +203,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
             label="수행자"
             keyword={keyword}
             loading={loading}
-            userList={data}
+            userList={userList}
             onKeywordChange={handleKeywordChange}
             onSearchKeyup={handleSearchKeyUp}
             onSearchClick={handleSearchClick}

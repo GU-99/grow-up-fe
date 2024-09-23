@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Navigate, NavLink, Outlet, useParams } from 'react-router-dom';
 import { RiSettings5Fill } from 'react-icons/ri';
-import { ProjectContext } from '@hooks/useProjectContext';
 import useModal from '@hooks/useModal';
-import useReadProjects from '@hooks/query/useProjectQuery';
+import { ProjectContext } from '@hooks/useProjectContext';
+import { useReadProjects, useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import Spinner from '@components/common/Spinner';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
@@ -13,6 +13,7 @@ import CreateModalProjectStatus from '@components/modal/project-status/CreateMod
 export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
   const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
+  const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(Number(projectId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
 
@@ -21,8 +22,7 @@ export default function ProjectLayout() {
     [projectList, projectId],
   );
 
-  if (isProjectLoading) return <Spinner />;
-
+  if (isProjectLoading || isProjectUserRoleLoading) return <Spinner />;
   if (!project) return <Navigate to="/error" replace />;
 
   return (
@@ -67,7 +67,7 @@ export default function ProjectLayout() {
               </div>
             </div>
             <div className="flex grow overflow-auto p-10">
-              <Outlet context={{ project } satisfies ProjectContext} />
+              <Outlet context={{ project, projectUserRoleList } satisfies ProjectContext} />
             </div>
           </div>
         </section>

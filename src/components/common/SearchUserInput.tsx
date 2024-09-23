@@ -1,16 +1,16 @@
 import { IoSearch } from 'react-icons/io5';
-import type { UserWithRole } from '@/types/UserType';
+import type { SearchUser } from '@/types/UserType';
 
 type SearchInputProps = {
   id: string;
   label: string;
   keyword: string;
   loading: boolean;
-  userList: UserWithRole[];
+  userList: SearchUser[];
   onKeywordChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchKeyup: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onSearchClick: () => void;
-  onUserClick: (user: UserWithRole) => void;
+  onUserClick: (user: SearchUser) => void;
 };
 
 export default function SearchUserInput({

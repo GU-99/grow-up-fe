@@ -1,10 +1,10 @@
 import { IoMdCloseCircle } from 'react-icons/io';
 import RoleIcon from '@components/common/RoleIcon';
-import type { UserWithRole } from '@/types/UserType';
+import type { SearchUser, UserWithRole } from '@/types/UserType';
 
 type AssigneeListProps = {
   assigneeList: UserWithRole[];
-  onAssigneeDeleteClick: (user: UserWithRole) => void;
+  onAssigneeDeleteClick: (user: SearchUser) => void;
 };
 
 export default function AssigneeList({

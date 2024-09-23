@@ -1,7 +1,6 @@
 import { http, HttpResponse } from 'msw';
-import { PROJECT_DUMMY, PROJECT_USER_DUMMY, ROLE_DUMMY, USER_DUMMY } from '@mocks/mockData';
-import type { Role } from '@/types/RoleType';
-import type { User } from '@/types/UserType';
+import { PROJECT_DUMMY, PROJECT_USER_DUMMY } from '@mocks/mockData';
+import { getRoleHash, getUserHash } from '@mocks/mockHash';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -17,17 +16,12 @@ const projectServiceHandler = [
 
     // 프로젝트에 속하는 모든 유저 검색
     const projectUserList = PROJECT_USER_DUMMY.filter((row) => row.projectId === Number(projectId));
+    const userHash = getUserHash();
 
-    // 유저 정보 Hash 형태로 추출
-    const USERS: { [key: string | number]: User } = {};
-    USER_DUMMY.forEach((user) => (USERS[user.userId] = user));
-
-    // 역할 정보 Hash 형태로 추출
-    const ROLES: { [key: string | number]: Role } = {};
-    ROLE_DUMMY.forEach((role) => (ROLES[role.roleId] = role));
-
-    // 유저, 역할 정보 병합 추출
-    const userList = projectUserList.map((relation) => ({ ...USERS[relation.userId], ...ROLES[relation.roleId] }));
+    const userList = projectUserList.map((relation) => {
+      const { userId, nickname } = userHash[relation.userId];
+      return { userId, nickname };
+    });
 
     // 접두사(nickname)과 일치하는 유저 정보 최대 5명 추출
     const prefixRegex = new RegExp(`^${nickname}`);
@@ -35,6 +29,7 @@ const projectServiceHandler = [
 
     return HttpResponse.json(matchedUserList);
   }),
+
   // 프로젝트 목록 조회 API
   http.get(`${BASE_URL}/team/:teamId/project`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
@@ -45,6 +40,26 @@ const projectServiceHandler = [
     const projectList = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId));
 
     return HttpResponse.json(projectList);
+  }),
+
+  // 프로젝트 팀원 목록 조회 API
+  http.get(`${BASE_URL}/project/:projectId/user`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const projectUserList = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId === Number(projectId));
+
+    const userHash = getUserHash();
+    const roleHash = getRoleHash();
+    const userRoleList = projectUserList.map((projectUser) => {
+      const { userId, nickname } = userHash[projectUser.userId];
+      const { roleName } = roleHash[projectUser.roleId];
+      return { userId, nickname, roleName };
+    });
+
+    return HttpResponse.json(userRoleList);
   }),
 ];
 
