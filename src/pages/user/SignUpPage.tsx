@@ -13,8 +13,7 @@ import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
   const { toastSuccess, toastError } = useToast();
-  const { isVerificationRequested, requestVerificationCode, verifyCode, expireVerificationCode } =
-    useEmailVerification();
+  const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
 
   const methods = useForm<UserSignUpForm>({
     mode: 'onChange',
@@ -35,10 +34,6 @@ export default function SignUpPage() {
   const onSubmit = async (data: UserSignUpForm) => {
     const { username, code, checkPassword, profileImageName, ...filteredData } = data;
     console.log(data);
-
-    const verifyResult = verifyCode(methods.watch('code'), methods.setError);
-    if (!verifyResult) return;
-
     // TODO: 폼 제출 로직 수정 필요
     try {
       // 회원가입 폼
@@ -152,7 +147,7 @@ export default function SignUpPage() {
           <VerificationButton
             isVerificationRequested={isVerificationRequested}
             isSubmitting={methods.formState.isSubmitting}
-            requestCode={methods.handleSubmit(requestVerificationCode)}
+            requestCode={methods.handleSubmit(() => requestVerificationCode(methods.watch('email')))}
             expireVerificationCode={expireVerificationCode}
             buttonLabel="회원가입"
           />
