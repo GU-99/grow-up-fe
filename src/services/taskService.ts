@@ -3,7 +3,7 @@ import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { TaskFile } from '@/types/FileType';
 import type { Project } from '@/types/ProjectType';
-import type { UserWithRole } from '@/types/UserType';
+import type { User, UserWithRole } from '@/types/UserType';
 import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
 
 /**
@@ -88,4 +88,24 @@ export async function findTaskFiles(
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.get<TaskFile[]>(`/project/${projectId}/task/${taskId}/attachment`, axiosConfig);
+}
+
+/**
+ * 일정 수행자 추가 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId        - 프로젝트 ID
+ * @param {Task['taskId']} taskId                 - 일정 ID
+ * @param {User['userId']} userId                 - 수행자 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}]   - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function addAssignee(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  userId: User['userId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.post(`/project/${projectId}/task/${taskId}/assignee`, { userId }, axiosConfig);
 }

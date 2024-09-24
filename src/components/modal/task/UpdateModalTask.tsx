@@ -16,7 +16,7 @@ import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
-import { useReadAssignees, useReadStatusTasks, useReadTaskFiles } from '@hooks/query/useTaskQuery';
+import { useAddAssignee, useReadAssignees, useReadStatusTasks, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
 
@@ -49,6 +49,8 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
 
+  const { mutate: addAssigneeMutate } = useAddAssignee(projectId, taskId);
+
   const methods = useForm<TaskInfoForm>({ mode: 'onChange' });
   const {
     register,
@@ -72,7 +74,6 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
-  // ToDo: 수행자 추가 API 작업시 추가할 것
   const handleUserClick = (user: SearchUser) => {
     const isIncludedUser = assigneeList.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
@@ -81,9 +82,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     if (!userWithRole) {
       return toastWarn('프로젝트 팀원 목록에서 추가한 사용자를 찾을 수 없습니다. 확인 후 다시 시도해주세요.');
     }
-
-    // 추가 로직이 들어갈 자리
-
+    addAssigneeMutate(user.userId);
     setKeyword('');
     clearData();
   };
