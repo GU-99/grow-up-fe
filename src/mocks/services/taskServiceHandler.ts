@@ -158,6 +158,46 @@ const taskServiceHandler = [
 
     return new HttpResponse(null, { status: 200 });
   }),
+  // 일정 수행자 삭제 API
+  http.delete(`${BASE_URL}/project/:projectId/task/:taskId/assignee/:userId`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId, userId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const projectUser = PROJECT_USER_DUMMY.find(
+      (projectUser) => projectUser.userId === Number(userId) && projectUser.projectId === Number(projectId),
+    );
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    const user = USER_DUMMY.find((user) => user.userId === Number(userId));
+    if (!user) return new HttpResponse(null, { status: 404 });
+
+    const project = PROJECT_DUMMY.find((project) => project.projectId === Number(projectId));
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    const statuses = STATUS_DUMMY.filter((status) => status.projectId === project.projectId);
+    if (statuses.length === 0) return new HttpResponse(null, { status: 404 });
+
+    const task = TASK_DUMMY.find((task) => task.taskId === Number(taskId));
+    if (!task) return new HttpResponse(null, { status: 404 });
+
+    const isIncludedTask = statuses.map((status) => status.statusId).includes(task.statusId);
+    if (!isIncludedTask) return new HttpResponse(null, { status: 404 });
+
+    const isExistedAssignee = TASK_USER_DUMMY.find(
+      (taskUser) => taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId),
+    );
+    if (!isExistedAssignee) return new HttpResponse(null, { status: 400 });
+
+    const filteredTaskUserList = TASK_USER_DUMMY.filter(
+      (taskUser) => !(taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId)),
+    );
+    TASK_USER_DUMMY.length = 0;
+    TASK_USER_DUMMY.push(...filteredTaskUserList);
+
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];
 
 export default taskServiceHandler;
