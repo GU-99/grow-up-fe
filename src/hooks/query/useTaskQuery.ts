@@ -7,13 +7,10 @@ import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrder } from '@/ty
 import type { Project } from '@/types/ProjectType';
 
 function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
-  const taskNameList =
-    taskList.length > 0
-      ? taskList
-          .map((statusTask) => statusTask.tasks)
-          .flat()
-          .map((task) => task.name)
-      : [];
+  const taskNameList = taskList
+    .map((statusTask) => statusTask.tasks)
+    .flat()
+    .map((task) => task.name);
 
   return excludedTaskName ? taskNameList.filter((taskName) => taskName !== excludedTaskName) : taskNameList;
 }
