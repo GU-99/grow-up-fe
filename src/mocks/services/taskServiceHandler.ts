@@ -15,6 +15,7 @@ import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm } from '@/types/
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+// ToDo: 로직 반복을 줄이기 위한 아이디 검색 함수들 추가할 것
 const taskServiceHandler = [
   // 일정 목록 조회 API
   http.get(`${BASE_URL}/project/:projectId/task`, ({ request, params }) => {
@@ -188,14 +189,14 @@ const taskServiceHandler = [
     const isExistedAssignee = TASK_USER_DUMMY.find(
       (taskUser) => taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId),
     );
-    if (!isExistedAssignee) return new HttpResponse(null, { status: 400 });
+    if (!isExistedAssignee) return new HttpResponse(null, { status: 404 });
 
-    const filteredTaskUserList = TASK_USER_DUMMY.filter(
-      (taskUser) => !(taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId)),
+    const index = TASK_USER_DUMMY.findIndex(
+      (taskUser) => taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId),
     );
-    TASK_USER_DUMMY.length = 0;
-    TASK_USER_DUMMY.push(...filteredTaskUserList);
-
+    if (index !== -1) {
+      TASK_USER_DUMMY.splice(index, 1);
+    }
     return new HttpResponse(null, { status: 204 });
   }),
 ];
