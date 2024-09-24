@@ -1,6 +1,6 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
-import type { User } from '@/types/UserType';
+import type { SearchUser } from '@/types/UserType';
 import type { TeamListWithApproval } from '@/types/TeamType';
 
 /**
@@ -10,10 +10,10 @@ import type { TeamListWithApproval } from '@/types/TeamType';
  * @async
  * @param {User['nickname']} nickname - 유저 닉네임
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<User[]>>}
+ * @returns {Promise<AxiosResponse<SearchUser[]>>}
  */
-async function findUser(nickname: string, axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get<User[]>(`/user/search?nickname=${nickname}`, axiosConfig);
+export async function findUser(nickname: string, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get<SearchUser[]>(`/user/search?nickname=${nickname}`, axiosConfig);
 }
 
 /**

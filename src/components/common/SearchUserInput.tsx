@@ -1,29 +1,75 @@
+import { useCallback, useEffect, useRef } from 'react';
 import { IoSearch } from 'react-icons/io5';
+import exhaustiveCheck from '@utils/exhaustiveCheck';
+
 import type { SearchUser } from '@/types/UserType';
+import type { SearchCallback } from '@/types/SearchCallbackType';
 
 type SearchInputProps = {
   id: string;
   label: string;
   keyword: string;
+  searchId: number;
   loading: boolean;
   userList: SearchUser[];
+  searchCallbackInfo: SearchCallback;
   onKeywordChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchKeyup: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  onSearchClick: () => void;
   onUserClick: (user: SearchUser) => void;
 };
 
 export default function SearchUserInput({
   id,
   label,
+  searchId,
   keyword,
   loading,
   userList,
+  searchCallbackInfo,
   onKeywordChange: handleKeywordChange,
-  onSearchKeyup: handleSearchKeyUp,
-  onSearchClick: handleSearchClick,
   onUserClick: handleUserClick,
 }: SearchInputProps) {
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const searchUsers = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+
+    abortControllerRef.current = new AbortController();
+    const { signal } = abortControllerRef.current;
+
+    const { type, searchCallback } = searchCallbackInfo;
+    switch (type) {
+      case 'ALL':
+        searchCallback(keyword, { signal });
+        break;
+      case 'TEAM':
+        searchCallback(searchId, keyword, { signal });
+        break;
+      case 'PROJECT':
+        searchCallback(searchId, keyword, { signal });
+        break;
+      default:
+        exhaustiveCheck(type, '사용자 검색 범위가 올바르지 않습니다.');
+    }
+  }, [searchCallbackInfo, searchId, keyword]);
+
+  useEffect(() => {
+    if (keyword) debounceRef.current = setTimeout(() => searchUsers(), 500);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+    };
+  }, [searchUsers, keyword]);
+
+  const handleSearchClick = () => searchUsers();
+  const handleSearchKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key.toLowerCase() === 'enter') {
+      e.preventDefault();
+      searchUsers();
+    }
+  };
+
   return (
     <label htmlFor={id} className="group mb-10 flex items-center gap-5">
       <h3 className="text-large">{label}</h3>
