@@ -109,3 +109,23 @@ export async function addAssignee(
 ) {
   return authAxios.post(`/project/${projectId}/task/${taskId}/assignee`, { userId }, axiosConfig);
 }
+
+/**
+ * 일정 수행자 삭제 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId        - 프로젝트 ID
+ * @param {Task['taskId']} taskId                 - 일정 ID
+ * @param {User['userId']} userId                 - 수행자 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}]   - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteAssignee(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  userId: User['userId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.delete(`/project/${projectId}/task/${taskId}/assignee/${userId}`, axiosConfig);
+}
