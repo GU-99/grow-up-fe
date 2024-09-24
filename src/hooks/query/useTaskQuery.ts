@@ -1,21 +1,24 @@
+import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createTask, findAssignees, findTaskFiles, findTaskList, updateTaskOrder } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
-import type { Task, TaskInfoForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 
-function getTaskNameList(taskList: TaskListWithStatus[]) {
-  return taskList.length > 0
-    ? taskList
-        .map((statusTask) => statusTask.tasks)
-        .flat()
-        .map((task) => task.name)
-    : [];
+function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
+  const taskNameList =
+    taskList.length > 0
+      ? taskList
+          .map((statusTask) => statusTask.tasks)
+          .flat()
+          .map((task) => task.name)
+      : [];
+
+  return excludedTaskName ? taskNameList.filter((taskName) => taskName !== excludedTaskName) : taskNameList;
 }
 
 // Todo: Task Query UD로직 작성하기
-
 // 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
   const { toastSuccess } = useToast();
@@ -23,7 +26,7 @@ export function useCreateStatusTask(projectId: Project['projectId']) {
   const queryKey = ['projects', projectId, 'tasks'];
 
   const mutation = useMutation({
-    mutationFn: (formData: TaskInfoForm) => createTask(projectId, formData),
+    mutationFn: (formData: TaskCreationForm) => createTask(projectId, formData),
     onSuccess: () => {
       toastSuccess('프로젝트 일정을 등록하였습니다.');
       queryClient.invalidateQueries({ queryKey });
@@ -34,7 +37,7 @@ export function useCreateStatusTask(projectId: Project['projectId']) {
 }
 
 // 상태별 일정 목록 조회
-export function useReadStatusTasks(projectId: Project['projectId']) {
+export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Task['taskId']) {
   const {
     data: statusTaskList = [],
     isLoading: isTaskLoading,
@@ -48,9 +51,17 @@ export function useReadStatusTasks(projectId: Project['projectId']) {
     },
   });
 
-  const taskNameList = getTaskNameList(statusTaskList);
+  const task = useMemo(
+    () =>
+      statusTaskList
+        .map((statusTask) => statusTask.tasks)
+        .flat()
+        .find((task) => task.taskId === taskId),
+    [statusTaskList, taskId],
+  );
+  const taskNameList = useMemo(() => getTaskNameList(statusTaskList, task?.name), [statusTaskList, task?.name]);
 
-  return { statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
+  return { task, statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
 }
 
 // 일정 목록 순서 변경
