@@ -140,13 +140,13 @@ const taskServiceHandler = [
     const project = PROJECT_DUMMY.find((project) => project.projectId === Number(projectId));
     if (!project) return new HttpResponse(null, { status: 404 });
 
-    const statues = STATUS_DUMMY.filter((status) => status.projectId === project.projectId);
-    if (statues.length === 0) return new HttpResponse(null, { status: 404 });
+    const statuses = STATUS_DUMMY.filter((status) => status.projectId === project.projectId);
+    if (statuses.length === 0) return new HttpResponse(null, { status: 404 });
 
     const task = TASK_DUMMY.find((task) => task.taskId === Number(taskId));
     if (!task) return new HttpResponse(null, { status: 404 });
 
-    const isIncludedTask = statues.map((status) => status.statusId).includes(task.statusId);
+    const isIncludedTask = statuses.map((status) => status.statusId).includes(task.statusId);
     if (!isIncludedTask) return new HttpResponse(null, { status: 404 });
 
     const isAlreadyAssigned = TASK_USER_DUMMY.find(
