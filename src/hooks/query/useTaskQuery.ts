@@ -1,10 +1,18 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createTask, findAssignees, findTaskFiles, findTaskList, updateTaskOrder } from '@services/taskService';
+import {
+  addAssignee,
+  createTask,
+  findAssignees,
+  findTaskFiles,
+  findTaskList,
+  updateTaskOrder,
+} from '@services/taskService';
 import useToast from '@hooks/useToast';
 
-import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
+import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
 
 function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
   const taskNameList = taskList
@@ -127,4 +135,24 @@ export function useReadTaskFiles(projectId: Project['projectId'], taskId: Task['
     },
   });
   return { taskFileList, isTaskFileLoading, taskFileError, isTaskFileError };
+}
+
+// 일정 수행자 추가
+export function useAddAssignee(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const { toastError, toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+  const queryKey = ['projects', projectId, 'tasks', taskId, 'assignees'];
+
+  const mutation = useMutation({
+    mutationFn: (userId: User['userId']) => addAssignee(projectId, taskId, userId),
+    onError: () => {
+      toastError('수행자 추가에 실패 하였습니다. 잠시후 다시 시도해주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('수행자를 추가 하였습니다.');
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
+  return mutation;
 }
