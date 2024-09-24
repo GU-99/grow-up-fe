@@ -149,6 +149,11 @@ const taskServiceHandler = [
     const isIncludedTask = statues.map((status) => status.statusId).includes(task.statusId);
     if (!isIncludedTask) return new HttpResponse(null, { status: 404 });
 
+    const isAlreadyAssigned = TASK_USER_DUMMY.find(
+      (taskUser) => taskUser.taskId === Number(taskId) && taskUser.userId === userId,
+    );
+    if (isAlreadyAssigned) return new HttpResponse(null, { status: 400 });
+
     TASK_USER_DUMMY.push({ taskId: Number(taskId), userId });
 
     return new HttpResponse(null, { status: 200 });
