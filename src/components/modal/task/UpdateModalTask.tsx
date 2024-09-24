@@ -1,11 +1,30 @@
+import { useEffect, useMemo, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
+import Spinner from '@components/common/Spinner';
 import ModalPortal from '@components/modal/ModalPortal';
-import ModalTaskForm from '@components/modal/task/ModalTaskForm';
+import StatusRadio from '@components/common/StatusRadio';
+import AssigneeList from '@components/common/AssigneeList';
+import FileDropZone from '@components/common/FileDropZone';
+import MarkdownEditor from '@components/common/MarkdownEditor';
 import ModalFormButton from '@components/modal/ModalFormButton';
+import SearchUserInput from '@components/common/SearchUserInput';
+import PeriodDateInput from '@components/common/PeriodDateInput';
+import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import { TASK_SETTINGS } from '@constants/settings';
+import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import useAxios from '@hooks/useAxios';
+import useToast from '@hooks/useToast';
+import { useReadStatuses } from '@hooks/query/useStatusQuery';
+import { useReadAssignees, useReadStatusTasks, useReadTaskFiles } from '@hooks/query/useTaskQuery';
+import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
+import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
+import type { SearchUser } from '@/types/UserType';
+import type { Task, TaskInfoForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
-import type { Task, TaskForm } from '@/types/TaskType';
+import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 
 type UpdateModalTaskProps = {
   project: Project;
@@ -13,20 +32,162 @@ type UpdateModalTaskProps = {
   onClose: () => void;
 };
 
-// ToDo: 일정 수정 폼 변경사항 적용하기
 export default function UpdateModalTask({ project, taskId, onClose: handleClose }: UpdateModalTaskProps) {
-  // ToDo: 상태 생성을 위한 네트워크 로직 추가
-  const handleSubmit: SubmitHandler<TaskForm> = async (data) => {
-    console.log('생성 폼 제출');
+  const { projectId, startDate, endDate } = project;
+
+  const [keyword, setKeyword] = useState('');
+  const { toastInfo, toastWarn } = useToast();
+  const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
+  const searchCallbackInfo: ProjectSearchCallback = useMemo(
+    () => ({ type: 'PROJECT', searchCallback: fetchData }),
+    [fetchData],
+  );
+
+  const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
+  const { task, taskNameList, isTaskLoading } = useReadStatusTasks(projectId, taskId);
+  const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(projectId);
+  const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
+  const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
+
+  const methods = useForm<TaskInfoForm>({ mode: 'onChange' });
+  const {
+    register,
+    watch,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  useEffect(() => {
+    if (task) {
+      reset({
+        statusId: task.statusId,
+        name: task.name,
+        content: task.content,
+        startDate: task.startDate,
+        endDate: task.endDate,
+      });
+    }
+  }, [task, reset]);
+
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
+
+  // ToDo: 수행자 추가 API 작업시 추가할 것
+  const handleUserClick = (user: SearchUser) => {
+    const isIncludedUser = assigneeList.find((assignee) => assignee.userId === user.userId);
+    if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
+
+    const userWithRole = projectUserRoleList.find((projectUser) => projectUser.userId === user.userId);
+    if (!userWithRole) {
+      return toastWarn('프로젝트 팀원 목록에서 추가한 사용자를 찾을 수 없습니다. 확인 후 다시 시도해주세요.');
+    }
+
+    // 추가 로직이 들어갈 자리
+
+    setKeyword('');
+    clearData();
+  };
+
+  // ToDo: 수행자 삭제 API 작업시 추가할 것
+  const handleAssigneeDeleteClick = (user: SearchUser) => {};
+
+  // ToDo: 일정 파일 업로드 작업시 같이 작업할 것
+  const updateFiles = (newFiles: FileList) => {
+    if (taskFileList.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
+      return toastWarn(`최대로 등록 가능한 파일수는 ${TASK_SETTINGS.MAX_FILE_COUNT}개입니다.`);
+    }
+  };
+
+  // ToDo: 일정 파일 업로드 API 작업 후 추가할 것
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (!files || files.length === 0) return;
+    updateFiles(files);
+  };
+
+  // ToDo: 일정 파일 업로드 API 작업 후 추가할 것
+  const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
+    const { files } = e.dataTransfer;
+    if (!files || files.length === 0) return;
+    updateFiles(files);
+  };
+
+  // ToDo: 일정 파일 삭제 API 작업시 추가할 것
+  const handleFileDeleteClick = (fileId: string) => {};
+
+  if (isStatusLoading || isTaskLoading || isProjectUserRoleLoading || isTaskFileLoading || isAssigneeLoading) {
+    return <Spinner />;
+  }
+
+  // ToDo: 일정 수정 API 작업시 추가할 것
+  const handleFormSubmit: SubmitHandler<TaskInfoForm> = async (data) => {
+    console.log('수정 폼 제출');
     console.log(data);
     handleClose();
   };
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {/* ToDo: Task 수정 모달 작성시 수정할 것 */}
-        <ModalTaskForm formId="updateTaskForm" taskId={taskId} project={project} onSubmit={handleSubmit} />
+        <FormProvider {...methods}>
+          <form
+            id="updateTaskForm"
+            className="flex w-4/5 grow flex-col justify-center"
+            onSubmit={handleSubmit(handleFormSubmit)}
+          >
+            <StatusRadio statusFieldName="statusId" statusList={statusList} />
+
+            <DuplicationCheckInput
+              id="name"
+              label="일정"
+              value={watch('name')}
+              placeholder="일정명을 입력해주세요."
+              errors={errors.name?.message}
+              register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
+            />
+
+            <PeriodDateInput
+              startDateLabel="시작일"
+              endDateLabel="종료일"
+              startDateId="startDate"
+              endDateId="endDate"
+              startDate={startDate}
+              endDate={endDate}
+              startDateFieldName="startDate"
+              endDateFieldName="endDate"
+            />
+
+            <MarkdownEditor id="content" label="내용" contentFieldName="content" />
+          </form>
+        </FormProvider>
         <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
+
+        <hr className="my-20" />
+
+        <section>
+          <SearchUserInput
+            id="search"
+            label="수행자"
+            keyword={keyword}
+            searchId={projectId}
+            loading={loading}
+            userList={userList}
+            searchCallbackInfo={searchCallbackInfo}
+            onKeywordChange={handleKeywordChange}
+            onUserClick={handleUserClick}
+          />
+          <AssigneeList assigneeList={assigneeList} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
+        </section>
+
+        <hr className="my-20" />
+
+        <FileDropZone
+          id="files"
+          label="첨부파일"
+          files={taskFileList}
+          onFileChange={handleFileChange}
+          onFileDrop={handleFileDrop}
+          onFileDeleteClick={handleFileDeleteClick}
+        />
       </ModalLayout>
     </ModalPortal>
   );
