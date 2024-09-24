@@ -16,7 +16,13 @@ import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
-import { useAddAssignee, useReadAssignees, useReadStatusTasks, useReadTaskFiles } from '@hooks/query/useTaskQuery';
+import {
+  useAddAssignee,
+  useDeleteAssignee,
+  useReadAssignees,
+  useReadStatusTasks,
+  useReadTaskFiles,
+} from '@hooks/query/useTaskQuery';
 import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
 
@@ -50,6 +56,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
 
   const { mutate: addAssigneeMutate } = useAddAssignee(projectId, taskId);
+  const { mutate: deleteAssigneeMutate } = useDeleteAssignee(projectId, taskId);
 
   const methods = useForm<TaskInfoForm>({ mode: 'onChange' });
   const {
@@ -87,8 +94,11 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     clearData();
   };
 
-  // ToDo: 수행자 삭제 API 작업시 추가할 것
-  const handleAssigneeDeleteClick = (user: SearchUser) => {};
+  const handleAssigneeDeleteClick = (user: SearchUser) => {
+    const isIncludedUser = assigneeList.find((assignee) => assignee.userId === user.userId);
+    if (!isIncludedUser) return toastInfo('수행자 목록에 없는 대상입니다. 확인 후 다시 시도 해주세요.');
+    deleteAssigneeMutate(user.userId);
+  };
 
   // ToDo: 일정 파일 업로드 작업시 같이 작업할 것
   const updateFiles = (newFiles: FileList) => {
