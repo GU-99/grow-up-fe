@@ -1,11 +1,11 @@
 import { GoPlusCircle } from 'react-icons/go';
 import { IoMdCloseCircle } from 'react-icons/io';
-import type { CustomFile } from '@/types/FileType';
+import type { FileInfo } from '@/types/FileType';
 
 type FileDropZoneProps = {
   id: string;
   label: string;
-  files: CustomFile[];
+  files: FileInfo[];
   onFileDrop: (e: React.DragEvent<HTMLElement>) => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileDeleteClick: (fileId: string) => void;
@@ -52,9 +52,9 @@ export default function FileDropZone({
         aria-label="파일을 이 영역에 드래그하거나 클릭하여 업로드하세요"
       >
         <ul className="flex grow flex-wrap gap-4">
-          {files.map(({ id, file }) => (
-            <li key={id} className="flex items-center gap-4 rounded-md bg-button px-4 py-2">
-              <span>{file.name}</span>
+          {files.map(({ fileId, fileName }) => (
+            <li key={fileId} className="flex items-center gap-4 rounded-md bg-button px-4 py-2">
+              <span>{fileName}</span>
               <IoMdCloseCircle
                 className="text-close"
                 onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {

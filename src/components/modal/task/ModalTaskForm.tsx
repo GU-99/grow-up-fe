@@ -24,7 +24,7 @@ import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { Task, TaskForm } from '@/types/TaskType';
-import type { CustomFile } from '@/types/FileType';
+import type { CustomFile, TaskFile } from '@/types/FileType';
 import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 
 type ModalTaskFormProps = {
@@ -121,7 +121,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
         return toastWarn(`최대 ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`);
       }
       originFiles.push(file);
-      customFiles.push({ id: `${file.name}_${file.size}_${Date.now()}`, file });
+      customFiles.push({ fileId: `${file.name}_${Date.now()}`, fileName: file.name, file });
     }
     setValue('files', originFiles);
     setFiles((prev) => [...prev, ...customFiles]);
@@ -140,7 +140,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   };
 
   const handleFileDeleteClick = (fileId: string) => {
-    const filteredFiles = files.filter((file) => file.id !== fileId);
+    const filteredFiles = files.filter((file) => file.fileId !== fileId);
     const originFiles = filteredFiles.map(({ file }) => file);
     setValue('files', originFiles);
     setFiles(filteredFiles);
