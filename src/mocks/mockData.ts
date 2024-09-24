@@ -4,7 +4,7 @@ import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
-import type { Task, TaskListWithStatus } from '@/types/TaskType';
+import type { Task } from '@/types/TaskType';
 import type { Role } from '@/types/RoleType';
 
 type TeamUser = {

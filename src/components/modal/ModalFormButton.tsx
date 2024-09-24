@@ -4,6 +4,8 @@ type ModalFormButtonProps = {
   onClose: () => void;
 };
 
+// ToDo: 삭제 작업할 때 삭제 버튼 추가할 것
+// ToDo: onClose 삭제하고, onDelete로 추가할 것
 export default function ModalFormButton({ formId, isCreate, onClose }: ModalFormButtonProps) {
   return (
     <div className="min-h-25 w-4/5">

@@ -2,8 +2,8 @@ import { http, HttpResponse } from 'msw';
 import { PROJECT_USER_DUMMY, STATUS_DUMMY, TASK_DUMMY, TASK_FILE_DUMMY, TASK_USER_DUMMY } from '@mocks/mockData';
 import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
 
-import type { Assignee } from '@/types/AssigneeType';
-import type { TaskInfoForm, TaskOrderForm } from '@/types/TaskType';
+import type { UserWithRole } from '@/types/UserType';
+import type { TaskCreationForm, TaskOrderForm } from '@/types/TaskType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -27,24 +27,26 @@ const taskServiceHandler = [
 
     return HttpResponse.json(statusTaskList);
   }),
+
   // 일정 생성 API
   http.post(`${BASE_URL}/project/:projectId/task`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const { assignees, ...restFormData } = (await request.json()) as TaskInfoForm;
+    const { assignees, ...taskInfoForm } = (await request.json()) as TaskCreationForm;
     const { projectId } = params;
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId));
-    if (!statusList.find((status) => status.statusId === Number(restFormData.statusId))) {
+    if (!statusList.find((status) => status.statusId === Number(taskInfoForm.statusId))) {
       return new HttpResponse(null, { status: 400 });
     }
 
     const taskId = TASK_DUMMY.length + 1;
     assignees.forEach((userId) => TASK_USER_DUMMY.push({ taskId, userId }));
-    TASK_DUMMY.push({ ...restFormData, statusId: +restFormData.statusId, taskId });
+    TASK_DUMMY.push({ ...taskInfoForm, statusId: +taskInfoForm.statusId, taskId });
     return new HttpResponse(null, { status: 201 });
   }),
+
   // 일정 순서 변경 API
   http.patch(`${BASE_URL}/project/:projectId/task/order`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
@@ -69,6 +71,7 @@ const taskServiceHandler = [
     }
     return new HttpResponse(null, { status: 204 });
   }),
+
   // 일정 수행자 목록 조회
   http.get(`${BASE_URL}/project/:projectId/task/:taskId/taskuser`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
@@ -79,7 +82,7 @@ const taskServiceHandler = [
     const taskUserList = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId === Number(taskId));
     if (taskUserList.length === 0) return HttpResponse.json([]);
 
-    const assigneeList: Assignee[] = [];
+    const assigneeList: UserWithRole[] = [];
 
     for (let i = 0; i < taskUserList.length; i++) {
       const { userId } = taskUserList[i];
@@ -101,6 +104,7 @@ const taskServiceHandler = [
 
     return HttpResponse.json(assigneeList);
   }),
+
   // 일정 파일 목록 조회 API
   http.get(`${BASE_URL}/project/:projectId/task/:taskId/attachment`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
