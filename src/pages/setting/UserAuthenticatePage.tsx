@@ -31,11 +31,8 @@ function UserAuthenticatePage() {
       onVerifyCode();
       navigate('/setting/password', { replace: true });
     } catch (error) {
-      if (error instanceof AxiosError && error.response) {
-        if (error.response.status === 401) toastError(error.response.data.message);
-      } else {
-        toastError('예상치 못한 에러가 발생했습니다.');
-      }
+      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
+      else toastError('예상치 못한 에러가 발생했습니다.');
     }
   };
 

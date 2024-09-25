@@ -57,7 +57,7 @@ export const Interceptor = ({ children }: InterceptorProps) => {
     const responseInterceptor = authAxios.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const originalRequest = error.config;
+        const originalRequest = { ...error.config };
 
         // 액세스 토큰 만료 시 처리
         if (error.response?.status === 401 && !originalRequest.isRetry) {
@@ -66,7 +66,6 @@ export const Interceptor = ({ children }: InterceptorProps) => {
           // TODO: 에러 응답 완성 후 리프레시 토큰 오류 감지 로직 수정
           if (!errorMessage.includes('리프레시 토큰이 유효하지 않습니다.')) return Promise.reject(error);
 
-          if (originalRequest.isRetry) return;
           originalRequest.isRetry = true;
 
           try {
