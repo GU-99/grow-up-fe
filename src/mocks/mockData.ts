@@ -34,7 +34,7 @@ type TaskFile = {
 
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
-export const emailVerificationCode = '1234';
+export const VERIFICATION_CODE_DUMMY = '1234';
 
 export const USER_INFO_DUMMY = {
   provider: 'LOCAL',
