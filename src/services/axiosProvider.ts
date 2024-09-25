@@ -57,7 +57,7 @@ export const Interceptor = ({ children }: InterceptorProps) => {
     const responseInterceptor = authAxios.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const originalRequest = { ...error.config };
+        const originalRequest = error.config; // 에러 객체의 설정 객체 추출
 
         // 액세스 토큰 만료 시 처리
         if (error.response?.status === 401 && !originalRequest.isRetry) {
