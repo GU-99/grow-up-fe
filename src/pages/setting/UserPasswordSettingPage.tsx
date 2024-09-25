@@ -5,9 +5,12 @@ import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import { updateUserPassword } from '@services/authService';
 import useToast from '@hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { UpdatePasswordForm } from '@/types/UserType';
+import useStore from '@/stores/useStore';
 
 export default function UserPasswordSettingPage() {
+  const isVerified = useStore((state) => state.isVerified);
   const navigate = useNavigate();
   const { toastSuccess, toastError } = useToast();
   const {
@@ -18,6 +21,10 @@ export default function UserPasswordSettingPage() {
   } = useForm<UpdatePasswordForm>({
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    if (!isVerified) navigate('/setting/auth', { replace: true });
+  }, [isVerified]);
 
   const onSubmit = async (data: UpdatePasswordForm) => {
     const { checkNewPassword, ...submitData } = data;

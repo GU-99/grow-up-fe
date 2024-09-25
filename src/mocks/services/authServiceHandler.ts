@@ -18,7 +18,7 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/login`, async ({ request }) => {
     const { username, password } = (await request.json()) as UserSignInForm;
 
-    if (username === 'test' && password === 'test@123') {
+    if (username === USER_INFO_DUMMY.username && password === USER_INFO_DUMMY.password) {
       const accessToken = 'mockedAccessToken';
       const refreshToken = 'mockedRefreshToken';
 
@@ -118,12 +118,22 @@ const authServiceHandler = [
     return new HttpResponse(null, { status: 401 });
   }),
 
-  // 이메일 인증 API
+  // 이메일 인증 번호 요청 API
   http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
 
     if (email !== USER_INFO_DUMMY.email)
       return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
+
+    return HttpResponse.json(null, { status: 200 });
+  }),
+
+  // 이메일 인증 번호 확인 API
+  http.post(`${BASE_URL}/user/verify/code`, async ({ request }) => {
+    const { email, code } = (await request.json()) as EmailVerificationForm;
+
+    if (email !== USER_INFO_DUMMY.email || code !== emailVerificationCode)
+      return HttpResponse.json({ message: '인증번호가 일치하지 않습니다.' }, { status: 401 });
 
     return HttpResponse.json(null, { status: 200 });
   }),
