@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   addAssignee,
   createTask,
+  deleteAssignee,
   findAssignees,
   findTaskFiles,
   findTaskList,
@@ -150,6 +151,26 @@ export function useAddAssignee(projectId: Project['projectId'], taskId: Task['ta
     },
     onSuccess: () => {
       toastSuccess('수행자를 추가 하였습니다.');
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 일정 수행자 삭제
+export function useDeleteAssignee(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const { toastError, toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+  const queryKey = ['projects', projectId, 'tasks', taskId, 'assignees'];
+
+  const mutation = useMutation({
+    mutationFn: (userId: User['userId']) => deleteAssignee(projectId, taskId, userId),
+    onError: () => {
+      toastError('수행자 삭제에 실패 하였습니다. 잠시후 다시 시도해주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('수행자를 삭제 하였습니다.');
       queryClient.invalidateQueries({ queryKey });
     },
   });
