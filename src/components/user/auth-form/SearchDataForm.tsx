@@ -47,8 +47,8 @@ export default function SearchDataForm({
       {isVerificationRequested && (
         <ValidationInput
           placeholder="인증번호"
-          errors={errors.code?.message}
-          register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+          errors={errors.verificationCode?.message}
+          register={register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
         />
       )}
 

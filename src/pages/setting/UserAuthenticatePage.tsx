@@ -60,7 +60,7 @@ function UserAuthenticatePage() {
             <ValidationInput
               label="인증번호"
               errors={errors.verificationCode?.message}
-              register={register('verificationCode', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+              register={register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
             />
           )}
 

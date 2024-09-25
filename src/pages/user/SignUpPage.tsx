@@ -94,7 +94,7 @@ export default function SignUpPage() {
           <ValidationInput
             label="인증번호"
             errors={methods.formState.errors.verificationCode?.message}
-            register={methods.register('verificationCode', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+            register={methods.register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
           />
         )}
 
