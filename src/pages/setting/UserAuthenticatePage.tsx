@@ -1,12 +1,20 @@
+import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useEmailVerification from '@hooks/useEmailVerification';
 import ValidationInput from '@components/common/ValidationInput';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
+import useToast from '@hooks/useToast';
+import { checkEmailCode } from '@services/authService';
+import { useStore } from '@stores/useStore';
 import { EmailVerificationForm } from '@/types/UserType';
 
 function UserAuthenticatePage() {
+  const navigate = useNavigate();
+  const { onVerifyCode } = useStore();
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
+  const { toastError } = useToast();
 
   const {
     register,
@@ -18,8 +26,17 @@ function UserAuthenticatePage() {
   });
 
   const onSubmit = async (data: EmailVerificationForm) => {
-    // TODO: 인증 성공 후 전역 상태관리 및 리다이렉트 로직 작성
-    console.log(data);
+    try {
+      await checkEmailCode(data);
+      onVerifyCode();
+      navigate('/setting/password', { replace: true });
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        if (error.response.status === 401) toastError(error.response.data.message);
+      } else {
+        toastError('예상치 못한 에러가 발생했습니다.');
+      }
+    }
   };
 
   return (

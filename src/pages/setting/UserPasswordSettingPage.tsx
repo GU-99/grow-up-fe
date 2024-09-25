@@ -1,16 +1,16 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import ValidationInput from '@components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
-import { updateUserPassword } from '@services/authService';
 import useToast from '@hooks/useToast';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { updateUserPassword } from '@services/authService';
+import { useStore } from '@stores/useStore';
 import { UpdatePasswordForm } from '@/types/UserType';
-import useStore from '@/stores/useStore';
 
 export default function UserPasswordSettingPage() {
-  const isVerified = useStore((state) => state.isVerified);
+  const { isVerified } = useStore();
   const navigate = useNavigate();
   const { toastSuccess, toastError } = useToast();
   const {

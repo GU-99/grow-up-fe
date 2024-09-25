@@ -74,7 +74,7 @@ export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
 }
 
 /**
- * 이메일 인증 API
+ * 이메일 인증 번호 발송 요청 API
  *
  * @export
  * @async
@@ -84,6 +84,19 @@ export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
  */
 export async function sendEmailCode(email: RequestEmailCode, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post('user/verify/send', email, axiosConfig);
+}
+
+/**
+ * 이메일 인증 번호 확인 API
+ *
+ * @export
+ * @async
+ * @param {EmailVerificationForm} verifyForm - 이메일, 인증번호 폼
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function checkEmailCode(verifyForm: EmailVerificationForm, axiosConfig: AxiosRequestConfig = {}) {
+  return defaultAxios.post('user/verify/code', verifyForm, axiosConfig);
 }
 
 /**
