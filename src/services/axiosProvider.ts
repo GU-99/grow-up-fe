@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { SECOND } from '@constants/units';
 import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
-import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import useToast from '@hooks/useToast';
 import { getAccessToken } from '@services/authService';
 import { useStore } from '@stores/useStore';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 type InterceptorProps = {
   children: ReactNode;
@@ -61,6 +61,12 @@ export const Interceptor = ({ children }: InterceptorProps) => {
 
         // 액세스 토큰 만료 시 처리
         if (error.response?.status === 401 && !originalRequest.isRetry) {
+          const errorMessage = error.response.data?.message || '';
+
+          // TODO: 에러 응답 완성 후 리프레시 토큰 오류 감지 로직 수정
+          if (!errorMessage.includes('리프레시 토큰이 유효하지 않습니다.')) return Promise.reject(error);
+
+          if (originalRequest.isRetry) return;
           originalRequest.isRetry = true;
 
           try {

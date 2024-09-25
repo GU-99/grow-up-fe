@@ -96,7 +96,7 @@ export async function sendEmailCode(email: RequestEmailCode, axiosConfig: AxiosR
  * @returns {Promise<AxiosResponse>}
  */
 export async function checkEmailCode(verifyForm: EmailVerificationForm, axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/verify/code', verifyForm, axiosConfig);
+  return authAxios.post('user/verify/code', verifyForm, axiosConfig);
 }
 
 /**
