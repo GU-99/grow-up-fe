@@ -22,6 +22,7 @@ import {
   useReadAssignees,
   useReadStatusTasks,
   useReadTaskFiles,
+  useUpdateTaskInfo,
 } from '@hooks/query/useTaskQuery';
 import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
@@ -55,6 +56,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
 
+  const { mutate: updateTaskInfoMutate } = useUpdateTaskInfo(projectId, taskId);
   const { mutate: addAssigneeMutate } = useAddAssignee(projectId, taskId);
   const { mutate: deleteAssigneeMutate } = useDeleteAssignee(projectId, taskId);
 
@@ -128,10 +130,8 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     return <Spinner />;
   }
 
-  // ToDo: 일정 수정 API 작업시 추가할 것
-  const handleFormSubmit: SubmitHandler<TaskInfoForm> = async (data) => {
-    console.log('수정 폼 제출');
-    console.log(data);
+  const handleFormSubmit: SubmitHandler<TaskInfoForm> = async (formData) => {
+    updateTaskInfoMutate(formData);
     handleClose();
   };
   return (
