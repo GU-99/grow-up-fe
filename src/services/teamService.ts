@@ -22,6 +22,22 @@ export async function findUserByTeam(
 }
 
 /**
+ * 팀 생성 API
+ *
+ * @export
+ * @async
+ * @param {Team} teamData - 팀 생성에 필요한 데이터
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function createTeam(
+  teamData: { teamName: string; content: string; coworkers: { userId: number; roleName: string }[] },
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.post(`/team`, teamData, axiosConfig);
+}
+
+/**
  * 팀 탈퇴 API
  *
  * @export

@@ -4,17 +4,21 @@ import ModalFormButton from '@components/modal/ModalFormButton';
 import ModalTeamForm from '@components/modal/team/ModalTeamForm';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { Team } from '@/types/TeamType';
+import type { TeamForm } from '@/types/TeamType';
+import { createTeam } from '@/services/teamService';
 
 type CreateModalProjectStatusProps = {
   onClose: () => void;
 };
 
 export default function CreateModalTeam({ onClose: handleClose }: CreateModalProjectStatusProps) {
-  const handleSubmit: SubmitHandler<Team> = async (data) => {
-    console.log('팀 생성 폼 제출');
-    console.log(data);
-    handleClose();
+  const handleSubmit: SubmitHandler<TeamForm> = async (data) => {
+    try {
+      await createTeam(data);
+      handleClose();
+    } catch (error) {
+      console.error('팀 생성 중 오류 발생:', error);
+    }
   };
 
   return (

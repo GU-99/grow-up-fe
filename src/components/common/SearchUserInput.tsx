@@ -9,7 +9,7 @@ type SearchInputProps = {
   id: string;
   label: string;
   keyword: string;
-  searchId: number;
+  searchId?: number;
   loading: boolean;
   userList: SearchUser[];
   searchCallbackInfo: SearchCallback;
@@ -44,10 +44,18 @@ export default function SearchUserInput({
         searchCallback(keyword, { signal });
         break;
       case 'TEAM':
-        searchCallback(searchId, keyword, { signal });
+        if (searchId !== undefined) {
+          searchCallback(searchId, keyword, { signal });
+        } else {
+          console.error('팀 인원 검색을 위해 searchId(teamId)가 필요합니다.');
+        }
         break;
       case 'PROJECT':
-        searchCallback(searchId, keyword, { signal });
+        if (searchId !== undefined) {
+          searchCallback(searchId, keyword, { signal });
+        } else {
+          console.error('프로젝트 인원 검색을 위해 searchId(projectId)가 필요합니다.');
+        }
         break;
       default:
         exhaustiveCheck(type, '사용자 검색 범위가 올바르지 않습니다.');

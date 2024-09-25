@@ -155,3 +155,23 @@ export const TASK_VALIDATION_RULES = deepFreeze({
     validate: getTaskDateValidation(projectStartDate, projectEndDate, taskStartDate),
   }),
 });
+
+export const TEAM_VALIDATION_RULES = deepFreeze({
+  TEAM_NAME: {
+    required: '팀명을 입력해주세요.',
+    maxLength: {
+      value: 10,
+      message: '팀명은 최대 10자리까지 입력 가능합니다.',
+    },
+    pattern: {
+      value: /^[가-힣a-zA-Z0-9]*$/,
+      message: '팀명은 한글, 영문, 숫자만 포함 가능합니다.',
+    },
+  },
+  TEAM_DESCRIPTION: {
+    maxLength: {
+      value: 200,
+      message: '팀 설명은 최대 200자까지 입력 가능합니다.',
+    },
+  },
+});

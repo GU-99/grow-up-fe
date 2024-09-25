@@ -17,7 +17,9 @@ const userServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    return HttpResponse.json([]);
+    const filteredUsers = USER_DUMMY.filter((user) => user.nickname.includes(nickname || ''));
+
+    return HttpResponse.json(filteredUsers);
   }),
   // 가입한 팀 목록 조회 API
   http.get(`${BASE_URL}/user/team`, ({ request }) => {
