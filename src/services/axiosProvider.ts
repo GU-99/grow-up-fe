@@ -57,9 +57,11 @@ export const Interceptor = ({ children }: InterceptorProps) => {
     const responseInterceptor = authAxios.interceptors.response.use(
       (response) => response,
       async (error) => {
+        const originalRequest = error.config;
+
         // 액세스 토큰 만료 시 처리
-        if (error.response?.status === 401) {
-          const originalRequest = error.config; // 에러 객체의 설정 객체 추출
+        if (error.response?.status === 401 && !originalRequest.isRetry) {
+          originalRequest.isRetry = true;
 
           try {
             // 리프레시 토큰을 이용해 새로운 액세스 토큰 발급

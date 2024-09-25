@@ -83,7 +83,7 @@ export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
  * @returns {Promise<AxiosResponse>}
  */
 export async function sendEmailCode(email: RequestEmailCode, axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.post('user/verify/send', email, axiosConfig);
+  return defaultAxios.post('user/verify/send', email, axiosConfig);
 }
 
 /**
