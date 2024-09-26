@@ -48,6 +48,7 @@ const teamServiceHandler = [
     });
 
     // 초대된 팀원들 추가
+    const invalidRoles: string[] = [];
     coworkers.forEach((coworker: { userId: number; roleName: string }) => {
       const role = ROLE_DUMMY.find((role) => role.roleName === coworker.roleName);
       if (role) {
@@ -57,14 +58,23 @@ const teamServiceHandler = [
           roleId: role.roleId,
           isPendingApproval: false,
         });
+      } else {
+        invalidRoles.push(coworker.roleName);
       }
     });
 
+    if (invalidRoles.length > 0) {
+      return new HttpResponse(JSON.stringify({ message: `유효하지 않은 역할: ${invalidRoles.join(', ')}` }), {
+        status: 400,
+      });
+    }
+
     // 팀 생성자도 자동으로 팀에 추가
+    const creatorRole = ROLE_DUMMY.find((role) => role.roleName === 'HEAD');
     TEAM_USER_DUMMY.push({
       teamId: newTeamId,
       userId: creatorId,
-      roleId: 1,
+      roleId: creatorRole?.roleId || 1,
       isPendingApproval: false,
     });
 
