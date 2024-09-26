@@ -29,7 +29,7 @@ import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser } from '@/types/UserType';
-import type { Task, TaskInfoForm } from '@/types/TaskType';
+import type { Task, TaskUpdateForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 
@@ -60,7 +60,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   const { mutate: addAssigneeMutate } = useAddAssignee(projectId, taskId);
   const { mutate: deleteAssigneeMutate } = useDeleteAssignee(projectId, taskId);
 
-  const methods = useForm<TaskInfoForm>({ mode: 'onChange' });
+  const methods = useForm<TaskUpdateForm>({ mode: 'onChange' });
   const {
     register,
     watch,
@@ -72,7 +72,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   useEffect(() => {
     if (task) {
       reset({
-        statusId: task.statusId,
+        statusId: task.statusId.toString(),
         name: task.name,
         content: task.content,
         startDate: task.startDate,
@@ -130,7 +130,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     return <Spinner />;
   }
 
-  const handleFormSubmit: SubmitHandler<TaskInfoForm> = async (formData) => {
+  const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => {
     updateTaskInfoMutate(formData);
     handleClose();
   };
