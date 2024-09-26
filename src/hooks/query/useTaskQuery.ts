@@ -14,7 +14,14 @@ import useToast from '@hooks/useToast';
 
 import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
-import type { Task, TaskCreationForm, TaskInfoForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type {
+  Task,
+  TaskCreationForm,
+  TaskInfoForm,
+  TaskListWithStatus,
+  TaskOrder,
+  TaskUpdateForm,
+} from '@/types/TaskType';
 
 function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
   const taskNameList = taskList
@@ -146,7 +153,7 @@ export function useUpdateTaskInfo(projectId: Project['projectId'], taskId: Task[
   const queryKey = ['projects', projectId, 'tasks'];
 
   const mutation = useMutation({
-    mutationFn: (formData: TaskInfoForm) => updateTaskInfo(projectId, taskId, formData),
+    mutationFn: (formData: TaskUpdateForm) => updateTaskInfo(projectId, taskId, formData),
     onError: () => toastError('일정 정보 수정에 실패 했습니다. 잠시후 다시 시도해주세요.'),
     onSuccess: () => {
       toastSuccess('일정 정보를 수정 했습니다.');

@@ -11,7 +11,7 @@ import {
 import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
 
 import type { UserWithRole } from '@/types/UserType';
-import type { TaskAssigneeForm, TaskCreationForm, TaskInfoForm, TaskOrderForm } from '@/types/TaskType';
+import type { TaskAssigneeForm, TaskCreationForm, TaskInfoForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -126,8 +126,7 @@ const taskServiceHandler = [
   http.patch(`${BASE_URL}/project/:projectId/task/:taskId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { projectId, taskId } = params;
-    const taskInfoData = (await request.json()) as TaskInfoForm;
-    taskInfoData.statusId = Number(taskInfoData.statusId);
+    const taskInfoData = (await request.json()) as TaskUpdateForm;
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
@@ -145,7 +144,8 @@ const taskServiceHandler = [
     if (!isIncludedTask) return new HttpResponse(null, { status: 404 });
 
     const index = TASK_DUMMY.findIndex((task) => task.taskId === Number(taskId));
-    if (index !== -1) TASK_DUMMY[index] = { ...TASK_DUMMY[index], ...taskInfoData };
+    if (index !== -1)
+      TASK_DUMMY[index] = { ...TASK_DUMMY[index], ...taskInfoData, statusId: Number(taskInfoData.statusId) };
 
     return new HttpResponse(null, { status: 200 });
   }),

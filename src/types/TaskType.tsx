@@ -26,6 +26,7 @@ export type TaskInfoForm = Omit<Task, 'taskId'>;
 export type TaskFileForm = { files: File[] };
 export type TaskAssigneeForm = { userId: User['userId'] };
 export type TaskAssigneesForm = { assignees: User['userId'][] };
+export type TaskUpdateForm = Omit<Task, 'statusId'> & { statusId: string };
 export type TaskCreationForm = TaskInfoForm & TaskAssigneesForm;
 export type TaskForm = TaskInfoForm & TaskAssigneesForm & TaskFileForm;
 
