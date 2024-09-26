@@ -3,9 +3,9 @@ import ModalPortal from '@components/modal/ModalPortal';
 import ModalFormButton from '@components/modal/ModalFormButton';
 import ModalTeamForm from '@components/modal/team/ModalTeamForm';
 
+import { createTeam } from '@services/teamService';
 import type { SubmitHandler } from 'react-hook-form';
 import type { TeamForm } from '@/types/TeamType';
-import { createTeam } from '@/services/teamService';
 
 type CreateModalProjectStatusProps = {
   onClose: () => void;

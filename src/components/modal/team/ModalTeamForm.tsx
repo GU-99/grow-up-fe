@@ -6,13 +6,14 @@ import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import SearchUserInput from '@components/common/SearchUserInput';
 import useAxios from '@hooks/useAxios';
 import { findUser } from '@services/userService';
+import useToast from '@hooks/useToast';
+import SelectedUserWithRole from '@components/common/SelectedUserWithRole';
+import RoleTooltip from '@components/common/RoleTooltip';
+import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import type { SearchUser } from '@/types/UserType';
 import type { Team, TeamForm } from '@/types/TeamType';
-import { AllSearchCallback } from '@/types/SearchCallbackType';
-import useToast from '@/hooks/useToast';
-import SelectedUserWithRole from '@/components/common/SelectedUserWithRole';
-import RoleIcon from '@/components/common/RoleIcon';
-import { TEAM_VALIDATION_RULES } from '@/constants/formValidationRules';
+import type { AllSearchCallback } from '@/types/SearchCallbackType';
+import type { RoleInfo } from '@/types/RoleType';
 
 type ModalTeamFormProps = {
   formId: string;
@@ -35,6 +36,16 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
     ],
     [],
   );
+
+  const rolesInfo: RoleInfo[] = [
+    { roleName: 'HEAD', label: 'HEAD', description: '모든 권한 가능' },
+    {
+      roleName: 'LEADER',
+      label: 'Leader',
+      description: '팀원 탈퇴(Mate만)\n프로젝트 생성 권한\n프로젝트 삭제(본인이 생성한 것만)',
+    },
+    { roleName: 'MATE', label: 'Mate', description: '프로젝트 읽기만 가능, 수정 및 생성 불가' },
+  ];
 
   const handleRoleChange = (userId: number, role: 'HEAD' | 'LEADER' | 'MATE') => {
     setSelectedUsers((prev) => prev.map((item) => (item.user.userId === userId ? { ...item, role } : item)));
@@ -99,34 +110,11 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
   return (
     <FormProvider {...methods}>
       <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(handleSubmitForm)}>
-        {/* TODO: component 분리 하기 */}
         <div className="relative" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
           <p className="text-sky-700">
             <strong>팀 권한 정보</strong>
           </p>
-          {showTooltip && (
-            <div className="absolute left-0 top-full z-10 mt-2 w-max rounded-lg bg-gray-500 p-10 text-white shadow-lg">
-              <div className="flex items-center">
-                <RoleIcon roleName="HEAD" />
-                <strong>HEAD</strong>{' '}
-              </div>
-              <p>모든 권한 가능</p>
-              <div className="flex items-center">
-                <RoleIcon roleName="LEADER" />
-                <strong>Leader</strong> <br />
-              </div>
-              <p>
-                팀원 탈퇴(Mate만)
-                <br /> 프로젝트 생성 권한
-                <br /> 프로젝트 삭제(본인이 생성한 것만)
-              </p>
-              <div className="flex items-center">
-                <RoleIcon roleName="MATE" />
-                <strong>Mate</strong>
-              </div>
-              <p>프로젝트 읽기만 가능, 수정 및 생성 불가</p>
-            </div>
-          )}
+          <RoleTooltip showTooltip={showTooltip} rolesInfo={rolesInfo} />
         </div>
 
         <DuplicationCheckInput
