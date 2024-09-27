@@ -15,6 +15,7 @@ import { RiEyeFill, RiEyeOffFill } from 'react-icons/ri';
  * @params {string} [placeholder] - 입력 필드의 placeholder 텍스트
  * @params {boolean} [isButtonInput] - 버튼이 포함된 입력 필드인지 여부. 기본값은 'false'
  * @params {React.ReactNode} [buttonLabel] - 버튼에 표시할 텍스트 또는 아이콘
+ * @params {boolean} [buttonDisabled] - 버튼의 비활성화 여부
  * @params {() => void} [onButtonClick] - 버튼 클릭 시 호출할 함수
  *
  * 예시) 
@@ -39,6 +40,7 @@ type ValidationInputProps = {
   placeholder?: string;
   isButtonInput?: boolean;
   buttonLabel?: React.ReactNode;
+  buttonDisabled?: boolean;
   onButtonClick?: () => void;
 };
 
@@ -52,6 +54,7 @@ export default function ValidationInput({
   placeholder,
   isButtonInput = false,
   buttonLabel,
+  buttonDisabled = false,
   onButtonClick,
 }: ValidationInputProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -91,7 +94,12 @@ export default function ValidationInput({
           </div>
         )}
         {isButtonInput && (
-          <button type="button" className="h-18 w-75 rounded bg-sub px-8 font-bold" onClick={onButtonClick}>
+          <button
+            type="button"
+            className={`h-18 w-75 rounded ${buttonDisabled ? 'bg-disable' : 'bg-sub'} px-8 font-bold`}
+            onClick={onButtonClick}
+            disabled={buttonDisabled}
+          >
             {buttonLabel}
           </button>
         )}

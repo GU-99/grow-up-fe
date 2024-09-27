@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -32,9 +32,15 @@ export default function SignUpPage() {
   });
 
   const { watch, handleSubmit, formState, register } = methods;
+  const nickname = watch('nickname');
 
+  // 중복 확인 후 닉네임 변경 시, 중복확인 버튼 재활성화
+  useEffect(() => {
+    if (formState.dirtyFields.nickname) setCheckedNickname(false);
+  }, [nickname, formState.dirtyFields.nickname]);
+
+  // ToDo: 유저 설정 페이지에 적용하며 분리
   const checkNickname = async () => {
-    const nickname = watch('nickname');
     if (!nickname || formState.errors.nickname) return;
 
     try {
@@ -100,6 +106,7 @@ export default function SignUpPage() {
           register={register('nickname', USER_AUTH_VALIDATION_RULES.NICKNAME)}
           isButtonInput
           buttonLabel="중복확인"
+          buttonDisabled={checkedNickname}
           onButtonClick={checkNickname}
         />
 
