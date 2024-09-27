@@ -219,7 +219,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           id="files"
           label="첨부파일"
           files={files}
-          accept=".jpg, .jpeg, .png, .svg, .webp, .pdf, .txt, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .hwp, .zip, .rar, .7z, .alz, .egg"
+          accept={TASK_SETTINGS.FILE_ACCEPT}
           onFileChange={handleFileChange}
           onFileDrop={handleFileDrop}
           onFileDeleteClick={handleFileDeleteClick}

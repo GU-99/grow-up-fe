@@ -193,7 +193,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
           id="files"
           label="첨부파일"
           files={taskFileList}
-          accept=".jpg, .jpeg, .png, .svg, .webp, .pdf, .txt, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .hwp, .zip, .rar, .7z, .alz, .egg"
+          accept={TASK_SETTINGS.FILE_ACCEPT}
           onFileChange={handleFileChange}
           onFileDrop={handleFileDrop}
           onFileDeleteClick={handleFileDeleteClick}
