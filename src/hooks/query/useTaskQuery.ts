@@ -9,6 +9,7 @@ import {
   findTaskList,
   updateTaskInfo,
   updateTaskOrder,
+  uploadTaskFile,
 } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
@@ -17,10 +18,11 @@ import type { Project } from '@/types/ProjectType';
 import type {
   Task,
   TaskCreationForm,
-  TaskInfoForm,
+  TaskFilesForm,
   TaskListWithStatus,
   TaskOrder,
   TaskUpdateForm,
+  TaskUploadForm,
 } from '@/types/TaskType';
 
 function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
@@ -35,16 +37,31 @@ function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task
 // Todo: Task Query D로직 작성하기
 // 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
-  const { toastSuccess } = useToast();
+  const { toastError, toastSuccess } = useToast();
   const queryClient = useQueryClient();
   const queryKey = ['projects', projectId, 'tasks'];
 
   const mutation = useMutation({
     mutationFn: (formData: TaskCreationForm) => createTask(projectId, formData),
+    onError: () => {
+      toastError('프로젝트 일정 등록 중 오류가 발생했습니다. 잠시후 다시 등록해주세요.');
+    },
     onSuccess: () => {
       toastSuccess('프로젝트 일정을 등록하였습니다.');
       queryClient.invalidateQueries({ queryKey });
     },
+  });
+
+  return mutation;
+}
+
+// 일정 단일 파일 업로드
+export function useUploadTaskFile(projectId: Project['projectId']) {
+  const mutation = useMutation({
+    mutationFn: ({ taskId, file }: TaskUploadForm) =>
+      uploadTaskFile(projectId, taskId, file, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
   });
 
   return mutation;

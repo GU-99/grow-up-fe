@@ -26,14 +26,36 @@ export async function findTaskList(projectId: Project['projectId'], axiosConfig:
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {TaskCreationForm} formData           - 새로운 일정 정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<void>>}
+ * @returns {Promise<AxiosResponse<Task>>}
  */
 export function createTask(
   projectId: Project['projectId'],
   formData: TaskCreationForm,
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.post(`/project/${projectId}/task`, formData, axiosConfig);
+  return authAxios.post<Task>(`/project/${projectId}/task`, formData, axiosConfig);
+}
+
+/**
+ * 일정 파일 업로드 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId        - 프로젝트 ID
+ * @param {Task['taskId']} taskId                 - 일정 ID
+ * @param {File} file                             - 단일 파일 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}]   - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function uploadTaskFile(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  file: File,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  const fileFormData = new FormData();
+  fileFormData.append('file', file);
+  return authAxios.postForm(`/project/${projectId}/task/${taskId}/upload`, fileFormData, axiosConfig);
 }
 
 /**
