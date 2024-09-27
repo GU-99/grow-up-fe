@@ -7,13 +7,21 @@ import {
   findAssignees,
   findTaskFiles,
   findTaskList,
+  updateTaskInfo,
   updateTaskOrder,
 } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
 import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
-import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrder } from '@/types/TaskType';
+import type {
+  Task,
+  TaskCreationForm,
+  TaskInfoForm,
+  TaskListWithStatus,
+  TaskOrder,
+  TaskUpdateForm,
+} from '@/types/TaskType';
 
 function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
   const taskNameList = taskList
@@ -24,7 +32,7 @@ function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task
   return excludedTaskName ? taskNameList.filter((taskName) => taskName !== excludedTaskName) : taskNameList;
 }
 
-// Todo: Task Query UD로직 작성하기
+// Todo: Task Query D로직 작성하기
 // 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
   const { toastSuccess } = useToast();
@@ -136,6 +144,24 @@ export function useReadTaskFiles(projectId: Project['projectId'], taskId: Task['
     },
   });
   return { taskFileList, isTaskFileLoading, taskFileError, isTaskFileError };
+}
+
+// 일정 정보 수정
+export function useUpdateTaskInfo(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const { toastError, toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+  const queryKey = ['projects', projectId, 'tasks'];
+
+  const mutation = useMutation({
+    mutationFn: (formData: TaskUpdateForm) => updateTaskInfo(projectId, taskId, formData),
+    onError: () => toastError('일정 정보 수정에 실패 했습니다. 잠시후 다시 시도해주세요.'),
+    onSuccess: () => {
+      toastSuccess('일정 정보를 수정 했습니다.');
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
+  return mutation;
 }
 
 // 일정 수행자 추가
