@@ -10,6 +10,7 @@ import type { SubmitHandler } from 'react-hook-form';
 import type { Task, TaskForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
+import type { FileUploadFailureResult, FileUploadSuccessResult } from '@/types/FileType';
 
 type CreateModalTaskProps = {
   project: Project;
@@ -35,22 +36,33 @@ export default function CreateModalTask({ project, onClose: handleClose }: Creat
   const taskFilesUpload = async (taskId: Task['taskId'], files: File[]) => {
     const createFilePromises = files.map((file) =>
       createTaskFileMutateAsync({ taskId, file }).then(
-        () => ({ status: 'fulfilled', file }),
-        (error) => ({ status: 'rejected', file, error }),
+        (): FileUploadSuccessResult => ({ status: 'fulfilled', file }),
+        (error): FileUploadFailureResult => ({ status: 'rejected', file, error }),
       ),
     );
 
-    const results = await Promise.allSettled(createFilePromises);
+    const results = (await Promise.allSettled(createFilePromises)) as PromiseFulfilledResult<
+      FileUploadSuccessResult | FileUploadFailureResult
+    >[];
     const queryKey = ['projects', project.projectId, 'tasks'];
     queryClient.invalidateQueries({ queryKey });
 
-    const fulfilledFileList = results.filter((result) => result.status === 'fulfilled');
-    const fulfilledFilesName = fulfilledFileList.map((result) => result.value.file.name).join(', ');
-    toastSuccess(`${fulfilledFilesName} 파일 업로드에 성공했습니다.`);
+    const fulfilledFileList: FileUploadSuccessResult[] = [];
+    const rejectedFileList: FileUploadFailureResult[] = [];
+    results
+      .map((result) => result.value)
+      .forEach((result) => {
+        if (result.status === 'fulfilled') fulfilledFileList.push(result);
+        else rejectedFileList.push(result);
+      });
 
-    const rejectedFileList = results.filter((result) => result.status === 'rejected');
+    if (fulfilledFileList.length > 0) {
+      const fulfilledFilesName = fulfilledFileList.map((result) => result.file.name).join(', ');
+      toastSuccess(`${fulfilledFilesName} 파일 업로드에 성공했습니다.`);
+    }
+
     if (rejectedFileList.length > 0) {
-      const rejectedFilesName = rejectedFileList.map((result) => result.reason.file.name).join(', ');
+      const rejectedFilesName = rejectedFileList.map((result) => result.file.name).join(', ');
       toastError(`${rejectedFilesName} 파일 업로드에 실패했습니다.`);
     }
   };
