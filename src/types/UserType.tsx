@@ -22,6 +22,8 @@ export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageNam
   checkPassword: string;
 };
 
+export type UserSignUpRequest = Omit<UserSignUpForm, 'checkPassword'>;
+
 export type CheckNicknameForm = Pick<User, 'nickname'>;
 
 export type UserSignInForm = Pick<User, 'username'> & {

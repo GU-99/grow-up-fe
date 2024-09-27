@@ -1,17 +1,20 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import axios, { AxiosError } from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
 import useToast from '@hooks/useToast';
 import useEmailVerification from '@hooks/useEmailVerification';
-import { checkNicknameDuplicate } from '@services/authService';
+import { checkNicknameDuplicate, signUp } from '@services/authService';
+import { useState } from 'react';
 import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
-  const { toastSuccess, toastError } = useToast();
+  const navigate = useNavigate();
+  const [checkedNickname, setCheckedNickname] = useState(false);
+  const { toastSuccess, toastError, toastWarn } = useToast();
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
 
   const methods = useForm<UserSignUpForm>({
@@ -37,24 +40,31 @@ export default function SignUpPage() {
     try {
       await checkNicknameDuplicate({ nickname });
       toastSuccess('사용 가능한 닉네임입니다.');
+      setCheckedNickname(true);
     } catch (error) {
       if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
       else toastError('예상치 못한 에러가 발생했습니다.');
     }
   };
 
+  const handleRequestVerificationCode = () => {
+    if (!checkedNickname) return toastWarn('닉네임 중복 체크를 진행해 주세요.');
+    requestVerificationCode(watch('email'));
+  };
+
   // form 전송 함수
   const onSubmit = async (data: UserSignUpForm) => {
-    const { username, code, checkPassword, ...filteredData } = data;
-    console.log(data);
-    // TODO: 폼 제출 로직 수정 필요
+    const { checkPassword, ...filteredData } = data;
+
     try {
-      // 회원가입 폼
-      const formData = { ...filteredData, username, code };
-      const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${username}`, formData);
-      if (registrationResponse.status !== 200) return toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
+      await signUp(filteredData);
+      toastSuccess('회원가입에 성공했습니다. 로그인을 진행해 주세요.');
+      setTimeout(() => {
+        navigate('/signin');
+      }, 2000);
     } catch (error) {
-      toastError(`회원가입 진행 중 오류가 발생했습니다: ${error}`);
+      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
+      else toastError('예상치 못한 에러가 발생했습니다.');
     }
   };
 
@@ -130,7 +140,7 @@ export default function SignUpPage() {
           <VerificationButton
             isVerificationRequested={isVerificationRequested}
             isSubmitting={formState.isSubmitting}
-            requestCode={handleSubmit(() => requestVerificationCode(watch('email')))}
+            requestCode={handleSubmit(handleRequestVerificationCode)}
             expireVerificationCode={expireVerificationCode}
             buttonLabel="회원가입"
           />

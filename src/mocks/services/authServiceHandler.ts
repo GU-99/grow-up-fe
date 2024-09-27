@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { emailVerificationCode, USER_INFO_DUMMY } from '@mocks/mockData';
+import { EMAIL_REGEX } from '@constants/regex';
 import {
   CheckNicknameForm,
   EmailVerificationForm,
@@ -9,12 +10,27 @@ import {
   SearchPasswordForm,
   UpdatePasswordRequest,
   UserSignInForm,
+  UserSignUpForm,
 } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
 
 const authServiceHandler = [
+  // 회원가입 API
+  http.post(`${BASE_URL}/user`, async ({ request }) => {
+    const { code } = (await request.json()) as UserSignUpForm;
+
+    if (code !== emailVerificationCode) {
+      return HttpResponse.json(
+        { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
+        { status: 400 },
+      );
+    }
+
+    return HttpResponse.json(null, { status: 200 });
+  }),
+
   // 닉네임 중복 확인 API
   http.post(`${BASE_URL}/user/nickname`, async ({ request }) => {
     const { nickname } = (await request.json()) as CheckNicknameForm;
@@ -134,7 +150,7 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
 
-    if (email !== USER_INFO_DUMMY.email)
+    if (!EMAIL_REGEX.test(email))
       return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
 
     return HttpResponse.json(null, { status: 200 });
@@ -174,6 +190,7 @@ const authServiceHandler = [
       return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
     }
 
+    USER_INFO_DUMMY.password = tempPassword;
     return HttpResponse.json({ password: tempPassword }, { status: 200 });
   }),
 
