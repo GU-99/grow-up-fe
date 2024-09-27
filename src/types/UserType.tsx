@@ -17,7 +17,7 @@ export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
 
 export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageName'> & {
-  code: string;
+  verificationCode: string;
   password: string;
   checkPassword: string;
 };
@@ -30,9 +30,9 @@ export type UserSignInForm = Pick<User, 'username'> & {
   password: string;
 };
 
-export type EmailVerificationForm = Pick<User, 'email'> & { code: string };
+export type EmailVerificationForm = Pick<User, 'email'> & { verificationCode: string };
 
-export type SearchPasswordForm = Pick<User, 'username' | 'email'> & { code: string };
+export type SearchPasswordForm = Pick<User, 'username' | 'email'> & { verificationCode: string };
 
 export type UpdatePasswordForm = {
   password: string;

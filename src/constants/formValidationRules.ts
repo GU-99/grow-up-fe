@@ -69,7 +69,7 @@ export const USER_AUTH_VALIDATION_RULES = deepFreeze({
       message: '이메일 형식에 맞지 않습니다.',
     },
   },
-  CERTIFICATION: { required: '인증번호를 입력해 주세요.' },
+  VERIFICATION_CODE: { required: '인증번호를 입력해 주세요.' },
   NICKNAME: {
     required: '닉네임을 입력해 주세요.',
     minLength: {

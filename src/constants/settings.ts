@@ -4,6 +4,7 @@ export const AUTH_SETTINGS = Object.freeze({
   // ACCESS_TOKEN_EXPIRATION: 5 * SECOND, // 테스트용 5초
   ACCESS_TOKEN_EXPIRATION: 15 * MINUTE, // 15분
   REFRESH_TOKEN_EXPIRATION: 7 * DAY, // 7일
+  VERIFIED_EXPIRATION: 15 * MINUTE,
 });
 
 export const USER_SETTINGS = Object.freeze({
