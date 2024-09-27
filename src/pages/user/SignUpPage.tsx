@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
@@ -8,7 +9,6 @@ import LinkContainer from '@components/user/auth-form/LinkContainer';
 import useToast from '@hooks/useToast';
 import useEmailVerification from '@hooks/useEmailVerification';
 import { checkNicknameDuplicate, signUp } from '@services/authService';
-import { useState } from 'react';
 import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
@@ -22,7 +22,7 @@ export default function SignUpPage() {
     defaultValues: {
       username: null,
       email: '',
-      code: '',
+      verificationCode: '',
       nickname: '',
       password: '',
       checkPassword: '',
@@ -88,8 +88,8 @@ export default function SignUpPage() {
         {isVerificationRequested && (
           <ValidationInput
             label="인증번호"
-            errors={formState.errors.code?.message}
-            register={register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+            errors={formState.errors.verificationCode?.message}
+            register={register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
           />
         )}
 
