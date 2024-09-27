@@ -20,7 +20,7 @@ export default function SignUpPage() {
     defaultValues: {
       username: null,
       email: '',
-      code: '',
+      verificationCode: '',
       nickname: '',
       password: '',
       checkPassword: '',
@@ -32,12 +32,12 @@ export default function SignUpPage() {
 
   // form 전송 함수
   const onSubmit = async (data: UserSignUpForm) => {
-    const { username, code, checkPassword, profileImageName, ...filteredData } = data;
+    const { username, verificationCode, checkPassword, profileImageName, ...filteredData } = data;
     console.log(data);
     // TODO: 폼 제출 로직 수정 필요
     try {
       // 회원가입 폼
-      const formData = { ...filteredData, username, code, profileImageName };
+      const formData = { ...filteredData, username, verificationCode, profileImageName };
       const registrationResponse = await axios.post(`http://localhost:8080/api/v1/user/${username}`, formData);
       if (registrationResponse.status !== 200) return toastError('회원가입에 실패했습니다. 다시 시도해 주세요.');
 
@@ -93,8 +93,8 @@ export default function SignUpPage() {
         {isVerificationRequested && (
           <ValidationInput
             label="인증번호"
-            errors={methods.formState.errors.code?.message}
-            register={methods.register('code', USER_AUTH_VALIDATION_RULES.CERTIFICATION)}
+            errors={methods.formState.errors.verificationCode?.message}
+            register={methods.register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
           />
         )}
 

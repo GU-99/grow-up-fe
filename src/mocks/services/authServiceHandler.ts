@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
-import { emailVerificationCode, USER_INFO_DUMMY } from '@mocks/mockData';
+import { VERIFICATION_CODE_DUMMY, USER_INFO_DUMMY } from '@mocks/mockData';
 import {
   EmailVerificationForm,
   RequestEmailCode,
@@ -18,7 +18,7 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/login`, async ({ request }) => {
     const { username, password } = (await request.json()) as UserSignInForm;
 
-    if (username === 'test' && password === 'test@123') {
+    if (username === USER_INFO_DUMMY.username && password === USER_INFO_DUMMY.password) {
       const accessToken = 'mockedAccessToken';
       const refreshToken = 'mockedRefreshToken';
 
@@ -118,7 +118,7 @@ const authServiceHandler = [
     return new HttpResponse(null, { status: 401 });
   }),
 
-  // 이메일 인증 API
+  // 이메일 인증 번호 요청 API
   http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
 
@@ -128,11 +128,21 @@ const authServiceHandler = [
     return HttpResponse.json(null, { status: 200 });
   }),
 
+  // 이메일 인증 번호 확인 API
+  http.post(`${BASE_URL}/user/verify/code`, async ({ request }) => {
+    const { email, verificationCode } = (await request.json()) as EmailVerificationForm;
+
+    if (email !== USER_INFO_DUMMY.email || verificationCode !== VERIFICATION_CODE_DUMMY)
+      return HttpResponse.json({ message: '인증번호가 일치하지 않습니다.' }, { status: 401 });
+
+    return HttpResponse.json(null, { status: 200 });
+  }),
+
   // 아이디 찾기 API
   http.post(`${BASE_URL}/user/recover/username`, async ({ request }) => {
-    const { email, code } = (await request.json()) as EmailVerificationForm;
+    const { email, verificationCode } = (await request.json()) as EmailVerificationForm;
 
-    if (code !== emailVerificationCode) {
+    if (verificationCode !== VERIFICATION_CODE_DUMMY) {
       return HttpResponse.json(
         { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
         { status: 401 },
@@ -147,11 +157,11 @@ const authServiceHandler = [
 
   // 비밀번호 찾기 API
   http.post(`${BASE_URL}/user/recover/password`, async ({ request }) => {
-    const { username, email, code } = (await request.json()) as SearchPasswordForm;
+    const { username, email, verificationCode } = (await request.json()) as SearchPasswordForm;
 
     const tempPassword = '!1p2l3nqlz';
 
-    if (code !== emailVerificationCode) {
+    if (verificationCode !== VERIFICATION_CODE_DUMMY) {
       return HttpResponse.json(
         { message: '이메일 인증 번호가 일치하지 않습니다. 다시 확인해 주세요.' },
         { status: 401 },
