@@ -17,7 +17,7 @@ export default function RoleTooltip({ showTooltip, rolesInfo }: RoleTooltipProps
             <RoleIcon roleName={role.roleName} />
             <strong>{role.label}</strong>
           </div>
-          <p className="whitespace-pre-line">{role.description}</p>
+          <pre>{role.description}</pre>
         </div>
       ))}
     </div>

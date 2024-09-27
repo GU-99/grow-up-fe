@@ -11,6 +11,7 @@ import {
   TASK_FILE_DUMMY,
   ROLE_DUMMY,
 } from '@mocks/mockData';
+import { TeamForm } from '@/types/TeamType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -34,7 +35,7 @@ const teamServiceHandler = [
     const [, payload] = JWT_TOKEN_DUMMY.split('.');
     const creatorId = Number(payload.replace('mocked-payload-', ''));
 
-    const requestBody = JSON.parse(await request.text());
+    const requestBody = (await request.json()) as TeamForm;
 
     const { teamName, content, coworkers } = requestBody;
 
@@ -49,8 +50,10 @@ const teamServiceHandler = [
 
     // 초대된 팀원들 추가
     const invalidRoles: string[] = [];
-    coworkers.forEach((coworker: { userId: number; roleName: string }) => {
+    for (let i = 0; i < coworkers.length; i++) {
+      const coworker = coworkers[i];
       const role = ROLE_DUMMY.find((role) => role.roleName === coworker.roleName);
+
       if (role) {
         TEAM_USER_DUMMY.push({
           teamId: newTeamId,
@@ -60,8 +63,9 @@ const teamServiceHandler = [
         });
       } else {
         invalidRoles.push(coworker.roleName);
+        break;
       }
-    });
+    }
 
     if (invalidRoles.length > 0) {
       return new HttpResponse(JSON.stringify({ message: `유효하지 않은 역할: ${invalidRoles.join(', ')}` }), {
@@ -71,10 +75,15 @@ const teamServiceHandler = [
 
     // 팀 생성자도 자동으로 팀에 추가
     const creatorRole = ROLE_DUMMY.find((role) => role.roleName === 'HEAD');
+
+    if (!creatorRole) {
+      return new HttpResponse(JSON.stringify({ message: '유효하지 않은 역할입니다.' }), { status: 404 });
+    }
+
     TEAM_USER_DUMMY.push({
       teamId: newTeamId,
       userId: creatorId,
-      roleId: creatorRole?.roleId || 1,
+      roleId: creatorRole.roleId,
       isPendingApproval: false,
     });
 

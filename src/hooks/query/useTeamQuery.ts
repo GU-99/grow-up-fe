@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTeamList } from '@services/userService';
-import { acceptTeamInvitation, declineTeamInvitation, deleteTeam, leaveTeam } from '@services/teamService';
-import type { TeamListWithApproval } from '@/types/TeamType';
-import useToast from '@/hooks/useToast';
+import { acceptTeamInvitation, createTeam, declineTeamInvitation, deleteTeam, leaveTeam } from '@services/teamService';
+import useToast from '@hooks/useToast';
+import type { TeamForm, TeamListWithApproval } from '@/types/TeamType';
 
 export function useReadTeams() {
   const {
@@ -88,6 +88,24 @@ export function useRejectTeamInvitation() {
     },
     onError: () => {
       toastError('초대 거절에 실패했습니다. 다시 시도해 주세요.');
+    },
+  });
+}
+
+export function useCreateTeam() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+
+  return useMutation({
+    mutationFn: async (data: TeamForm) => {
+      return createTeam(data);
+    },
+    onSuccess: () => {
+      toastSuccess('팀을 성공적으로 생성했습니다.');
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    },
+    onError: () => {
+      toastError('팀 생성 중 오류가 발생했습니다.');
     },
   });
 }

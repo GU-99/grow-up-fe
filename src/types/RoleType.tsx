@@ -1,4 +1,8 @@
-export type RoleName = 'HEAD' | 'LEADER' | 'MATE' | 'ADMIN' | 'ASSIGNEE';
+export type TeamRoleName = 'HEAD' | 'LEADER' | 'MATE';
+
+export type ProjectRoleName = 'ADMIN' | 'LEADER' | 'ASSIGNEE';
+
+export type RoleName = TeamRoleName | ProjectRoleName;
 
 export type RoleInfo = {
   roleName: RoleName;

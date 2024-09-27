@@ -3,8 +3,8 @@ import ModalPortal from '@components/modal/ModalPortal';
 import ModalFormButton from '@components/modal/ModalFormButton';
 import ModalTeamForm from '@components/modal/team/ModalTeamForm';
 
-import { createTeam } from '@services/teamService';
 import type { SubmitHandler } from 'react-hook-form';
+import { useCreateTeam } from '@hooks/query/useTeamQuery';
 import type { TeamForm } from '@/types/TeamType';
 
 type CreateModalProjectStatusProps = {
@@ -12,13 +12,14 @@ type CreateModalProjectStatusProps = {
 };
 
 export default function CreateModalTeam({ onClose: handleClose }: CreateModalProjectStatusProps) {
+  const { mutate: createTeam } = useCreateTeam();
+
   const handleSubmit: SubmitHandler<TeamForm> = async (data) => {
-    try {
-      await createTeam(data);
-      handleClose();
-    } catch (error) {
-      console.error('팀 생성 중 오류 발생:', error);
-    }
+    createTeam(data, {
+      onSuccess: () => {
+        handleClose();
+      },
+    });
   };
 
   return (

@@ -1,26 +1,33 @@
 import React from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
 import type { SearchUser } from '@/types/UserType';
+import type { TeamRoleName } from '@/types/RoleType';
 
 type SelectedUserWithRoleProps = {
   user: SearchUser;
-  roles: { value: 'HEAD' | 'LEADER' | 'MATE'; label: string }[];
-  onRoleChange: (userId: number, role: 'HEAD' | 'LEADER' | 'MATE') => void;
+  roles: readonly { value: TeamRoleName; label: string }[];
+  defaultValue?: TeamRoleName;
+  onRoleChange: (userId: number, role: TeamRoleName) => void;
   onRemoveUser: (userId: number) => void;
 };
 
-export default function SelectedUserWithRole({ user, roles, onRoleChange, onRemoveUser }: SelectedUserWithRoleProps) {
+export default function SelectedUserWithRole({
+  user,
+  roles,
+  defaultValue,
+  onRoleChange,
+  onRemoveUser,
+}: SelectedUserWithRoleProps) {
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onRoleChange(user.userId, event.target.value as 'HEAD' | 'LEADER' | 'MATE');
+    onRoleChange(user.userId, event.target.value as TeamRoleName);
   };
 
   return (
     <div className="ml-4 mt-4 flex items-center text-sm">
       <select
         onChange={handleRoleChange}
-        className="mr-2 rounded-l-lg border-none bg-gray-200 py-2 pl-4 pr-2"
-        style={{ appearance: 'none' }}
-        defaultValue="MATE"
+        className="mr-2 appearance-none rounded-l-lg border-none bg-gray-200 py-2 pl-4 pr-2"
+        defaultValue={defaultValue}
       >
         {roles.map((role) => (
           <option key={role.value} value={role.value}>

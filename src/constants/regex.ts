@@ -9,3 +9,5 @@ export const NICKNAME_REGEX = new RegExp(
   `^[a-zA-Z0-9가-힣]{${USER_SETTINGS.MIN_NICKNAME_LENGTH},${USER_SETTINGS.MAX_NICKNAME_LENGTH}}$`,
 );
 export const ID_REGEX = /^[a-z0-9._+@가-힣-]+(?:@[a-z0-9.-]+\.[a-z]{2,}(?:\.[a-z]{2,}))?$/i;
+
+export const TEAM_NAME_PATTERN = /^[가-힣a-zA-Z0-9]*$/;

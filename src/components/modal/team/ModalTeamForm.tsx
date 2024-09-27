@@ -13,7 +13,8 @@ import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import type { SearchUser } from '@/types/UserType';
 import type { Team, TeamForm } from '@/types/TeamType';
 import type { AllSearchCallback } from '@/types/SearchCallbackType';
-import type { RoleInfo } from '@/types/RoleType';
+import type { RoleInfo, TeamRoleName } from '@/types/RoleType';
+import { TEAM_ROLES } from '@/constants/role';
 
 type ModalTeamFormProps = {
   formId: string;
@@ -23,37 +24,23 @@ type ModalTeamFormProps = {
 
 export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFormProps) {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState<{ user: SearchUser; role: 'HEAD' | 'LEADER' | 'MATE' }[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<{ user: SearchUser; role: TeamRoleName }[]>([]);
   const [keyword, setKeyword] = useState('');
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUser);
   const { toastInfo } = useToast();
 
-  const teamRoles = useMemo(
+  const rolesInfo: RoleInfo[] = useMemo(
     () => [
-      { value: 'HEAD' as const, label: 'HEAD' },
-      { value: 'LEADER' as const, label: 'Leader' },
-      { value: 'MATE' as const, label: 'Mate' },
+      { roleName: 'HEAD', label: 'HEAD', description: '모든 권한 가능' },
+      {
+        roleName: 'LEADER',
+        label: 'Leader',
+        description: '팀원 탈퇴(Mate만)\n프로젝트 생성 권한\n프로젝트 삭제(본인이 생성한 것만)',
+      },
+      { roleName: 'MATE', label: 'Mate', description: '프로젝트 읽기만 가능, 수정 및 생성 불가' },
     ],
     [],
   );
-
-  const rolesInfo: RoleInfo[] = [
-    { roleName: 'HEAD', label: 'HEAD', description: '모든 권한 가능' },
-    {
-      roleName: 'LEADER',
-      label: 'Leader',
-      description: '팀원 탈퇴(Mate만)\n프로젝트 생성 권한\n프로젝트 삭제(본인이 생성한 것만)',
-    },
-    { roleName: 'MATE', label: 'Mate', description: '프로젝트 읽기만 가능, 수정 및 생성 불가' },
-  ];
-
-  const handleRoleChange = (userId: number, role: 'HEAD' | 'LEADER' | 'MATE') => {
-    setSelectedUsers((prev) => prev.map((item) => (item.user.userId === userId ? { ...item, role } : item)));
-  };
-
-  const handleRemoveUser = (userId: number) => {
-    setSelectedUsers((prev) => prev.filter((item) => item.user.userId !== userId));
-  };
 
   const methods = useForm<TeamForm>({
     mode: 'onChange',
@@ -65,9 +52,32 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
   });
 
   const {
+    setValue,
     handleSubmit,
     formState: { errors },
   } = methods;
+
+  const handleRoleChange = (userId: number, role: TeamRoleName) => {
+    setSelectedUsers((prev) => {
+      const updated = prev.map((item) => (item.user.userId === userId ? { ...item, role } : item));
+      setValue(
+        'coworkers',
+        updated.map(({ user, role }) => ({ userId: user.userId, roleName: role })),
+      );
+      return updated;
+    });
+  };
+
+  const handleRemoveUser = (userId: number) => {
+    setSelectedUsers((prev) => {
+      const updated = prev.filter((item) => item.user.userId !== userId);
+      setValue(
+        'coworkers',
+        updated.map(({ user, role }) => ({ userId: user.userId, roleName: role })),
+      );
+      return updated;
+    });
+  };
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value.trim());
@@ -84,26 +94,17 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
 
     const updatedUsers = [...selectedUsers, { user, role: 'MATE' as const }];
     setSelectedUsers(updatedUsers);
+    setValue(
+      'coworkers',
+      updatedUsers.map(({ user, role }) => ({ userId: user.userId, roleName: role })),
+    );
     setKeyword('');
     clearData();
   };
 
   const handleSubmitForm: SubmitHandler<TeamForm> = (data) => {
     const { teamName, content } = data;
-
-    // coworkers 배열 생성
-    const coworkers = selectedUsers.map(({ user, role }) => ({
-      userId: user.userId,
-      roleName: role,
-    }));
-
-    // 최종 데이터 구조
-    const payload = {
-      teamName,
-      content,
-      coworkers,
-    };
-
+    const payload = { teamName, content, coworkers: data.coworkers };
     onSubmit(payload);
   };
 
@@ -131,7 +132,6 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
           label="팀 설명"
           placeholder="팀에 대한 설명을 입력해주세요."
           errors={errors.content?.message}
-          register={methods.register('content', TEAM_VALIDATION_RULES.TEAM_DESCRIPTION)}
         />
 
         <div className="mb-16">
@@ -146,11 +146,11 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
             onUserClick={handleCoworkersClick}
           />
           <div className="flex flex-wrap">
-            {selectedUsers.map(({ user, role }) => (
+            {selectedUsers.map(({ user }) => (
               <SelectedUserWithRole
                 key={user.userId}
                 user={user}
-                roles={teamRoles}
+                roles={TEAM_ROLES}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}
               />

@@ -1,5 +1,5 @@
-import { Role } from './RoleType';
-import { User } from './UserType';
+import type { User } from '@/types/UserType';
+import type { Role, TeamRoleName } from '@/types/RoleType';
 
 export type Team = {
   teamId: number;
@@ -8,12 +8,12 @@ export type Team = {
   content: string;
 };
 
-export type Coworker = {
+export type TeamCoworker = {
   userId: User['userId'];
-  roleName: 'HEAD' | 'LEADER' | 'MATE';
+  roleName: TeamRoleName;
 };
 
-export type TeamForm = Omit<Team, 'teamId' | 'creatorId'> & { coworkers: Coworker[] };
+export type TeamForm = Omit<Team, 'teamId' | 'creatorId'> & { coworkers: TeamCoworker[] };
 
 export type TeamListWithApproval = Omit<Team, 'creatorId'> &
   Pick<Role, 'roleName'> & {
