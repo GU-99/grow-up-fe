@@ -56,15 +56,7 @@ export default function CreateModalTask({ project, onClose: handleClose }: Creat
         else rejectedFileList.push(result);
       });
 
-    if (fulfilledFileList.length > 0) {
-      const fulfilledFilesName = fulfilledFileList.map((result) => result.file.name).join(', ');
-      toastSuccess(`${fulfilledFilesName} 파일 업로드에 성공했습니다.`);
-    }
-
-    if (rejectedFileList.length > 0) {
-      const rejectedFilesName = rejectedFileList.map((result) => result.file.name).join(', ');
-      toastError(`${rejectedFilesName} 파일 업로드에 실패했습니다.`);
-    }
+    if (fulfilledFileList.length > 0) toastSuccess(`${fulfilledFileList.length}개의 파일 업로드에 성공했습니다.`);
   };
 
   const handleSubmit: SubmitHandler<TaskForm> = async (taskFormData) => {

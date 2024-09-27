@@ -18,7 +18,6 @@ import type { Project } from '@/types/ProjectType';
 import type {
   Task,
   TaskCreationForm,
-  TaskFilesForm,
   TaskListWithStatus,
   TaskOrder,
   TaskUpdateForm,
@@ -57,11 +56,13 @@ export function useCreateStatusTask(projectId: Project['projectId']) {
 
 // 일정 단일 파일 업로드
 export function useUploadTaskFile(projectId: Project['projectId']) {
+  const { toastError } = useToast();
   const mutation = useMutation({
     mutationFn: ({ taskId, file }: TaskUploadForm) =>
       uploadTaskFile(projectId, taskId, file, {
         headers: { 'Content-Type': 'multipart/form-data' },
       }),
+    onError: (error, { file }) => toastError(`${file.name} 파일 업로드에 실패 했습니다.`),
   });
 
   return mutation;
