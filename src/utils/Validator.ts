@@ -36,7 +36,7 @@ export default class Validator {
     if (!Validator.isPositiveNumberWithZero(maxCount) || !Validator.isPositiveNumberWithZero(currentCount)) {
       throw Error('최대 파일수와 현재 파일 수는 음수가 될 수 없습니다.');
     }
-    return maxCount >= currentCount;
+    return maxCount > currentCount;
   }
 
   public static isValidFileSize(maxSize: number, fileSize: number) {
