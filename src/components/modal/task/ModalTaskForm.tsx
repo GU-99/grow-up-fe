@@ -111,19 +111,19 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const isValidTaskFile = (file: File) => {
     if (!Validator.isValidFileName(file.name)) {
       toastWarn(
-        `${file.name}은/는 업로드 할 수 없습니다. 파일명은 한글, 영어, 숫자, 특수기호(.-_), 공백문자만 가능합니다.`,
+        `${file.name} 파일은 업로드 할 수 없습니다. 파일명은 한글, 영어, 숫자, 특수기호(.-_), 공백문자만 가능합니다.`,
       );
       return false;
     }
 
     if (!Validator.isValidFileExtension(TASK_SETTINGS.FILE_TYPES, file.type)) {
-      toastWarn(`${file.name}은/는 업로드 할 수 없습니다. 지원하지 않는 파일 타입입니다.`);
+      toastWarn(`${file.name} 파일은 업로드 할 수 없습니다. 지원하지 않는 파일 타입입니다.`);
       return false;
     }
 
     if (!Validator.isValidFileSize(TASK_SETTINGS.MAX_FILE_SIZE, file.size)) {
       toastWarn(
-        `${file.name}은/는 업로드 할 수 없습니다. 최대 ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`,
+        `${file.name} 파일은 업로드 할 수 없습니다. ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`,
       );
       return false;
     }
