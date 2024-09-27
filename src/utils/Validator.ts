@@ -34,17 +34,20 @@ export default class Validator {
 
   public static isValidFileCount(maxCount: number, currentCount: number) {
     if (!Validator.isPositiveNumberWithZero(maxCount) || !Validator.isPositiveNumberWithZero(currentCount)) {
-      throw Error('최대 파일수와 현재 파일 수는 음수가 될 수 없습니다.');
+      throw Error('파일 개수는 음수가 될 수 없습니다.');
     }
     return maxCount >= currentCount;
   }
 
   public static isValidFileSize(maxSize: number, fileSize: number) {
+    if (!Validator.isPositiveNumberWithZero(maxSize) || !Validator.isPositiveNumberWithZero(fileSize)) {
+      throw Error('파일 크기는 음수가 될 수 없습니다.');
+    }
     return maxSize >= fileSize;
   }
 
   public static isValidFileExtension(acceptFileTypes: string[], fileType: string) {
-    return acceptFileTypes.some((acceptFileType) => acceptFileType === fileType);
+    return acceptFileTypes.some((acceptFileType) => acceptFileType.toLowerCase() === fileType.toLowerCase());
   }
 
   public static isValidFileName(fileName: string) {
