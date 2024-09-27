@@ -3,6 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { emailVerificationCode, USER_INFO_DUMMY } from '@mocks/mockData';
 import {
+  CheckNicknameForm,
   EmailVerificationForm,
   RequestEmailCode,
   SearchPasswordForm,
@@ -14,6 +15,17 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
 
 const authServiceHandler = [
+  // 닉네임 중복 확인 API
+  http.post(`${BASE_URL}/user/nickname`, async ({ request }) => {
+    const { nickname } = (await request.json()) as CheckNicknameForm;
+
+    if (nickname === USER_INFO_DUMMY.nickname) {
+      return HttpResponse.json({ message: '사용할 수 없는 닉네임입니다.' }, { status: 400 });
+    }
+
+    return HttpResponse.json(null, { status: 200 });
+  }),
+
   // 로그인 API
   http.post(`${BASE_URL}/user/login`, async ({ request }) => {
     const { username, password } = (await request.json()) as UserSignInForm;

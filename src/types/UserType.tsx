@@ -16,11 +16,13 @@ export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
 
-export type UserSignUpForm = Omit<User, 'userId' | 'provider'> & {
+export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageName'> & {
   code: string;
   password: string;
   checkPassword: string;
 };
+
+export type CheckNicknameForm = Pick<User, 'nickname'>;
 
 export type UserSignInForm = Pick<User, 'username'> & {
   password: string;
