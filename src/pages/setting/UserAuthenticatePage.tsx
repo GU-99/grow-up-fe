@@ -26,6 +26,7 @@ function UserAuthenticatePage() {
   });
 
   const onSubmit = async (data: EmailVerificationForm) => {
+    // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
     try {
       await checkEmailCode(data);
       onVerifyCode();
