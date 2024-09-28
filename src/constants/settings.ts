@@ -1,4 +1,5 @@
 import { DAY, MB, MINUTE, SECOND } from '@constants/units';
+import { TASK_ACCEPT_FILE_TYPES } from '@constants/mimeFileType';
 
 export const AUTH_SETTINGS = Object.freeze({
   // ACCESS_TOKEN_EXPIRATION: 5 * SECOND, // 테스트용 5초
@@ -19,7 +20,10 @@ export const USER_SETTINGS = Object.freeze({
   MAX_EMAIL_LENGTH: 128,
 });
 
+// prettier-ignore
 export const TASK_SETTINGS = Object.freeze({
   MAX_FILE_SIZE: 2 * MB,
   MAX_FILE_COUNT: 10,
+  FILE_ACCEPT: '.jpg, .jpeg, .png, .svg, .webp, .pdf, .txt, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .hwp, .zip, .rar, .7z, .alz, .egg',
+  FILE_TYPES: TASK_ACCEPT_FILE_TYPES,
 });

@@ -6,6 +6,7 @@ import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import type { Task } from '@/types/TaskType';
 
+// ToDo: undefined가 나올 수도 있음, 나중에 MSW CRUD 관련 로직들 함수로 모두 정리하기.
 type Hash<T> = {
   [key: string | number]: T;
 };

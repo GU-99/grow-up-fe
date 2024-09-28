@@ -32,6 +32,12 @@ type TaskFile = {
   fileUrl: string;
 };
 
+type FileInfo = {
+  fileId: number;
+  taskId: number;
+  file: Blob;
+};
+
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const VERIFICATION_CODE_DUMMY = '1234';
@@ -689,19 +695,38 @@ export const TASK_FILE_DUMMY: TaskFile[] = [
   {
     fileId: 1,
     taskId: 1,
-    fileName: '최종본.pdf',
+    fileName: '최종본.txt',
     fileUrl: '',
   },
   {
     fileId: 2,
     taskId: 1,
-    fileName: '참고자료.pdf',
+    fileName: '참고자료.txt',
     fileUrl: '',
   },
   {
     fileId: 3,
     taskId: 2,
-    fileName: '명세서.pdf',
+    fileName: '명세서.txt',
     fileUrl: '',
+  },
+];
+
+// MSW 파일 임시 저장을 위한 변수
+export const FILE_DUMMY: FileInfo[] = [
+  {
+    fileId: 1,
+    taskId: 1,
+    file: new Blob(['최종본 내용'], { type: 'text/plain' }),
+  },
+  {
+    fileId: 2,
+    taskId: 1,
+    file: new Blob(['참고자료 내용'], { type: 'text/plain' }),
+  },
+  {
+    fileId: 3,
+    taskId: 2,
+    file: new Blob(['명세서 내용'], { type: 'text/plain' }),
   },
 ];

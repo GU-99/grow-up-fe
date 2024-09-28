@@ -6,6 +6,7 @@ type FileDropZoneProps = {
   id: string;
   label: string;
   files: FileInfo[];
+  accept: string;
   onFileDrop: (e: React.DragEvent<HTMLElement>) => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFileDeleteClick: (fileId: string) => void;
@@ -14,11 +15,11 @@ type FileDropZoneProps = {
 const DEFAULT_BG_COLOR = 'inherit';
 const FILE_DRAG_OVER_BG_COLOR = '#e1f4d9';
 
-// ToDo: 파일 업로드 API 작업시 구조 다시 한 번 확인해보기
 export default function FileDropZone({
   id,
   label,
   files,
+  accept = '*',
   onFileDrop,
   onFileChange: handleFileChange,
   onFileDeleteClick: handleFileDeleteClick,
@@ -41,7 +42,15 @@ export default function FileDropZone({
   return (
     <label htmlFor={id}>
       <h3 className="text-large">{label}</h3>
-      <input type="file" id={id} className="h-0 w-0 opacity-0" multiple hidden onChange={handleFileChange} />
+      <input
+        id={id}
+        type="file"
+        accept={accept}
+        className="h-0 w-0 opacity-0"
+        onChange={handleFileChange}
+        multiple
+        hidden
+      />
       <div
         role="button"
         tabIndex={0}

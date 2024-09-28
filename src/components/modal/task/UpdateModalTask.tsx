@@ -193,6 +193,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
           id="files"
           label="첨부파일"
           files={taskFileList}
+          accept={TASK_SETTINGS.FILE_ACCEPT}
           onFileChange={handleFileChange}
           onFileDrop={handleFileDrop}
           onFileDeleteClick={handleFileDeleteClick}

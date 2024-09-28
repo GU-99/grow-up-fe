@@ -17,6 +17,7 @@ import useAxios from '@hooks/useAxios';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
+import Validator from '@utils/Validator';
 import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
 
@@ -106,22 +107,46 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setValue('assignees', assigneesIdList);
   };
 
-  const updateFiles = (newFiles: FileList) => {
+  // ToDo: 일정 수정에서도 사용하도록 분리할 것, 어디에 분리하는게 좋으려나?
+  const isValidTaskFile = (file: File) => {
+    if (!Validator.isValidFileName(file.name)) {
+      toastWarn(
+        `${file.name} 파일은 업로드 할 수 없습니다. 파일명은 한글, 영어, 숫자, 특수기호(.-_), 공백문자만 가능합니다.`,
+      );
+      return false;
+    }
+
+    if (!Validator.isValidFileExtension(TASK_SETTINGS.FILE_TYPES, file.type)) {
+      toastWarn(`${file.name} 파일은 업로드 할 수 없습니다. 지원하지 않는 파일 타입입니다.`);
+      return false;
+    }
+
+    if (!Validator.isValidFileSize(TASK_SETTINGS.MAX_FILE_SIZE, file.size)) {
+      toastWarn(
+        `${file.name} 파일은 업로드 할 수 없습니다. ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`,
+      );
+      return false;
+    }
+
+    return true;
+  };
+
+  const updateTaskFiles = (newFiles: FileList) => {
     // 최대 파일 등록 개수 확인
-    if (files.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
+    if (!Validator.isValidFileCount(TASK_SETTINGS.MAX_FILE_COUNT, files.length + newFiles.length)) {
       return toastWarn(`최대로 등록 가능한 파일수는 ${TASK_SETTINGS.MAX_FILE_COUNT}개입니다.`);
     }
 
-    // 새로운 파일별 파일 크기 확인 & 고유 ID 부여
+    // 새로운 파일 Validation & 고유 ID 부여
     const originFiles: File[] = files.map(({ file }) => file);
     const customFiles: CustomFile[] = [];
     for (let i = 0; i < newFiles.length; i++) {
       const file = newFiles[i];
-      if (file.size > TASK_SETTINGS.MAX_FILE_SIZE) {
-        return toastWarn(`최대 ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`);
+
+      if (isValidTaskFile(file)) {
+        originFiles.push(file);
+        customFiles.push({ fileId: `${file.name}_${Date.now()}`, fileName: file.name, file });
       }
-      originFiles.push(file);
-      customFiles.push({ fileId: `${file.name}_${Date.now()}`, fileName: file.name, file });
     }
     setValue('files', originFiles);
     setFiles((prev) => [...prev, ...customFiles]);
@@ -130,13 +155,13 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (!files || files.length === 0) return;
-    updateFiles(files);
+    updateTaskFiles(files);
   };
 
   const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
     const { files } = e.dataTransfer;
     if (!files || files.length === 0) return;
-    updateFiles(files);
+    updateTaskFiles(files);
   };
 
   const handleFileDeleteClick = (fileId: string) => {
@@ -194,6 +219,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           id="files"
           label="첨부파일"
           files={files}
+          accept={TASK_SETTINGS.FILE_ACCEPT}
           onFileChange={handleFileChange}
           onFileDrop={handleFileDrop}
           onFileDeleteClick={handleFileDeleteClick}
