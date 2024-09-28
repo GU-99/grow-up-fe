@@ -42,7 +42,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 1,
     username: 'panda_dev',
-    password: 'password1',
+    password: 'password@1',
     email: 'one@naver.com',
     provider: 'GOOGLE',
     nickname: '판다',
@@ -53,7 +53,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 2,
     username: 'chameleon_design',
-    password: 'password2',
+    password: 'password@2',
     email: 'two@naver.com',
     provider: 'KAKAO',
     nickname: '카멜레온',
@@ -64,7 +64,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 3,
     username: 'redpanda_front',
-    password: 'password3',
+    password: 'password@3',
     email: 'three@naver.com',
     provider: 'GOOGLE',
     nickname: '랫서판다',
@@ -75,7 +75,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 4,
     username: 'polar_bear_front',
-    password: 'password4',
+    password: 'password@4',
     email: 'four@naver.com',
     provider: 'KAKAO',
     nickname: '북금곰',
@@ -86,7 +86,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 5,
     username: 'tiger_backend',
-    password: 'password5',
+    password: 'password@5',
     email: 'five@naver.com',
     provider: 'KAKAO',
     nickname: '호랑이',
@@ -97,7 +97,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 6,
     username: 'sloth_fullstack',
-    password: 'password6',
+    password: 'password@6',
     email: 'six@naver.com',
     provider: 'GOOGLE',
     nickname: '나무늘보',
@@ -108,7 +108,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 7,
     username: 'wombat_backend',
-    password: 'password7',
+    password: 'password@7',
     email: 'seven@naver.com',
     provider: 'KAKAO',
     nickname: '웜뱃',
@@ -119,7 +119,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 8,
     username: 'beluga_design',
-    password: 'password8',
+    password: 'password@8',
     email: 'eight@naver.com',
     provider: 'GOOGLE',
     nickname: '벨루가',
@@ -130,7 +130,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 9,
     username: 'penguin_dba',
-    password: 'password9',
+    password: 'password@9',
     email: 'nine@naver.com',
     provider: 'KAKAO',
     nickname: '펭귄',
@@ -141,7 +141,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 10,
     username: 'beaver_devops',
-    password: 'password10',
+    password: 'password@10',
     email: 'ten@naver.com',
     provider: 'GOOGLE',
     nickname: '비버',
@@ -152,7 +152,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 11,
     username: 'eleven',
-    password: 'password11',
+    password: 'password@11',
     email: 'eleven@naver.com',
     provider: 'LOCAL',
     nickname: '판다아빠',
@@ -163,7 +163,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 12,
     username: 'twelve',
-    password: 'password12',
+    password: 'password@12',
     email: 'twelve@naver.com',
     provider: 'LOCAL',
     nickname: '판다엄마',
@@ -174,7 +174,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 13,
     username: 'thirteen',
-    password: 'password13',
+    password: 'password@13',
     email: 'thirteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다형',
@@ -185,7 +185,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 14,
     username: 'fourteen',
-    password: 'password14',
+    password: 'password@14',
     email: 'fourteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다누나',
@@ -196,7 +196,7 @@ export const USER_DUMMY: UserInfo[] = [
   {
     userId: 15,
     username: 'fifteen',
-    password: 'password15',
+    password: 'password@15',
     email: 'fifteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다동생',
