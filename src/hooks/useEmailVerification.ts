@@ -25,9 +25,9 @@ export default function useEmailVerification() {
   };
 
   // 인증 코드 만료
-  const expireVerificationCode = () => {
+  const expireVerificationCode = (showMessage = true) => {
     setIsVerificationRequested(false);
-    toastError('인증 시간이 만료되었습니다. 다시 시도해 주세요.');
+    if (showMessage) toastError('인증 시간이 만료되었습니다. 다시 시도해 주세요.');
   };
 
   return {

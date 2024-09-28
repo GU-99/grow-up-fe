@@ -31,7 +31,7 @@ export default function SignUpPage() {
     },
   });
 
-  const { watch, handleSubmit, formState, register } = methods;
+  const { watch, handleSubmit, formState, register, setValue } = methods;
   const nickname = watch('nickname');
 
   // 중복 확인 후 닉네임 변경 시, 중복확인 버튼 재활성화
@@ -62,6 +62,7 @@ export default function SignUpPage() {
   const onSubmit = async (data: UserSignUpForm) => {
     const { checkPassword, ...filteredData } = data;
 
+    // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
     try {
       await signUp(filteredData);
       toastSuccess('회원가입에 성공했습니다. 로그인을 진행해 주세요.');
@@ -69,8 +70,16 @@ export default function SignUpPage() {
         navigate('/signin');
       }, 2000);
     } catch (error) {
-      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
-      else toastError('예상치 못한 에러가 발생했습니다.');
+      if (error instanceof AxiosError && error.response) {
+        toastError(error.response.data.message);
+        if (
+          error.response.status === 400 &&
+          error.response.data.message.includes('해당 이메일을 사용할 수 없습니다.')
+        ) {
+          expireVerificationCode(false);
+          setValue('verificationCode', '');
+        }
+      } else toastError('예상치 못한 에러가 발생했습니다.');
     }
   };
 

@@ -31,7 +31,11 @@ const authServiceHandler = [
     }
 
     const existingUser = USER_DUMMY.find((user) => user.email === email);
-    if (existingUser) return HttpResponse.json({ message: '해당 이메일을 사용할 수 없습니다.' }, { status: 400 });
+    if (existingUser)
+      return HttpResponse.json(
+        { message: '해당 이메일을 사용할 수 없습니다. 다른 이메일을 등록해 주세요.' },
+        { status: 400 },
+      );
 
     const newUser: UserInfo = {
       userId: USER_DUMMY.length + 1,
