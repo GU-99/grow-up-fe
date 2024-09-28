@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
-import { TEMP_PASSWORD_DUMMY, USER_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
+import { JWT_TOKEN_DUMMY, TEMP_PASSWORD_DUMMY, USER_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
 import { EMAIL_REGEX } from '@constants/regex';
 import { convertTokenToUserId, generateDummyToken } from '@utils/converter';
 import {
@@ -97,12 +97,21 @@ const authServiceHandler = [
         return HttpResponse.json({ message: '리프레시 토큰이 만료되었습니다.' }, { status: 401 });
       }
 
-      // 토큰에서 userId 추출
-      const userId = convertTokenToUserId(accessToken);
-      if (userId === 0) return new HttpResponse(null, { status: 401 });
+      let newAccessToken;
+
+      // ToDo: 추후 삭제
+      if (accessToken.split('')[1] === JWT_TOKEN_DUMMY) {
+        newAccessToken = 'newMockedAccessToken';
+      } else {
+        // 토큰에서 userId 추출하도록 수정
+        const userId = convertTokenToUserId(accessToken);
+        if (userId === 0) return new HttpResponse(null, { status: 401 });
+
+        newAccessToken = generateDummyToken(userId);
+      }
 
       // 액세스 토큰 갱신
-      const newAccessToken = generateDummyToken(userId);
+
       return new HttpResponse(null, {
         status: 200,
         headers: {
@@ -119,9 +128,16 @@ const authServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    // 토큰에서 userId 추출
-    const userId = convertTokenToUserId(accessToken);
-    if (userId === 0) return new HttpResponse(null, { status: 401 });
+    let userId;
+    // ToDo: 추후 삭제
+    if (accessToken.split('')[1] === JWT_TOKEN_DUMMY) {
+      const payload = JWT_TOKEN_DUMMY.split('.')[1];
+      userId = Number(payload.replace('mocked-payload-', ''));
+    } else {
+      // 토큰에서 userId 추출
+      userId = convertTokenToUserId(accessToken);
+      if (userId === 0) return new HttpResponse(null, { status: 401 });
+    }
 
     const foundUser = USER_DUMMY.find((user) => user.userId === userId);
     if (!foundUser) return new HttpResponse(null, { status: 404 });
@@ -227,7 +243,6 @@ const authServiceHandler = [
     }
 
     const existingUser = USER_DUMMY.find((user) => user.username === username && user.email === email);
-
     if (!existingUser) return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
 
     existingUser.password = TEMP_PASSWORD_DUMMY;
@@ -239,9 +254,17 @@ const authServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return HttpResponse.json({ message: '인증 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    // 토큰에서 userId 추출
-    const userId = convertTokenToUserId(accessToken);
-    if (userId === 0) return new HttpResponse(null, { status: 401 });
+    let userId;
+    // ToDo: 추후 삭제
+    console.log(accessToken);
+    if (accessToken === JWT_TOKEN_DUMMY) {
+      const payload = JWT_TOKEN_DUMMY.split('.')[1];
+      userId = Number(payload.replace('mocked-payload-', ''));
+    } else {
+      // 토큰에서 userId 추출
+      userId = convertTokenToUserId(accessToken);
+      if (userId === 0) return new HttpResponse(null, { status: 401 });
+    }
 
     const existingUser = USER_DUMMY.find((user) => user.userId === Number(userId));
     if (!existingUser) return HttpResponse.json({ message: '해당 사용자를 찾을 수 없습니다.' }, { status: 404 });
