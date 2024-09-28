@@ -64,7 +64,6 @@ const authServiceHandler = [
     const { username, password } = (await request.json()) as UserSignInForm;
 
     const foundUser = USER_DUMMY.find((user) => user.username === username && user.password === password);
-
     if (!foundUser) return HttpResponse.json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' }, { status: 401 });
 
     const accessToken = generateDummyToken(foundUser.userId);
@@ -111,13 +110,12 @@ const authServiceHandler = [
       } else {
         // 토큰에서 userId 추출하도록 수정
         const userId = convertTokenToUserId(accessToken);
-        if (userId === 0) return new HttpResponse(null, { status: 401 });
+        if (!userId) return new HttpResponse(null, { status: 401 });
 
         newAccessToken = generateDummyToken(userId);
       }
 
       // 액세스 토큰 갱신
-
       return new HttpResponse(null, {
         status: 200,
         headers: {
@@ -125,6 +123,7 @@ const authServiceHandler = [
         },
       });
     }
+
     return HttpResponse.json({ message: '리프레시 토큰이 유효하지 않습니다.' }, { status: 401 });
   }),
 
@@ -136,13 +135,13 @@ const authServiceHandler = [
 
     let userId;
     // ToDo: 추후 삭제
-    if (accessToken.split('')[1] === JWT_TOKEN_DUMMY) {
+    if (accessToken === JWT_TOKEN_DUMMY) {
       const payload = JWT_TOKEN_DUMMY.split('.')[1];
       userId = Number(payload.replace('mocked-payload-', ''));
     } else {
       // 토큰에서 userId 추출
       userId = convertTokenToUserId(accessToken);
-      if (userId === 0) return new HttpResponse(null, { status: 401 });
+      if (!userId) return new HttpResponse(null, { status: 401 });
     }
 
     const foundUser = USER_DUMMY.find((user) => user.userId === userId);
@@ -198,7 +197,7 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
 
-    if (!EMAIL_REGEX.test(email))
+    if (!email || !EMAIL_REGEX.test(email))
       return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
 
     return HttpResponse.json(null, { status: 200 });
@@ -268,7 +267,7 @@ const authServiceHandler = [
     } else {
       // 토큰에서 userId 추출
       userId = convertTokenToUserId(accessToken);
-      if (userId === 0) return new HttpResponse(null, { status: 401 });
+      if (!userId) return new HttpResponse(null, { status: 401 });
     }
 
     const existingUser = USER_DUMMY.find((user) => user.userId === Number(userId));

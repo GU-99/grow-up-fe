@@ -24,6 +24,7 @@ export const generateSecureUserId = (id: string) => {
   return `${id.slice(0, -secureLength)}${'*'.repeat(secureLength)}`;
 };
 
+// 모의 토큰 생성 함수
 export const generateDummyToken = (userId: number) => {
   const header = { alg: 'none', typ: 'JWT' };
   const payload = { userId };
@@ -45,7 +46,7 @@ export const generateDummyToken = (userId: number) => {
 
 export const convertTokenToUserId = (accessToken: string) => {
   const tokenParts = accessToken.split('.');
-  if (tokenParts.length !== 3) return 0;
+  if (tokenParts.length !== 3) return null;
 
   const payload = tokenParts[1];
 
@@ -57,11 +58,11 @@ export const convertTokenToUserId = (accessToken: string) => {
   try {
     // base64 페이로드 디코딩
     const decodedPayload = JSON.parse(atob(base64WithPadding));
-    const { userId } = decodedPayload;
+    const { userId }: { userId: number } = decodedPayload;
 
     return userId;
   } catch (error) {
     console.error('토큰 페이로드 디코딩 오류:', error);
-    return 0;
+    return null;
   }
 };
