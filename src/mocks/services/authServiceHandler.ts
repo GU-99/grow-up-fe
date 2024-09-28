@@ -79,9 +79,11 @@ const authServiceHandler = [
   }),
 
   // 액세스 토큰 갱신 API
-  http.post(`${BASE_URL}/user/refresh`, async ({ cookies }) => {
-    const { refreshToken, refreshTokenExpiresAt, accessToken } = cookies;
+  http.post(`${BASE_URL}/user/refresh`, async ({ cookies, request }) => {
+    const accessToken = request.headers.get('Authorization');
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
 
+    const { refreshToken, refreshTokenExpiresAt } = cookies;
     const cookieRefreshToken = Cookies.get('refreshToken');
 
     if (!refreshToken || !refreshTokenExpiresAt) {
@@ -100,7 +102,7 @@ const authServiceHandler = [
       let newAccessToken;
 
       // ToDo: 추후 삭제
-      if (accessToken.split('')[1] === JWT_TOKEN_DUMMY) {
+      if (accessToken === JWT_TOKEN_DUMMY) {
         newAccessToken = 'newMockedAccessToken';
       } else {
         // 토큰에서 userId 추출하도록 수정
@@ -256,7 +258,6 @@ const authServiceHandler = [
 
     let userId;
     // ToDo: 추후 삭제
-    console.log(accessToken);
     if (accessToken === JWT_TOKEN_DUMMY) {
       const payload = JWT_TOKEN_DUMMY.split('.')[1];
       userId = Number(payload.replace('mocked-payload-', ''));
