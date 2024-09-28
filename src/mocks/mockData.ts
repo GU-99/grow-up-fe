@@ -1,6 +1,6 @@
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
 
-import type { User } from '@/types/UserType';
+import type { UserInfo } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
@@ -35,24 +35,14 @@ type TaskFile = {
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const VERIFICATION_CODE_DUMMY = '1234';
-
-export const USER_INFO_DUMMY = {
-  provider: 'LOCAL',
-  userId: 4,
-  username: 'test123',
-  password: 'qwer@1234',
-  email: 'momoco@gmail.com',
-  nickname: 'momoco',
-  profileImageName: null,
-  bio: "Hi, I'm Momoco!",
-  links: ['momoco@github.com'],
-};
+export const TEMP_PASSWORD_DUMMY = '!1p2l3nqlz';
 
 // 사용자 테이블 Mock (사용자 링크 테이블 포함)
-export const USER_DUMMY: User[] = [
+export const USER_DUMMY: UserInfo[] = [
   {
     userId: 1,
-    username: null,
+    username: 'panda_dev',
+    password: 'password1',
     email: 'one@naver.com',
     provider: 'GOOGLE',
     nickname: '판다',
@@ -62,7 +52,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 2,
-    username: null,
+    username: 'chameleon_design',
+    password: 'password2',
     email: 'two@naver.com',
     provider: 'KAKAO',
     nickname: '카멜레온',
@@ -72,7 +63,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 3,
-    username: null,
+    username: 'redpanda_front',
+    password: 'password3',
     email: 'three@naver.com',
     provider: 'GOOGLE',
     nickname: '랫서판다',
@@ -82,7 +74,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 4,
-    username: null,
+    username: 'polar_bear_front',
+    password: 'password4',
     email: 'four@naver.com',
     provider: 'KAKAO',
     nickname: '북금곰',
@@ -92,7 +85,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 5,
-    username: null,
+    username: 'tiger_backend',
+    password: 'password5',
     email: 'five@naver.com',
     provider: 'KAKAO',
     nickname: '호랑이',
@@ -102,7 +96,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 6,
-    username: null,
+    username: 'sloth_fullstack',
+    password: 'password6',
     email: 'six@naver.com',
     provider: 'GOOGLE',
     nickname: '나무늘보',
@@ -112,7 +107,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 7,
-    username: null,
+    username: 'wombat_backend',
+    password: 'password7',
     email: 'seven@naver.com',
     provider: 'KAKAO',
     nickname: '웜뱃',
@@ -122,7 +118,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 8,
-    username: null,
+    username: 'beluga_design',
+    password: 'password8',
     email: 'eight@naver.com',
     provider: 'GOOGLE',
     nickname: '벨루가',
@@ -132,7 +129,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 9,
-    username: null,
+    username: 'penguin_dba',
+    password: 'password9',
     email: 'nine@naver.com',
     provider: 'KAKAO',
     nickname: '펭귄',
@@ -142,7 +140,8 @@ export const USER_DUMMY: User[] = [
   },
   {
     userId: 10,
-    username: null,
+    username: 'beaver_devops',
+    password: 'password10',
     email: 'ten@naver.com',
     provider: 'GOOGLE',
     nickname: '비버',
@@ -153,6 +152,7 @@ export const USER_DUMMY: User[] = [
   {
     userId: 11,
     username: 'eleven',
+    password: 'password11',
     email: 'eleven@naver.com',
     provider: 'LOCAL',
     nickname: '판다아빠',
@@ -163,6 +163,7 @@ export const USER_DUMMY: User[] = [
   {
     userId: 12,
     username: 'twelve',
+    password: 'password12',
     email: 'twelve@naver.com',
     provider: 'LOCAL',
     nickname: '판다엄마',
@@ -173,6 +174,7 @@ export const USER_DUMMY: User[] = [
   {
     userId: 13,
     username: 'thirteen',
+    password: 'password13',
     email: 'thirteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다형',
@@ -183,6 +185,7 @@ export const USER_DUMMY: User[] = [
   {
     userId: 14,
     username: 'fourteen',
+    password: 'password14',
     email: 'fourteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다누나',
@@ -193,6 +196,7 @@ export const USER_DUMMY: User[] = [
   {
     userId: 15,
     username: 'fifteen',
+    password: 'password15',
     email: 'fifteen@naver.com',
     provider: 'LOCAL',
     nickname: '판다동생',
@@ -200,7 +204,106 @@ export const USER_DUMMY: User[] = [
     links: [],
     profileImageName: null,
   },
-] as const;
+  {
+    provider: 'LOCAL',
+    userId: 16,
+    username: 'test123',
+    password: 'qwer@1234',
+    email: 'momoco@gmail.com',
+    nickname: 'momoco',
+    profileImageName: null,
+    bio: "Hi, I'm Momoco!",
+    links: ['momoco@github.com'],
+  },
+  {
+    provider: 'LOCAL',
+    userId: 17,
+    username: 'brown',
+    password: 'test1234!',
+    email: 'brown@example.com',
+    nickname: '브라운',
+    profileImageName: 'Image1.jpg',
+    bio: '게임을 좋아하는 개발자',
+    links: ['brown@example.com'],
+  },
+  {
+    provider: 'KAKAO',
+    userId: 18,
+    username: 'cony',
+    password: 'test1234!',
+    email: 'cony@example.com',
+    nickname: '코니',
+    profileImageName: 'Image2.png',
+    bio: '커피와 책을 사랑하는 디자이너',
+    links: ['cony@example.com'],
+  },
+  {
+    provider: 'GOOGLE',
+    userId: 19,
+    username: 'leonard',
+    password: 'test1234!',
+    email: 'leonard@example.com',
+    nickname: '레너드',
+    profileImageName: 'Image3.jpeg',
+    bio: '자연을 사랑하는 사진작가',
+    links: ['leonard@example.com'],
+  },
+  {
+    provider: 'LOCAL',
+    userId: 20,
+    username: 'sally',
+    password: 'test1234!',
+    email: 'sally@example.com',
+    nickname: '샐리',
+    profileImageName: 'Image1.webp',
+    bio: '24시간이 모자란 워커홀릭 개발자',
+    links: ['sally@example.com'],
+  },
+  {
+    provider: 'KAKAO',
+    userId: 21,
+    username: 'james',
+    password: 'test1234!',
+    email: 'james@example.com',
+    nickname: '제임스',
+    profileImageName: 'Image2.png',
+    bio: '커피를 코드로 바꾸는 마법사',
+    links: ['james@example.com'],
+  },
+  {
+    provider: 'GOOGLE',
+    userId: 22,
+    username: 'edward',
+    password: 'test1234!',
+    email: 'edward@example.com',
+    nickname: '에드워드',
+    profileImageName: 'Image3.jpeg',
+    bio: '버그를 춤추게 하는 디버깅의 달인',
+    links: ['edward@example.com'],
+  },
+  {
+    provider: 'LOCAL',
+    userId: 23,
+    username: 'mary',
+    password: 'test1234!',
+    email: 'mary@example.com',
+    nickname: '메리',
+    profileImageName: 'Image4.jpg',
+    bio: '픽셀을 요리하는 디자인 셰프',
+    links: ['mary@example.com'],
+  },
+  {
+    provider: 'LOCAL',
+    userId: 24,
+    username: 'tom',
+    password: 'test1234!',
+    email: 'tom@example.com',
+    nickname: '톰',
+    profileImageName: 'Image5.jpeg',
+    bio: '알고리즘으로 세상을 정복하려는 꿈나무',
+    links: ['tom@example.com'],
+  },
+];
 
 // 역할 테이블 Mock
 export const ROLE_DUMMY: Role[] = [

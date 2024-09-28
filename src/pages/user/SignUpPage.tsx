@@ -20,7 +20,7 @@ export default function SignUpPage() {
   const methods = useForm<UserSignUpForm>({
     mode: 'onChange',
     defaultValues: {
-      username: null,
+      username: '',
       email: '',
       verificationCode: '',
       nickname: '',

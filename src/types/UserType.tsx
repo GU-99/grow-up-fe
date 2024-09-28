@@ -2,13 +2,17 @@ import type { Role } from '@/types/RoleType';
 
 export type User = {
   userId: number;
-  username: string | null;
+  username: string;
   email: string;
   provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
   nickname: string;
   bio: string | null;
   links: string[];
   profileImageName: string | null;
+};
+
+export type UserInfo = User & {
+  password: string;
 };
 
 export type SearchUser = Pick<User, 'userId' | 'nickname'>;

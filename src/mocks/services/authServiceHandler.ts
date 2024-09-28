@@ -1,17 +1,19 @@
 import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
-import { USER_INFO_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
+import { TEMP_PASSWORD_DUMMY, USER_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
+import { EMAIL_REGEX } from '@constants/regex';
+import { convertTokenToUserId, generateDummyToken } from '@utils/converter';
 import {
   CheckNicknameForm,
   EmailVerificationForm,
   RequestEmailCode,
   SearchPasswordForm,
   UpdatePasswordRequest,
+  UserInfo,
   UserSignInForm,
-  UserSignUpForm,
+  UserSignUpRequest,
 } from '@/types/UserType';
-import { EMAIL_REGEX } from '@/constants/regex';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
@@ -19,7 +21,7 @@ const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN
 const authServiceHandler = [
   // 회원가입 API
   http.post(`${BASE_URL}/user`, async ({ request }) => {
-    const { verificationCode } = (await request.json()) as UserSignUpForm;
+    const { verificationCode, email, ...restSignUpData } = (await request.json()) as UserSignUpRequest;
 
     if (verificationCode !== VERIFICATION_CODE_DUMMY) {
       return HttpResponse.json(
@@ -28,6 +30,18 @@ const authServiceHandler = [
       );
     }
 
+    const existingUser = USER_DUMMY.find((user) => user.email === email);
+    if (existingUser) return HttpResponse.json({ message: '해당 이메일을 사용할 수 없습니다.' }, { status: 400 });
+
+    const newUser: UserInfo = {
+      userId: USER_DUMMY.length + 1,
+      provider: 'LOCAL',
+      email,
+      profileImageName: null,
+      ...restSignUpData,
+    };
+    USER_DUMMY.push(newUser);
+
     return HttpResponse.json(null, { status: 200 });
   }),
 
@@ -35,9 +49,8 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/nickname`, async ({ request }) => {
     const { nickname } = (await request.json()) as CheckNicknameForm;
 
-    if (nickname === USER_INFO_DUMMY.nickname) {
-      return HttpResponse.json({ message: '사용할 수 없는 닉네임입니다.' }, { status: 400 });
-    }
+    const nicknameExists = USER_DUMMY.some((user) => user.nickname === nickname);
+    if (nicknameExists) return HttpResponse.json({ message: '사용할 수 없는 닉네임입니다.' }, { status: 400 });
 
     return HttpResponse.json(null, { status: 200 });
   }),
@@ -46,27 +59,28 @@ const authServiceHandler = [
   http.post(`${BASE_URL}/user/login`, async ({ request }) => {
     const { username, password } = (await request.json()) as UserSignInForm;
 
-    if (username === USER_INFO_DUMMY.username && password === USER_INFO_DUMMY.password) {
-      const accessToken = 'mockedAccessToken';
-      const refreshToken = 'mockedRefreshToken';
+    const foundUser = USER_DUMMY.find((user) => user.username === username && user.password === password);
 
-      return new HttpResponse(null, {
-        status: 200,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Set-Cookie': [
-            `refreshToken=${refreshToken}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
-            `refreshTokenExpiresAt=${refreshTokenExpiryDate}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
-          ].join(', '),
-        },
-      });
-    }
-    return HttpResponse.json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' }, { status: 401 });
+    if (!foundUser) return HttpResponse.json({ message: '아이디 또는 비밀번호가 잘못되었습니다.' }, { status: 401 });
+
+    const accessToken = generateDummyToken(foundUser.userId);
+    const refreshToken = generateDummyToken(foundUser.userId);
+
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Set-Cookie': [
+          `refreshToken=${refreshToken}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
+          `refreshTokenExpiresAt=${refreshTokenExpiryDate}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
+        ].join(', '),
+      },
+    });
   }),
 
   // 액세스 토큰 갱신 API
   http.post(`${BASE_URL}/user/refresh`, async ({ cookies }) => {
-    const { refreshToken, refreshTokenExpiresAt } = cookies;
+    const { refreshToken, refreshTokenExpiresAt, accessToken } = cookies;
 
     const cookieRefreshToken = Cookies.get('refreshToken');
 
@@ -83,8 +97,12 @@ const authServiceHandler = [
         return HttpResponse.json({ message: '리프레시 토큰이 만료되었습니다.' }, { status: 401 });
       }
 
+      // 토큰에서 userId 추출
+      const userId = convertTokenToUserId(accessToken);
+      if (userId === 0) return new HttpResponse(null, { status: 401 });
+
       // 액세스 토큰 갱신
-      const newAccessToken = 'newMockedAccessToken';
+      const newAccessToken = generateDummyToken(userId);
       return new HttpResponse(null, {
         status: 200,
         headers: {
@@ -98,9 +116,17 @@ const authServiceHandler = [
   // 로그인 한 사용자 정보 조회 API
   http.get(`${BASE_URL}/user/me`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
+
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    return HttpResponse.json(USER_INFO_DUMMY, { status: 200 });
+    // 토큰에서 userId 추출
+    const userId = convertTokenToUserId(accessToken);
+    if (userId === 0) return new HttpResponse(null, { status: 401 });
+
+    const foundUser = USER_DUMMY.find((user) => user.userId === userId);
+    if (!foundUser) return new HttpResponse(null, { status: 404 });
+
+    return HttpResponse.json(foundUser, { status: 200 });
   }),
 
   // 로그아웃 API
@@ -156,12 +182,18 @@ const authServiceHandler = [
     return HttpResponse.json(null, { status: 200 });
   }),
 
+  // ToDo: API 확정 후 수정
   // 이메일 인증 번호 확인 API
   http.post(`${BASE_URL}/user/verify/code`, async ({ request }) => {
     const { email, verificationCode } = (await request.json()) as EmailVerificationForm;
 
-    if (email !== USER_INFO_DUMMY.email || verificationCode !== VERIFICATION_CODE_DUMMY)
+    const verifyUserEmailAndCode = (userEmail: string, code: string) => {
+      return USER_DUMMY.some((user) => user.email === userEmail) && code === VERIFICATION_CODE_DUMMY;
+    };
+
+    if (!verifyUserEmailAndCode(email, verificationCode)) {
       return HttpResponse.json({ message: '인증번호가 일치하지 않습니다.' }, { status: 401 });
+    }
 
     return HttpResponse.json(null, { status: 200 });
   }),
@@ -177,17 +209,15 @@ const authServiceHandler = [
       );
     }
 
-    if (email !== USER_INFO_DUMMY.email)
-      return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
+    const existingUser = USER_DUMMY.find((user) => user.email === email);
+    if (!existingUser) return HttpResponse.json({ message: '이메일을 다시 확인해 주세요.' }, { status: 400 });
 
-    return HttpResponse.json({ username: USER_INFO_DUMMY.username }, { status: 200 });
+    return HttpResponse.json({ username: existingUser.username }, { status: 200 });
   }),
 
   // 비밀번호 찾기 API
   http.post(`${BASE_URL}/user/recover/password`, async ({ request }) => {
     const { username, email, verificationCode } = (await request.json()) as SearchPasswordForm;
-
-    const tempPassword = '!1p2l3nqlz';
 
     if (verificationCode !== VERIFICATION_CODE_DUMMY) {
       return HttpResponse.json(
@@ -196,12 +226,12 @@ const authServiceHandler = [
       );
     }
 
-    if (username !== USER_INFO_DUMMY.username || email !== USER_INFO_DUMMY.email) {
-      return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
-    }
+    const existingUser = USER_DUMMY.find((user) => user.username === username && user.email === email);
 
-    USER_INFO_DUMMY.password = tempPassword;
-    return HttpResponse.json({ password: tempPassword }, { status: 200 });
+    if (!existingUser) return HttpResponse.json({ message: '이메일과 아이디를 다시 확인해 주세요.' }, { status: 400 });
+
+    existingUser.password = TEMP_PASSWORD_DUMMY;
+    return HttpResponse.json({ password: TEMP_PASSWORD_DUMMY }, { status: 200 });
   }),
 
   // 비밀번호 변경 API
@@ -209,15 +239,19 @@ const authServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return HttpResponse.json({ message: '인증 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    const userId = accessToken.split('.')[1].replace('mocked-payload-', '');
-    if (Number(userId) !== USER_INFO_DUMMY.userId)
-      return HttpResponse.json({ message: '해당 사용자를 찾을 수 없습니다.' }, { status: 404 });
+    // 토큰에서 userId 추출
+    const userId = convertTokenToUserId(accessToken);
+    if (userId === 0) return new HttpResponse(null, { status: 401 });
 
+    const existingUser = USER_DUMMY.find((user) => user.userId === Number(userId));
+    if (!existingUser) return HttpResponse.json({ message: '해당 사용자를 찾을 수 없습니다.' }, { status: 404 });
+
+    // 비밀번호 변경
     const { password, newPassword } = (await request.json()) as UpdatePasswordRequest;
-    if (password !== USER_INFO_DUMMY.password)
+    if (password !== existingUser.password)
       return HttpResponse.json({ message: '비밀번호를 다시 확인해주세요.' }, { status: 400 });
 
-    USER_INFO_DUMMY.password = newPassword;
+    existingUser.password = newPassword;
     return HttpResponse.json(null, { status: 200 });
   }),
 ];
