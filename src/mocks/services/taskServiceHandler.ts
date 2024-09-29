@@ -111,7 +111,7 @@ const taskServiceHandler = [
     TASK_FILE_DUMMY.splice(taskFileIndex, 1);
 
     const fileIndex = FILE_DUMMY.findIndex((file) => file.fileId === Number(fileId) && file.taskId === Number(taskId));
-    if (taskFileIndex === -1) return new HttpResponse(null, { status: 404 });
+    if (fileIndex === -1) return new HttpResponse(null, { status: 404 });
     FILE_DUMMY.splice(fileIndex, 1);
 
     return new HttpResponse(null, { status: 204 });
