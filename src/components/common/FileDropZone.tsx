@@ -68,7 +68,7 @@ export default function FileDropZone({
                 className="text-close"
                 onClick={(e: React.MouseEvent<HTMLOrSVGElement>) => {
                   e.preventDefault();
-                  handleFileDeleteClick(id);
+                  handleFileDeleteClick(fileId.toString());
                 }}
               />
             </li>
