@@ -93,6 +93,29 @@ const taskServiceHandler = [
 
     return new HttpResponse(null, { status: 200 });
   }),
+  // 일정 파일 삭제 API
+  http.delete(`${BASE_URL}/project/:projectId/task/:taskId/file/:fileId`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId, fileId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
+    const task = TASK_DUMMY.find((task) => task.taskId === Number(taskId));
+    if (!task) return new HttpResponse(null, { status: 404 });
+
+    const taskFileIndex = TASK_FILE_DUMMY.findIndex(
+      (taskFile) => taskFile.fileId === Number(fileId) && taskFile.taskId === Number(taskId),
+    );
+    if (taskFileIndex === -1) return new HttpResponse(null, { status: 404 });
+    TASK_FILE_DUMMY.splice(taskFileIndex, 1);
+
+    const fileIndex = FILE_DUMMY.findIndex((file) => file.fileId === Number(fileId) && file.taskId === Number(taskId));
+    if (taskFileIndex === -1) return new HttpResponse(null, { status: 404 });
+    FILE_DUMMY.splice(fileIndex, 1);
+
+    return new HttpResponse(null, { status: 204 });
+  }),
   // 일정 순서 변경 API
   http.patch(`${BASE_URL}/project/:projectId/task/order`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
