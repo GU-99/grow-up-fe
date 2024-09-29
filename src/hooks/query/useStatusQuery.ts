@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
 import { createStatus, getStatusList, updateStatus, updateStatusesOrder } from '@services/statusService';
+import { generateProjectQueryKey, generateStatusesQueryKey, generateTasksQueryKey } from '@utils/queryKeyGenergator';
 
 import type { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
@@ -58,7 +59,7 @@ export function useReadStatuses(projectId: Project['projectId'], statusId?: Proj
     isError: isStatusError,
     error: statusError,
   } = useQuery({
-    queryKey: ['projects', projectId, 'statuses'],
+    queryKey: generateStatusesQueryKey(projectId),
     queryFn: async () => {
       const { data } = await getStatusList(projectId);
       return data;
@@ -103,7 +104,7 @@ export function useCreateStatus(projectId: Project['projectId']) {
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 추가하였습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['projects', projectId],
+        queryKey: generateProjectQueryKey(projectId),
       });
     },
   });
@@ -120,7 +121,7 @@ export function useUpdateStatus(projectId: Project['projectId'], statusId: Proje
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 수정했습니다.');
       queryClient.invalidateQueries({
-        queryKey: ['projects', projectId],
+        queryKey: generateProjectQueryKey(projectId),
       });
     },
   });
@@ -131,8 +132,8 @@ export function useUpdateStatus(projectId: Project['projectId'], statusId: Proje
 export function useUpdateStatusesOrder(projectId: Project['projectId']) {
   const { toastError } = useToast();
   const queryClient = useQueryClient();
-  const queryKeyTasks = ['projects', projectId, 'tasks'];
-  const queryKeyStatuses = ['projects', projectId, 'statuses'];
+  const TasksQueryKey = generateTasksQueryKey(projectId);
+  const statusesQueryKey = generateStatusesQueryKey(projectId);
 
   const mutation = useMutation({
     mutationFn: (newStatusTaskList: TaskListWithStatus[]) => {
@@ -140,19 +141,19 @@ export function useUpdateStatusesOrder(projectId: Project['projectId']) {
       return updateStatusesOrder(projectId, { statuses: statusOrders });
     },
     onMutate: async (newStatusTaskList: TaskListWithStatus[]) => {
-      await queryClient.cancelQueries({ queryKey: queryKeyTasks });
+      await queryClient.cancelQueries({ queryKey: TasksQueryKey });
 
-      const previousStatusTaskList = queryClient.getQueryData(queryKeyTasks);
-      queryClient.setQueryData(queryKeyTasks, newStatusTaskList);
+      const previousStatusTaskList = queryClient.getQueryData(TasksQueryKey);
+      queryClient.setQueryData(TasksQueryKey, newStatusTaskList);
 
       return { previousStatusTaskList };
     },
     onError: (error, newStatusTaskList, context) => {
       toastError('프로젝트 상태 순서 변경에 실패 하였습니다. 잠시후 다시 진행해주세요.');
-      queryClient.setQueryData(queryKeyTasks, context?.previousStatusTaskList);
+      queryClient.setQueryData(TasksQueryKey, context?.previousStatusTaskList);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeyStatuses, type: 'all' });
+      queryClient.invalidateQueries({ queryKey: statusesQueryKey, type: 'all' });
     },
   });
 
