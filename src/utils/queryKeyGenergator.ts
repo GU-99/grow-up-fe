@@ -86,7 +86,7 @@ export function generateTasksQueryKey(projectId: Project['projectId']) {
  * @returns {(string | number)[]}
  */
 export function generateTaskFilesQueryKey(projectId: Project['projectId'], taskId: Task['taskId']) {
-  return [queryKeys.projects, projectId, queryKeys.teams, taskId, queryKeys.files];
+  return [queryKeys.projects, projectId, queryKeys.tasks, taskId, queryKeys.files];
 }
 
 /**
