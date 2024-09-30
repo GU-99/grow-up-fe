@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  generateStatusesQueryKey,
   generateTaskAssigneesQueryKey,
   generateTaskFilesQueryKey,
   generateTasksQueryKey,
@@ -9,6 +10,7 @@ import {
   addAssignee,
   createTask,
   deleteAssignee,
+  deleteTask,
   deleteTaskFile,
   findAssignees,
   findTaskFiles,
@@ -40,7 +42,6 @@ function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task
   return excludedTaskName ? taskNameList.filter((taskName) => taskName !== excludedTaskName) : taskNameList;
 }
 
-// Todo: Task Query D로직 작성하기
 // 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
   const { toastError, toastSuccess } = useToast();
@@ -183,6 +184,29 @@ export function useUpdateTaskInfo(projectId: Project['projectId'], taskId: Task[
     onSuccess: () => {
       toastSuccess('일정 정보를 수정 했습니다.');
       queryClient.invalidateQueries({ queryKey: tasksQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 일정 삭제
+export function useDeleteTask(projectId: Project['projectId']) {
+  const { toastError, toastSuccess } = useToast();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (taskId: Task['taskId']) => deleteTask(projectId, taskId),
+    onError: () => toastError('일정 삭제에 실패 했습니다. 잠시후 다시 시도해주세요.'),
+    onSuccess: (res, taskId) => {
+      const tasksQueryKey = generateTasksQueryKey(projectId);
+      const filesQueryKey = generateTaskFilesQueryKey(projectId, taskId);
+      const assigneesQueryKey = generateTaskAssigneesQueryKey(projectId, taskId);
+
+      toastSuccess('일정을 삭제 했습니다.');
+      queryClient.invalidateQueries({ queryKey: tasksQueryKey });
+      queryClient.removeQueries({ queryKey: filesQueryKey });
+      queryClient.removeQueries({ queryKey: assigneesQueryKey });
     },
   });
 
