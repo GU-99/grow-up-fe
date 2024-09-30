@@ -11,7 +11,7 @@ export default function ModalButton({ formId, backgroundColor, onClick, children
     <button
       type={formId ? 'submit' : 'button'}
       form={formId}
-      className={`h-full w-full rounded-md px-10 text-white ${backgroundColor}`}
+      className={`h-full w-full rounded-md px-10 text-white outline-none ${backgroundColor} hover:brightness-90`}
       onClick={handleClick}
     >
       {children}
