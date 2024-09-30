@@ -1,13 +1,17 @@
+import { AxiosError } from 'axios';
 import { FormProvider, useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import ProfileImageContainer from '@components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
 import { useStore } from '@stores/useStore';
+import { patchUserInfo } from '@services/userService';
+import useToast from '@hooks/useToast';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
-  const { userInfo: userInfoData } = useStore();
+  const { userInfo: userInfoData, editUserInfo } = useStore();
+  const { toastError, toastSuccess } = useToast();
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
@@ -16,27 +20,36 @@ export default function UserSettingPage() {
       email: userInfoData.email,
       nickname: userInfoData.nickname,
       bio: userInfoData.bio,
-      links: userInfoData.links,
       profileImageName: userInfoData.profileImageName,
     },
   });
 
-  // form 전송 함수
-  const onSubmit = async (data: EditUserInfoForm) => {
-    const { username, email, profileImageName, ...filteredData } = data;
-    console.log(data);
+  const { formState, register, setValue, watch, handleSubmit } = methods;
 
-    // TODO: 폼 제출 로직 작성
+  const onSubmit = async (data: EditUserInfoForm) => {
+    const editUserData = {
+      nickname: data.nickname,
+      bio: data.bio,
+    };
+
+    try {
+      await patchUserInfo(editUserData);
+      editUserInfo(editUserData);
+      toastSuccess('유저 정보가 수정되었습니다.');
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
+      else toastError('예상치 못한 에러가 발생했습니다.');
+    }
   };
 
   return (
     <FormProvider {...methods}>
       <div className="mx-auto max-w-300 py-30">
-        <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* 프로필 이미지 */}
           <ProfileImageContainer
-            imageUrl={methods.watch('profileImageName')}
-            setImageUrl={(url: string) => methods.setValue('profileImageName', url)}
+            imageUrl={watch('profileImageName')}
+            setImageUrl={(url: string) => setValue('profileImageName', url)}
           />
 
           {/* 아이디 */}
@@ -44,8 +57,8 @@ export default function UserSettingPage() {
             disabled
             label="아이디"
             required={false}
-            errors={methods.formState.errors.username?.message}
-            register={methods.register('username', USER_AUTH_VALIDATION_RULES.ID)}
+            errors={formState.errors.username?.message}
+            register={register('username', USER_AUTH_VALIDATION_RULES.ID)}
           />
 
           {/* 이메일 */}
@@ -53,16 +66,16 @@ export default function UserSettingPage() {
             disabled
             label="이메일"
             required={false}
-            errors={methods.formState.errors.email?.message}
-            register={methods.register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
+            errors={formState.errors.email?.message}
+            register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
           />
 
           {/* 닉네임, 중복 확인 */}
           <ValidationInput
             label="닉네임"
             required={false}
-            errors={methods.formState.errors.nickname?.message}
-            register={methods.register('nickname', USER_AUTH_VALIDATION_RULES.NICKNAME)}
+            errors={formState.errors.nickname?.message}
+            register={register('nickname', USER_AUTH_VALIDATION_RULES.NICKNAME)}
             isButtonInput
             buttonLabel="중복확인"
           />
@@ -73,7 +86,7 @@ export default function UserSettingPage() {
               자기소개
             </label>
             <textarea
-              {...methods.register('bio')}
+              {...register('bio')}
               id="bio"
               placeholder="ex) 안녕하세요. 홍길동입니다."
               className="block h-70 w-full resize-none rounded-lg border border-input p-8 text-sm outline-none placeholder:text-emphasis"
@@ -84,7 +97,7 @@ export default function UserSettingPage() {
           <button
             type="submit"
             className="h-25 w-full rounded-lg bg-sub px-8 font-bold"
-            disabled={methods.formState.isSubmitting}
+            disabled={formState.isSubmitting}
           >
             변경
           </button>

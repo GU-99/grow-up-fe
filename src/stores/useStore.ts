@@ -2,7 +2,7 @@ import { create, StateCreator } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { AUTH_SETTINGS } from '@constants/settings';
 import { decrypt, encrypt } from '@utils/cryptoHelper';
-import { User } from '@/types/UserType';
+import { EditUserInfoRequest, User } from '@/types/UserType';
 
 // Auth Slice
 type AuthStore = {
@@ -20,6 +20,7 @@ type AuthStore = {
 type UserStore = {
   userInfo: User;
   setUserInfo: (newUserInfo: User) => void;
+  editUserInfo: (newUserInfo: EditUserInfoRequest) => void;
   clearUserInfo: () => void;
 };
 
@@ -87,6 +88,11 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
     set({
       userInfo: newUserInfo,
     }),
+
+  editUserInfo: (newUserInfo: EditUserInfoRequest) =>
+    set((state) => ({
+      userInfo: { ...state.userInfo, ...newUserInfo },
+    })),
 
   clearUserInfo: () => {
     set({
