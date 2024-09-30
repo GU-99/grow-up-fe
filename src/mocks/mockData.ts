@@ -41,7 +41,7 @@ export const TEMP_PASSWORD_DUMMY = '!1p2l3nqlz';
 export const USER_DUMMY: UserInfo[] = [
   {
     userId: 1,
-    username: 'panda_dev',
+    username: 'panda_dev@gmail.com',
     password: 'password@1',
     email: 'one@naver.com',
     provider: 'GOOGLE',
@@ -89,7 +89,7 @@ export const USER_DUMMY: UserInfo[] = [
     password: 'password@5',
     email: 'five@naver.com',
     provider: 'KAKAO',
-    nickname: 'kakao_oauth_5',
+    nickname: '호랑이',
     bio: '백엔드 5년차',
     links: [],
     profileImageName: null,
@@ -133,7 +133,7 @@ export const USER_DUMMY: UserInfo[] = [
     password: 'password@9',
     email: 'nine@naver.com',
     provider: 'KAKAO',
-    nickname: 'kakao_oauth_9',
+    nickname: '펭귄',
     bio: 'MySQL, Postgre SQL DBA',
     links: [],
     profileImageName: null,
