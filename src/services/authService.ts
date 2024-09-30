@@ -10,7 +10,35 @@ import type {
   User,
   UserSignInForm,
   UpdatePasswordRequest,
+  CheckNicknameForm,
+  UserSignUpRequest,
 } from '@/types/UserType';
+
+/**
+ * 회원가입 API
+ *
+ * @export
+ * @async
+ * @param {UserSignUpRequest} signUpForm  - 회원가입 폼 데이터
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function signUp(signUpForm: UserSignUpRequest, axiosConfig: AxiosRequestConfig = {}) {
+  return defaultAxios.post('user', signUpForm, axiosConfig);
+}
+
+/**
+ * 닉네임 중복 확인 API
+ *
+ * @export
+ * @async
+ * @param {CheckNicknameForm} nicknameForm - 닉네임
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function checkNicknameDuplicate(nicknameForm: CheckNicknameForm, axiosConfig: AxiosRequestConfig = {}) {
+  return defaultAxios.post('user/nickname', nicknameForm, axiosConfig);
+}
 
 /**
  * 사용자 로그인 API

@@ -3,7 +3,6 @@ import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import ProfileImageContainer from '@components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
-import { USER_INFO_DUMMY } from '@mocks/mockData';
 import { useStore } from '@stores/useStore';
 import type { EditUserInfoForm } from '@/types/UserType';
 
@@ -82,7 +81,7 @@ export default function UserSettingPage() {
           </section>
 
           {/* 링크 */}
-          <LinkContainer initialLinks={USER_INFO_DUMMY.links} />
+          <LinkContainer initialLinks={userInfoData.links} />
 
           {/* 개인정보 수정 버튼 */}
           <button

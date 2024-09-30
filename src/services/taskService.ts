@@ -119,7 +119,7 @@ export async function findTaskFiles(
  * @async
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {Task['taskId']} taskId               - 일정 ID
- * @param {TaskUpdateForm} formData               - 일정 수정 정보 객체
+ * @param {TaskUpdateForm} formData             - 일정 수정 정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -130,6 +130,24 @@ export async function updateTaskInfo(
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.patch(`/project/${projectId}/task/${taskId}`, formData, axiosConfig);
+}
+
+/**
+ * 일정 삭제 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {Task['taskId']} taskId               - 일정 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteTask(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.delete(`/project/${projectId}/task/${taskId}`, axiosConfig);
 }
 
 /**

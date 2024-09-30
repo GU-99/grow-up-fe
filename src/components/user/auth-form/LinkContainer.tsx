@@ -49,23 +49,27 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
         링크
       </label>
       <div className="space-y-4">
-        {links.map((linkItem) => (
-          <div key={linkItem} className="flex h-25 items-center space-x-8 rounded-lg border border-input px-6 text-sm">
-            <div className="grow overflow-hidden">
-              <a href={`https://${linkItem}`} target="_blank" rel="noopener noreferrer">
-                {linkItem}
-              </a>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleRemoveLink(linkItem)}
-              className="flex size-18 items-center justify-center rounded-lg bg-sub"
-              aria-label="삭제"
+        {links &&
+          links.map((linkItem) => (
+            <div
+              key={linkItem}
+              className="flex h-25 items-center space-x-8 rounded-lg border border-input px-6 text-sm"
             >
-              <FaMinus className="size-8" />
-            </button>
-          </div>
-        ))}
+              <div className="grow overflow-hidden">
+                <a href={`https://${linkItem}`} target="_blank" rel="noopener noreferrer">
+                  {linkItem}
+                </a>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveLink(linkItem)}
+                className="flex size-18 items-center justify-center rounded-lg bg-sub"
+                aria-label="삭제"
+              >
+                <FaMinus className="size-8" />
+              </button>
+            </div>
+          ))}
         <div
           className={`flex h-25 items-center space-x-8 rounded-lg border border-input px-6 text-sm ${isFocused ? 'bg-white' : 'bg-disable'}`}
         >

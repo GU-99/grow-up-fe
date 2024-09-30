@@ -76,7 +76,7 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
   userInfo: {
     provider: 'LOCAL',
     userId: 0,
-    username: null,
+    username: '',
     email: '',
     nickname: '',
     bio: null,
@@ -93,7 +93,7 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
       userInfo: {
         provider: 'LOCAL',
         userId: 0,
-        username: null,
+        username: '',
         email: '',
         nickname: '',
         bio: null,

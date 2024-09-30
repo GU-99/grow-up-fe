@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { LuDownload } from 'react-icons/lu';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalLayout from '@layouts/ModalLayout';
+import ModalButton from '@components/modal/ModalButton';
 import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import CustomMarkdown from '@components/common/CustomMarkdown';
-import { useReadAssignees, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
+import { useDeleteTask, useReadAssignees, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 
 import type { Task } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
@@ -18,7 +19,7 @@ type ViewModalTaskProps = {
 };
 
 export default function DetailModalTask({ project, task, onClose: handleClose }: ViewModalTaskProps) {
-  // ToDo: 다운로드 파일 목록 가져오기
+  const { mutate: deleteTaskMutate } = useDeleteTask(project.projectId);
   const { status, isStatusLoading } = useReadStatuses(project.projectId, task.statusId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(project.projectId, task.taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(project.projectId, task.taskId);
@@ -28,6 +29,12 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
     () => (endDate && startDate !== endDate ? `${startDate} - ${endDate}` : startDate),
     [startDate, endDate],
   );
+
+  // ToDo: 일정 수정 버튼 클릭시 처리 추가할 것
+  const handleUpdateClick = () => {};
+
+  // ToDo: 유저 권한 확인하는 로직 추가할 것
+  const handleDeleteClick = (taskId: Task['taskId']) => deleteTaskMutate(taskId);
 
   return (
     <ModalPortal>
@@ -86,9 +93,14 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
                 </div>
               )}
             </section>
-            <button type="submit" className="h-25 w-full rounded-md bg-main px-10 text-white">
-              수정
-            </button>
+            <div className="flex min-h-25 gap-10">
+              <ModalButton backgroundColor="bg-main" onClick={handleUpdateClick}>
+                수정
+              </ModalButton>
+              <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(task.taskId)}>
+                삭제
+              </ModalButton>
+            </div>
           </article>
         )}
       </ModalLayout>

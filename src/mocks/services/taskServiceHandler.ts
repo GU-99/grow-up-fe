@@ -206,10 +206,58 @@ const taskServiceHandler = [
     if (!isIncludedTask) return new HttpResponse(null, { status: 404 });
 
     const index = TASK_DUMMY.findIndex((task) => task.taskId === Number(taskId));
-    if (index !== -1)
+    if (index !== -1) {
       TASK_DUMMY[index] = { ...TASK_DUMMY[index], ...taskInfoData, statusId: Number(taskInfoData.statusId) };
+    }
 
     return new HttpResponse(null, { status: 200 });
+  }),
+  // 일정 삭제 API
+  http.delete(`${BASE_URL}/project/:projectId/task/:taskId`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
+    const project = PROJECT_DUMMY.find((project) => project.projectId === Number(projectId));
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    const statuses = STATUS_DUMMY.filter((status) => status.projectId === project.projectId);
+    if (statuses.length === 0) return new HttpResponse(null, { status: 404 });
+
+    const task = TASK_DUMMY.find((task) => task.taskId === Number(taskId));
+    if (!task) return new HttpResponse(null, { status: 404 });
+
+    const isIncludedTask = statuses.map((status) => status.statusId).includes(task.statusId);
+    if (!isIncludedTask) return new HttpResponse(null, { status: 404 });
+
+    // 일정 삭제
+    const taskIndex = TASK_DUMMY.findIndex((task) => task.taskId === Number(taskId));
+    if (taskIndex !== -1) TASK_DUMMY.splice(taskIndex, 1);
+
+    // 일정의 수행자 삭제
+    const filteredTaskUser = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId !== Number(taskId));
+    if (filteredTaskUser.length !== TASK_USER_DUMMY.length) {
+      TASK_USER_DUMMY.length = 0;
+      TASK_USER_DUMMY.push(...filteredTaskUser);
+    }
+
+    // 일정의 파일 삭제
+    const filteredTaskFile = TASK_FILE_DUMMY.filter((taskFile) => taskFile.taskId !== Number(taskId));
+    if (filteredTaskFile.length !== TASK_FILE_DUMMY.length) {
+      TASK_FILE_DUMMY.length = 0;
+      TASK_FILE_DUMMY.push(...filteredTaskFile);
+    }
+
+    // MSW용 파일 정보 삭제
+    const filteredFile = FILE_DUMMY.filter((file) => file.taskId !== Number(taskId));
+    if (filteredFile.length !== FILE_DUMMY.length) {
+      FILE_DUMMY.length = 0;
+      FILE_DUMMY.push(...filteredFile);
+    }
+
+    return new HttpResponse(null, { status: 204 });
   }),
   // 일정 수행자 추가 API
   http.post(`${BASE_URL}/project/:projectId/task/:taskId/assignee`, async ({ request, params }) => {
