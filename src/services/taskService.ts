@@ -4,7 +4,7 @@ import type { AxiosRequestConfig } from 'axios';
 import type { TaskFile } from '@/types/FileType';
 import type { Project } from '@/types/ProjectType';
 import type { User, UserWithRole } from '@/types/UserType';
-import type { Task, TaskCreationForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
+import type { Task, TaskCreationForm, TaskUpdateForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
 
 /**
  * 프로젝트에 속한 모든 일정 목록 조회 API
@@ -26,14 +26,36 @@ export async function findTaskList(projectId: Project['projectId'], axiosConfig:
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {TaskCreationForm} formData           - 새로운 일정 정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<void>>}
+ * @returns {Promise<AxiosResponse<Task>>}
  */
 export function createTask(
   projectId: Project['projectId'],
   formData: TaskCreationForm,
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.post(`/project/${projectId}/task`, formData, axiosConfig);
+  return authAxios.post<Task>(`/project/${projectId}/task`, formData, axiosConfig);
+}
+
+/**
+ * 일정 파일 업로드 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId        - 프로젝트 ID
+ * @param {Task['taskId']} taskId                 - 일정 ID
+ * @param {File} file                             - 단일 파일 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}]   - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function uploadTaskFile(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  file: File,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  const fileFormData = new FormData();
+  fileFormData.append('file', file);
+  return authAxios.postForm(`/project/${projectId}/task/${taskId}/upload`, fileFormData, axiosConfig);
 }
 
 /**
@@ -91,6 +113,26 @@ export async function findTaskFiles(
 }
 
 /**
+ * 일정 정보 수정 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {Task['taskId']} taskId               - 일정 ID
+ * @param {TaskUpdateForm} formData               - 일정 수정 정보 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function updateTaskInfo(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  formData: TaskUpdateForm,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.patch(`/project/${projectId}/task/${taskId}`, formData, axiosConfig);
+}
+
+/**
  * 일정 수행자 추가 API
  *
  * @export
@@ -128,4 +170,24 @@ export async function deleteAssignee(
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.delete(`/project/${projectId}/task/${taskId}/assignee/${userId}`, axiosConfig);
+}
+
+/**
+ * 일정 파일 삭제 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {Task['taskId']} taskId               - 일정 ID
+ * @param {TaskFile['fileId']} fileId           - 일정 파일 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteTaskFile(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  fileId: TaskFile['fileId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.delete(`/project/${projectId}/task/${taskId}/file/${fileId}`, axiosConfig);
 }

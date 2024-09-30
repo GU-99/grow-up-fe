@@ -19,16 +19,18 @@ import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import {
   useAddAssignee,
   useDeleteAssignee,
+  useDeleteTaskFile,
   useReadAssignees,
   useReadStatusTasks,
   useReadTaskFiles,
+  useUpdateTaskInfo,
 } from '@hooks/query/useTaskQuery';
 import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser } from '@/types/UserType';
-import type { Task, TaskInfoForm } from '@/types/TaskType';
+import type { Task, TaskUpdateForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 
@@ -55,10 +57,12 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
 
+  const { mutate: updateTaskInfoMutate } = useUpdateTaskInfo(projectId, taskId);
   const { mutate: addAssigneeMutate } = useAddAssignee(projectId, taskId);
   const { mutate: deleteAssigneeMutate } = useDeleteAssignee(projectId, taskId);
+  const { mutate: deleteTaskFileMutate } = useDeleteTaskFile(projectId, taskId);
 
-  const methods = useForm<TaskInfoForm>({ mode: 'onChange' });
+  const methods = useForm<TaskUpdateForm>({ mode: 'onChange' });
   const {
     register,
     watch,
@@ -70,7 +74,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   useEffect(() => {
     if (task) {
       reset({
-        statusId: task.statusId,
+        statusId: task.statusId.toString(),
         name: task.name,
         content: task.content,
         startDate: task.startDate,
@@ -121,82 +125,90 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     updateFiles(files);
   };
 
-  // ToDo: 일정 파일 삭제 API 작업시 추가할 것
-  const handleFileDeleteClick = (fileId: string) => {};
+  const handleFileDeleteClick = (fileId: string) => deleteTaskFileMutate(Number(fileId));
 
   if (isStatusLoading || isTaskLoading || isProjectUserRoleLoading || isTaskFileLoading || isAssigneeLoading) {
     return <Spinner />;
   }
 
-  // ToDo: 일정 수정 API 작업시 추가할 것
-  const handleFormSubmit: SubmitHandler<TaskInfoForm> = async (data) => {
-    console.log('수정 폼 제출');
-    console.log(data);
+  const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => {
+    updateTaskInfoMutate(formData);
     handleClose();
   };
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <FormProvider {...methods}>
-          <form
-            id="updateTaskForm"
-            className="flex w-4/5 grow flex-col justify-center"
-            onSubmit={handleSubmit(handleFormSubmit)}
-          >
-            <StatusRadio statusFieldName="statusId" statusList={statusList} />
+        {isStatusLoading || isTaskLoading ? (
+          <Spinner />
+        ) : (
+          <>
+            <FormProvider {...methods}>
+              <form
+                id="updateTaskForm"
+                className="flex w-4/5 grow flex-col justify-center"
+                onSubmit={handleSubmit(handleFormSubmit)}
+              >
+                <StatusRadio statusFieldName="statusId" statusList={statusList} />
 
-            <DuplicationCheckInput
-              id="name"
-              label="일정"
-              value={watch('name')}
-              placeholder="일정명을 입력해주세요."
-              errors={errors.name?.message}
-              register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
-            />
+                <DuplicationCheckInput
+                  id="name"
+                  label="일정"
+                  value={watch('name')}
+                  placeholder="일정명을 입력해주세요."
+                  errors={errors.name?.message}
+                  register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
+                />
 
-            <PeriodDateInput
-              startDateLabel="시작일"
-              endDateLabel="종료일"
-              startDateId="startDate"
-              endDateId="endDate"
-              startDate={startDate}
-              endDate={endDate}
-              startDateFieldName="startDate"
-              endDateFieldName="endDate"
-            />
+                <PeriodDateInput
+                  startDateLabel="시작일"
+                  endDateLabel="종료일"
+                  startDateId="startDate"
+                  endDateId="endDate"
+                  startDate={startDate}
+                  endDate={endDate}
+                  startDateFieldName="startDate"
+                  endDateFieldName="endDate"
+                />
 
-            <MarkdownEditor id="content" label="내용" contentFieldName="content" />
-          </form>
-        </FormProvider>
-        <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
-
+                <MarkdownEditor id="content" label="내용" contentFieldName="content" />
+              </form>
+            </FormProvider>
+            <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
+          </>
+        )}
         <hr className="my-20" />
-
-        <section>
-          <SearchUserInput
-            id="search"
-            label="수행자"
-            keyword={keyword}
-            searchId={projectId}
-            loading={loading}
-            userList={userList}
-            searchCallbackInfo={searchCallbackInfo}
-            onKeywordChange={handleKeywordChange}
-            onUserClick={handleUserClick}
+        {isProjectUserRoleLoading || isAssigneeLoading ? (
+          <Spinner />
+        ) : (
+          <section>
+            <SearchUserInput
+              id="search"
+              label="수행자"
+              keyword={keyword}
+              searchId={projectId}
+              loading={loading}
+              userList={userList}
+              searchCallbackInfo={searchCallbackInfo}
+              onKeywordChange={handleKeywordChange}
+              onUserClick={handleUserClick}
+            />
+            <AssigneeList assigneeList={assigneeList} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
+          </section>
+        )}
+        <hr className="my-20" />
+        {isTaskFileLoading ? (
+          <Spinner />
+        ) : (
+          <FileDropZone
+            id="files"
+            label="첨부파일"
+            files={taskFileList}
+            accept={TASK_SETTINGS.FILE_ACCEPT}
+            onFileChange={handleFileChange}
+            onFileDrop={handleFileDrop}
+            onFileDeleteClick={handleFileDeleteClick}
           />
-          <AssigneeList assigneeList={assigneeList} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
-        </section>
-
-        <hr className="my-20" />
-
-        <FileDropZone
-          id="files"
-          label="첨부파일"
-          files={taskFileList}
-          onFileChange={handleFileChange}
-          onFileDrop={handleFileDrop}
-          onFileDeleteClick={handleFileDeleteClick}
-        />
+        )}
       </ModalLayout>
     </ModalPortal>
   );

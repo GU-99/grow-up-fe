@@ -22,7 +22,7 @@ export default function StatusRadio({ statusFieldName, statusList }: StatusRadio
       <div className="flex items-center justify-start gap-4">
         {statusList.map((status) => {
           const { statusId, statusName, colorCode } = status;
-          const isChecked = Number(watch('statusId')) === statusId;
+          const isChecked = Number(watch(statusFieldName)) === statusId;
           return (
             <label
               key={statusId}

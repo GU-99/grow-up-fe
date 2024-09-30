@@ -20,7 +20,7 @@ export default function SearchPasswordPage() {
     defaultValues: {
       username: '',
       email: '',
-      code: '',
+      verificationCode: '',
     },
   });
   const { handleSubmit, setError, setValue } = methods;
@@ -33,11 +33,11 @@ export default function SearchPasswordPage() {
 
   // ToDo: useAxios 훅 적용 후 해당 함수 수정 및 삭제하기
   const handleVerificationError = () => {
-    setError('code', {
+    setError('verificationCode', {
       type: 'manual',
       message: '인증번호가 일치하지 않습니다.',
     });
-    setValue('code', '');
+    setValue('verificationCode', '');
   };
 
   // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경

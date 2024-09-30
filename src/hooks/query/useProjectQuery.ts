@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenergator';
 import { getProjectList, getProjectUserRoleList } from '@services/projectService';
 
 import type { Team } from '@/types/TeamType';
@@ -13,7 +14,7 @@ export function useReadProjects(teamId: Team['teamId']) {
     isError: isProjectError,
     error: projectError,
   } = useQuery({
-    queryKey: ['teams', teamId, 'projects'],
+    queryKey: generateProjectsQueryKey(teamId),
     queryFn: async () => {
       const { data } = await getProjectList(teamId);
       return data;
@@ -31,7 +32,7 @@ export function useReadProjectUserRoleList(projectId: Project['projectId']) {
     isError: isErrorProjectUserRole,
     error: projectUserRoleError,
   } = useQuery({
-    queryKey: ['projects', projectId, 'users'],
+    queryKey: generateProjectUsersQueryKey(projectId),
     queryFn: async () => {
       const { data } = await getProjectUserRoleList(projectId);
       return data;
