@@ -1,7 +1,7 @@
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
+import ModalButton from '@components/modal/ModalButton';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
-import ModalFormButton from '@components/modal/ModalFormButton';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { Project } from '@/types/ProjectType';
@@ -14,6 +14,7 @@ type CreateModalProjectStatusProps = {
 };
 
 export default function CreateModalProjectStatus({ project, onClose: handleClose }: CreateModalProjectStatusProps) {
+  const createStatusFormId = 'createStatusForm';
   const statusMutation = useCreateStatus(project.projectId);
 
   // ToDo: Error 처리 추가할 것
@@ -25,8 +26,10 @@ export default function CreateModalProjectStatus({ project, onClose: handleClose
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <ModalProjectStatusForm formId="createStatusForm" project={project} onSubmit={handleSubmit} />
-        <ModalFormButton formId="createStatusForm" isCreate onClose={handleClose} />
+        <ModalProjectStatusForm formId={createStatusFormId} project={project} onSubmit={handleSubmit} />
+        <ModalButton formId={createStatusFormId} backgroundColor="bg-main">
+          등록
+        </ModalButton>
       </ModalLayout>
     </ModalPortal>
   );

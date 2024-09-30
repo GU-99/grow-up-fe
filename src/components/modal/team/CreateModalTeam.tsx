@@ -1,6 +1,6 @@
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
-import ModalFormButton from '@components/modal/ModalFormButton';
+import ModalButton from '@components/modal/ModalButton';
 import ModalTeamForm from '@components/modal/team/ModalTeamForm';
 
 import type { SubmitHandler } from 'react-hook-form';
@@ -11,6 +11,8 @@ type CreateModalProjectStatusProps = {
 };
 
 export default function CreateModalTeam({ onClose: handleClose }: CreateModalProjectStatusProps) {
+  const createTeamFormId = 'createTeamForm';
+
   const handleSubmit: SubmitHandler<Team> = async (data) => {
     console.log('팀 생성 폼 제출');
     console.log(data);
@@ -20,8 +22,10 @@ export default function CreateModalTeam({ onClose: handleClose }: CreateModalPro
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <ModalTeamForm formId="createTeamForm" onSubmit={handleSubmit} />
-        <ModalFormButton formId="createTeamForm" isCreate onClose={handleClose} />
+        <ModalTeamForm formId={createTeamFormId} onSubmit={handleSubmit} />
+        <ModalButton formId={createTeamFormId} backgroundColor="bg-main">
+          등록
+        </ModalButton>
       </ModalLayout>
     </ModalPortal>
   );

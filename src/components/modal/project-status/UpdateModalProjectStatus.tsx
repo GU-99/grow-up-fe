@@ -1,7 +1,7 @@
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
+import ModalButton from '@components/modal/ModalButton';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
-import ModalFormButton from '@components/modal/ModalFormButton';
 import { useUpdateStatus } from '@hooks/query/useStatusQuery';
 
 import type { SubmitHandler } from 'react-hook-form';
@@ -19,6 +19,7 @@ export default function UpdateModalProjectStatus({
   statusId,
   onClose: handleClose,
 }: UpdateModalProjectStatusProps) {
+  const updateStatusFormId = 'updateStatusForm';
   const updateMutation = useUpdateStatus(project.projectId, statusId);
 
   // ToDo: Error 처리 추가
@@ -28,16 +29,26 @@ export default function UpdateModalProjectStatus({
     handleClose();
   };
 
+  // ToDo: 상태 삭제 작업시 채워둘것
+  const handleDeleteClick = () => {};
+
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalProjectStatusForm
-          formId="updateStatusForm"
+          formId={updateStatusFormId}
           project={project}
           statusId={statusId}
           onSubmit={handleSubmit}
         />
-        <ModalFormButton formId="updateStatusForm" isCreate={false} onClose={handleClose} />
+        <div className="flex min-h-25 w-4/5 gap-10">
+          <ModalButton formId={updateStatusFormId} backgroundColor="bg-main">
+            수정
+          </ModalButton>
+          <ModalButton backgroundColor="bg-delete" onClick={handleDeleteClick}>
+            삭제
+          </ModalButton>
+        </div>
       </ModalLayout>
     </ModalPortal>
   );
