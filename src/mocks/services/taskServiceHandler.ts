@@ -238,21 +238,21 @@ const taskServiceHandler = [
 
     // 일정의 수행자 삭제
     const filteredTaskUser = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId !== Number(taskId));
-    if (filteredTaskUser.length > 0) {
+    if (filteredTaskUser.length !== TASK_USER_DUMMY.length) {
       TASK_USER_DUMMY.length = 0;
       TASK_USER_DUMMY.push(...filteredTaskUser);
     }
 
     // 일정의 파일 삭제
     const filteredTaskFile = TASK_FILE_DUMMY.filter((taskFile) => taskFile.taskId !== Number(taskId));
-    if (filteredTaskFile.length > 0) {
+    if (filteredTaskFile.length !== TASK_FILE_DUMMY.length) {
       TASK_FILE_DUMMY.length = 0;
       TASK_FILE_DUMMY.push(...filteredTaskFile);
     }
 
     // MSW용 파일 정보 삭제
-    const filteredFile = FILE_DUMMY.filter((file) => file.taskId === Number(taskId));
-    if (filteredFile.length > 0) {
+    const filteredFile = FILE_DUMMY.filter((file) => file.taskId !== Number(taskId));
+    if (filteredFile.length !== FILE_DUMMY.length) {
       FILE_DUMMY.length = 0;
       FILE_DUMMY.push(...filteredFile);
     }
