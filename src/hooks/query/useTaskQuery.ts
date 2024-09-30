@@ -205,8 +205,8 @@ export function useDeleteTask(projectId: Project['projectId']) {
 
       toastSuccess('일정을 삭제 했습니다.');
       queryClient.invalidateQueries({ queryKey: tasksQueryKey });
-      queryClient.removeQueries({ queryKey: filesQueryKey });
-      queryClient.removeQueries({ queryKey: assigneesQueryKey });
+      queryClient.removeQueries({ queryKey: filesQueryKey, exact: true, type: 'all' });
+      queryClient.removeQueries({ queryKey: assigneesQueryKey, exact: true, type: 'all' });
     },
   });
 
