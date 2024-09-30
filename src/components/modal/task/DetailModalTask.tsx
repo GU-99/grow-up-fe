@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { LuDownload } from 'react-icons/lu';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalLayout from '@layouts/ModalLayout';
+import ModalButton from '@components/modal/ModalButton';
 import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import CustomMarkdown from '@components/common/CustomMarkdown';
@@ -10,7 +11,6 @@ import { useDeleteTask, useReadAssignees, useReadTaskFiles } from '@hooks/query/
 
 import type { Task } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
-import ModalButton from '../ModalButton';
 
 type ViewModalTaskProps = {
   project: Project;
