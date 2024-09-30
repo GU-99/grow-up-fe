@@ -1,25 +1,25 @@
 import React from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
 import type { SearchUser } from '@/types/UserType';
-import type { TeamRoleName } from '@/types/RoleType';
+import type { RoleName } from '@/types/RoleType';
 
-type SelectedUserWithRoleProps = {
+type SelectedUserWithRoleProps<T extends RoleName> = {
   user: SearchUser;
-  roles: readonly { value: TeamRoleName; label: string }[];
-  defaultValue?: TeamRoleName;
-  onRoleChange: (userId: number, role: TeamRoleName) => void;
+  roles: readonly { value: T; label: string }[];
+  defaultValue?: T;
+  onRoleChange: (userId: number, role: T) => void;
   onRemoveUser: (userId: number) => void;
 };
 
-export default function SelectedUserWithRole({
+export default function SelectedUserWithRole<T extends RoleName>({
   user,
   roles,
   defaultValue,
   onRoleChange,
   onRemoveUser,
-}: SelectedUserWithRoleProps) {
+}: SelectedUserWithRoleProps<T>) {
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onRoleChange(user.userId, event.target.value as TeamRoleName);
+    onRoleChange(user.userId, event.target.value as T);
   };
 
   return (
