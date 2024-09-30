@@ -55,6 +55,7 @@ export default {
         close: 'var(--color-close)',
         'contents-box': 'var(--color-contents-box)',
         error: 'var(--color-error)',
+        delete: 'var(--color-delete)',
         disable: 'var(--color-disable)',
         selected: 'var(--color-selected)',
         scroll: 'var(--color-scroll)',
