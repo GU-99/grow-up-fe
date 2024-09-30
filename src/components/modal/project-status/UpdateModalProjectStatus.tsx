@@ -2,7 +2,9 @@ import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalButton from '@components/modal/ModalButton';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
-import { useUpdateStatus } from '@hooks/query/useStatusQuery';
+import useToast from '@hooks/useToast';
+import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
+import { useDeleteStatus, useUpdateStatus } from '@hooks/query/useStatusQuery';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { Project } from '@/types/ProjectType';
@@ -20,17 +22,27 @@ export default function UpdateModalProjectStatus({
   onClose: handleClose,
 }: UpdateModalProjectStatusProps) {
   const updateStatusFormId = 'updateStatusForm';
-  const updateMutation = useUpdateStatus(project.projectId, statusId);
+
+  const { statusTaskList } = useReadStatusTasks(project.projectId);
+  const { mutate: updateStatusMutate, reset: updateStatusReset } = useUpdateStatus(project.projectId, statusId);
+  const { mutate: deleteStatusMutate } = useDeleteStatus(project.projectId);
+  const { toastWarn } = useToast();
 
   // ToDo: Error 처리 추가
   const handleSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
-    updateMutation.mutate(data);
-    updateMutation.reset();
+    updateStatusMutate(data);
+    updateStatusReset();
     handleClose();
   };
 
-  // ToDo: 상태 삭제 작업시 채워둘것
-  const handleDeleteClick = () => {};
+  // ToDo: 유저 권한 확인하는 로직 추가할 것
+  const handleDeleteClick = (statusId: ProjectStatus['statusId']) => {
+    const statusTasks = statusTaskList.find((statusTask) => statusTask.statusId === statusId);
+    if (!statusTasks) throw new Error('일치하는 프로젝트 상태가 없습니다.');
+
+    if (statusTasks.tasks.length > 0) return toastWarn('프로젝트 상태에 일정이 등록되어 있습니다.');
+    deleteStatusMutate(statusId);
+  };
 
   return (
     <ModalPortal>
@@ -45,7 +57,7 @@ export default function UpdateModalProjectStatus({
           <ModalButton formId={updateStatusFormId} backgroundColor="bg-main">
             수정
           </ModalButton>
-          <ModalButton backgroundColor="bg-delete" onClick={handleDeleteClick}>
+          <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(statusId)}>
             삭제
           </ModalButton>
         </div>
