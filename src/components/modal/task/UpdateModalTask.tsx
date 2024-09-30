@@ -19,6 +19,7 @@ import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import {
   useAddAssignee,
   useDeleteAssignee,
+  useDeleteTaskFile,
   useReadAssignees,
   useReadStatusTasks,
   useReadTaskFiles,
@@ -59,6 +60,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   const { mutate: updateTaskInfoMutate } = useUpdateTaskInfo(projectId, taskId);
   const { mutate: addAssigneeMutate } = useAddAssignee(projectId, taskId);
   const { mutate: deleteAssigneeMutate } = useDeleteAssignee(projectId, taskId);
+  const { mutate: deleteTaskFileMutate } = useDeleteTaskFile(projectId, taskId);
 
   const methods = useForm<TaskUpdateForm>({ mode: 'onChange' });
   const {
@@ -123,8 +125,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     updateFiles(files);
   };
 
-  // ToDo: 일정 파일 삭제 API 작업시 추가할 것
-  const handleFileDeleteClick = (fileId: string) => {};
+  const handleFileDeleteClick = (fileId: string) => deleteTaskFileMutate(Number(fileId));
 
   if (isStatusLoading || isTaskLoading || isProjectUserRoleLoading || isTaskFileLoading || isAssigneeLoading) {
     return <Spinner />;
@@ -137,67 +138,77 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <FormProvider {...methods}>
-          <form
-            id="updateTaskForm"
-            className="flex w-4/5 grow flex-col justify-center"
-            onSubmit={handleSubmit(handleFormSubmit)}
-          >
-            <StatusRadio statusFieldName="statusId" statusList={statusList} />
+        {isStatusLoading || isTaskLoading ? (
+          <Spinner />
+        ) : (
+          <>
+            <FormProvider {...methods}>
+              <form
+                id="updateTaskForm"
+                className="flex w-4/5 grow flex-col justify-center"
+                onSubmit={handleSubmit(handleFormSubmit)}
+              >
+                <StatusRadio statusFieldName="statusId" statusList={statusList} />
 
-            <DuplicationCheckInput
-              id="name"
-              label="일정"
-              value={watch('name')}
-              placeholder="일정명을 입력해주세요."
-              errors={errors.name?.message}
-              register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
-            />
+                <DuplicationCheckInput
+                  id="name"
+                  label="일정"
+                  value={watch('name')}
+                  placeholder="일정명을 입력해주세요."
+                  errors={errors.name?.message}
+                  register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
+                />
 
-            <PeriodDateInput
-              startDateLabel="시작일"
-              endDateLabel="종료일"
-              startDateId="startDate"
-              endDateId="endDate"
-              startDate={startDate}
-              endDate={endDate}
-              startDateFieldName="startDate"
-              endDateFieldName="endDate"
-            />
+                <PeriodDateInput
+                  startDateLabel="시작일"
+                  endDateLabel="종료일"
+                  startDateId="startDate"
+                  endDateId="endDate"
+                  startDate={startDate}
+                  endDate={endDate}
+                  startDateFieldName="startDate"
+                  endDateFieldName="endDate"
+                />
 
-            <MarkdownEditor id="content" label="내용" contentFieldName="content" />
-          </form>
-        </FormProvider>
-        <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
-
+                <MarkdownEditor id="content" label="내용" contentFieldName="content" />
+              </form>
+            </FormProvider>
+            <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
+          </>
+        )}
         <hr className="my-20" />
-
-        <section>
-          <SearchUserInput
-            id="search"
-            label="수행자"
-            keyword={keyword}
-            searchId={projectId}
-            loading={loading}
-            userList={userList}
-            searchCallbackInfo={searchCallbackInfo}
-            onKeywordChange={handleKeywordChange}
-            onUserClick={handleUserClick}
+        {isProjectUserRoleLoading || isAssigneeLoading ? (
+          <Spinner />
+        ) : (
+          <section>
+            <SearchUserInput
+              id="search"
+              label="수행자"
+              keyword={keyword}
+              searchId={projectId}
+              loading={loading}
+              userList={userList}
+              searchCallbackInfo={searchCallbackInfo}
+              onKeywordChange={handleKeywordChange}
+              onUserClick={handleUserClick}
+            />
+            <AssigneeList assigneeList={assigneeList} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
+          </section>
+        )}
+        <hr className="my-20" />
+        {isTaskFileLoading ? (
+          <Spinner />
+        ) : (
+          <FileDropZone
+            id="files"
+            label="첨부파일"
+            files={taskFileList}
+            accept={TASK_SETTINGS.FILE_ACCEPT}
+            onFileChange={handleFileChange}
+            onFileDrop={handleFileDrop}
+            onFileDeleteClick={handleFileDeleteClick}
           />
-          <AssigneeList assigneeList={assigneeList} onAssigneeDeleteClick={handleAssigneeDeleteClick} />
-        </section>
-
-        <hr className="my-20" />
-
-        <FileDropZone
-          id="files"
-          label="첨부파일"
-          files={taskFileList}
-          accept={TASK_SETTINGS.FILE_ACCEPT}
-          onFileChange={handleFileChange}
-          onFileDrop={handleFileDrop}
-          onFileDeleteClick={handleFileDeleteClick}
-        />
+        )}
       </ModalLayout>
     </ModalPortal>
   );

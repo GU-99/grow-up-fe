@@ -171,3 +171,23 @@ export async function deleteAssignee(
 ) {
   return authAxios.delete(`/project/${projectId}/task/${taskId}/assignee/${userId}`, axiosConfig);
 }
+
+/**
+ * 일정 파일 삭제 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {Task['taskId']} taskId               - 일정 ID
+ * @param {TaskFile['fileId']} fileId           - 일정 파일 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteTaskFile(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  fileId: TaskFile['fileId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.delete(`/project/${projectId}/task/${taskId}/file/${fileId}`, axiosConfig);
+}
