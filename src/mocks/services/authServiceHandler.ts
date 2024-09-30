@@ -16,7 +16,6 @@ import {
 } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
 
 const authServiceHandler = [
   // 회원가입 API
@@ -68,6 +67,7 @@ const authServiceHandler = [
 
     const accessToken = generateDummyToken(foundUser.userId);
     const refreshToken = generateDummyToken(foundUser.userId);
+    const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
 
     return new HttpResponse(null, {
       status: 200,
