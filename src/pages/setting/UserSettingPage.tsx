@@ -31,8 +31,8 @@ export default function UserSettingPage() {
 
   return (
     <FormProvider {...methods}>
-      <div className="my-30">
-        <form onSubmit={methods.handleSubmit(onSubmit)} className="mx-auto max-w-300 space-y-8">
+      <div className="mx-auto max-w-300 py-30">
+        <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8">
           {/* 프로필 이미지 */}
           <ProfileImageContainer
             imageUrl={methods.watch('profileImageName')}
@@ -80,9 +80,6 @@ export default function UserSettingPage() {
             />
           </section>
 
-          {/* 링크 */}
-          <LinkContainer initialLinks={userInfoData.links} />
-
           {/* 개인정보 수정 버튼 */}
           <button
             type="submit"
@@ -92,6 +89,12 @@ export default function UserSettingPage() {
             변경
           </button>
         </form>
+        <div>
+          <hr className="my-20" />
+
+          {/* 링크 */}
+          <LinkContainer initialLinks={userInfoData.links} />
+        </div>
       </div>
     </FormProvider>
   );
