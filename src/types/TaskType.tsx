@@ -23,12 +23,13 @@ export type TaskOrder = Pick<Task, 'statusId' | 'taskId' | 'sortOrder'>;
 export type TaskOrderForm = { tasks: TaskOrder[] };
 
 export type TaskInfoForm = Omit<Task, 'taskId'>;
-export type TaskFileForm = { files: File[] };
+export type TaskFilesForm = { files: File[] };
 export type TaskAssigneeForm = { userId: User['userId'] };
 export type TaskAssigneesForm = { assignees: User['userId'][] };
 export type TaskUpdateForm = Omit<Task, 'statusId'> & { statusId: string };
 export type TaskCreationForm = TaskInfoForm & TaskAssigneesForm;
-export type TaskForm = TaskInfoForm & TaskAssigneesForm & TaskFileForm;
+export type TaskForm = TaskCreationForm & TaskFilesForm;
+export type TaskUploadForm = Pick<Task, 'taskId'> & { file: File };
 
 export type TaskWithStatus = RenameKeys<Omit<ProjectStatus, 'projectId'>, StatusKeyMapping> & Task;
 export type TaskListWithStatus = Omit<ProjectStatus, 'projectId'> & { tasks: Task[] };

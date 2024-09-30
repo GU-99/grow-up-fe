@@ -11,3 +11,13 @@ export type TaskFile = {
 };
 
 export type FileInfo = TaskFile | CustomFile;
+
+export type FileUploadSuccessResult = {
+  status: 'fulfilled';
+  file: File;
+};
+export type FileUploadFailureResult = {
+  status: 'rejected';
+  file: File;
+  error: unknown;
+};

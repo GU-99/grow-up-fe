@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { generateTeamsQueryKey } from '@utils/queryKeyGenergator';
 import { getTeamList } from '@services/userService';
 import { acceptTeamInvitation, createTeam, declineTeamInvitation, deleteTeam, leaveTeam } from '@services/teamService';
 import useToast from '@hooks/useToast';
@@ -11,7 +12,7 @@ export function useReadTeams() {
     isError,
     error,
   } = useQuery<TeamListWithApproval[], Error>({
-    queryKey: ['teams'],
+    queryKey: generateTeamsQueryKey(),
     queryFn: async () => {
       const { data } = await getTeamList();
       return data;
@@ -27,12 +28,13 @@ export function useReadTeams() {
 export function useLeaveTeam() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
 
   return useMutation({
     mutationFn: (teamId: number) => leaveTeam(teamId),
     onSuccess: () => {
       toastSuccess('팀에서 탈퇴했습니다.');
-      queryClient.invalidateQueries({ queryKey: ['teams'] });
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
     },
     onError: () => {
       toastError('탈퇴에 실패했습니다. 다시 시도해 주세요.');
@@ -43,19 +45,16 @@ export function useLeaveTeam() {
 export function useDeleteTeam() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
 
   return useMutation({
-    mutationFn: async (teamId: number) => {
-      const response = await deleteTeam(teamId);
-
-      return response;
+    mutationFn: (teamId: number) => deleteTeam(teamId),
+    onError: () => {
+      toastError('팀 삭제를 실패했습니다. 다시 시도해 주세요.');
     },
     onSuccess: () => {
       toastSuccess('팀을 삭제하였습니다.');
-      queryClient.invalidateQueries({ queryKey: ['teams'] });
-    },
-    onError: () => {
-      toastError('팀 삭제를 실패했습니다. 다시 시도해 주세요.');
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
     },
   });
 }
@@ -63,15 +62,16 @@ export function useDeleteTeam() {
 export function useApproveTeamInvitation() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
 
   return useMutation({
     mutationFn: (teamId: number) => acceptTeamInvitation(teamId),
-    onSuccess: () => {
-      toastSuccess('초대를 수락했습니다.');
-      queryClient.invalidateQueries({ queryKey: ['teams'] });
-    },
     onError: () => {
       toastError('초대 수락에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('초대를 수락했습니다.');
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
     },
   });
 }
@@ -79,6 +79,7 @@ export function useApproveTeamInvitation() {
 export function useRejectTeamInvitation() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
 
   return useMutation({
     mutationFn: (teamId: number) => declineTeamInvitation(teamId),
@@ -87,7 +88,7 @@ export function useRejectTeamInvitation() {
       queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
     onError: () => {
-      toastError('초대 거절에 실패했습니다. 다시 시도해 주세요.');
+      toastError('팀 생성 중 오류가 발생했습니다.');
     },
   });
 }

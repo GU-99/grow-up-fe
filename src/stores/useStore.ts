@@ -8,9 +8,11 @@ import { User } from '@/types/UserType';
 type AuthStore = {
   isAuthenticated: boolean;
   accessToken: string | null;
+  isVerified: boolean;
 
   setAccessToken: (token: string) => void;
   onLogin: (token: string) => void;
+  onVerifyCode: () => void;
   onLogout: () => void;
 };
 
@@ -28,6 +30,7 @@ type Store = AuthStore & UserStore;
 const createAuthSlice: StateCreator<Store, [], [], AuthStore> = (set) => ({
   isAuthenticated: false,
   accessToken: null,
+  isVerified: false,
 
   setAccessToken: (token: string) =>
     set({
@@ -46,6 +49,18 @@ const createAuthSlice: StateCreator<Store, [], [], AuthStore> = (set) => ({
         accessToken: null,
       });
     }, AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION);
+  },
+
+  onVerifyCode: () => {
+    set({
+      isVerified: true,
+    });
+
+    setTimeout(() => {
+      set({
+        isVerified: false,
+      });
+    }, AUTH_SETTINGS.VERIFIED_EXPIRATION);
   },
 
   onLogout: () => {

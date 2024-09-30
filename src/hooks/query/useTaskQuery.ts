@@ -1,14 +1,21 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  generateTaskAssigneesQueryKey,
+  generateTaskFilesQueryKey,
+  generateTasksQueryKey,
+} from '@utils/queryKeyGenergator';
+import {
   addAssignee,
   createTask,
   deleteAssignee,
+  deleteTaskFile,
   findAssignees,
   findTaskFiles,
   findTaskList,
   updateTaskInfo,
   updateTaskOrder,
+  uploadTaskFile,
 } from '@services/taskService';
 import useToast from '@hooks/useToast';
 
@@ -17,11 +24,12 @@ import type { Project } from '@/types/ProjectType';
 import type {
   Task,
   TaskCreationForm,
-  TaskInfoForm,
   TaskListWithStatus,
   TaskOrder,
   TaskUpdateForm,
+  TaskUploadForm,
 } from '@/types/TaskType';
+import { TaskFile } from '@/types/FileType';
 
 function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
   const taskNameList = taskList
@@ -35,16 +43,33 @@ function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task
 // Todo: Task Query D로직 작성하기
 // 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
-  const { toastSuccess } = useToast();
+  const { toastError, toastSuccess } = useToast();
   const queryClient = useQueryClient();
-  const queryKey = ['projects', projectId, 'tasks'];
+  const tasksQueryKey = generateTasksQueryKey(projectId);
 
   const mutation = useMutation({
     mutationFn: (formData: TaskCreationForm) => createTask(projectId, formData),
+    onError: () => {
+      toastError('프로젝트 일정 등록 중 오류가 발생했습니다. 잠시후 다시 등록해주세요.');
+    },
     onSuccess: () => {
       toastSuccess('프로젝트 일정을 등록하였습니다.');
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: tasksQueryKey });
     },
+  });
+
+  return mutation;
+}
+
+// 일정 단일 파일 업로드
+export function useUploadTaskFile(projectId: Project['projectId']) {
+  const { toastError } = useToast();
+  const mutation = useMutation({
+    mutationFn: ({ taskId, file }: TaskUploadForm) =>
+      uploadTaskFile(projectId, taskId, file, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    onError: (error, { file }) => toastError(`${file.name} 파일 업로드에 실패 했습니다.`),
   });
 
   return mutation;
@@ -58,7 +83,7 @@ export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Tas
     isError: isTaskError,
     error: taskError,
   } = useQuery({
-    queryKey: ['projects', projectId, 'tasks'],
+    queryKey: generateTasksQueryKey(projectId),
     queryFn: async () => {
       const { data } = await findTaskList(projectId);
       return data;
@@ -82,7 +107,7 @@ export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Tas
 export function useUpdateTasksOrder(projectId: Project['projectId']) {
   const { toastError } = useToast();
   const queryClient = useQueryClient();
-  const queryKey = ['projects', projectId, 'tasks'];
+  const tasksQueryKey = generateTasksQueryKey(projectId);
 
   const mutation = useMutation({
     mutationFn: (newStatusTaskList: TaskListWithStatus[]) => {
@@ -95,16 +120,16 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
       return updateTaskOrder(projectId, { tasks: taskOrders });
     },
     onMutate: async (newStatusTaskList: TaskListWithStatus[]) => {
-      await queryClient.cancelQueries({ queryKey });
+      await queryClient.cancelQueries({ queryKey: tasksQueryKey });
 
-      const previousStatusTaskList = queryClient.getQueryData(queryKey);
-      queryClient.setQueryData(queryKey, newStatusTaskList);
+      const previousStatusTaskList = queryClient.getQueryData(tasksQueryKey);
+      queryClient.setQueryData(tasksQueryKey, newStatusTaskList);
 
       return { previousStatusTaskList };
     },
     onError: (err, newStatusTaskList, context) => {
-      toastError('일정 순서 변경에 실패 하였습니다. 잠시후 다시 진행해주세요.');
-      queryClient.setQueryData(queryKey, context?.previousStatusTaskList);
+      toastError('일정 순서 변경에 실패 했습니다. 잠시후 다시 진행해주세요.');
+      queryClient.setQueryData(tasksQueryKey, context?.previousStatusTaskList);
     },
   });
 
@@ -119,7 +144,7 @@ export function useReadAssignees(projectId: Project['projectId'], taskId: Task['
     error: assigneeError,
     isError: isAssigneeError,
   } = useQuery({
-    queryKey: ['projects', projectId, 'tasks', taskId, 'assignees'],
+    queryKey: generateTaskAssigneesQueryKey(projectId, taskId),
     queryFn: async () => {
       const { data } = await findAssignees(projectId, taskId);
       return data;
@@ -137,7 +162,7 @@ export function useReadTaskFiles(projectId: Project['projectId'], taskId: Task['
     error: taskFileError,
     isError: isTaskFileError,
   } = useQuery({
-    queryKey: ['projects', projectId, 'tasks', taskId, 'files'],
+    queryKey: generateTaskFilesQueryKey(projectId, taskId),
     queryFn: async () => {
       const { data } = await findTaskFiles(projectId, taskId);
       return data;
@@ -150,14 +175,14 @@ export function useReadTaskFiles(projectId: Project['projectId'], taskId: Task['
 export function useUpdateTaskInfo(projectId: Project['projectId'], taskId: Task['taskId']) {
   const { toastError, toastSuccess } = useToast();
   const queryClient = useQueryClient();
-  const queryKey = ['projects', projectId, 'tasks'];
+  const tasksQueryKey = generateTasksQueryKey(projectId);
 
   const mutation = useMutation({
     mutationFn: (formData: TaskUpdateForm) => updateTaskInfo(projectId, taskId, formData),
     onError: () => toastError('일정 정보 수정에 실패 했습니다. 잠시후 다시 시도해주세요.'),
     onSuccess: () => {
       toastSuccess('일정 정보를 수정 했습니다.');
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: tasksQueryKey });
     },
   });
 
@@ -168,16 +193,16 @@ export function useUpdateTaskInfo(projectId: Project['projectId'], taskId: Task[
 export function useAddAssignee(projectId: Project['projectId'], taskId: Task['taskId']) {
   const { toastError, toastSuccess } = useToast();
   const queryClient = useQueryClient();
-  const queryKey = ['projects', projectId, 'tasks', taskId, 'assignees'];
+  const taskAssigneesQueryKey = generateTaskAssigneesQueryKey(projectId, taskId);
 
   const mutation = useMutation({
     mutationFn: (userId: User['userId']) => addAssignee(projectId, taskId, userId),
     onError: () => {
-      toastError('수행자 추가에 실패 하였습니다. 잠시후 다시 시도해주세요.');
+      toastError('수행자 추가에 실패 했습니다. 잠시후 다시 시도해주세요.');
     },
     onSuccess: () => {
-      toastSuccess('수행자를 추가 하였습니다.');
-      queryClient.invalidateQueries({ queryKey });
+      toastSuccess('수행자를 추가 했습니다.');
+      queryClient.invalidateQueries({ queryKey: taskAssigneesQueryKey });
     },
   });
 
@@ -188,16 +213,34 @@ export function useAddAssignee(projectId: Project['projectId'], taskId: Task['ta
 export function useDeleteAssignee(projectId: Project['projectId'], taskId: Task['taskId']) {
   const { toastError, toastSuccess } = useToast();
   const queryClient = useQueryClient();
-  const queryKey = ['projects', projectId, 'tasks', taskId, 'assignees'];
+  const taskAssigneesQueryKey = generateTaskAssigneesQueryKey(projectId, taskId);
 
   const mutation = useMutation({
     mutationFn: (userId: User['userId']) => deleteAssignee(projectId, taskId, userId),
     onError: () => {
-      toastError('수행자 삭제에 실패 하였습니다. 잠시후 다시 시도해주세요.');
+      toastError('수행자 삭제에 실패 했습니다. 잠시후 다시 시도해주세요.');
     },
     onSuccess: () => {
-      toastSuccess('수행자를 삭제 하였습니다.');
-      queryClient.invalidateQueries({ queryKey });
+      toastSuccess('수행자를 삭제 했습니다.');
+      queryClient.invalidateQueries({ queryKey: taskAssigneesQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 일정 파일 삭제
+export function useDeleteTaskFile(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const { toastSuccess, toastError } = useToast();
+  const queryClient = useQueryClient();
+  const taskFilesQueryKey = generateTaskFilesQueryKey(projectId, taskId);
+
+  const mutation = useMutation({
+    mutationFn: (fileId: TaskFile['fileId']) => deleteTaskFile(projectId, taskId, fileId),
+    onError: () => toastError('일정 파일 삭제에 실패 했습니다. 잠시후 다시 시도해주세요.'),
+    onSuccess: () => {
+      toastSuccess('일정 파일을 삭제 했습니다.');
+      queryClient.invalidateQueries({ queryKey: taskFilesQueryKey });
     },
   });
 

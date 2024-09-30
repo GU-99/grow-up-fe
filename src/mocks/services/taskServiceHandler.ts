@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import {
+  FILE_DUMMY,
   PROJECT_DUMMY,
   PROJECT_USER_DUMMY,
   STATUS_DUMMY,
@@ -11,7 +12,7 @@ import {
 import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
 
 import type { UserWithRole } from '@/types/UserType';
-import type { TaskAssigneeForm, TaskCreationForm, TaskInfoForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
+import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -51,8 +52,69 @@ const taskServiceHandler = [
 
     const taskId = TASK_DUMMY.length + 1;
     assignees.forEach((userId) => TASK_USER_DUMMY.push({ taskId, userId }));
-    TASK_DUMMY.push({ ...taskInfoForm, statusId: +taskInfoForm.statusId, taskId });
-    return new HttpResponse(null, { status: 201 });
+
+    const newTask = { ...taskInfoForm, statusId: +taskInfoForm.statusId, taskId };
+    TASK_DUMMY.push(newTask);
+    return HttpResponse.json(newTask);
+  }),
+  // 일정 단일  파일 업로드
+  http.post(`${BASE_URL}/project/:projectId/task/:taskId/upload`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId } = params;
+    const formData = await request.formData();
+    const file = formData.get('file');
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    if (!file) return new HttpResponse(null, { status: 400 });
+    if (!(file instanceof File)) return new HttpResponse('업로드된 문서는 파일이 아닙니다.', { status: 400 });
+
+    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
+    const project = PROJECT_DUMMY.find((project) => project.projectId === Number(projectId));
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    const task = TASK_DUMMY.find((task) => task.taskId === Number(taskId));
+    if (!task) return new HttpResponse(null, { status: 404 });
+
+    // TODO: fileURL은 파일 다운로드시 재설정할 것
+    const newFileId = TASK_FILE_DUMMY.length + 1;
+    TASK_FILE_DUMMY.push({
+      fileId: newFileId,
+      taskId: task.taskId,
+      fileName: file.name,
+      fileUrl: '',
+    });
+
+    // MSW 파일 다운로드 테스트를 위해 메모리에 임시 저장
+    FILE_DUMMY.push({
+      fileId: newFileId,
+      taskId: task.taskId,
+      file: new Blob([file], { type: file.type }),
+    });
+
+    return new HttpResponse(null, { status: 200 });
+  }),
+  // 일정 파일 삭제 API
+  http.delete(`${BASE_URL}/project/:projectId/task/:taskId/file/:fileId`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, taskId, fileId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
+    const task = TASK_DUMMY.find((task) => task.taskId === Number(taskId));
+    if (!task) return new HttpResponse(null, { status: 404 });
+
+    const taskFileIndex = TASK_FILE_DUMMY.findIndex(
+      (taskFile) => taskFile.fileId === Number(fileId) && taskFile.taskId === Number(taskId),
+    );
+    if (taskFileIndex === -1) return new HttpResponse(null, { status: 404 });
+    TASK_FILE_DUMMY.splice(taskFileIndex, 1);
+
+    const fileIndex = FILE_DUMMY.findIndex((file) => file.fileId === Number(fileId) && file.taskId === Number(taskId));
+    if (fileIndex === -1) return new HttpResponse(null, { status: 404 });
+    FILE_DUMMY.splice(fileIndex, 1);
+
+    return new HttpResponse(null, { status: 204 });
   }),
   // 일정 순서 변경 API
   http.patch(`${BASE_URL}/project/:projectId/task/order`, async ({ request, params }) => {
