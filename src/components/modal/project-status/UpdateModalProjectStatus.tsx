@@ -2,6 +2,7 @@ import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalButton from '@components/modal/ModalButton';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
+import Spinner from '@components/common/Spinner';
 import useToast from '@hooks/useToast';
 import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import { useDeleteStatus, useUpdateStatus } from '@hooks/query/useStatusQuery';
@@ -23,44 +24,52 @@ export default function UpdateModalProjectStatus({
 }: UpdateModalProjectStatusProps) {
   const updateStatusFormId = 'updateStatusForm';
 
-  const { statusTaskList } = useReadStatusTasks(project.projectId);
-  const { mutate: updateStatusMutate, reset: updateStatusReset } = useUpdateStatus(project.projectId, statusId);
+  const { statusTaskList, isTaskLoading } = useReadStatusTasks(project.projectId);
+  const { mutate: updateStatusMutate } = useUpdateStatus(project.projectId, statusId);
   const { mutate: deleteStatusMutate } = useDeleteStatus(project.projectId);
   const { toastWarn } = useToast();
 
   // ToDo: Error 처리 추가
   const handleSubmit: SubmitHandler<ProjectStatusForm> = async (data) => {
     updateStatusMutate(data);
-    updateStatusReset();
     handleClose();
   };
 
   // ToDo: 유저 권한 확인하는 로직 추가할 것
   const handleDeleteClick = (statusId: ProjectStatus['statusId']) => {
-    const statusTasks = statusTaskList.find((statusTask) => statusTask.statusId === statusId);
-    if (!statusTasks) throw new Error('일치하는 프로젝트 상태가 없습니다.');
-
-    if (statusTasks.tasks.length > 0) return toastWarn('프로젝트 상태에 일정이 등록되어 있습니다.');
+    try {
+      const statusTasks = statusTaskList.find((statusTask) => statusTask.statusId === statusId);
+      if (!statusTasks) throw new Error('일치하는 프로젝트 상태가 없습니다.');
+      if (statusTasks.tasks.length > 0) return toastWarn('프로젝트 상태에 일정이 등록되어 있습니다.');
+    } catch (error) {
+      if (error instanceof Error) console.error(`${error.name}:${error.message}`);
+    }
     deleteStatusMutate(statusId);
   };
 
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <ModalProjectStatusForm
-          formId={updateStatusFormId}
-          project={project}
-          statusId={statusId}
-          onSubmit={handleSubmit}
-        />
-        <div className="flex min-h-25 w-4/5 gap-10">
-          <ModalButton formId={updateStatusFormId} backgroundColor="bg-main">
-            수정
-          </ModalButton>
-          <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(statusId)}>
-            삭제
-          </ModalButton>
-        </div>
+        {isTaskLoading ? (
+          <Spinner />
+        ) : (
+          <>
+            <ModalProjectStatusForm
+              formId={updateStatusFormId}
+              project={project}
+              statusId={statusId}
+              onSubmit={handleSubmit}
+            />
+            <div className="flex min-h-25 w-4/5 gap-10">
+              <ModalButton formId={updateStatusFormId} backgroundColor="bg-main">
+                수정
+              </ModalButton>
+              <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(statusId)}>
+                삭제
+              </ModalButton>
+            </div>
+          </>
+        )}
       </ModalLayout>
     </ModalPortal>
   );
