@@ -84,6 +84,7 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
     links: [],
     profileImageName: null,
   },
+
   setUserInfo: (newUserInfo: User) =>
     set({
       userInfo: newUserInfo,
