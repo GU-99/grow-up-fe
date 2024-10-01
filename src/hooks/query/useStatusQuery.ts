@@ -101,7 +101,7 @@ export function useCreateStatus(projectId: Project['projectId']) {
 
   const mutation = useMutation({
     mutationFn: (formData: ProjectStatusForm) => createStatus(projectId, formData),
-    onError: () => toastError('프로젝트 상태 등록을 실패 했습니다.  잠시후 다시 등록해주세요.'),
+    onError: () => toastError('프로젝트 상태 등록을 실패했습니다.  잠시 후 다시 등록해 주세요.'),
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 등록하였습니다.');
       queryClient.invalidateQueries({
@@ -120,7 +120,7 @@ export function useUpdateStatus(projectId: Project['projectId'], statusId: Proje
 
   const mutation = useMutation({
     mutationFn: (formData: ProjectStatusForm) => updateStatus(projectId, statusId, formData),
-    onError: () => toastError('프로젝트 상태 수정에 실패 했습니다. 잠시후 다시 시도해주세요.'),
+    onError: () => toastError('프로젝트 상태 수정에 실패했습니다. 잠시 후 다시 시도해 주세요.'),
     onSuccess: () => {
       toastSuccess('프로젝트 상태를 수정했습니다.');
       queryClient.invalidateQueries({
@@ -141,9 +141,9 @@ export function useDeleteStatus(projectId: Project['projectId']) {
 
   const mutation = useMutation({
     mutationFn: (statusId: ProjectStatus['statusId']) => deleteStatus(projectId, statusId),
-    onError: () => toastError('프로젝트 상태 삭제에 실패 했습니다. 잠시후 다시 시도해주세요.'),
+    onError: () => toastError('프로젝트 상태 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.'),
     onSuccess: () => {
-      toastSuccess('프로젝트 상태를 삭제 했습니다.');
+      toastSuccess('프로젝트 상태를 삭제했습니다.');
       queryClient.invalidateQueries({ queryKey: tasksQueryKeys, exact: true });
       queryClient.invalidateQueries({ queryKey: statusesQueryKey, exact: true });
     },
@@ -173,7 +173,7 @@ export function useUpdateStatusesOrder(projectId: Project['projectId']) {
       return { previousStatusTaskList };
     },
     onError: (error, newStatusTaskList, context) => {
-      toastError('프로젝트 상태 순서 변경에 실패 했습니다. 잠시후 다시 진행해주세요.');
+      toastError('프로젝트 상태 순서 변경에 실패했습니다. 잠시 후 다시 진행해 주세요.');
       queryClient.setQueryData(TasksQueryKey, context?.previousStatusTaskList);
     },
     onSuccess: () => {
