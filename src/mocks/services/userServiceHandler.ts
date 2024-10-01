@@ -25,14 +25,16 @@ const userServiceHandler = [
     } else {
       // 토큰에서 userId 추출
       userId = convertTokenToUserId(accessToken);
-      if (!userId)
-        return HttpResponse.json(
-          { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
-          { status: 401 },
-        );
     }
 
-    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
+    const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
+
+    if (!userId || userIndex === -1) {
+      return HttpResponse.json(
+        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
 
     if (USER_DUMMY[userIndex].nickname !== nickname && !NICKNAME_REGEX.test(nickname)) {
       return HttpResponse.json({ message: '요청 필드의 입력 포맷이 잘못되었습니다.' }, { status: 400 });
