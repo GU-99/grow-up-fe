@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { FormProvider, useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
@@ -8,13 +7,12 @@ import LinkContainer from '@components/user/auth-form/LinkContainer';
 import { useStore } from '@stores/useStore';
 import { patchUserInfo } from '@services/userService';
 import useToast from '@hooks/useToast';
-import useNicknameDuplicateCheck from '@/hooks/useNicknameDuplicateCheck';
+import useNicknameDuplicateCheck from '@hooks/useNicknameDuplicateCheck';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
   const { userInfo: userInfoData, editUserInfo } = useStore();
   const { toastError, toastSuccess, toastWarn } = useToast();
-  const [lastCheckedNickname] = useState(userInfoData.nickname);
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
@@ -29,10 +27,17 @@ export default function UserSettingPage() {
 
   const { formState, register, setValue, watch, handleSubmit } = methods;
   const nickname = watch('nickname');
-  const { checkedNickname, checkNickname } = useNicknameDuplicateCheck(nickname, formState.errors.nickname?.message);
+
+  const { checkedNickname, lastCheckedNickname, handleCheckNickname } = useNicknameDuplicateCheck(
+    nickname,
+    formState.errors.nickname?.message,
+    userInfoData.nickname,
+  );
 
   const onSubmit = async (data: EditUserInfoForm) => {
-    if (lastCheckedNickname !== nickname && !checkedNickname) return toastWarn('닉네임 중복 체크를 진행해 주세요.');
+    if (lastCheckedNickname !== nickname && !checkedNickname) {
+      return toastWarn('닉네임 중복 체크를 진행해 주세요.');
+    }
 
     const editUserData = {
       nickname: data.nickname,
@@ -86,7 +91,7 @@ export default function UserSettingPage() {
             isButtonInput
             buttonLabel="중복확인"
             buttonDisabled={checkedNickname}
-            onButtonClick={checkNickname}
+            onButtonClick={handleCheckNickname}
           />
 
           {/* 자기소개 */}

@@ -3,21 +3,26 @@ import { AxiosError } from 'axios';
 import { checkNicknameDuplicate } from '@services/authService';
 import useToast from '@hooks/useToast';
 
-export default function useNicknameDuplicateCheck(nickname: string, errorMessage?: string) {
+export default function useNicknameDuplicateCheck(
+  nickname: string,
+  nicknameError?: string,
+  initialLastCheckedNickname?: string,
+) {
   const { toastSuccess, toastError } = useToast();
   const [checkedNickname, setCheckedNickname] = useState(false);
-  const [lastCheckedNickname, setLastCheckedNickname] = useState('');
+  const [lastCheckedNickname, setLastCheckedNickname] = useState(initialLastCheckedNickname);
 
-  // 닉네임 중복 확인 함수
-  const checkNickname = async () => {
-    if (!nickname || errorMessage) return;
+  const handleCheckNickname = async () => {
+    if (!nickname || nicknameError || nickname === lastCheckedNickname) return;
 
+    // ToDo: useAxios 훅을 이용한 네트워크 로직으로 변경
     try {
       await checkNicknameDuplicate({ nickname });
       toastSuccess('사용 가능한 닉네임입니다.');
       setCheckedNickname(true);
       setLastCheckedNickname(nickname);
     } catch (error) {
+      setCheckedNickname(false);
       if (error instanceof AxiosError && error.response) {
         toastError(error.response.data.message);
       } else {
@@ -33,6 +38,7 @@ export default function useNicknameDuplicateCheck(nickname: string, errorMessage
 
   return {
     checkedNickname,
-    checkNickname,
+    lastCheckedNickname,
+    handleCheckNickname,
   };
 }

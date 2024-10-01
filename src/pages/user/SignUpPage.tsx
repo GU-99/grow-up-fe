@@ -7,9 +7,9 @@ import VerificationButton from '@components/user/auth-form/VerificationButton';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
 import useToast from '@hooks/useToast';
 import useEmailVerification from '@hooks/useEmailVerification';
+import useNicknameDuplicateCheck from '@hooks/useNicknameDuplicateCheck';
 import { signUp } from '@services/authService';
 import type { UserSignUpForm } from '@/types/UserType';
-import useNicknameDuplicateCheck from '@/hooks/useNicknameDuplicateCheck';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -32,7 +32,10 @@ export default function SignUpPage() {
 
   const { watch, handleSubmit, formState, register, setValue } = methods;
   const nickname = watch('nickname');
-  const { checkedNickname, checkNickname } = useNicknameDuplicateCheck(nickname, formState.errors.nickname?.message);
+  const { checkedNickname, handleCheckNickname } = useNicknameDuplicateCheck(
+    nickname,
+    formState.errors.nickname?.message,
+  );
 
   const handleRequestVerificationCode = () => {
     if (!checkedNickname) return toastWarn('닉네임 중복 체크를 진행해 주세요.');
@@ -97,7 +100,7 @@ export default function SignUpPage() {
           isButtonInput
           buttonLabel="중복확인"
           buttonDisabled={checkedNickname}
-          onButtonClick={checkNickname}
+          onButtonClick={handleCheckNickname}
         />
 
         {/* 비밀번호 */}
