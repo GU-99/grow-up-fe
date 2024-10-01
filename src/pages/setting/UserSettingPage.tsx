@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { FormProvider, useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
@@ -7,15 +8,13 @@ import LinkContainer from '@components/user/auth-form/LinkContainer';
 import { useStore } from '@stores/useStore';
 import { patchUserInfo } from '@services/userService';
 import useToast from '@hooks/useToast';
-import { useEffect, useState } from 'react';
+import useNicknameDuplicateCheck from '@/hooks/useNicknameDuplicateCheck';
 import type { EditUserInfoForm } from '@/types/UserType';
-import { checkNicknameDuplicate } from '@/services/authService';
 
 export default function UserSettingPage() {
   const { userInfo: userInfoData, editUserInfo } = useStore();
   const { toastError, toastSuccess, toastWarn } = useToast();
-  const [checkedNickname, setCheckedNickname] = useState(false);
-  const [lastCheckedNickname, setLastCheckedNickname] = useState(userInfoData.nickname);
+  const [lastCheckedNickname] = useState(userInfoData.nickname);
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
@@ -29,28 +28,8 @@ export default function UserSettingPage() {
   });
 
   const { formState, register, setValue, watch, handleSubmit } = methods;
-
   const nickname = watch('nickname');
-
-  // 중복 확인 후 닉네임 변경 시, 중복확인 버튼 재활성화
-  useEffect(() => {
-    if (formState.dirtyFields.nickname) setCheckedNickname(false);
-  }, [nickname, formState.dirtyFields.nickname]);
-
-  // ToDo: 유저 설정 페이지에 적용하며 분리
-  const checkNickname = async () => {
-    if (!nickname || formState.errors.nickname) return;
-
-    try {
-      await checkNicknameDuplicate({ nickname });
-      toastSuccess('사용 가능한 닉네임입니다.');
-      setCheckedNickname(true);
-      setLastCheckedNickname(nickname);
-    } catch (error) {
-      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
-      else toastError('예상치 못한 에러가 발생했습니다.');
-    }
-  };
+  const { checkedNickname, checkNickname } = useNicknameDuplicateCheck(nickname, formState.errors.nickname?.message);
 
   const onSubmit = async (data: EditUserInfoForm) => {
     if (lastCheckedNickname !== nickname && !checkedNickname) return toastWarn('닉네임 중복 체크를 진행해 주세요.');
