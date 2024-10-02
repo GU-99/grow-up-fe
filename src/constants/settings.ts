@@ -10,7 +10,7 @@ export const AUTH_SETTINGS = Object.freeze({
 
 export const USER_SETTINGS = Object.freeze({
   MAX_IMAGE_SIZE: 2 * MB,
-  MAX_LINK_COUNT: 3,
+  MAX_LINK_COUNT: 5,
   MIN_ID_LENGTH: 2,
   MAX_ID_LENGTH: 32,
   MIN_PW_LENGTH: 8,
