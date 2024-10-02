@@ -37,22 +37,23 @@ export default function SearchUserInput({
 
     abortControllerRef.current = new AbortController();
     const { signal } = abortControllerRef.current;
-
     const { type, searchCallback } = searchCallbackInfo;
-    if (type !== 'ALL' && searchId === undefined) {
-      console.error(`${type} 인원 검색을 위해 searchId가 필요합니다.`);
-      return;
-    }
 
     switch (type) {
       case 'ALL':
         searchCallback(keyword, { signal });
         break;
       case 'TEAM':
-        searchCallback(searchId!, keyword, { signal });
+        if (searchId === undefined) {
+          return console.error(`${type} 인원 검색을 위해 searchId가 필요합니다.`);
+        }
+        searchCallback(searchId, keyword, { signal });
         break;
       case 'PROJECT':
-        searchCallback(searchId!, keyword, { signal });
+        if (searchId === undefined) {
+          return console.error(`${type} 인원 검색을 위해 searchId가 필요합니다.`);
+        }
+        searchCallback(searchId, keyword, { signal });
         break;
       default:
         exhaustiveCheck(type, '사용자 검색 범위가 올바르지 않습니다.');

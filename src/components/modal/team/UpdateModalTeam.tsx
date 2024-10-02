@@ -19,7 +19,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <ModalTeamForm formId="updateTeamForm" teamId={teamId} onSubmit={handleSubmit} />
+        <ModalTeamForm formId="updateTeamForm" onSubmit={handleSubmit} />
         <ModaFormButton formId="updateTeamForm" isCreate={false} onClose={handleClose} />
       </ModalLayout>
     </ModalPortal>

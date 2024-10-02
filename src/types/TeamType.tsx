@@ -13,6 +13,8 @@ export type TeamCoworker = {
   roleName: TeamRoleName;
 };
 
+export type TeamCoworkerInfo = TeamCoworker & { nickname: User['nickname'] };
+
 export type TeamForm = Omit<Team, 'teamId' | 'creatorId'> & { coworkers: TeamCoworker[] };
 
 export type TeamListWithApproval = Omit<Team, 'creatorId'> &

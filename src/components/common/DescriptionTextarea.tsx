@@ -1,13 +1,23 @@
 import { useFormContext } from 'react-hook-form';
+import type { RegisterOptions } from 'react-hook-form';
 
-type DescriptionInputProps = {
+type DescriptionTextareaProps = {
   id: string;
   label: string;
+  fieldName: string;
+  validationRole?: RegisterOptions;
   placeholder?: string;
   errors?: string;
 };
 
-export default function DescriptionITextarea({ id, label, placeholder, errors }: DescriptionInputProps) {
+export default function DescriptionTextarea({
+  id,
+  label,
+  fieldName,
+  placeholder,
+  validationRole,
+  errors,
+}: DescriptionTextareaProps) {
   const { register } = useFormContext();
 
   return (
@@ -17,7 +27,7 @@ export default function DescriptionITextarea({ id, label, placeholder, errors }:
         id={id}
         className="h-100 w-full rounded-md border border-input p-10 text-regular placeholder:text-xs"
         placeholder={placeholder}
-        {...register(id)}
+        {...(validationRole ? register(fieldName, validationRole) : register(fieldName))}
       />
       <div className={`my-5 h-10 text-xs text-error ${errors ? 'visible' : 'invisible'}`}>{errors}</div>
     </label>

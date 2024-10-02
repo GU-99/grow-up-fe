@@ -15,11 +15,8 @@ export default function CreateModalTeam({ onClose: handleClose }: CreateModalPro
   const { mutate: createTeam } = useCreateTeam();
 
   const handleSubmit: SubmitHandler<TeamForm> = async (data) => {
-    createTeam(data, {
-      onSuccess: () => {
-        handleClose();
-      },
-    });
+    createTeam(data);
+    handleClose();
   };
 
   return (

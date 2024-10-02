@@ -26,7 +26,7 @@ export async function findUserByTeam(
  *
  * @export
  * @async
- * @param {TeamForm} teamData - 팀 생성에 필요한 데이터
+ * @param {TeamForm} teamData - 팀 생성정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
