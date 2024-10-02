@@ -3,11 +3,11 @@ import { FormProvider, useForm } from 'react-hook-form';
 import ModalLayout from '@layouts/ModalLayout';
 import Spinner from '@components/common/Spinner';
 import ModalPortal from '@components/modal/ModalPortal';
+import ModalButton from '@components/modal/ModalButton';
 import StatusRadio from '@components/common/StatusRadio';
 import AssigneeList from '@components/common/AssigneeList';
 import FileDropZone from '@components/common/FileDropZone';
 import MarkdownEditor from '@components/common/MarkdownEditor';
-import ModalFormButton from '@components/modal/ModalFormButton';
 import SearchUserInput from '@components/common/SearchUserInput';
 import PeriodDateInput from '@components/common/PeriodDateInput';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
@@ -41,6 +41,7 @@ type UpdateModalTaskProps = {
 };
 
 export default function UpdateModalTask({ project, taskId, onClose: handleClose }: UpdateModalTaskProps) {
+  const updateTaskFormId = 'updateTaskForm';
   const { projectId, startDate, endDate } = project;
 
   const [keyword, setKeyword] = useState('');
@@ -144,7 +145,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
           <>
             <FormProvider {...methods}>
               <form
-                id="updateTaskForm"
+                id={updateTaskFormId}
                 className="flex w-4/5 grow flex-col justify-center"
                 onSubmit={handleSubmit(handleFormSubmit)}
               >
@@ -173,7 +174,9 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
                 <MarkdownEditor id="content" label="내용" contentFieldName="content" />
               </form>
             </FormProvider>
-            <ModalFormButton formId="updateTaskForm" isCreate={false} onClose={handleClose} />
+            <ModalButton formId={updateTaskFormId} backgroundColor="bg-main">
+              수정
+            </ModalButton>
           </>
         )}
         <hr className="my-20" />

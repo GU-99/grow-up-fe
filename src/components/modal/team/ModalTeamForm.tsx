@@ -19,10 +19,11 @@ import type { AllSearchCallback } from '@/types/SearchCallbackType';
 
 type ModalTeamFormProps = {
   formId: string;
+  teamId?: number;
   onSubmit: SubmitHandler<TeamForm>;
 };
 
-export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) {
+export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFormProps) {
   const [keyword, setKeyword] = useState('');
   const [showTooltip, setShowTooltip] = useState(false);
   const [coworkerInfos, setCoworkerInfos] = useState<TeamCoworkerInfo[]>([]);

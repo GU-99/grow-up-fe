@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListSetting from '@components/sidebar/ListSetting';
-import { USER_INFO_DUMMY } from '@mocks/mockData';
+import useStore from '@stores/useStore';
 
 const navList = [
   {
@@ -20,6 +20,7 @@ const navList = [
 
 export default function SettingLayout() {
   const location = useLocation();
+  const { userInfo } = useStore();
 
   const getTitle = () => {
     const currentPath = location.pathname.split('/')[2];
@@ -30,7 +31,7 @@ export default function SettingLayout() {
 
   return (
     <section className="flex h-full gap-10 p-15">
-      <ListSidebar title={`${USER_INFO_DUMMY.nickname} 님의 정보`}>
+      <ListSidebar title={`${userInfo.nickname} 님의 정보`}>
         <ListSetting navList={navList} />
       </ListSidebar>
       <section className="flex grow flex-col border border-list bg-contents-box">

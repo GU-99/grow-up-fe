@@ -2,7 +2,7 @@ import type { Role } from '@/types/RoleType';
 
 export type User = {
   userId: number;
-  username: string | null;
+  username: string;
   email: string;
   provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
   nickname: string;
@@ -11,16 +11,24 @@ export type User = {
   profileImageName: string | null;
 };
 
+export type UserInfo = User & {
+  password: string;
+};
+
 export type SearchUser = Pick<User, 'userId' | 'nickname'>;
 export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
 
-export type UserSignUpForm = Omit<User, 'userId' | 'provider'> & {
+export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageName'> & {
   verificationCode: string;
   password: string;
   checkPassword: string;
 };
+
+export type UserSignUpRequest = Omit<UserSignUpForm, 'checkPassword'>;
+
+export type CheckNicknameForm = Pick<User, 'nickname'>;
 
 export type UserSignInForm = Pick<User, 'username'> & {
   password: string;
