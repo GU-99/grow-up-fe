@@ -9,7 +9,9 @@ import {
   JWT_TOKEN_DUMMY,
   TASK_USER_DUMMY,
   TASK_FILE_DUMMY,
+  ROLE_DUMMY,
 } from '@mocks/mockData';
+import { TeamForm } from '@/types/TeamType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -25,6 +27,62 @@ const teamServiceHandler = [
 
     return HttpResponse.json([]);
   }),
+  // 팀 생성 API
+  http.post(`${BASE_URL}/team`, async ({ request }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamName, content, coworkers } = (await request.json()) as TeamForm;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const [, payload] = JWT_TOKEN_DUMMY.split('.');
+    const creatorId = Number(payload.replace('mocked-payload-', ''));
+
+    // 팀 ID 생성 및 팀 추가
+    const newTeamId = TEAM_DUMMY.length + 1;
+    TEAM_DUMMY.push({
+      teamId: newTeamId,
+      creatorId,
+      teamName,
+      content,
+    });
+
+    // 초대된 팀원들 추가
+    const validTeamUsers = [];
+    for (let i = 0; i < coworkers.length; i++) {
+      const coworker = coworkers[i];
+      const role = ROLE_DUMMY.find((role) => role.roleName === coworker.roleName);
+
+      if (!role) return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 400 });
+
+      validTeamUsers.push({
+        teamId: newTeamId,
+        userId: coworker.userId,
+        roleId: role.roleId,
+        isPendingApproval: false,
+      });
+    }
+    TEAM_USER_DUMMY.push(...validTeamUsers);
+
+    // 팀 생성자도 자동으로 팀에 추가
+    const creatorRole = ROLE_DUMMY.find((role) => role.roleName === 'HEAD');
+
+    if (!creatorRole) return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 404 });
+
+    TEAM_USER_DUMMY.push({
+      teamId: newTeamId,
+      userId: creatorId,
+      roleId: creatorRole.roleId,
+      isPendingApproval: true,
+    });
+
+    return new HttpResponse(null, {
+      status: 201,
+      headers: {
+        Location: `/api/v1/team/${newTeamId}`,
+      },
+    });
+  }),
+
   // 팀 탈퇴 API
   http.post(`${BASE_URL}/team/:teamId/leave`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');

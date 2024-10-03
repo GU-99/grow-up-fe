@@ -4,7 +4,7 @@ import ModalButton from '@components/modal/ModalButton';
 import ModalTeamForm from '@components/modal/team/ModalTeamForm';
 
 import { SubmitHandler } from 'react-hook-form';
-import { Team } from '@/types/TeamType';
+import { Team, TeamForm } from '@/types/TeamType';
 
 type UpdateModalTeamProps = {
   teamId: Team['teamId'];
@@ -12,8 +12,7 @@ type UpdateModalTeamProps = {
 };
 export default function UpdateModalTeam({ teamId, onClose: handleClose }: UpdateModalTeamProps) {
   const updateTeamFormId = 'updateTeamForm';
-
-  const handleSubmit: SubmitHandler<Team> = async (data) => {
+  const handleSubmit: SubmitHandler<TeamForm> = async (data) => {
     console.log(teamId, '수정 폼 제출');
     console.log(data);
     handleClose();

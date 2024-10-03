@@ -1,7 +1,7 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { SearchUser, User } from '@/types/UserType';
-import type { Team } from '@/types/TeamType';
+import type { Team, TeamForm } from '@/types/TeamType';
 
 /**
  * 팀에 속한 유저 목록을 검색하는 API
@@ -19,6 +19,19 @@ export async function findUserByTeam(
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.get<SearchUser[]>(`/team/${teamId}/user/search?nickname=${nickname}`, axiosConfig);
+}
+
+/**
+ * 팀 생성 API
+ *
+ * @export
+ * @async
+ * @param {TeamForm} teamData - 팀 생성정보 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function createTeam(teamData: TeamForm, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.post(`/team`, teamData, axiosConfig);
 }
 
 /**

@@ -1,12 +1,21 @@
-import { Role } from './RoleType';
+import type { User } from '@/types/UserType';
+import type { Role, TeamRoleName } from '@/types/RoleType';
 
-// ToDo: API 설계 완료시 데이터 타입 변경할 것
 export type Team = {
   teamId: number;
   creatorId: number;
   teamName: string;
   content: string;
 };
+
+export type TeamCoworker = {
+  userId: User['userId'];
+  roleName: TeamRoleName;
+};
+
+export type TeamCoworkerInfo = TeamCoworker & { nickname: User['nickname'] };
+
+export type TeamForm = Omit<Team, 'teamId' | 'creatorId'> & { coworkers: TeamCoworker[] };
 
 export type TeamListWithApproval = Omit<Team, 'creatorId'> &
   Pick<Role, 'roleName'> & {
