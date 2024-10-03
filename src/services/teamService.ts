@@ -1,7 +1,7 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { SearchUser, User } from '@/types/UserType';
-import type { Team, TeamForm } from '@/types/TeamType';
+import type { Team, TeamCoworker, TeamForm } from '@/types/TeamType';
 
 /**
  * 팀에 속한 유저 목록을 검색하는 API
@@ -84,4 +84,84 @@ export async function acceptTeamInvitation(teamId: number, axiosConfig: AxiosReq
  */
 export async function declineTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/invitation/decline`, {}, axiosConfig);
+}
+
+/**
+ * 팀원 추가 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId
+ * @param {number} userId
+ * @param {string} roleName
+ * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function addTeamMember(
+  teamId: number,
+  userId: number,
+  roleName: string,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.post(`/team/${teamId}/invitation`, { userId, roleName }, axiosConfig);
+}
+
+/**
+ * 팀원 삭제 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId
+ * @param {number} userId
+ * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function removeTeamMember(teamId: number, userId: number, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.delete(`/team/${teamId}/user/${userId}`, axiosConfig);
+}
+
+/**
+ * 팀원 권한 변경 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId
+ * @param {number} userId
+ * @param {string} roleName
+ * @param {AxiosRequestConfig} [axiosConfig={}]
+ */
+export async function changeTeamCoworkerRole(
+  teamId: number,
+  userId: number,
+  roleName: string,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.patch(`/team/${teamId}/user/${userId}/role`, { roleName }, axiosConfig);
+}
+
+/**
+ * 팀에 속한 유저 목록을 가져오는 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId
+ * @param {AxiosRequestConfig} [axiosConfig={}] -
+ * @returns {Promise<AxiosResponse<TeamCoworker[]>>}
+ */
+export async function getTeamCoworker(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get<TeamCoworker[]>(`/team/${teamId}/user`, axiosConfig);
+}
+
+/**
+ * 팀 정보 수정 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId
+ * @param {TeamForm} teamData
+ * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function updateTeamInfo(teamId: number, teamData: TeamForm, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.patch(`/team/${teamId}`, teamData, axiosConfig);
 }

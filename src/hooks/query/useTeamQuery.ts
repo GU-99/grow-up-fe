@@ -1,7 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generateTeamsQueryKey } from '@utils/queryKeyGenergator';
+import { generateProjectUsersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenergator';
 import { getTeamList } from '@services/userService';
-import { acceptTeamInvitation, createTeam, declineTeamInvitation, deleteTeam, leaveTeam } from '@services/teamService';
+import {
+  acceptTeamInvitation,
+  addTeamMember,
+  changeTeamCoworkerRole,
+  createTeam,
+  declineTeamInvitation,
+  deleteTeam,
+  getTeamCoworker,
+  leaveTeam,
+  removeTeamMember,
+  updateTeamInfo,
+} from '@services/teamService';
 import useToast from '@hooks/useToast';
 import type { TeamForm, TeamListWithApproval } from '@/types/TeamType';
 
@@ -126,4 +137,134 @@ export function useCreateTeam() {
   });
 
   return mutation;
+}
+
+// 팀원 추가
+export function useAddTeamMember(teamId: number) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
+
+  const mutation = useMutation({
+    mutationFn: ({ userId, roleName }: { userId: number; roleName: string }) => addTeamMember(teamId, userId, roleName),
+    onError: () => {
+      toastError('팀원 추가에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('팀원을 추가하였습니다.');
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 팀원 삭제
+export function useRemoveTeamMember(teamId: number) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
+
+  const mutation = useMutation({
+    mutationFn: (userId: number) => removeTeamMember(teamId, userId),
+    onError: () => {
+      toastError('팀원 삭제에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('팀원을 삭제하였습니다.');
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 팀 권한 변경
+export function useChangeRole(teamId: number) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
+
+  const mutation = useMutation({
+    mutationFn: ({ userId, roleName }: { userId: number; roleName: string }) =>
+      changeTeamCoworkerRole(teamId, userId, roleName),
+    onError: () => {
+      toastError('팀원 권한 변경에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('팀원 권한을 변경하였습니다.');
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 팀 정보 수정
+export function useUpdateTeamInfo() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const teamsQueryKey = generateTeamsQueryKey();
+
+  const mutation = useMutation({
+    mutationFn: ({ teamId, teamData }: { teamId: number; teamData: TeamForm }) => updateTeamInfo(teamId, teamData),
+    onError: () => {
+      toastError('팀 정보 수정에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('팀 정보를 성공적으로 수정했습니다.');
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 팀 목록 조회
+export function useReadTeamInfo(teamId: number) {
+  // 1. 팀 목록 가져오기
+  const {
+    data: teamList = [],
+    isLoading: isTeamLoading,
+    isError: isTeamError,
+    error: teamError,
+  } = useQuery({
+    queryKey: generateTeamsQueryKey(),
+    queryFn: async () => {
+      const { data } = await getTeamList();
+      return data;
+    },
+  });
+
+  // 2. 팀 정보 및 팀원 목록 필터링
+  const teamInfo = teamList.find((team) => team.teamId === teamId);
+
+  // 3. 팀원 목록 가져오기
+  const {
+    data: teamCoworkers = [],
+    isLoading: isTeamMembersLoading,
+    isError: isTeamMembersError,
+    error: teamCoworkerError,
+  } = useQuery({
+    queryKey: generateProjectUsersQueryKey(teamId),
+    queryFn: async () => {
+      const { data } = await getTeamCoworker(teamId);
+      return data;
+    },
+  });
+
+  const isLoading = isTeamLoading || isTeamMembersLoading;
+  const isError = isTeamError || isTeamMembersError;
+  const error = teamError || teamCoworkerError;
+
+  return {
+    teamInfo: {
+      teamName: teamInfo?.teamName,
+      content: teamInfo?.content,
+      coworkers: teamCoworkers,
+    },
+    isLoading,
+    isError,
+    error,
+  };
 }
