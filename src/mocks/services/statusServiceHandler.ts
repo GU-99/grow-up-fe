@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { STATUS_DUMMY } from '@mocks/mockData';
+import { PROJECT_DUMMY, STATUS_DUMMY } from '@mocks/mockData';
 import { getStatusHash } from '@mocks/mockHash';
 
 import type { ProjectStatusForm, StatusOrderForm } from '@/types/ProjectStatusType';
@@ -70,6 +70,28 @@ const statusServiceHandler = [
     status.statusName = formData.statusName;
     status.colorCode = formData.colorCode;
     status.sortOrder = formData.sortOrder;
+    return new HttpResponse(null, { status: 204 });
+  }),
+  // 프로젝트 상태 삭제 API
+  http.delete(`${BASE_URL}/project/:projectId/status/:statusId`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { projectId, statusId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
+    const project = PROJECT_DUMMY.find((project) => project.projectId === Number(projectId));
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    const statuses = STATUS_DUMMY.filter((status) => status.projectId === project.projectId);
+    if (statuses.length === 0) return new HttpResponse(null, { status: 404 });
+
+    const isIncludedStatus = statuses.map((status) => status.statusId).includes(Number(statusId));
+    if (!isIncludedStatus) return new HttpResponse(null, { status: 404 });
+
+    const statusIndex = STATUS_DUMMY.findIndex((status) => status.statusId === Number(statusId));
+    if (statusIndex !== -1) STATUS_DUMMY.splice(statusIndex, 1);
+
     return new HttpResponse(null, { status: 204 });
   }),
 ];

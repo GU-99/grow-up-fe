@@ -9,7 +9,7 @@ type SearchInputProps = {
   id: string;
   label: string;
   keyword: string;
-  searchId: number;
+  searchId?: number;
   loading: boolean;
   userList: SearchUser[];
   searchCallbackInfo: SearchCallback;
@@ -37,16 +37,22 @@ export default function SearchUserInput({
 
     abortControllerRef.current = new AbortController();
     const { signal } = abortControllerRef.current;
-
     const { type, searchCallback } = searchCallbackInfo;
+
     switch (type) {
       case 'ALL':
         searchCallback(keyword, { signal });
         break;
       case 'TEAM':
+        if (searchId === undefined) {
+          return console.error(`${type} 인원 검색을 위해 searchId가 필요합니다.`);
+        }
         searchCallback(searchId, keyword, { signal });
         break;
       case 'PROJECT':
+        if (searchId === undefined) {
+          return console.error(`${type} 인원 검색을 위해 searchId가 필요합니다.`);
+        }
         searchCallback(searchId, keyword, { signal });
         break;
       default:

@@ -1,14 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
+import ModalButton from '@components/modal/ModalButton';
 import ModalTaskForm from '@components/modal/task/ModalTaskForm';
-import ModalFormButton from '@components/modal/ModalFormButton';
 import useToast from '@hooks/useToast';
 import { useCreateStatusTask, useReadStatusTasks, useUploadTaskFile } from '@hooks/query/useTaskQuery';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { Task, TaskForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
+import type { Task, TaskForm } from '@/types/TaskType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import type { FileUploadFailureResult, FileUploadSuccessResult } from '@/types/FileType';
 
@@ -18,6 +18,7 @@ type CreateModalTaskProps = {
 };
 
 export default function CreateModalTask({ project, onClose: handleClose }: CreateModalTaskProps) {
+  const createTaskFormId = 'createTaskForm';
   const { toastSuccess, toastError } = useToast();
   const { mutateAsync: createTaskInfoMutateAsync } = useCreateStatusTask(project.projectId);
   const { mutateAsync: createTaskFileMutateAsync } = useUploadTaskFile(project.projectId);
@@ -73,8 +74,10 @@ export default function CreateModalTask({ project, onClose: handleClose }: Creat
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        <ModalTaskForm formId="createTaskForm" project={project} onSubmit={handleSubmit} />
-        <ModalFormButton formId="createTaskForm" isCreate onClose={handleClose} />
+        <ModalTaskForm formId={createTaskFormId} project={project} onSubmit={handleSubmit} />
+        <ModalButton formId={createTaskFormId} backgroundColor="bg-main">
+          등록
+        </ModalButton>
       </ModalLayout>
     </ModalPortal>
   );

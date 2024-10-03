@@ -52,7 +52,6 @@ const userServiceHandler = [
     return HttpResponse.json(userInfo, { status: 200 });
   }),
   // 유저 검색 API
-  // ToDo: 내부 구현 사항 채울 것
   http.get(`${BASE_URL}/user/search`, ({ request }) => {
     const url = new URL(request.url);
     const nickname = url.searchParams.get('nickname');
@@ -60,7 +59,11 @@ const userServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    return HttpResponse.json([]);
+    // 접두사(nickname)과 일치하는 유저 정보 최대 5명 추출
+    const prefixRegex = new RegExp(`^${nickname}`);
+    const filteredUsers = USER_DUMMY.filter((user) => prefixRegex.test(user.nickname)).slice(0, 5);
+
+    return HttpResponse.json(filteredUsers);
   }),
   // 가입한 팀 목록 조회 API
   http.get(`${BASE_URL}/user/team`, ({ request }) => {

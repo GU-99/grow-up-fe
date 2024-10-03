@@ -1,6 +1,6 @@
 import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
-import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from '@constants/regex';
+import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, TEAM_NAME_PATTERN } from '@constants/regex';
 import { USER_SETTINGS } from '@constants/settings';
 import type { Project } from '@/types/ProjectType';
 import type { Task } from '@/types/TaskType';
@@ -154,4 +154,24 @@ export const TASK_VALIDATION_RULES = deepFreeze({
     required: hasDeadline && '종료일을 선택해주세요.',
     validate: getTaskDateValidation(projectStartDate, projectEndDate, taskStartDate),
   }),
+});
+
+export const TEAM_VALIDATION_RULES = deepFreeze({
+  TEAM_NAME: {
+    required: '팀명을 입력해주세요.',
+    maxLength: {
+      value: 10,
+      message: '팀명은 최대 10자리까지 입력 가능합니다.',
+    },
+    pattern: {
+      value: TEAM_NAME_PATTERN,
+      message: '팀명은 한글, 영문, 숫자만 포함 가능합니다.',
+    },
+  },
+  TEAM_DESCRIPTION: {
+    maxLength: {
+      value: 200,
+      message: '팀 설명은 최대 200자까지 입력 가능합니다.',
+    },
+  },
 });
