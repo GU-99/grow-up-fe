@@ -1,57 +1,50 @@
-import { AxiosError } from 'axios';
 import { FormProvider, useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import ValidationInput from '@components/common/ValidationInput';
 import ProfileImageContainer from '@components/user/auth-form/ProfileImageContainer';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
 import { useStore } from '@stores/useStore';
-import { patchUserInfo } from '@services/userService';
 import useToast from '@hooks/useToast';
 import useNicknameDuplicateCheck from '@hooks/useNicknameDuplicateCheck';
+import { useUpdateUserInfo } from '@hooks/query/useUserQuery';
 import type { EditUserInfoForm } from '@/types/UserType';
 
 export default function UserSettingPage() {
-  const { userInfo: userInfoData, editUserInfo } = useStore();
-  const { toastError, toastSuccess, toastWarn } = useToast();
+  const { toastWarn } = useToast();
+  const { editUserInfo, userInfo: userInfoData } = useStore();
+
+  const { mutate: updateUserInfo } = useUpdateUserInfo();
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      username: userInfoData.username,
-      email: userInfoData.email,
-      nickname: userInfoData.nickname,
-      bio: userInfoData.bio,
-      profileImageName: userInfoData.profileImageName,
+      username: userInfoData?.username || '',
+      email: userInfoData?.email || '',
+      nickname: userInfoData?.nickname || '',
+      bio: userInfoData?.bio || '',
+      profileImageName: userInfoData?.profileImageName || '',
     },
   });
-
   const { formState, register, setValue, watch, handleSubmit } = methods;
   const nickname = watch('nickname');
 
   const { checkedNickname, lastCheckedNickname, handleCheckNickname } = useNicknameDuplicateCheck(
     nickname,
     formState.errors.nickname?.message,
-    userInfoData.nickname,
+    userInfoData?.nickname || '',
   );
 
-  const onSubmit = async (data: EditUserInfoForm) => {
+  const onSubmit = (data: EditUserInfoForm) => {
     if (lastCheckedNickname !== nickname && !checkedNickname) {
       return toastWarn('닉네임 중복 체크를 진행해 주세요.');
     }
 
-    const editUserData = {
+    updateUserInfo({
       nickname: data.nickname,
       bio: data.bio,
-    };
+    });
 
-    try {
-      await patchUserInfo(editUserData);
-      editUserInfo(editUserData);
-      toastSuccess('유저 정보가 수정되었습니다.');
-    } catch (error) {
-      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
-      else toastError('예상치 못한 에러가 발생했습니다.');
-    }
+    editUserInfo(data);
   };
 
   return (
@@ -120,7 +113,7 @@ export default function UserSettingPage() {
           <hr className="my-20" />
 
           {/* 링크 */}
-          <LinkContainer initialLinks={userInfoData.links} />
+          <LinkContainer initialLinks={userInfoData?.links || []} />
         </div>
       </div>
     </FormProvider>
