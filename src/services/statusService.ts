@@ -56,6 +56,24 @@ export async function updateStatus(
 }
 
 /**
+ * 프로젝트 상태 삭제 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {ProjectStatus['statusId']} statusId  - 프로젝트 상태 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteStatus(
+  projectId: Project['projectId'],
+  statusId: ProjectStatus['statusId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.delete(`/project/${projectId}/status/${statusId}`, axiosConfig);
+}
+
+/**
  * 상태 순서 변경 API
  *
  * @export

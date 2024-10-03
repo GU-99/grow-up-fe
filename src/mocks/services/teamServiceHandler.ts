@@ -30,14 +30,12 @@ const teamServiceHandler = [
   // 팀 생성 API
   http.post(`${BASE_URL}/team`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
+    const { teamName, content, coworkers } = (await request.json()) as TeamForm;
+
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const [, payload] = JWT_TOKEN_DUMMY.split('.');
     const creatorId = Number(payload.replace('mocked-payload-', ''));
-
-    const requestBody = (await request.json()) as TeamForm;
-
-    const { teamName, content, coworkers } = requestBody;
 
     // 팀 ID 생성 및 팀 추가
     const newTeamId = TEAM_DUMMY.length + 1;
@@ -49,42 +47,32 @@ const teamServiceHandler = [
     });
 
     // 초대된 팀원들 추가
-    const invalidRoles: string[] = [];
+    const validTeamUsers = [];
     for (let i = 0; i < coworkers.length; i++) {
       const coworker = coworkers[i];
       const role = ROLE_DUMMY.find((role) => role.roleName === coworker.roleName);
 
-      if (role) {
-        TEAM_USER_DUMMY.push({
-          teamId: newTeamId,
-          userId: coworker.userId,
-          roleId: role.roleId,
-          isPendingApproval: false,
-        });
-      } else {
-        invalidRoles.push(coworker.roleName);
-        break;
-      }
-    }
+      if (!role) return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 400 });
 
-    if (invalidRoles.length > 0) {
-      return new HttpResponse(JSON.stringify({ message: `유효하지 않은 역할: ${invalidRoles.join(', ')}` }), {
-        status: 400,
+      validTeamUsers.push({
+        teamId: newTeamId,
+        userId: coworker.userId,
+        roleId: role.roleId,
+        isPendingApproval: false,
       });
     }
+    TEAM_USER_DUMMY.push(...validTeamUsers);
 
     // 팀 생성자도 자동으로 팀에 추가
     const creatorRole = ROLE_DUMMY.find((role) => role.roleName === 'HEAD');
 
-    if (!creatorRole) {
-      return new HttpResponse(JSON.stringify({ message: '유효하지 않은 역할입니다.' }), { status: 404 });
-    }
+    if (!creatorRole) return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 404 });
 
     TEAM_USER_DUMMY.push({
       teamId: newTeamId,
       userId: creatorId,
       roleId: creatorRole.roleId,
-      isPendingApproval: false,
+      isPendingApproval: true,
     });
 
     return new HttpResponse(null, {

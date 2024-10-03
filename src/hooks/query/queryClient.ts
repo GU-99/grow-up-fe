@@ -12,6 +12,7 @@ const queryClientOptions: QueryClientConfig = {
       refetchOnMount: true,
       refetchOnReconnect: true,
       refetchOnWindowFocus: true,
+      refetchInterval: 5 * MINUTE,
       retry: 3,
     },
   },
