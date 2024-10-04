@@ -12,7 +12,7 @@ import type { TeamListWithApproval } from '@/types/TeamType';
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<EditUserInfoResponse>>}
  */
-export async function patchUserInfo(userInfoForm: EditUserInfoRequest, axiosConfig: AxiosRequestConfig = {}) {
+export async function updateUserInfo(userInfoForm: EditUserInfoRequest, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.patch<EditUserInfoResponse>('/user', userInfoForm, axiosConfig);
 }
 

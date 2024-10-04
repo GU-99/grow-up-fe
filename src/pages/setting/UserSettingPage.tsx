@@ -13,7 +13,7 @@ export default function UserSettingPage() {
   const { toastWarn } = useToast();
   const { editUserInfo, userInfo: userInfoData } = useStore();
 
-  const { mutate: updateUserInfo } = useUpdateUserInfo();
+  const { mutate: updateUserInfoMutate } = useUpdateUserInfo();
 
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
@@ -39,7 +39,7 @@ export default function UserSettingPage() {
       return toastWarn('닉네임 중복 체크를 진행해 주세요.');
     }
 
-    updateUserInfo({
+    updateUserInfoMutate({
       nickname: data.nickname,
       bio: data.bio,
     });
