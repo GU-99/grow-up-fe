@@ -191,6 +191,30 @@ export async function deleteAssignee(
 }
 
 /**
+ * 일정 파일 다운로드 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {Task['taskId']} taskId               - 일정 ID
+ * @param {string} fileName                     - 파일명
+ * @param {string} extension                    - 확장자명
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<Blob>>}
+ */
+export async function downloadTaskFile(
+  projectId: Project['projectId'],
+  taskId: Task['taskId'],
+  fileName: string,
+  axiosConfig: AxiosRequestConfig = {},
+) {
+  return authAxios.get<Blob>(`/file/project/${projectId}/${taskId}/${fileName}`, {
+    ...axiosConfig,
+    responseType: 'blob',
+  });
+}
+
+/**
  * 일정 파일 삭제 API
  *
  * @export
