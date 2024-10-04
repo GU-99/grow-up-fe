@@ -7,7 +7,7 @@ export type CustomFile = {
 export type TaskFile = {
   fileId: number;
   fileName: string;
-  fileUrl: string;
+  uploadName: string;
 };
 
 export type FileInfo = TaskFile | CustomFile;

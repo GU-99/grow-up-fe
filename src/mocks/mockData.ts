@@ -29,13 +29,15 @@ type TaskFile = {
   fileId: number;
   taskId: number;
   fileName: string;
-  fileUrl: string;
+  uploadName: string;
 };
 
 type FileInfo = {
   fileId: number;
   taskId: number;
   file: Blob;
+  fileName: string;
+  extension: string;
 };
 
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
@@ -799,19 +801,19 @@ export const TASK_FILE_DUMMY: TaskFile[] = [
     fileId: 1,
     taskId: 1,
     fileName: '최종본.txt',
-    fileUrl: '',
+    uploadName: 'FILE_UUID_1.txt',
   },
   {
     fileId: 2,
     taskId: 1,
     fileName: '참고자료.txt',
-    fileUrl: '',
+    uploadName: 'FILE_UUID_2.txt',
   },
   {
     fileId: 3,
     taskId: 2,
     fileName: '명세서.txt',
-    fileUrl: '',
+    uploadName: 'FILE_UUID_3.txt',
   },
 ];
 
@@ -821,15 +823,21 @@ export const FILE_DUMMY: FileInfo[] = [
     fileId: 1,
     taskId: 1,
     file: new Blob(['최종본 내용'], { type: 'text/plain' }),
+    fileName: 'FILE_UUID_1',
+    extension: 'txt',
   },
   {
     fileId: 2,
     taskId: 1,
     file: new Blob(['참고자료 내용'], { type: 'text/plain' }),
+    fileName: 'FILE_UUID_2',
+    extension: 'txt',
   },
   {
     fileId: 3,
     taskId: 2,
     file: new Blob(['명세서 내용'], { type: 'text/plain' }),
+    fileName: 'FILE_UUID_3',
+    extension: 'txt',
   },
 ];
