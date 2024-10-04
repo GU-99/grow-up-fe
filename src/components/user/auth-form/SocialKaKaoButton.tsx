@@ -4,12 +4,12 @@ type SocialKaKaoButtonProps = {
   isSubmitting: boolean;
 };
 
-const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+const CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
 
-const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
+const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
 
-export default function SocialKaKaoButton({ isSubmitting }: SocialKaKaoButtonProps) {
+export default function SocialKakaoButton({ isSubmitting }: SocialKaKaoButtonProps) {
   const handleLogin = () => {
     window.location.href = kakaoUrl;
   };

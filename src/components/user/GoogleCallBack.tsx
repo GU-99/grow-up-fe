@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '@components/common/Spinner';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import useStore from '@stores/useStore';
-import { getUserInfo, kakaoLogin } from '@services/authService';
+import { getUserInfo, googleLogin } from '@services/authService';
 import useToast from '@hooks/useToast';
 
-export default function KakaoCallBack() {
+export default function GoogleCallBack() {
   const [loading, setLoading] = useState(false);
   const { toastError } = useToast();
   const { onLogin, setUserInfo } = useStore();
@@ -27,7 +27,7 @@ export default function KakaoCallBack() {
 
     const handleLogin = async () => {
       try {
-        const response = await kakaoLogin(AUTHORIZE_CODE);
+        const response = await googleLogin(AUTHORIZE_CODE);
         if (!response.headers) throw new Error();
 
         const accessToken = response.headers.authorization;

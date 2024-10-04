@@ -67,6 +67,19 @@ export async function kakaoLogin(code: string, axiosConfig: AxiosRequestConfig =
 }
 
 /**
+ * 구글 로그인 API
+ *
+ * @export
+ * @async
+ * @param {string} code - 인가 코드
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function googleLogin(code: string, axiosConfig: AxiosRequestConfig = {}) {
+  return defaultAxios.post('user/login/google', { code }, axiosConfig);
+}
+
+/**
  * 사용자 액세스 토큰 갱신 API
  *
  * @export

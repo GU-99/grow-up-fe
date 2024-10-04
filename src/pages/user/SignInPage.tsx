@@ -1,15 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import Google from '@assets/social_google_icon.svg';
 import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
-import SocialKaKaoButton from '@components/user/auth-form/SocialKaKaoButton';
 import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { getUserInfo, login } from '@services/authService';
 import { useStore } from '@stores/useStore';
+import SocialGoogleButton from '@components/user/auth-form/SocialGoogleButton';
+import SocialKakaoButton from '@components/user/auth-form/SocialKakaoButton';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
@@ -93,11 +93,8 @@ export default function SignInPage() {
         <FooterLinks type="signIn" />
       </AuthFormLayout>
       <section className="bottom-0 flex flex-col gap-8 text-center">
-        <SocialKaKaoButton isSubmitting={isSubmitting} />
-        <button type="button" className="auth-btn space-x-10 bg-button" disabled={isSubmitting}>
-          <img src={Google} alt="Google" className="size-42" />
-          <span>로그인</span>
-        </button>
+        <SocialKakaoButton isSubmitting={isSubmitting} />
+        <SocialGoogleButton isSubmitting={isSubmitting} />
       </section>
     </>
   );
