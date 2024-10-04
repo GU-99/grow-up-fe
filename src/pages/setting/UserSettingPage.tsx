@@ -18,11 +18,11 @@ export default function UserSettingPage() {
   const methods = useForm<EditUserInfoForm>({
     mode: 'onChange',
     defaultValues: {
-      username: userInfoData?.username || '',
-      email: userInfoData?.email || '',
-      nickname: userInfoData?.nickname || '',
-      bio: userInfoData?.bio || '',
-      profileImageName: userInfoData?.profileImageName || '',
+      username: userInfoData.username,
+      email: userInfoData.email,
+      nickname: userInfoData.nickname,
+      bio: userInfoData.bio,
+      profileImageName: userInfoData.profileImageName,
     },
   });
   const { formState, register, setValue, watch, handleSubmit } = methods;
