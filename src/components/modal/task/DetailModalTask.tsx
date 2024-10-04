@@ -83,7 +83,7 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
                         className="flex cursor-pointer items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
                         aria-label="file download"
                       >
-                        <a href={taskFile.fileUrl} download>
+                        <a href={taskFile.uploadName} download>
                           {taskFile.fileName}
                         </a>
                         <LuDownload />

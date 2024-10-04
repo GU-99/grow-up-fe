@@ -81,14 +81,19 @@ const taskServiceHandler = [
       fileId: newFileId,
       taskId: task.taskId,
       fileName: file.name,
-      fileUrl: '',
+      uploadName: `${file.name}_${file.size}_${Date.now()}`,
     });
 
     // MSW 파일 다운로드 테스트를 위해 메모리에 임시 저장
+    const lastDotIndex = file.name.lastIndexOf('.');
+    const fileName = file.name.slice(0, lastDotIndex);
+    const extension = file.name.slice(lastDotIndex + 1);
     FILE_DUMMY.push({
       fileId: newFileId,
       taskId: task.taskId,
       file: new Blob([file], { type: file.type }),
+      fileName,
+      extension,
     });
 
     return new HttpResponse(null, { status: 200 });
