@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import Kakao from '@assets/social_kakao_icon.svg';
 import Google from '@assets/social_google_icon.svg';
 import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
+import SocialKaKaoButton from '@components/user/auth-form/SocialKaKaoButton';
 import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { getUserInfo, login } from '@services/authService';
@@ -93,10 +93,7 @@ export default function SignInPage() {
         <FooterLinks type="signIn" />
       </AuthFormLayout>
       <section className="bottom-0 flex flex-col gap-8 text-center">
-        <button type="button" className="auth-btn space-x-4 bg-kakao" disabled={isSubmitting}>
-          <img src={Kakao} alt="Kakao" className="size-15" />
-          <span>카카오 로그인</span>
-        </button>
+        <SocialKaKaoButton isSubmitting={isSubmitting} />
         <button type="button" className="auth-btn space-x-10 bg-button" disabled={isSubmitting}>
           <img src={Google} alt="Google" className="size-42" />
           <span>로그인</span>

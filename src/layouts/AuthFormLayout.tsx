@@ -2,7 +2,7 @@ import { FormEvent, ReactNode } from 'react';
 
 type AuthFormLayoutProps = {
   children: ReactNode;
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onSubmit?: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 export default function AuthFormLayout({ children, onSubmit }: AuthFormLayoutProps) {
