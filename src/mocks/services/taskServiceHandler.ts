@@ -236,6 +236,11 @@ const taskServiceHandler = [
     const taskIndex = TASK_DUMMY.findIndex((task) => task.taskId === Number(taskId));
     if (taskIndex !== -1) TASK_DUMMY.splice(taskIndex, 1);
 
+    // 프로젝트 상태에 남은 일정 순서 재정렬
+    TASK_DUMMY.filter((target) => target.statusId === task.statusId)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .forEach((task, index) => (task.sortOrder = index + 1));
+
     // 일정의 수행자 삭제
     const filteredTaskUser = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId !== Number(taskId));
     if (filteredTaskUser.length !== TASK_USER_DUMMY.length) {
