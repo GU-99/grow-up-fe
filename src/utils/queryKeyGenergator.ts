@@ -3,6 +3,7 @@ import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 
 export const queryKeys = {
+  userInfo: 'userInfo',
   users: 'users',
   teams: 'teams',
   projects: 'projects',
@@ -11,6 +12,16 @@ export const queryKeys = {
   files: 'files',
   assignees: 'assignees',
 };
+
+/**
+ * 유저 프로필 정보 queryKey 생성 함수
+ *
+ * @export
+ * @returns {(string | number)[]}
+ */
+export function generateUserInfoQueryKey() {
+  return [queryKeys.userInfo];
+}
 
 /**
  * 유저의 팀 목록 queryKey 생성 함수

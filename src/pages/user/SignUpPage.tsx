@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,12 +7,12 @@ import VerificationButton from '@components/user/auth-form/VerificationButton';
 import LinkContainer from '@components/user/auth-form/LinkContainer';
 import useToast from '@hooks/useToast';
 import useEmailVerification from '@hooks/useEmailVerification';
-import { checkNicknameDuplicate, signUp } from '@services/authService';
+import useNicknameDuplicateCheck from '@hooks/useNicknameDuplicateCheck';
+import { signUp } from '@services/authService';
 import type { UserSignUpForm } from '@/types/UserType';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
-  const [checkedNickname, setCheckedNickname] = useState(false);
   const { toastSuccess, toastError, toastWarn } = useToast();
   const { isVerificationRequested, requestVerificationCode, expireVerificationCode } = useEmailVerification();
 
@@ -33,25 +32,10 @@ export default function SignUpPage() {
 
   const { watch, handleSubmit, formState, register, setValue } = methods;
   const nickname = watch('nickname');
-
-  // 중복 확인 후 닉네임 변경 시, 중복확인 버튼 재활성화
-  useEffect(() => {
-    if (formState.dirtyFields.nickname) setCheckedNickname(false);
-  }, [nickname, formState.dirtyFields.nickname]);
-
-  // ToDo: 유저 설정 페이지에 적용하며 분리
-  const checkNickname = async () => {
-    if (!nickname || formState.errors.nickname) return;
-
-    try {
-      await checkNicknameDuplicate({ nickname });
-      toastSuccess('사용 가능한 닉네임입니다.');
-      setCheckedNickname(true);
-    } catch (error) {
-      if (error instanceof AxiosError && error.response) toastError(error.response.data.message);
-      else toastError('예상치 못한 에러가 발생했습니다.');
-    }
-  };
+  const { checkedNickname, handleCheckNickname } = useNicknameDuplicateCheck(
+    nickname,
+    formState.errors.nickname?.message,
+  );
 
   const handleRequestVerificationCode = () => {
     if (!checkedNickname) return toastWarn('닉네임 중복 체크를 진행해 주세요.');
@@ -116,7 +100,7 @@ export default function SignUpPage() {
           isButtonInput
           buttonLabel="중복확인"
           buttonDisabled={checkedNickname}
-          onButtonClick={checkNickname}
+          onButtonClick={handleCheckNickname}
         />
 
         {/* 비밀번호 */}

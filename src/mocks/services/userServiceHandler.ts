@@ -1,13 +1,56 @@
 import { http, HttpResponse } from 'msw';
-import { ROLE_DUMMY, TEAM_DUMMY, TEAM_USER_DUMMY, USER_DUMMY } from '@mocks/mockData';
+import { JWT_TOKEN_DUMMY, ROLE_DUMMY, TEAM_DUMMY, TEAM_USER_DUMMY, USER_DUMMY } from '@mocks/mockData';
+import { NICKNAME_REGEX } from '@constants/regex';
+import { convertTokenToUserId } from '@utils/converter';
 import type { Team } from '@/types/TeamType';
 import type { Role } from '@/types/RoleType';
-import type { User } from '@/types/UserType';
+import type { EditUserInfoForm, User } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // ToDo: Dummy 데이터 Hash화 한 곳으로 모으기
 const userServiceHandler = [
+  // 유저 정보 변경 API
+  http.patch(`${BASE_URL}/user`, async ({ request }) => {
+    const accessToken = request.headers.get('Authorization');
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const { nickname, bio } = (await request.json()) as EditUserInfoForm;
+
+    let userId;
+    // ToDo: 추후 삭제
+    if (accessToken === JWT_TOKEN_DUMMY) {
+      const payload = JWT_TOKEN_DUMMY.split('.')[1];
+      userId = Number(payload.replace('mocked-payload-', ''));
+    } else {
+      // 토큰에서 userId 추출
+      userId = convertTokenToUserId(accessToken);
+    }
+
+    const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
+
+    if (!userId || userIndex === -1) {
+      return HttpResponse.json(
+        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    if (USER_DUMMY[userIndex].nickname !== nickname && !NICKNAME_REGEX.test(nickname)) {
+      return HttpResponse.json({ message: '요청 필드의 입력 포맷이 잘못되었습니다.' }, { status: 400 });
+    }
+
+    USER_DUMMY[userIndex].nickname = nickname;
+    USER_DUMMY[userIndex].bio = bio;
+
+    const userInfo = {
+      userId: USER_DUMMY[userIndex].userId,
+      nickname: USER_DUMMY[userIndex].nickname,
+      bio: USER_DUMMY[userIndex].bio,
+    };
+
+    return HttpResponse.json(userInfo, { status: 200 });
+  }),
   // 유저 검색 API
   http.get(`${BASE_URL}/user/search`, ({ request }) => {
     const url = new URL(request.url);
