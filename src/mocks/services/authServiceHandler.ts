@@ -4,6 +4,7 @@ import { AUTH_SETTINGS } from '@constants/settings';
 import { JWT_TOKEN_DUMMY, TEMP_PASSWORD_DUMMY, USER_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
 import { EMAIL_REGEX } from '@constants/regex';
 import { convertTokenToUserId, generateDummyToken } from '@utils/converter';
+import axios from 'axios';
 import {
   CheckNicknameForm,
   EmailVerificationForm,
@@ -67,6 +68,88 @@ const authServiceHandler = [
 
     const accessToken = generateDummyToken(foundUser.userId);
     const refreshToken = generateDummyToken(foundUser.userId);
+    const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
+
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Set-Cookie': [
+          `refreshToken=${refreshToken}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
+          `refreshTokenExpiresAt=${refreshTokenExpiryDate}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
+        ].join(', '),
+      },
+    });
+  }),
+
+  // 소셜 로그인 API
+  http.post(`${BASE_URL}/user/login/kakao`, async ({ request }) => {
+    const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+
+    const { code: AUTHORIZE_CODE } = (await request.json()) as { code: string };
+    let kakaoAccessToken;
+
+    // 인가코드로 액세스 토큰 발급
+    try {
+      const response = await axios.post(
+        `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&code=${AUTHORIZE_CODE}`,
+        null,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+          },
+        },
+      );
+
+      kakaoAccessToken = response.data.access_token;
+      if (!kakaoAccessToken) {
+        console.error('토큰 조회 중 오류가 발생했습니다.');
+        return new HttpResponse(null, { status: 400 });
+      }
+    } catch (error) {
+      console.error('로그인 도중 오류가 발생했습니다.', error);
+      return new HttpResponse(null, { status: 500 });
+    }
+
+    // 액세스 토큰을 이용해 유저 정보 요청
+    let userResponse;
+    try {
+      userResponse = await axios.get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${kakaoAccessToken}`,
+        },
+      });
+    } catch (error) {
+      console.error('유저 정보를 가져오는 도중 오류가 발생했습니다.', error);
+      return new HttpResponse(null, { status: 500 });
+    }
+
+    // 유저 정보를 기반으로 사용자 회원가입 또는 찾기
+    const foundUser = USER_DUMMY.find((user) => user.email === userResponse.data.kakao_account.email);
+    let userId;
+
+    if (!foundUser) {
+      const newUser: UserInfo = {
+        userId: USER_DUMMY.length + 1,
+        username: userResponse.data.kakao_account.email,
+        password: '',
+        email: userResponse.data.kakao_account.email,
+        provider: 'KAKAO',
+        nickname: userResponse.data.id,
+        profileImageName: null,
+        bio: null,
+        links: [],
+      };
+
+      USER_DUMMY.push(newUser);
+      userId = newUser.userId;
+    } else {
+      userId = foundUser.userId;
+    }
+
+    const accessToken = generateDummyToken(userId);
+    const refreshToken = generateDummyToken(userId);
     const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
 
     return new HttpResponse(null, {

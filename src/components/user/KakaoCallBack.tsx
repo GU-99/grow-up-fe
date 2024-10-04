@@ -1,53 +1,61 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '@components/common/Spinner';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import useStore from '@stores/useStore';
-
-const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
-const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+import { getUserInfo, kakaoLogin } from '@services/authService';
+import useToast from '@hooks/useToast';
 
 export default function KakaoCallBack() {
   const [loading, setLoading] = useState(false);
-  const { onLogin } = useStore();
+  const { toastError } = useToast();
+  const { onLogin, setUserInfo } = useStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     const AUTHORIZE_CODE = new URL(window.location.href).searchParams.get('code');
+    if (!AUTHORIZE_CODE) return;
 
-    const getToken = async () => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await getUserInfo();
+        setUserInfo(response.data);
+      } catch (error) {
+        throw new Error('유저 정보를 가져오는 데 실패했습니다.');
+      }
+    };
+
+    const handleLogin = async () => {
+      try {
+        const response = await kakaoLogin(AUTHORIZE_CODE);
+        if (!response.headers) throw new Error();
+
+        const accessToken = response.headers.authorization;
+        if (!accessToken) throw new Error();
+
+        onLogin(accessToken.split(' ')[1]);
+        navigate('/', { replace: true });
+      } catch (error) {
+        toastError('로그인 도중 오류가 발생했습니다.');
+        navigate('/sign', { replace: true });
+      }
+    };
+
+    const onSubmit = async () => {
       setLoading(true);
 
       try {
-        const response = await axios.post(
-          `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&code=${AUTHORIZE_CODE}`,
-          null,
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            },
-          },
-        );
-
-        const accessToken = response.data.access_token;
-        if (!accessToken) console.error('토큰 조회 중 오류가 발생했습니다.');
-
-        onLogin(accessToken);
+        await handleLogin();
+        await fetchUserInfo();
         navigate('/', { replace: true });
       } catch (error) {
-        console.error('로그인 도중 오류가 발생했습니다.');
+        const axiosError = error as Error;
+        toastError(axiosError.message);
       } finally {
         setLoading(false);
       }
     };
-
-    if (AUTHORIZE_CODE) {
-      getToken();
-    } else {
-      setLoading(false);
-      console.error('Authorization code가 없습니다.');
-    }
+    onSubmit();
   }, []);
 
   return (
