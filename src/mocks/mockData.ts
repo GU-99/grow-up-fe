@@ -36,8 +36,7 @@ type FileInfo = {
   fileId: number;
   taskId: number;
   file: Blob;
-  fileName: string;
-  extension: string;
+  uploadName: string;
 };
 
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
@@ -823,21 +822,18 @@ export const FILE_DUMMY: FileInfo[] = [
     fileId: 1,
     taskId: 1,
     file: new Blob(['최종본 내용'], { type: 'text/plain' }),
-    fileName: 'FILE_UUID_1',
-    extension: 'txt',
+    uploadName: 'FILE_UUID_1.txt',
   },
   {
     fileId: 2,
     taskId: 1,
     file: new Blob(['참고자료 내용'], { type: 'text/plain' }),
-    fileName: 'FILE_UUID_2',
-    extension: 'txt',
+    uploadName: 'FILE_UUID_2.txt',
   },
   {
     fileId: 3,
     taskId: 2,
     file: new Blob(['명세서 내용'], { type: 'text/plain' }),
-    fileName: 'FILE_UUID_3',
-    extension: 'txt',
+    uploadName: 'FILE_UUID_3.txt',
   },
 ];
