@@ -13,8 +13,9 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '@/customReactBigCalendar.css';
 
 import type { DayPropGetter, EventPropGetter } from 'react-big-calendar';
-import type { TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
+import type { Task, TaskListWithStatus, TaskWithStatus } from '@/types/TaskType';
 import type { CustomEvent } from '@/types/CustomEventType';
+import DetailModalTask from '@/components/modal/task/DetailModalTask';
 
 function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
@@ -36,17 +37,28 @@ const localizer = luxonLocalizer(DateTime, { firstDayOfWeek: 7 });
 // ToDo: Loading시 infinite spinner UI 보이도록 변경할 것
 // ToDo: Error 발생시 처리 추가할 것
 export default function CalendarPage() {
-  const { project } = useProjectContext();
-  const { showModal, openModal, closeModal } = useModal();
-  const [selectedTask, setSelectedTask] = useState<TaskWithStatus>();
+  const [selectedTask, setSelectedTask] = useState<Task>({
+    taskId: 0,
+    statusId: 0,
+    name: '',
+    content: '',
+    startDate: '',
+    endDate: '',
+    sortOrder: 0,
+  });
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
+  const { project } = useProjectContext();
   const { statusTaskList, isTaskLoading, isTaskError, taskError } = useReadStatusTasks(project.projectId);
+  const { showModal: showDetailModal, openModal: openDetailModal, closeModal: closeDetailModal } = useModal();
+  const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
   const handleSelectEvent = (event: CustomEvent) => {
-    setSelectedTask(event?.task);
-    openModal();
+    const { taskId, statusId, name, content, startDate, endDate, sortOrder } = event.task;
+    const task: Task = { taskId, statusId, name, content, startDate, endDate, sortOrder };
+    setSelectedTask(task);
+    openDetailModal();
   };
 
   const handleSelectSlot = useCallback(({ start, end }: { start: Date; end: Date }) => {
@@ -120,7 +132,15 @@ export default function CalendarPage() {
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
       />
-      {showModal && <UpdateModalTask taskId={selectedTask!.taskId} project={project} onClose={closeModal} />}
+      {showDetailModal && (
+        <DetailModalTask
+          project={project}
+          task={selectedTask}
+          openUpdateModal={openUpdateModal}
+          onClose={closeDetailModal}
+        />
+      )}
+      {showUpdateModal && <UpdateModalTask project={project} taskId={selectedTask.taskId} onClose={closeUpdateModal} />}
     </div>
   );
 }
