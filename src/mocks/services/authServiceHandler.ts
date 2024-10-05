@@ -93,34 +93,29 @@ const authServiceHandler = [
     // 공급업체별 설정 정보
     const providerConfigs = {
       KAKAO: {
-        clientId: import.meta.env.VITE_KAKAO_CLIENT_ID,
-        redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
         tokenUrl: `https://kauth.kakao.com/oauth/token`,
         userInfoUrl: 'https://kapi.kakao.com/v2/user/me',
-        getAccessTokenParams: (clientId: string, redirectUri: string) => ({
+        accessTokenParams: {
           grant_type: 'authorization_code',
-          client_id: clientId,
-          redirect_uri: redirectUri,
+          client_id: import.meta.env.VITE_KAKAO_CLIENT_ID,
+          redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
           code,
-        }),
+        },
         accessTokenKey: 'access_token',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
       },
       GOOGLE: {
-        clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        clientSecret: import.meta.env.VITE_GOOGLE_SECRET,
-        redirectUri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
         tokenUrl: `https://oauth2.googleapis.com/token`,
         userInfoUrl: 'https://www.googleapis.com/userinfo/v2/me',
-        getAccessTokenParams: (clientId: string, redirectUri: string) => ({
+        accessTokenParams: {
           code,
-          client_id: clientId,
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           client_secret: import.meta.env.VITE_GOOGLE_SECRET,
-          redirect_uri: redirectUri,
+          redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
           grant_type: 'authorization_code',
-        }),
+        },
         accessTokenKey: 'access_token',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
       },
     };
 
@@ -133,7 +128,7 @@ const authServiceHandler = [
     const fetchAccessToken = async () => {
       try {
         const response = await axios.post(config.tokenUrl, null, {
-          params: config.getAccessTokenParams(config.clientId, config.redirectUri),
+          params: config.accessTokenParams,
           headers: config.headers,
         });
         return response.data[config.accessTokenKey];

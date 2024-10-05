@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
+import SocialButton from '@components/user/auth-form/SocialButton';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import { getUserInfo, login } from '@services/authService';
 import { useStore } from '@stores/useStore';
-import SocialGoogleButton from '@components/user/auth-form/SocialGoogleButton';
-import SocialKakaoButton from '@components/user/auth-form/SocialKakaoButton';
 import type { UserSignInForm } from '@/types/UserType';
 
 export default function SignInPage() {
@@ -93,8 +92,8 @@ export default function SignInPage() {
         <FooterLinks type="signIn" />
       </AuthFormLayout>
       <section className="bottom-0 flex flex-col gap-8 text-center">
-        <SocialKakaoButton isSubmitting={isSubmitting} />
-        <SocialGoogleButton isSubmitting={isSubmitting} />
+        <SocialButton isSubmitting={isSubmitting} provider="KAKAO" />
+        <SocialButton isSubmitting={isSubmitting} provider="GOOGLE" />
       </section>
     </>
   );
