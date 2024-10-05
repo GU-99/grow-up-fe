@@ -7,8 +7,7 @@ type FileDropZoneProps = {
   label: string;
   files: FileInfo[];
   accept: string;
-  onFileDrop: (e: React.DragEvent<HTMLElement>) => void;
-  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  updateFiles: (files: FileList) => void;
   onFileDeleteClick: (fileId: string) => void;
 };
 
@@ -20,8 +19,7 @@ export default function FileDropZone({
   label,
   files,
   accept = '*',
-  onFileDrop,
-  onFileChange: handleFileChange,
+  updateFiles,
   onFileDeleteClick: handleFileDeleteClick,
 }: FileDropZoneProps) {
   const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
@@ -36,7 +34,16 @@ export default function FileDropZone({
   const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.currentTarget.style.backgroundColor = DEFAULT_BG_COLOR;
-    onFileDrop(e);
+
+    const { files } = e.dataTransfer;
+    if (!files || files.length === 0) return;
+    updateFiles(files);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (!files || files.length === 0) return;
+    updateFiles(files);
   };
 
   return (

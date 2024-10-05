@@ -106,24 +106,10 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   };
 
   // ToDo: 일정 파일 업로드 작업시 같이 작업할 것
-  const updateFiles = (newFiles: FileList) => {
+  const updateTaskFiles = (newFiles: FileList) => {
     if (taskFileList.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
       return toastWarn(`최대로 등록 가능한 파일수는 ${TASK_SETTINGS.MAX_FILE_COUNT}개입니다.`);
     }
-  };
-
-  // ToDo: 일정 파일 업로드 API 작업 후 추가할 것
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    if (!files || files.length === 0) return;
-    updateFiles(files);
-  };
-
-  // ToDo: 일정 파일 업로드 API 작업 후 추가할 것
-  const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
-    const { files } = e.dataTransfer;
-    if (!files || files.length === 0) return;
-    updateFiles(files);
   };
 
   const handleFileDeleteClick = (fileId: string) => deleteTaskFileMutate(Number(fileId));
@@ -207,8 +193,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
             label="첨부파일"
             files={taskFileList}
             accept={TASK_SETTINGS.FILE_ACCEPT}
-            onFileChange={handleFileChange}
-            onFileDrop={handleFileDrop}
+            updateFiles={updateTaskFiles}
             onFileDeleteClick={handleFileDeleteClick}
           />
         )}

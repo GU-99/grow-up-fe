@@ -152,18 +152,6 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setFiles((prev) => [...prev, ...customFiles]);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    if (!files || files.length === 0) return;
-    updateTaskFiles(files);
-  };
-
-  const handleFileDrop = (e: React.DragEvent<HTMLElement>) => {
-    const { files } = e.dataTransfer;
-    if (!files || files.length === 0) return;
-    updateTaskFiles(files);
-  };
-
   const handleFileDeleteClick = (fileId: string) => {
     const filteredFiles = files.filter((file) => file.fileId !== fileId);
     const originFiles = filteredFiles.map(({ file }) => file);
@@ -220,8 +208,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           label="첨부파일"
           files={files}
           accept={TASK_SETTINGS.FILE_ACCEPT}
-          onFileChange={handleFileChange}
-          onFileDrop={handleFileDrop}
+          updateFiles={updateTaskFiles}
           onFileDeleteClick={handleFileDeleteClick}
         />
       </form>
