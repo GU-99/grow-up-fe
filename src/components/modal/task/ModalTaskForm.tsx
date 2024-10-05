@@ -14,12 +14,12 @@ import SearchUserInput from '@components/common/SearchUserInput';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
+import useTaskFile from '@hooks/useTaskFile';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
-import Validator from '@utils/Validator';
-import { convertBytesToString } from '@utils/converter';
 import { findUserByProject } from '@services/projectService';
+import Validator from '@utils/Validator';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
@@ -47,6 +47,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const { taskNameList, isTaskLoading } = useReadStatusTasks(projectId);
   const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(projectId);
   const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
+  const { isValidTaskFile } = useTaskFile(project.projectId);
   const { toastInfo, toastWarn } = useToast();
 
   const searchCallbackInfo: ProjectSearchCallback = useMemo(
@@ -105,30 +106,6 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     const assigneesIdList = filteredAssignees.map((assignee) => assignee.userId);
     setAssignees(filteredAssignees);
     setValue('assignees', assigneesIdList);
-  };
-
-  // ToDo: 일정 수정에서도 사용하도록 분리할 것, 어디에 분리하는게 좋으려나?
-  const isValidTaskFile = (file: File) => {
-    if (!Validator.isValidFileName(file.name)) {
-      toastWarn(
-        `${file.name} 파일은 업로드 할 수 없습니다. 파일명은 한글, 영어, 숫자, 특수기호(.-_), 공백문자만 가능합니다.`,
-      );
-      return false;
-    }
-
-    if (!Validator.isValidFileExtension(TASK_SETTINGS.FILE_TYPES, file.type)) {
-      toastWarn(`${file.name} 파일은 업로드 할 수 없습니다. 지원하지 않는 파일 타입입니다.`);
-      return false;
-    }
-
-    if (!Validator.isValidFileSize(TASK_SETTINGS.MAX_FILE_SIZE, file.size)) {
-      toastWarn(
-        `${file.name} 파일은 업로드 할 수 없습니다. ${convertBytesToString(TASK_SETTINGS.MAX_FILE_SIZE)} 이하의 파일만 업로드 가능합니다.`,
-      );
-      return false;
-    }
-
-    return true;
   };
 
   const updateTaskFiles = (newFiles: FileList) => {
