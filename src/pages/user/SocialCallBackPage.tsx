@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '@components/common/Spinner';
 import AuthFormLayout from '@layouts/AuthFormLayout';
@@ -16,8 +16,12 @@ export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
   const { toastError } = useToast();
   const { onLogin, setUserInfo } = useStore();
   const navigate = useNavigate();
+  const hasEffectRun = useRef(false);
 
   useEffect(() => {
+    if (hasEffectRun.current) return;
+    hasEffectRun.current = true;
+
     const AUTHORIZE_CODE = new URL(window.location.href).searchParams.get('code');
     if (!AUTHORIZE_CODE) {
       toastError('로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.');
@@ -52,6 +56,7 @@ export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
     };
 
     const handleSocialLogin = async () => {
+      if (loading) return;
       setLoading(true);
 
       try {
