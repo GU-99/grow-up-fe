@@ -6,6 +6,9 @@ import ModalButton from '@components/modal/ModalButton';
 import Spinner from '@components/common/Spinner';
 import RoleIcon from '@components/common/RoleIcon';
 import CustomMarkdown from '@components/common/CustomMarkdown';
+import { downloadTaskFile } from '@services/taskService';
+import useAxios from '@hooks/useAxios';
+import useToast from '@hooks/useToast';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { useDeleteTask, useReadAssignees, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 
@@ -23,6 +26,8 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
   const { status, isStatusLoading } = useReadStatuses(project.projectId, task.statusId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(project.projectId, task.taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(project.projectId, task.taskId);
+  const { fetchData } = useAxios(downloadTaskFile);
+  const { toastError } = useToast();
 
   const { name, startDate, endDate } = task;
   const period = useMemo(
@@ -35,6 +40,23 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
 
   // ToDo: 유저 권한 확인하는 로직 추가할 것
   const handleDeleteClick = (taskId: Task['taskId']) => deleteTaskMutate(taskId);
+
+  const handleDownloadClick = async (originName: string, uploadName: string) => {
+    const response = await fetchData(project.projectId, task.taskId, uploadName);
+    if (response == null) return toastError('파일 다운로드 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+
+    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    const downloadUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = originName;
+    document.body.appendChild(link);
+    link.click();
+
+    URL.revokeObjectURL(downloadUrl);
+    document.body.removeChild(link);
+  };
 
   return (
     <ModalPortal>
@@ -77,15 +99,15 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
                 <div>
                   <h2 className="my-5 text-large font-bold">파일 다운로드</h2>
                   <ul className="flex flex-wrap gap-5">
-                    {taskFileList.map((taskFile) => (
+                    {taskFileList.map(({ fileId, fileName, uploadName }) => (
                       <li
-                        key={taskFile.fileId}
+                        key={fileId}
                         className="flex cursor-pointer items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
                         aria-label="file download"
                       >
-                        <a href={taskFile.uploadName} download>
-                          {taskFile.fileName}
-                        </a>
+                        <button type="button" onClick={() => handleDownloadClick(fileName, uploadName)}>
+                          {fileName}
+                        </button>
                         <LuDownload />
                       </li>
                     ))}

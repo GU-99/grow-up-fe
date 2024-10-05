@@ -2,7 +2,9 @@ import { findUser } from '@services/userService';
 import { findUserByTeam } from '@services/teamService';
 import { findUserByProject } from '@services/projectService';
 
-export type FetchCallback<T> = T extends (...arg: infer P) => void ? (...arg: P) => Promise<void> : never;
+export type FetchCallback<T> = T extends (...arg: infer P) => Promise<infer R>
+  ? (...arg: P) => Promise<R | undefined>
+  : never;
 
 export type AllSearchCallback = {
   type: 'ALL';
