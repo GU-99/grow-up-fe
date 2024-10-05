@@ -13,6 +13,7 @@ import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/moc
 
 import type { UserWithRole } from '@/types/UserType';
 import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
+import { fileNameParser } from '@/utils/fileNameParser';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -76,10 +77,8 @@ const taskServiceHandler = [
     if (!task) return new HttpResponse(null, { status: 404 });
 
     const newFileId = TASK_FILE_DUMMY.length + 1;
-    const lastDotIndex = file.name.lastIndexOf('.');
-    const fileName = file.name.slice(0, lastDotIndex);
-    const extension = file.name.slice(lastDotIndex + 1);
-    const uploadName = `${fileName}_${Date.now()}.${extension}`;
+    const { fileName, extension } = fileNameParser(file.name);
+    const uploadName = extension ? `${fileName}_${Date.now()}.${extension}` : `${fileName}_${Date.now()}`;
     TASK_FILE_DUMMY.push({
       fileId: newFileId,
       taskId: task.taskId,
