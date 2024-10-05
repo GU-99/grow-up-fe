@@ -12,6 +12,7 @@ import type {
   UpdatePasswordRequest,
   CheckNicknameForm,
   UserSignUpRequest,
+  SocialLoginProvider,
 } from '@/types/UserType';
 
 /**
@@ -54,29 +55,17 @@ export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequest
 }
 
 /**
- * 카카오 로그인 API
+ * 소셜 로그인 API
  *
  * @export
  * @async
  * @param {string} code - 인가 코드
+ * @param {SocialLoginProvider} provider - 공급업체 유형
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse>}
  */
-export async function kakaoLogin(code: string, axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/login/kakao', { code }, axiosConfig);
-}
-
-/**
- * 구글 로그인 API
- *
- * @export
- * @async
- * @param {string} code - 인가 코드
- * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
- */
-export async function googleLogin(code: string, axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/login/google', { code }, axiosConfig);
+export async function socialLogin(provider: SocialLoginProvider, code: string, axiosConfig: AxiosRequestConfig = {}) {
+  return defaultAxios.post(`user/login/${provider}`, { code }, axiosConfig);
 }
 
 /**

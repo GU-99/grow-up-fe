@@ -1,10 +1,12 @@
 import type { Role } from '@/types/RoleType';
 
+export type SocialLoginProvider = 'KAKAO' | 'GOOGLE';
+
 export type User = {
   userId: number;
   username: string;
   email: string;
-  provider: 'LOCAL' | 'KAKAO' | 'GOOGLE';
+  provider: 'LOCAL' | SocialLoginProvider;
   nickname: string;
   bio: string | null;
   links: string[];

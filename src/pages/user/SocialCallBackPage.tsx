@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '@components/common/Spinner';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import useStore from '@stores/useStore';
-import { getUserInfo, googleLogin, kakaoLogin } from '@services/authService';
+import { getUserInfo, socialLogin } from '@services/authService';
 import useToast from '@hooks/useToast';
+import { SocialLoginProvider } from '@/types/UserType';
 
 type SocialCallBackProps = {
-  provider: 'KAKAO' | 'GOOGLE';
+  provider: SocialLoginProvider;
 };
 
 export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
@@ -30,12 +31,10 @@ export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
     };
 
     const processSocialLogin = async () => {
-      let response;
       try {
-        if (provider === 'KAKAO') response = await kakaoLogin(AUTHORIZE_CODE);
-        if (provider === 'GOOGLE') response = await googleLogin(AUTHORIZE_CODE);
+        const response = await socialLogin(provider, AUTHORIZE_CODE);
 
-        if (!response) throw new Error();
+        if (!response || !response.headers) throw new Error();
 
         const accessToken = response.headers.authorization;
         if (!accessToken) throw new Error();
