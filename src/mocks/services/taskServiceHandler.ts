@@ -10,10 +10,10 @@ import {
   USER_DUMMY,
 } from '@mocks/mockData';
 import { getRoleHash, getStatusHash, getTaskHash, getUserHash } from '@mocks/mockHash';
+import { fileNameParser } from '@utils/fileNameParser';
 
 import type { UserWithRole } from '@/types/UserType';
 import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
-import { fileNameParser } from '@/utils/fileNameParser';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
