@@ -3,10 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '@components/common/Spinner';
 import AuthFormLayout from '@layouts/AuthFormLayout';
 import useStore from '@stores/useStore';
-import { getUserInfo, kakaoLogin } from '@services/authService';
+import { getUserInfo, googleLogin, kakaoLogin } from '@services/authService';
 import useToast from '@hooks/useToast';
 
-export default function KakaoCallBack() {
+type SocialCallBackProps = {
+  provider: 'KAKAO' | 'GOOGLE';
+};
+
+export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
   const [loading, setLoading] = useState(false);
   const { toastError } = useToast();
   const { onLogin, setUserInfo } = useStore();
@@ -25,10 +29,13 @@ export default function KakaoCallBack() {
       }
     };
 
-    const handleLogin = async () => {
+    const processSocialLogin = async () => {
+      let response;
       try {
-        const response = await kakaoLogin(AUTHORIZE_CODE);
-        if (!response.headers) throw new Error();
+        if (provider === 'KAKAO') response = await kakaoLogin(AUTHORIZE_CODE);
+        if (provider === 'GOOGLE') response = await googleLogin(AUTHORIZE_CODE);
+
+        if (!response) throw new Error();
 
         const accessToken = response.headers.authorization;
         if (!accessToken) throw new Error();
@@ -41,11 +48,11 @@ export default function KakaoCallBack() {
       }
     };
 
-    const onSubmit = async () => {
+    const handleSocialLogin = async () => {
       setLoading(true);
 
       try {
-        await handleLogin();
+        await processSocialLogin();
         await fetchUserInfo();
         navigate('/', { replace: true });
       } catch (error) {
@@ -55,7 +62,7 @@ export default function KakaoCallBack() {
         setLoading(false);
       }
     };
-    onSubmit();
+    handleSocialLogin();
   }, []);
 
   return (

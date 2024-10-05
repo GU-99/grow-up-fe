@@ -11,8 +11,7 @@ import ProjectLayout from '@layouts/page/ProjectLayout';
 
 import SignUpPage from '@pages/user/SignUpPage';
 import SignInPage from '@pages/user/SignInPage';
-import KakaoCallBack from '@components/user/KakaoCallBack';
-import GoogleCallBack from '@components/user/GoogleCallBack';
+import SocialCallBackPage from '@pages/user/SocialCallBackPage';
 import SearchIdPage from '@pages/user/SearchIdPage';
 import SearchPasswordPage from '@pages/user/SearchPasswordPage';
 import UserSettingPage from '@pages/setting/UserSettingPage';
@@ -47,8 +46,8 @@ export default function MainRouter() {
       children: [
         { path: 'signup', element: <SignUpPage /> },
         { path: 'signin', element: <SignInPage /> },
-        { path: 'auth/kakao/callback', element: <KakaoCallBack /> },
-        { path: 'auth/google/callback', element: <GoogleCallBack /> },
+        { path: 'auth/kakao/callback', element: <SocialCallBackPage provider="KAKAO" /> },
+        { path: 'auth/google/callback', element: <SocialCallBackPage provider="GOOGLE" /> },
         { path: 'search/id', element: <SearchIdPage /> },
         { path: 'search/password', element: <SearchPasswordPage /> },
       ],
