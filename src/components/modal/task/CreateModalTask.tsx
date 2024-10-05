@@ -19,8 +19,8 @@ type CreateModalTaskProps = {
 export default function CreateModalTask({ project, onClose: handleClose }: CreateModalTaskProps) {
   const createTaskFormId = 'createTaskForm';
   const { toastError } = useToast();
-  const { mutateAsync: createTaskInfoMutateAsync } = useCreateStatusTask(project.projectId);
   const { taskFilesUpload } = useTaskFile(project.projectId);
+  const { mutateAsync: createTaskInfoMutateAsync } = useCreateStatusTask(project.projectId);
   const { statusTaskList } = useReadStatusTasks(project.projectId);
 
   const getLastSortOrder = (statusId: ProjectStatus['statusId']) => {
