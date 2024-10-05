@@ -19,21 +19,26 @@ export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
 
   useEffect(() => {
     const AUTHORIZE_CODE = new URL(window.location.href).searchParams.get('code');
-    if (!AUTHORIZE_CODE) return;
+    if (!AUTHORIZE_CODE) {
+      toastError('로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      setTimeout(() => {
+        navigate('/signin', { replace: true });
+      }, 2000);
+      return;
+    }
 
     const fetchUserInfo = async () => {
       try {
         const response = await getUserInfo();
         setUserInfo(response.data);
       } catch (error) {
-        throw new Error('유저 정보를 가져오는 데 실패했습니다.');
+        throw new Error();
       }
     };
 
     const processSocialLogin = async () => {
       try {
         const response = await socialLogin(provider, AUTHORIZE_CODE);
-
         if (!response || !response.headers) throw new Error();
 
         const accessToken = response.headers.authorization;
@@ -42,8 +47,7 @@ export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
         onLogin(accessToken.split(' ')[1]);
         navigate('/', { replace: true });
       } catch (error) {
-        toastError('로그인 도중 오류가 발생했습니다.');
-        navigate('/signin', { replace: true });
+        throw new Error();
       }
     };
 
@@ -55,8 +59,10 @@ export default function SocialCallBackPage({ provider }: SocialCallBackProps) {
         await fetchUserInfo();
         navigate('/', { replace: true });
       } catch (error) {
-        const axiosError = error as Error;
-        toastError(axiosError.message);
+        toastError('로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        setTimeout(() => {
+          navigate('/signin', { replace: true });
+        }, 2000);
       } finally {
         setLoading(false);
       }
