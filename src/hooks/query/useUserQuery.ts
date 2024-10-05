@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
 import { updateUserInfo } from '@services/userService';
-import { generateUserInfoQueryKey } from '@utils/queryKeyGenergator';
+import { generateUserInfoQueryKey } from '@/utils/queryKeyGenerator';
 import type { EditUserInfoRequest } from '@/types/UserType';
 
 export function useUpdateUserInfo() {

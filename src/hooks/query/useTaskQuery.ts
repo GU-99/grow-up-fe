@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  generateTaskAssigneesQueryKey,
-  generateTaskFilesQueryKey,
-  generateTasksQueryKey,
-} from '@utils/queryKeyGenergator';
-import {
   addAssignee,
   createTask,
   deleteAssignee,
@@ -19,6 +14,11 @@ import {
   uploadTaskFile,
 } from '@services/taskService';
 import useToast from '@hooks/useToast';
+import {
+  generateTaskAssigneesQueryKey,
+  generateTaskFilesQueryKey,
+  generateTasksQueryKey,
+} from '@utils/queryKeyGenerator';
 
 import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';

@@ -1,10 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query';
+import { TASK_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
 import { useUploadTaskFile } from '@hooks/query/useTaskQuery';
-import { TASK_SETTINGS } from '@constants/settings';
 import Validator from '@utils/Validator';
 import { convertBytesToString } from '@utils/converter';
-import { generateTasksQueryKey } from '@utils/queryKeyGenergator';
+import { generateTasksQueryKey } from '@utils/queryKeyGenerator';
 
 import type { Task } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
