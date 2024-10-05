@@ -88,6 +88,11 @@ const authServiceHandler = [
     const { provider } = params as { provider: SocialLoginProvider };
     const { code } = (await request.json()) as { code: string };
 
+    const validProviders = ['KAKAO', 'GOOGLE'];
+    if (!validProviders.includes(provider as SocialLoginProvider)) {
+      return HttpResponse.json({ message: '지원하지 않는 Provider입니다.' }, { status: 400 });
+    }
+
     let userId;
 
     // 공급업체별 설정 정보
@@ -121,7 +126,7 @@ const authServiceHandler = [
 
     const config = providerConfigs[provider];
     if (!config) {
-      return HttpResponse.json({ message: '지원하지 않는 Provider입니다.' }, { status: 400 });
+      return HttpResponse.json({ message: 'Provider 정보 설정에 실패했습니다.' }, { status: 400 });
     }
 
     // 인가코드를 이용한 액세스 토큰 발급 함수
@@ -163,6 +168,8 @@ const authServiceHandler = [
 
     // 이메일 기반으로 사용자 검색 또는 회원가입
     const email = provider === 'KAKAO' ? userInfo.kakao_account.email : userInfo.email;
+    if (!email) return HttpResponse.json({ message: '이메일 정보를 가져올 수 없습니다.' }, { status: 400 });
+
     const foundUser = USER_DUMMY.find((user) => user.email === email);
 
     if (foundUser) {
@@ -171,7 +178,7 @@ const authServiceHandler = [
       const newUser: UserInfo = {
         userId: USER_DUMMY.length + 1,
         username: email,
-        password: '',
+        password: null,
         email,
         provider,
         nickname: userInfo.id,

@@ -14,7 +14,7 @@ export type User = {
 };
 
 export type UserInfo = User & {
-  password: string;
+  password: string | null;
 };
 
 export type SearchUser = Pick<User, 'userId' | 'nickname'>;

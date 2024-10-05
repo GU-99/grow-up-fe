@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import GoogleIcon from '@assets/social_google_icon.svg';
 import KakaoIcon from '@assets/social_kakao_icon.svg';
+import useToast from '@hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 import { SocialLoginProvider } from '@/types/UserType';
 
 type SocialButtonProps = {
@@ -7,15 +10,29 @@ type SocialButtonProps = {
   isSubmitting: boolean;
 };
 
-const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_REDIRECT_URI}&response_type=code&scope=email+profile`;
-const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
-
 export default function SocialButton({ provider, isSubmitting }: SocialButtonProps) {
+  const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_REDIRECT_URI}&response_type=code&scope=email+profile`;
+  const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+
   const isGoogle = provider === 'GOOGLE';
 
+  const [isLoading, setIsLoading] = useState(false);
+  const { toastError } = useToast();
+  const navigate = useNavigate();
+
   const handleLoginClick = () => {
+    setIsLoading(true);
     const url = isGoogle ? googleUrl : kakaoUrl;
-    window.location.href = url;
+    try {
+      window.location.href = url;
+    } catch (error) {
+      toastError('로그인에 실패했습니다. 다시 시도해 주세요.');
+      setTimeout(() => {
+        navigate('/signin', { replace: true });
+      }, 2000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -23,7 +40,7 @@ export default function SocialButton({ provider, isSubmitting }: SocialButtonPro
       type="button"
       onClick={handleLoginClick}
       className={`auth-btn ${isGoogle ? 'space-x-10 bg-button' : 'space-x-4 bg-kakao'}`}
-      disabled={isSubmitting}
+      disabled={isSubmitting || isLoading}
     >
       <img
         src={isGoogle ? GoogleIcon : KakaoIcon}
