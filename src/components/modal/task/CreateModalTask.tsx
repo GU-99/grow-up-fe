@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalButton from '@components/modal/ModalButton';

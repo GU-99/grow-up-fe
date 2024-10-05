@@ -107,7 +107,6 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     deleteAssigneeMutate(user.userId);
   };
 
-  // ToDo: 일정 파일 업로드 작업시 같이 작업할 것
   const updateTaskFiles = async (newFiles: FileList) => {
     if (taskFileList.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
       return toastWarn(`최대로 등록 가능한 파일수는 ${TASK_SETTINGS.MAX_FILE_COUNT}개입니다.`);
