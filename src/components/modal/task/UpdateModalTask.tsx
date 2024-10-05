@@ -15,6 +15,7 @@ import { TASK_SETTINGS } from '@constants/settings';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
+import useTaskFile from '@hooks/useTaskFile';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import {
   useAddAssignee,
@@ -46,6 +47,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
 
   const [keyword, setKeyword] = useState('');
   const { toastInfo, toastWarn } = useToast();
+  const { isValidTaskFile, taskFilesUpload } = useTaskFile(projectId);
   const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const searchCallbackInfo: ProjectSearchCallback = useMemo(
     () => ({ type: 'PROJECT', searchCallback: fetchData }),
@@ -106,10 +108,17 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
   };
 
   // ToDo: 일정 파일 업로드 작업시 같이 작업할 것
-  const updateTaskFiles = (newFiles: FileList) => {
+  const updateTaskFiles = async (newFiles: FileList) => {
     if (taskFileList.length + newFiles.length > TASK_SETTINGS.MAX_FILE_COUNT) {
       return toastWarn(`최대로 등록 가능한 파일수는 ${TASK_SETTINGS.MAX_FILE_COUNT}개입니다.`);
     }
+
+    const validTaskFiles: File[] = [];
+    for (let i = 0; i < newFiles.length; i++) {
+      const file = newFiles[i];
+      if (isValidTaskFile(file)) validTaskFiles.push(file);
+    }
+    await taskFilesUpload(taskId, validTaskFiles);
   };
 
   const handleFileDeleteClick = (fileId: string) => deleteTaskFileMutate(Number(fileId));
