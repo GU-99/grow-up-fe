@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenergator';
+import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenerator';
 import { getProjectList, getProjectUserRoleList } from '@services/projectService';
 
 import type { Team } from '@/types/TeamType';

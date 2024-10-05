@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generateTeamsQueryKey } from '@utils/queryKeyGenergator';
+import { generateTeamsQueryKey } from '@utils/queryKeyGenerator';
 import { getTeamList } from '@services/userService';
 import { acceptTeamInvitation, createTeam, declineTeamInvitation, deleteTeam, leaveTeam } from '@services/teamService';
 import useToast from '@hooks/useToast';
