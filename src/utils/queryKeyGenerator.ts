@@ -4,6 +4,7 @@ import type { Project } from '@/types/ProjectType';
 
 export const queryKeys = {
   userInfo: 'userInfo',
+  links: 'links',
   users: 'users',
   teams: 'teams',
   projects: 'projects',
@@ -21,6 +22,16 @@ export const queryKeys = {
  */
 export function generateUserInfoQueryKey() {
   return [queryKeys.userInfo];
+}
+
+/**
+ * 유저 링크 queryKey 생성 함수
+ *
+ * @export
+ * @returns {(string | number)[]}
+ */
+export function generateLinksQueryKey() {
+  return [queryKeys.links];
 }
 
 /**

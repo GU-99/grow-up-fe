@@ -3,23 +3,41 @@ import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
 import { USER_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
+import { useUpdateLinks } from '@hooks/query/useUserQuery';
+import useStore from '@stores/useStore';
+import { EditUserLinksForm } from '@/types/UserType';
 
 type LinkContainerProps = {
   initialLinks: string[];
+  page: 'SignUp' | 'UserSetting';
 };
 
-export default function LinkContainer({ initialLinks }: LinkContainerProps) {
+export default function LinkContainer({ initialLinks, page }: LinkContainerProps) {
   const { setValue } = useFormContext();
+  const { editUserInfo } = useStore();
   const [link, setLink] = useState<string>('');
   const [links, setLinks] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
   const { toastWarn } = useToast();
+
+  const { mutate: updateLinksMutate } = useUpdateLinks();
 
   const handleFocus = () => setIsFocused(true);
 
   const handleBlur = () => setIsFocused(false);
 
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => setLink(e.target.value);
+
+  const handleUpdateLinks = (userLinks: EditUserLinksForm) => {
+    updateLinksMutate(userLinks, {
+      onSuccess: () => {
+        setLinks(userLinks.links);
+        setValue('links', userLinks.links);
+        setLink('');
+      },
+    });
+    editUserInfo(userLinks);
+  };
 
   const handleAddLink = (newLink: string) => {
     if (newLink.trim() === '') return;
@@ -32,6 +50,12 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
     if (isIncludedLink) return toastWarn('이미 등록된 링크입니다.');
 
     const updatedLinks = [...links, newLink.trim()];
+
+    if (page === 'UserSetting') {
+      handleUpdateLinks({ links: updatedLinks });
+      return;
+    }
+
     setLinks(updatedLinks);
     setValue('links', updatedLinks);
     setLink('');
@@ -39,6 +63,12 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
 
   const handleRemoveLink = (removeLink: string) => {
     const filteredData = links.filter((linkItem) => linkItem !== removeLink);
+
+    if (page === 'UserSetting') {
+      handleUpdateLinks({ links: filteredData });
+      return;
+    }
+
     setLinks(filteredData);
     setValue('links', filteredData);
   };

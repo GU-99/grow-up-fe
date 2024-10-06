@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
-import { updateUserInfo } from '@services/userService';
-import { generateUserInfoQueryKey } from '@/utils/queryKeyGenerator';
-import type { EditUserInfoRequest } from '@/types/UserType';
+import { updateLinks, updateUserInfo } from '@services/userService';
+import { generateLinksQueryKey, generateUserInfoQueryKey } from '@utils/queryKeyGenerator';
+import type { EditUserInfoRequest, EditUserLinksForm } from '@/types/UserType';
 
 export function useUpdateUserInfo() {
   const queryClient = useQueryClient();
@@ -15,6 +15,23 @@ export function useUpdateUserInfo() {
     onSuccess: () => {
       toastSuccess('유저 정보가 수정되었습니다.');
       queryClient.invalidateQueries({ queryKey: userInfoQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+export function useUpdateLinks() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const linksQueryKey = generateLinksQueryKey();
+
+  const mutation = useMutation({
+    mutationFn: (data: EditUserLinksForm) => updateLinks(data),
+    onError: () => toastError('링크 수정에 실패했습니다. 다시 시도해 주세요.'),
+    onSuccess: () => {
+      toastSuccess('링크가 수정되었습니다.');
+      queryClient.invalidateQueries({ queryKey: linksQueryKey });
     },
   });
 
