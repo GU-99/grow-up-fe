@@ -126,6 +126,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
             onBlur={handleBlur}
             onChange={handleLinkChange}
             type="text"
+            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정...
             disabled={isLoading}
             className="h-full grow bg-inherit outline-none placeholder:text-emphasis"
           />
