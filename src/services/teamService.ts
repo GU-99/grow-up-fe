@@ -2,6 +2,7 @@ import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { SearchUser, User } from '@/types/UserType';
 import type { Team, TeamCoworker, TeamForm } from '@/types/TeamType';
+import type { TeamRoleName } from '@/types/RoleType';
 
 /**
  * 팀에 속한 유저 목록을 검색하는 API
@@ -127,13 +128,13 @@ export async function removeTeamMember(teamId: number, userId: number, axiosConf
  * @async
  * @param {number} teamId
  * @param {number} userId
- * @param {string} roleName
+ * @param {TeamRoleName} roleName
  * @param {AxiosRequestConfig} [axiosConfig={}]
  */
-export async function changeTeamCoworkerRole(
+export async function UpdateTeamRole(
   teamId: number,
   userId: number,
-  roleName: string,
+  roleName: TeamRoleName,
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.patch(`/team/${teamId}/user/${userId}/role`, { roleName }, axiosConfig);

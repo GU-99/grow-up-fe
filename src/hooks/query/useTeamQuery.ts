@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generateProjectUsersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenergator';
+import { generateProjectUsersQueryKey, generateTeamQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenergator';
 import { getTeamList } from '@services/userService';
 import {
   acceptTeamInvitation,
   addTeamMember,
-  changeTeamCoworkerRole,
+  UpdateTeamRole,
   createTeam,
   declineTeamInvitation,
   deleteTeam,
@@ -14,7 +14,10 @@ import {
   updateTeamInfo,
 } from '@services/teamService';
 import useToast from '@hooks/useToast';
+import { useMemo } from 'react';
+import { AxiosError } from 'axios';
 import type { TeamForm, TeamListWithApproval } from '@/types/TeamType';
+import type { TeamRoleName } from '@/types/RoleType';
 
 // 팀 목록 조회
 export function useReadTeams() {
@@ -127,8 +130,14 @@ export function useCreateTeam() {
     mutationFn: async (data: TeamForm) => {
       return createTeam(data);
     },
-    onError: () => {
-      toastError('팀 생성 중 오류가 발생했습니다.');
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 404) {
+          toastError('이미 팀에 추가된 유저입니다.');
+        } else {
+          toastError('팀원 추가에 실패했습니다. 다시 시도해 주세요.');
+        }
+      }
     },
     onSuccess: () => {
       toastSuccess('팀을 성공적으로 생성했습니다.');
@@ -140,19 +149,27 @@ export function useCreateTeam() {
 }
 
 // 팀원 추가
-export function useAddTeamMember(teamId: number) {
+export function useAddTeamCoworker(teamId: number) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamsQueryKey = generateTeamsQueryKey();
+  const teamQueryKey = generateTeamQueryKey(teamId);
+  const projectUsersQueryKey = generateProjectUsersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: ({ userId, roleName }: { userId: number; roleName: string }) => addTeamMember(teamId, userId, roleName),
-    onError: () => {
-      toastError('팀원 추가에 실패했습니다. 다시 시도해 주세요.');
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 404) {
+          toastError('이미 팀에 추가된 유저입니다.');
+        } else {
+          toastError('팀원 추가에 실패했습니다. 다시 시도해 주세요.');
+        }
+      }
     },
     onSuccess: () => {
       toastSuccess('팀원을 추가하였습니다.');
-      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+      queryClient.invalidateQueries({ queryKey: teamQueryKey });
+      queryClient.invalidateQueries({ queryKey: projectUsersQueryKey });
     },
   });
 
@@ -160,10 +177,11 @@ export function useAddTeamMember(teamId: number) {
 }
 
 // 팀원 삭제
-export function useRemoveTeamMember(teamId: number) {
+export function useDeleteCoworker(teamId: number) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
   const teamsQueryKey = generateTeamsQueryKey();
+  const projectUsersQueryKey = generateProjectUsersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: (userId: number) => removeTeamMember(teamId, userId),
@@ -173,6 +191,7 @@ export function useRemoveTeamMember(teamId: number) {
     onSuccess: () => {
       toastSuccess('팀원을 삭제하였습니다.');
       queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+      queryClient.invalidateQueries({ queryKey: projectUsersQueryKey });
     },
   });
 
@@ -180,20 +199,22 @@ export function useRemoveTeamMember(teamId: number) {
 }
 
 // 팀 권한 변경
-export function useChangeRole(teamId: number) {
+export function useUpdateRole(teamId: number) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
   const teamsQueryKey = generateTeamsQueryKey();
+  const projectUsersQueryKey = generateProjectUsersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: ({ userId, roleName }: { userId: number; roleName: string }) =>
-      changeTeamCoworkerRole(teamId, userId, roleName),
+    mutationFn: ({ userId, roleName }: { userId: number; roleName: TeamRoleName }) =>
+      UpdateTeamRole(teamId, userId, roleName),
     onError: () => {
       toastError('팀원 권한 변경에 실패했습니다. 다시 시도해 주세요.');
     },
     onSuccess: () => {
       toastSuccess('팀원 권한을 변경하였습니다.');
       queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+      queryClient.invalidateQueries({ queryKey: projectUsersQueryKey });
     },
   });
 
@@ -222,7 +243,7 @@ export function useUpdateTeamInfo() {
 
 // 팀 목록 조회
 export function useReadTeamInfo(teamId: number) {
-  // 1. 팀 목록 가져오기
+  // 팀 목록 가져오기
   const {
     data: teamList = [],
     isLoading: isTeamLoading,
@@ -232,37 +253,41 @@ export function useReadTeamInfo(teamId: number) {
     queryKey: generateTeamsQueryKey(),
     queryFn: async () => {
       const { data } = await getTeamList();
+      console.log('팀 목록:', data);
+      data.forEach((team) => {
+        console.log(`팀 이름: ${team.teamName}, isPendingApproval: ${team.isPendingApproval}`);
+      });
       return data;
     },
   });
 
-  // 2. 팀 정보 및 팀원 목록 필터링
-  const teamInfo = teamList.find((team) => team.teamId === teamId);
+  // 팀 정보 및 팀원 목록 필터링
+  const teamInfo = useMemo(() => teamList.find((team) => team.teamId === teamId), [teamList, teamId]);
 
-  // 3. 팀원 목록 가져오기
+  // 팀원 목록 가져오기
   const {
     data: teamCoworkers = [],
-    isLoading: isTeamMembersLoading,
-    isError: isTeamMembersError,
-    error: teamCoworkerError,
+    isLoading: isTeamCoworkersLoading,
+    isError: isTeamCoworkersError,
+    error: teamCoworkersError,
   } = useQuery({
     queryKey: generateProjectUsersQueryKey(teamId),
     queryFn: async () => {
       const { data } = await getTeamCoworker(teamId);
+      console.log('팀원 목록:', data);
       return data;
     },
+    enabled: !!teamId, // teamId가 있을 때만 쿼리 실행
   });
 
-  const isLoading = isTeamLoading || isTeamMembersLoading;
-  const isError = isTeamError || isTeamMembersError;
-  const error = teamError || teamCoworkerError;
+  const isLoading = isTeamLoading || isTeamCoworkersLoading;
+  const isError = isTeamError || isTeamCoworkersError;
+  const error = teamError || teamCoworkersError;
 
   return {
-    teamInfo: {
-      teamName: teamInfo?.teamName,
-      content: teamInfo?.content,
-      coworkers: teamCoworkers,
-    },
+    teamName: teamInfo?.teamName,
+    content: teamInfo?.content,
+    coworkers: teamCoworkers,
     isLoading,
     isError,
     error,

@@ -11,6 +11,7 @@ export default function TeamLayout() {
   const { showModal: showTeamModal, openModal: openTeamModal, closeModal: closeTeamModal } = useModal();
   const location = useLocation();
   const { teamId } = useParams();
+  // TODO: 내가 가입된 팀만 가져오기
   const teamData: Team[] = TEAM_DUMMY;
   const selectedTeam = useMemo(() => teamData.find((team) => team.teamId.toString() === teamId), [teamId, teamData]);
   const hasProjectRoute = location.pathname.split('/').includes('projects');

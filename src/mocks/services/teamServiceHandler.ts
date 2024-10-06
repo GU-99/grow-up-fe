@@ -10,8 +10,10 @@ import {
   TASK_USER_DUMMY,
   TASK_FILE_DUMMY,
   ROLE_DUMMY,
+  USER_DUMMY,
 } from '@mocks/mockData';
 import { TeamForm } from '@/types/TeamType';
+import { UserRole } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -216,6 +218,126 @@ const teamServiceHandler = [
 
     TEAM_USER_DUMMY.length = 0;
     TEAM_USER_DUMMY.push(...filteredTeamUsers);
+
+    return new HttpResponse(null, { status: 200 });
+  }),
+
+  // 팀원 목록 조회 API
+  http.get(`${BASE_URL}/team/:teamId/user`, ({ params }) => {
+    const { teamId } = params;
+
+    const teamMembers = TEAM_USER_DUMMY.filter((teamUser) => teamUser.teamId === Number(teamId));
+
+    const membersData = teamMembers.map((member) => {
+      const role = ROLE_DUMMY.find((role) => role.roleId === member.roleId);
+      const user = USER_DUMMY.find((user) => user.userId === member.userId);
+
+      if (!role || !user) {
+        return HttpResponse.json({ message: '유효하지 않은 역할이거나 사용자 이름입니다.' }, { status: 400 });
+      }
+
+      return {
+        userId: user.userId,
+        nickname: user.nickname,
+        roleName: role.roleName,
+      };
+    });
+
+    return HttpResponse.json(membersData);
+  }),
+
+  // 팀 정보 수정 API
+  http.patch(`${BASE_URL}/team/:teamId`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamId } = params;
+    const { teamName, content } = (await request.json()) as TeamForm;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const teamIndex = TEAM_DUMMY.findIndex((team) => team.teamId === Number(teamId));
+
+    if (teamIndex === -1) {
+      return HttpResponse.json({ message: '팀을 찾을 수 없습니다.' }, { status: 404 });
+    }
+
+    TEAM_DUMMY[teamIndex].teamName = teamName;
+    TEAM_DUMMY[teamIndex].content = content;
+
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  // 팀원 추가 API
+  http.post(`${BASE_URL}/team/:teamId/invitation`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamId } = params;
+    const { userId, roleName } = (await request.json()) as UserRole;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const role = ROLE_DUMMY.find((role) => role.roleName === roleName);
+    if (!role) return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 400 });
+
+    const existingUser = TEAM_USER_DUMMY.find(
+      (user) => user.teamId === Number(teamId) && user.userId === Number(userId),
+    );
+
+    if (existingUser) {
+      return HttpResponse.json({ message: '이미 팀에 추가된 유저입니다.' }, { status: 404 });
+    }
+
+    const newUser = {
+      teamId: Number(teamId),
+      userId: Number(userId),
+      roleId: role.roleId,
+      isPendingApproval: true,
+    };
+
+    TEAM_USER_DUMMY.push(newUser);
+
+    return HttpResponse.json({ message: '팀원 추가 성공', user: newUser }, { status: 200 });
+  }),
+
+  // 팀원 삭제 API
+  http.delete(`${BASE_URL}/team/:teamId/user/:userId`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamId, userId } = params;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const filteredTeamUsers = TEAM_USER_DUMMY.filter(
+      (teamUser) => !(teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId)),
+    );
+
+    TEAM_USER_DUMMY.length = 0;
+    TEAM_USER_DUMMY.push(...filteredTeamUsers);
+
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  // 팀원 권한 변경 API
+  http.patch(`${BASE_URL}/team/:teamId/user/:userId/role`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamId, userId } = params;
+    const { roleName } = (await request.json()) as UserRole;
+
+    if (!accessToken) {
+      return new HttpResponse(null, { status: 401 });
+    }
+    // 2. 유효한 역할인지 확인
+    const role = ROLE_DUMMY.find((role) => role.roleName === roleName);
+    if (!role) {
+      return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 400 });
+    }
+
+    const teamUserIndex = TEAM_USER_DUMMY.findIndex(
+      (teamUser) => teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId),
+    );
+
+    if (teamUserIndex === -1) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
+    TEAM_USER_DUMMY[teamUserIndex].roleId = role.roleId;
 
     return new HttpResponse(null, { status: 200 });
   }),

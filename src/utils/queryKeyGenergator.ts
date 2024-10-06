@@ -23,6 +23,17 @@ export function generateTeamsQueryKey() {
 }
 
 /**
+ * 팀의 세부 정보 queryKey 생성 함수
+ *
+ * @export
+ * @param {Team['teamId']} teamId - 팀의 ID
+ * @returns {(string | number)[]}
+ */
+export function generateTeamQueryKey(teamId: Team['teamId']) {
+  return [queryKeys.teams, teamId];
+}
+
+/**
  * 팀의 프로젝트 목록 queryKey 생성 함수
  *
  * @export

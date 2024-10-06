@@ -11,6 +11,7 @@ export type Team = {
 export type TeamCoworker = {
   userId: User['userId'];
   roleName: TeamRoleName;
+  nickname?: string;
 };
 
 export type TeamCoworkerInfo = TeamCoworker & { nickname: User['nickname'] };
