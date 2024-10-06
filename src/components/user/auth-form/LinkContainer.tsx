@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
 import { USER_SETTINGS } from '@constants/settings';
+import Spinner from '@components/common/Spinner';
 import useToast from '@hooks/useToast';
 import { useUpdateLinks } from '@hooks/query/useUserQuery';
 import useStore from '@stores/useStore';
@@ -19,6 +20,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   const [links, setLinks] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
   const { toastWarn } = useToast();
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const { mutate: updateLinksMutate } = useUpdateLinks();
 
@@ -29,13 +31,19 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => setLink(e.target.value);
 
   const handleUpdateLinks = (userLinks: EditUserLinksForm) => {
+    setIsLoading(true);
+
     updateLinksMutate(userLinks, {
       onSuccess: () => {
         setLinks(userLinks.links);
         setValue('links', userLinks.links);
         setLink('');
       },
+      onSettled: () => {
+        setIsLoading(false);
+      },
     });
+
     editUserInfo(userLinks);
   };
 
@@ -74,7 +82,14 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   };
 
   return (
-    <section>
+    <section className="relative">
+      {isLoading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <span className="text-white">
+            <Spinner />
+          </span>
+        </div>
+      )}
       <label className="font-bold" htmlFor="link">
         링크
       </label>
@@ -111,7 +126,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
             onBlur={handleBlur}
             onChange={handleLinkChange}
             type="text"
-            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정...
+            disabled={isLoading}
             className="h-full grow bg-inherit outline-none placeholder:text-emphasis"
           />
           <button
@@ -119,6 +134,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
             onClick={() => handleAddLink(link)}
             className="flex size-18 items-center justify-center rounded-lg bg-sub"
             aria-label="추가"
+            disabled={isLoading}
           >
             <FaPlus className="size-8" />
           </button>

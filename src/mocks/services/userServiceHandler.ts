@@ -52,7 +52,7 @@ const userServiceHandler = [
     return HttpResponse.json(userInfo, { status: 200 });
   }),
   // 링크 변경 API
-  http.patch(`${BASE_URL}/user/linkss`, async ({ request }) => {
+  http.patch(`${BASE_URL}/user/links`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
