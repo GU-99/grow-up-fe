@@ -20,9 +20,11 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   const [links, setLinks] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
   const { toastWarn } = useToast();
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const { mutate: updateLinksMutate } = useUpdateLinks();
+
+  const isUserSettingPage = page === 'UserSetting';
 
   const handleFocus = () => setIsFocused(true);
 
@@ -38,13 +40,12 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
         setLinks(userLinks.links);
         setValue('links', userLinks.links);
         setLink('');
+        editUserInfo(userLinks);
       },
       onSettled: () => {
         setIsLoading(false);
       },
     });
-
-    editUserInfo(userLinks);
   };
 
   const handleAddLink = (newLink: string) => {
@@ -59,10 +60,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
 
     const updatedLinks = [...links, newLink.trim()];
 
-    if (page === 'UserSetting') {
-      handleUpdateLinks({ links: updatedLinks });
-      return;
-    }
+    if (isUserSettingPage) return handleUpdateLinks({ links: updatedLinks });
 
     setLinks(updatedLinks);
     setValue('links', updatedLinks);
@@ -72,10 +70,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   const handleRemoveLink = (removeLink: string) => {
     const filteredData = links.filter((linkItem) => linkItem !== removeLink);
 
-    if (page === 'UserSetting') {
-      handleUpdateLinks({ links: filteredData });
-      return;
-    }
+    if (isUserSettingPage) return handleUpdateLinks({ links: filteredData });
 
     setLinks(filteredData);
     setValue('links', filteredData);
@@ -126,7 +121,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
             onBlur={handleBlur}
             onChange={handleLinkChange}
             type="text"
-            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정...
+            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정
             disabled={isLoading}
             className="h-full grow bg-inherit outline-none placeholder:text-emphasis"
           />
