@@ -92,6 +92,11 @@ const statusServiceHandler = [
     const statusIndex = STATUS_DUMMY.findIndex((status) => status.statusId === Number(statusId));
     if (statusIndex !== -1) STATUS_DUMMY.splice(statusIndex, 1);
 
+    // 프로젝튼 상태 순서 재정렬
+    STATUS_DUMMY.filter((status) => status.projectId === Number(projectId))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .forEach((status, index) => (status.sortOrder = index + 1));
+
     return new HttpResponse(null, { status: 204 });
   }),
 ];

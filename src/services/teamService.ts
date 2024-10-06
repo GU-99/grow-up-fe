@@ -101,7 +101,7 @@ export async function declineTeamInvitation(teamId: number, axiosConfig: AxiosRe
 export async function addTeamMember(
   teamId: number,
   userId: number,
-  roleName: string,
+  roleName: TeamRoleName,
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.post(`/team/${teamId}/invitation`, { userId, roleName }, axiosConfig);
@@ -131,7 +131,7 @@ export async function removeTeamMember(teamId: number, userId: number, axiosConf
  * @param {TeamRoleName} roleName
  * @param {AxiosRequestConfig} [axiosConfig={}]
  */
-export async function UpdateTeamRole(
+export async function updateTeamRole(
   teamId: number,
   userId: number,
   roleName: TeamRoleName,

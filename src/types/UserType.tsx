@@ -23,7 +23,10 @@ export type UserInfo = User & {
 export type SearchUser = Pick<User, 'userId' | 'nickname'>;
 export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 
-export type EditUserInfoForm = Omit<User, 'userId' | 'provider'>;
+/* 유저 정보 설정 */
+export type EditUserInfoForm = Omit<User, 'userId' | 'provider' | 'links'>;
+export type EditUserInfoResponse = Pick<User, 'userId' | 'nickname' | 'bio'>;
+export type EditUserInfoRequest = Omit<EditUserInfoResponse, 'userId'>;
 
 export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageName'> & {
   verificationCode: string;

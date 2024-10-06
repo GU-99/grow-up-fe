@@ -91,7 +91,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     updateRoleMutation({ userId, roleName });
   };
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <Spinner />;
   }
 

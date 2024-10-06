@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generateProjectUsersQueryKey, generateTeamQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenergator';
+import { generateProjectUsersQueryKey, generateTeamQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenerator';
+
 import { getTeamList } from '@services/userService';
 import {
   acceptTeamInvitation,
   addTeamMember,
-  UpdateTeamRole,
+  updateTeamRole,
   createTeam,
   declineTeamInvitation,
   deleteTeam,
@@ -156,7 +157,8 @@ export function useAddTeamCoworker(teamId: number) {
   const projectUsersQueryKey = generateProjectUsersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: ({ userId, roleName }: { userId: number; roleName: string }) => addTeamMember(teamId, userId, roleName),
+    mutationFn: ({ userId, roleName }: { userId: number; roleName: TeamRoleName }) =>
+      addTeamMember(teamId, userId, roleName),
     onError: (error) => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 404) {
@@ -207,7 +209,7 @@ export function useUpdateRole(teamId: number) {
 
   const mutation = useMutation({
     mutationFn: ({ userId, roleName }: { userId: number; roleName: TeamRoleName }) =>
-      UpdateTeamRole(teamId, userId, roleName),
+      updateTeamRole(teamId, userId, roleName),
     onError: () => {
       toastError('팀원 권한 변경에 실패했습니다. 다시 시도해 주세요.');
     },

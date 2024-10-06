@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
 import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
 import { createStatus, deleteStatus, getStatusList, updateStatus, updateStatusesOrder } from '@services/statusService';
-import { generateProjectQueryKey, generateStatusesQueryKey, generateTasksQueryKey } from '@utils/queryKeyGenergator';
+import { generateProjectQueryKey, generateStatusesQueryKey, generateTasksQueryKey } from '@utils/queryKeyGenerator';
 import type { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
 import type { ProjectStatus, ProjectStatusForm, StatusOrder, UsableColor } from '@/types/ProjectStatusType';
