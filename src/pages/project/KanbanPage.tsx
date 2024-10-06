@@ -9,6 +9,7 @@ import { useUpdateStatusesOrder } from '@hooks/query/useStatusQuery';
 import { useReadStatusTasks, useUpdateTasksOrder } from '@hooks/query/useTaskQuery';
 import type { Task, TaskListWithStatus } from '@/types/TaskType';
 
+// 상태 순서 변경
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
   const { source, destination } = dropResult;
 
@@ -24,6 +25,7 @@ function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: Drop
   return newStatusTasks;
 }
 
+// 일정 순서 변경
 function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropResult, isSameStatus: boolean) {
   const { source, destination, draggableId } = dropResult;
 

@@ -18,10 +18,11 @@ import type { Project } from '@/types/ProjectType';
 type ViewModalTaskProps = {
   project: Project;
   task: Task;
+  openUpdateModal: () => void;
   onClose: () => void;
 };
 
-export default function DetailModalTask({ project, task, onClose: handleClose }: ViewModalTaskProps) {
+export default function DetailModalTask({ project, task, openUpdateModal, onClose: handleClose }: ViewModalTaskProps) {
   const { mutate: deleteTaskMutate } = useDeleteTask(project.projectId);
   const { status, isStatusLoading } = useReadStatuses(project.projectId, task.statusId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(project.projectId, task.taskId);
@@ -35,8 +36,10 @@ export default function DetailModalTask({ project, task, onClose: handleClose }:
     [startDate, endDate],
   );
 
-  // ToDo: 일정 수정 버튼 클릭시 처리 추가할 것
-  const handleUpdateClick = () => {};
+  const handleUpdateClick = () => {
+    openUpdateModal();
+    handleClose();
+  };
 
   // ToDo: 유저 권한 확인하는 로직 추가할 것
   const handleDeleteClick = (taskId: Task['taskId']) => deleteTaskMutate(taskId);

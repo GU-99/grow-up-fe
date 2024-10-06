@@ -5,6 +5,7 @@ import { DND_DRAGGABLE_PREFIX } from '@constants/dnd';
 import useModal from '@hooks/useModal';
 import useProjectContext from '@hooks/useProjectContext';
 import DetailModalTask from '@components/modal/task/DetailModalTask';
+import UpdateModalTask from '@components/modal/task/UpdateModalTask';
 import type { Task } from '@/types/TaskType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 
@@ -15,13 +16,14 @@ type TaskItemProps = {
 
 export default function TaskItem({ task, colorCode }: TaskItemProps) {
   const { project } = useProjectContext();
-  const { showModal, openModal, closeModal } = useModal();
+  const { showModal: showDetailModal, openModal: openDetailModal, closeModal: closeDetailModal } = useModal();
+  const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
   const { taskId, name, sortOrder } = task;
   const index = useMemo(() => sortOrder - 1, [sortOrder]);
   const draggableId = useMemo(() => generatePrefixId(taskId, DND_DRAGGABLE_PREFIX.TASK), [taskId]);
 
-  const handleTaskClick = () => openModal();
+  const handleTaskClick = () => openDetailModal();
 
   return (
     <>
@@ -42,7 +44,10 @@ export default function TaskItem({ task, colorCode }: TaskItemProps) {
           </div>
         )}
       </Draggable>
-      {showModal && <DetailModalTask project={project} task={task} onClose={closeModal} />}
+      {showDetailModal && (
+        <DetailModalTask project={project} task={task} openUpdateModal={openUpdateModal} onClose={closeDetailModal} />
+      )}
+      {showUpdateModal && <UpdateModalTask project={project} taskId={task.taskId} onClose={closeUpdateModal} />}
     </>
   );
 }
