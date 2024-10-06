@@ -223,8 +223,13 @@ const teamServiceHandler = [
   }),
 
   // 팀원 목록 조회 API
-  http.get(`${BASE_URL}/team/:teamId/user`, ({ params }) => {
+  http.get(`${BASE_URL}/team/:teamId/user`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
+
+    if (!accessToken) {
+      return new HttpResponse(null, { status: 401 });
+    }
 
     const teamMembers = TEAM_USER_DUMMY.filter((teamUser) => teamUser.teamId === Number(teamId));
 
@@ -232,14 +237,10 @@ const teamServiceHandler = [
       const role = ROLE_DUMMY.find((role) => role.roleId === member.roleId);
       const user = USER_DUMMY.find((user) => user.userId === member.userId);
 
-      if (!role || !user) {
-        return HttpResponse.json({ message: '유효하지 않은 역할이거나 사용자 이름입니다.' }, { status: 400 });
-      }
-
       return {
-        userId: user.userId,
-        nickname: user.nickname,
-        roleName: role.roleName,
+        userId: user?.userId,
+        nickname: user?.nickname,
+        roleName: role?.roleName,
       };
     });
 
