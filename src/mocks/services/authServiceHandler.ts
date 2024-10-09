@@ -89,11 +89,9 @@ const authServiceHandler = [
     const { code } = (await request.json()) as { code: string };
 
     const validProviders = ['KAKAO', 'GOOGLE'];
-    if (!validProviders.includes(provider as SocialLoginProvider)) {
+    if (!validProviders.includes(provider)) {
       return HttpResponse.json({ message: '지원하지 않는 Provider입니다.' }, { status: 400 });
     }
-
-    let userId;
 
     // 공급업체별 설정 정보
     const providerConfigs = {
@@ -171,6 +169,8 @@ const authServiceHandler = [
     if (!email) return HttpResponse.json({ message: '이메일 정보를 가져올 수 없습니다.' }, { status: 400 });
 
     const foundUser = USER_DUMMY.find((user) => user.email === email);
+
+    let userId;
 
     if (foundUser) {
       userId = foundUser.userId;

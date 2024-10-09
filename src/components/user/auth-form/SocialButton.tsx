@@ -11,8 +11,8 @@ type SocialButtonProps = {
 };
 
 export default function SocialButton({ provider, isSubmitting }: SocialButtonProps) {
-  const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_GOOGLE_REDIRECT_URI}&response_type=code&scope=email+profile`;
-  const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_KAKAO_REDIRECT_URI}`;
+  const googleUrl = import.meta.env.VITE_GOOGLE_URL;
+  const kakaoUrl = import.meta.env.VITE_KAKAO_URL;
 
   const isGoogle = provider === 'GOOGLE';
 
