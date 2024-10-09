@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
@@ -9,6 +10,7 @@ import {
   EmailVerificationForm,
   RequestEmailCode,
   SearchPasswordForm,
+  SocialLoginProvider,
   UpdatePasswordRequest,
   UserInfo,
   UserSignInForm,
@@ -73,6 +75,130 @@ const authServiceHandler = [
       status: 200,
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        'Set-Cookie': [
+          `refreshToken=${refreshToken}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
+          `refreshTokenExpiresAt=${refreshTokenExpiryDate}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
+        ].join(', '),
+      },
+    });
+  }),
+
+  // 소셜 로그인 API
+  http.post(`${BASE_URL}/user/login/:provider`, async ({ request, params }) => {
+    const { provider } = params as { provider: SocialLoginProvider };
+    const { code } = (await request.json()) as { code: string };
+
+    const validProviders = ['KAKAO', 'GOOGLE'];
+    if (!validProviders.includes(provider)) {
+      return HttpResponse.json({ message: '지원하지 않는 Provider입니다.' }, { status: 400 });
+    }
+
+    // 공급업체별 설정 정보
+    const providerConfigs = {
+      KAKAO: {
+        tokenUrl: `https://kauth.kakao.com/oauth/token`,
+        userInfoUrl: 'https://kapi.kakao.com/v2/user/me',
+        accessTokenParams: {
+          grant_type: 'authorization_code',
+          client_id: import.meta.env.VITE_KAKAO_CLIENT_ID,
+          redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
+          code,
+        },
+        accessTokenKey: 'access_token',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+      },
+      GOOGLE: {
+        tokenUrl: `https://oauth2.googleapis.com/token`,
+        userInfoUrl: 'https://www.googleapis.com/userinfo/v2/me',
+        accessTokenParams: {
+          code,
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+          client_secret: import.meta.env.VITE_GOOGLE_SECRET,
+          redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+          grant_type: 'authorization_code',
+        },
+        accessTokenKey: 'access_token',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+      },
+    };
+
+    const config = providerConfigs[provider];
+    if (!config) {
+      return HttpResponse.json({ message: 'Provider 정보 설정에 실패했습니다.' }, { status: 400 });
+    }
+
+    // 인가코드를 이용한 액세스 토큰 발급 함수
+    const fetchAccessToken = async () => {
+      try {
+        const response = await axios.post(config.tokenUrl, null, {
+          params: config.accessTokenParams,
+          headers: config.headers,
+        });
+        return response.data[config.accessTokenKey];
+      } catch (error) {
+        return null;
+      }
+    };
+
+    // 액세스 토큰을 이용한 유저 정보 요청 함수
+    const fetchUserInfo = async (accessToken: string) => {
+      try {
+        const response = await axios.get(config.userInfoUrl, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        return response.data;
+      } catch (error) {
+        return null;
+      }
+    };
+
+    // 액세스 토큰 발급
+    const accessToken = await fetchAccessToken();
+    if (!accessToken) {
+      return HttpResponse.json({ message: '토큰 조회 중 오류가 발생했습니다.' }, { status: 400 });
+    }
+
+    // 유저 정보 요청
+    const userInfo = await fetchUserInfo(accessToken);
+    if (!userInfo) {
+      return HttpResponse.json({ message: '유저 정보를 가져오는 도중 오류가 발생했습니다.' }, { status: 500 });
+    }
+
+    // 이메일 기반으로 사용자 검색 또는 회원가입
+    const email = provider === 'KAKAO' ? userInfo.kakao_account.email : userInfo.email;
+    if (!email) return HttpResponse.json({ message: '이메일 정보를 가져올 수 없습니다.' }, { status: 400 });
+
+    const foundUser = USER_DUMMY.find((user) => user.email === email);
+
+    let userId;
+
+    if (foundUser) {
+      userId = foundUser.userId;
+    } else {
+      const newUser: UserInfo = {
+        userId: USER_DUMMY.length + 1,
+        username: email,
+        password: null,
+        email,
+        provider,
+        nickname: userInfo.id,
+        profileImageName: null,
+        bio: null,
+        links: [],
+      };
+
+      USER_DUMMY.push(newUser);
+      userId = newUser.userId;
+    }
+
+    const accessTokenResponse = generateDummyToken(userId);
+    const refreshToken = generateDummyToken(userId);
+    const refreshTokenExpiryDate = new Date(Date.now() + AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION).toISOString();
+
+    return new HttpResponse(null, {
+      status: 200,
+      headers: {
+        Authorization: `Bearer ${accessTokenResponse}`,
         'Set-Cookie': [
           `refreshToken=${refreshToken}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,
           `refreshTokenExpiresAt=${refreshTokenExpiryDate}; SameSite=Strict; Secure; Path=/; Expires=${refreshTokenExpiryDate}; Max-Age=${AUTH_SETTINGS.REFRESH_TOKEN_EXPIRATION / 1000}`,

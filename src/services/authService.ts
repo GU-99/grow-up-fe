@@ -12,6 +12,7 @@ import type {
   UpdatePasswordRequest,
   CheckNicknameForm,
   UserSignUpRequest,
+  SocialLoginProvider,
 } from '@/types/UserType';
 
 /**
@@ -51,6 +52,20 @@ export async function checkNicknameDuplicate(nicknameForm: CheckNicknameForm, ax
  */
 export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/login', loginForm, axiosConfig);
+}
+
+/**
+ * 소셜 로그인 API
+ *
+ * @export
+ * @async
+ * @param {string} code - 인가 코드
+ * @param {SocialLoginProvider} provider - 공급업체 유형
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function socialLogin(provider: SocialLoginProvider, code: string, axiosConfig: AxiosRequestConfig = {}) {
+  return defaultAxios.post(`user/login/${provider}`, { code }, axiosConfig);
 }
 
 /**
