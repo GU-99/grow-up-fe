@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generateCoworkersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenerator';
+import { generateTeamCoworkersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenerator';
 
 import { getTeamList } from '@services/userService';
 import {
@@ -63,7 +63,7 @@ export function useLeaveTeam() {
 export function useDeleteTeam(teamId: Team['teamId']) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamCoworkersQueryKey = generateCoworkersQueryKey(teamId);
+  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: (teamId: Team['teamId']) => deleteTeam(teamId),
@@ -166,7 +166,7 @@ export function useUpdateTeamInfo() {
 export function useAddTeamCoworker(teamId: Team['teamId']) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamCoworkersQueryKey = generateCoworkersQueryKey(teamId);
+  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: ({ userId, roleName }: TeamCoworker) => addTeamMember(teamId, userId, roleName),
@@ -186,7 +186,7 @@ export function useAddTeamCoworker(teamId: Team['teamId']) {
 export function useDeleteTeamCoworker(teamId: Team['teamId']) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamCoworkersQueryKey = generateCoworkersQueryKey(teamId);
+  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: (userId: number) => removeTeamMember(teamId, userId),
@@ -206,7 +206,7 @@ export function useDeleteTeamCoworker(teamId: Team['teamId']) {
 export function useUpdateTeamCoworkerRole(teamId: Team['teamId']) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamCoworkersQueryKey = generateCoworkersQueryKey(teamId);
+  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: ({ userId, roleName }: TeamCoworker) => updateTeamRole(teamId, userId, roleName),
@@ -230,7 +230,7 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: generateCoworkersQueryKey(teamId),
+    queryKey: generateTeamCoworkersQueryKey(teamId),
     queryFn: async () => {
       const { data } = await findTeamCoworker(teamId);
       return data;

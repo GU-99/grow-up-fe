@@ -52,40 +52,7 @@ export function generateProjectsQueryKey(teamId: Team['teamId']) {
  * @param {Team['teamId']} teamId - 팀 ID
  * @returns {(string | number)[]}
  */
-export function generateCoworkersQueryKey(teamId: Team['teamId']) {
-  return [queryKeys.teams, teamId, queryKeys.coworkers];
-}
-
-/**
- * 팀원 추가에 대한 queryKey 생성 함수
- *
- * @export
- * @param {Team['teamId']} teamId - 팀 ID
- * @returns {(string | number)[]}
- */
-export function generateAddCoworkerQueryKey(teamId: Team['teamId']) {
-  return [queryKeys.teams, teamId, queryKeys.coworkers];
-}
-
-/**
- * 팀원 삭제에 대한 queryKey 생성 함수
- *
- * @export
- * @param {Team['teamId']} teamId - 팀 ID
- * @returns {(string | number)[]}
- */
-export function generateDeleteCoworkerQueryKey(teamId: Team['teamId']) {
-  return [queryKeys.teams, teamId, queryKeys.coworkers];
-}
-
-/**
- * 팀원 권한 수정에 대한 queryKey 생성 함수
- *
- * @export
- * @param {Team['teamId']} teamId - 팀 ID
- * @returns {(string | number)[]}
- */
-export function generateUpdateRoleQueryKey(teamId: Team['teamId']) {
+export function generateTeamCoworkersQueryKey(teamId: Team['teamId']) {
   return [queryKeys.teams, teamId, queryKeys.coworkers];
 }
 
