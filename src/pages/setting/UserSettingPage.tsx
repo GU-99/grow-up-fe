@@ -113,7 +113,7 @@ export default function UserSettingPage() {
           <hr className="my-20" />
 
           {/* 링크 */}
-          <LinkContainer initialLinks={userInfoData?.links || []} page="UserSetting" />
+          <LinkContainer initialLinks={userInfoData?.links || []} isImmediateUpdate />
         </div>
       </div>
     </FormProvider>

@@ -133,7 +133,7 @@ export default function SignUpPage() {
         </section>
 
         {/* 링크 */}
-        <LinkContainer initialLinks={[]} page="SignUp" />
+        <LinkContainer initialLinks={[]} isImmediateUpdate={false} />
 
         {/* 인증 요청 및 확인 버튼 */}
         <div className="space-y-8 text-center">

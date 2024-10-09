@@ -10,21 +10,18 @@ import { EditUserLinksForm } from '@/types/UserType';
 
 type LinkContainerProps = {
   initialLinks: string[];
-  page: 'SignUp' | 'UserSetting';
+  isImmediateUpdate: boolean;
 };
 
-export default function LinkContainer({ initialLinks, page }: LinkContainerProps) {
+export default function LinkContainer({ initialLinks, isImmediateUpdate }: LinkContainerProps) {
   const { setValue } = useFormContext();
   const { editUserInfo } = useStore();
   const [link, setLink] = useState<string>('');
   const [links, setLinks] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
   const { toastWarn } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { mutate: updateLinksMutate } = useUpdateLinks();
-
-  const isUserSettingPage = page === 'UserSetting';
+  const { mutate: updateLinksMutate, isPending: updateLinksIsPending } = useUpdateLinks();
 
   const handleFocus = () => setIsFocused(true);
 
@@ -33,17 +30,12 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => setLink(e.target.value);
 
   const handleUpdateLinks = (userLinks: EditUserLinksForm) => {
-    setIsLoading(true);
-
     updateLinksMutate(userLinks, {
       onSuccess: () => {
         setLinks(userLinks.links);
         setValue('links', userLinks.links);
         setLink('');
         editUserInfo(userLinks);
-      },
-      onSettled: () => {
-        setIsLoading(false);
       },
     });
   };
@@ -60,7 +52,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
 
     const updatedLinks = [...links, newLink.trim()];
 
-    if (isUserSettingPage) return handleUpdateLinks({ links: updatedLinks });
+    if (isImmediateUpdate) return handleUpdateLinks({ links: updatedLinks });
 
     setLinks(updatedLinks);
     setValue('links', updatedLinks);
@@ -70,7 +62,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
   const handleRemoveLink = (removeLink: string) => {
     const filteredData = links.filter((linkItem) => linkItem !== removeLink);
 
-    if (isUserSettingPage) return handleUpdateLinks({ links: filteredData });
+    if (isImmediateUpdate) return handleUpdateLinks({ links: filteredData });
 
     setLinks(filteredData);
     setValue('links', filteredData);
@@ -78,7 +70,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
 
   return (
     <section className="relative">
-      {isLoading && (
+      {updateLinksIsPending && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
           <span className="text-white">
             <Spinner />
@@ -122,7 +114,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
             onChange={handleLinkChange}
             type="text"
             // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정
-            disabled={isLoading}
+            disabled={updateLinksIsPending}
             className="h-full grow bg-inherit outline-none placeholder:text-emphasis"
           />
           <button
@@ -130,7 +122,7 @@ export default function LinkContainer({ initialLinks, page }: LinkContainerProps
             onClick={() => handleAddLink(link)}
             className="flex size-18 items-center justify-center rounded-lg bg-sub"
             aria-label="추가"
-            disabled={isLoading}
+            disabled={updateLinksIsPending}
           >
             <FaPlus className="size-8" />
           </button>
