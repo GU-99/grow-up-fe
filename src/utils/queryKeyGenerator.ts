@@ -28,10 +28,11 @@ export function generateUserInfoQueryKey() {
  * 유저 링크 queryKey 생성 함수
  *
  * @export
+ * @param {number} userId - 유저의 고유 ID
  * @returns {(string | number)[]}
  */
-export function generateLinksQueryKey() {
-  return [queryKeys.links];
+export function generateLinksQueryKey(userId: number) {
+  return [queryKeys.links, userId];
 }
 
 /**

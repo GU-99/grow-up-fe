@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
 import { updateLinks, updateUserInfo } from '@services/userService';
 import { generateLinksQueryKey, generateUserInfoQueryKey } from '@utils/queryKeyGenerator';
+import useStore from '@stores/useStore';
 import type { EditUserInfoRequest, EditUserLinksForm } from '@/types/UserType';
 
 export function useUpdateUserInfo() {
@@ -22,9 +23,10 @@ export function useUpdateUserInfo() {
 }
 
 export function useUpdateLinks() {
+  const { userInfo } = useStore();
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const linksQueryKey = generateLinksQueryKey();
+  const linksQueryKey = generateLinksQueryKey(userInfo.userId);
 
   const mutation = useMutation({
     mutationFn: (data: EditUserLinksForm) => updateLinks(data),
