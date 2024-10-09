@@ -3,9 +3,9 @@ import ModalPortal from '@components/modal/ModalPortal';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   useAddTeamCoworker,
-  useDeleteCoworker,
-  useReadTeamInfo,
-  useUpdateRole,
+  useDeleteTeamCoworker,
+  useReadTeam,
+  useUpdateTeamCoworkerRole,
   useUpdateTeamInfo,
 } from '@hooks/query/useTeamQuery';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
@@ -35,13 +35,17 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   const { toastInfo, toastWarn } = useToast();
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUser);
 
-  const { teamName, content, coworkers, isLoading, isError, error } = useReadTeamInfo(teamId);
+  const { teamName, content, coworkers, isLoading, isError } = useReadTeam(teamId);
 
   const { mutate: updateTeamMutation } = useUpdateTeamInfo();
+  const { mutate: addTeamCoworkerMutation } = useAddTeamCoworker(teamId);
+  const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker(teamId);
+  const { mutate: updateTeamCoworkerRoleMutation } = useUpdateTeamCoworkerRole(teamId);
 
-  const { mutate: AddTeamCoworkerMutation } = useAddTeamCoworker(teamId);
-  const { mutate: deleteCoworkerMutation } = useDeleteCoworker(teamId);
-  const { mutate: updateRoleMutation } = useUpdateRole(teamId);
+  const searchCallbackInfo: AllSearchCallback = useMemo(
+    () => ({ type: 'ALL', searchCallback: fetchData }),
+    [fetchData],
+  );
 
   const methods = useForm<TeamForm>({ mode: 'onChange' });
   const {
@@ -58,15 +62,14 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     }
   }, [teamName, content, coworkers, reset]);
 
-  const handleFormSubmit: SubmitHandler<TeamForm> = async (formData) => {
-    updateTeamMutation({ teamId, teamData: formData });
-    handleClose();
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value.trim());
   };
 
-  const searchCallbackInfo: AllSearchCallback = useMemo(
-    () => ({ type: 'ALL', searchCallback: fetchData }),
-    [fetchData],
-  );
+  const handleFormSubmit: SubmitHandler<TeamForm> = async (formData) => {
+    updateTeamMutation({ teamId, teamInfo: formData });
+    handleClose();
+  };
 
   const handleCoworkersClick = (userId: number, roleName: TeamRoleName) => {
     const isIncludedUser = coworkers.find((coworker) => coworker.userId === userId);
@@ -77,7 +80,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
       return toastWarn('유효하지 않은 역할입니다.');
     }
 
-    AddTeamCoworkerMutation({ userId, roleName });
+    addTeamCoworkerMutation({ userId, roleName });
     setKeyword('');
     clearData();
   };
@@ -88,7 +91,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
 
   // 권한 변경 핸들러
   const handleRoleChange = (userId: number, roleName: TeamRoleName) => {
-    updateRoleMutation({ userId, roleName });
+    updateTeamCoworkerRoleMutation({ userId, roleName });
   };
 
   if (isLoading || loading) {
@@ -131,10 +134,10 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
             id="search"
             label="팀원"
             keyword={keyword}
-            loading={isLoading}
+            loading={loading}
             userList={userList}
             searchCallbackInfo={searchCallbackInfo}
-            onKeywordChange={(event) => setKeyword(event.target.value)}
+            onKeywordChange={handleKeywordChange}
             onUserClick={(user) => handleCoworkersClick(user.userId, 'MATE')}
           />
           <div className="flex flex-wrap">

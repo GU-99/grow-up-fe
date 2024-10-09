@@ -13,6 +13,7 @@ export type TeamCoworker = {
   roleName: TeamRoleName;
   nickname?: string;
 };
+export type TeamUpdateInfo = Pick<Team, 'teamName' | 'content'>;
 
 export type TeamCoworkerInfo = TeamCoworker & { nickname: User['nickname'] };
 

@@ -1,7 +1,7 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { SearchUser, User } from '@/types/UserType';
-import type { Team, TeamCoworker, TeamForm } from '@/types/TeamType';
+import type { Team, TeamCoworker, TeamForm, TeamUpdateInfo } from '@/types/TeamType';
 import type { TeamRoleName } from '@/types/RoleType';
 
 /**
@@ -149,7 +149,7 @@ export async function updateTeamRole(
  * @param {AxiosRequestConfig} [axiosConfig={}] -
  * @returns {Promise<AxiosResponse<TeamCoworker[]>>}
  */
-export async function getTeamCoworker(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function findTeamCoworker(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<TeamCoworker[]>(`/team/${teamId}/user`, axiosConfig);
 }
 
@@ -163,6 +163,6 @@ export async function getTeamCoworker(teamId: number, axiosConfig: AxiosRequestC
  * @param {AxiosRequestConfig} [axiosConfig={}]
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function updateTeamInfo(teamId: number, teamData: TeamForm, axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.patch(`/team/${teamId}`, teamData, axiosConfig);
+export async function updateTeamInfo(teamId: number, teamInfo: TeamUpdateInfo, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.patch(`/team/${teamId}`, teamInfo, axiosConfig);
 }

@@ -11,6 +11,7 @@ export const queryKeys = {
   tasks: 'tasks',
   files: 'files',
   assignees: 'assignees',
+  coworkers: 'coworkers',
 };
 
 /**
@@ -34,17 +35,6 @@ export function generateTeamsQueryKey() {
 }
 
 /**
- * 팀의 세부 정보 queryKey 생성 함수
- *
- * @export
- * @param {Team['teamId']} teamId - 팀의 ID
- * @returns {(string | number)[]}
- */
-export function generateTeamQueryKey(teamId: Team['teamId']) {
-  return [queryKeys.teams, teamId];
-}
-
-/**
  * 팀의 프로젝트 목록 queryKey 생성 함수
  *
  * @export
@@ -53,6 +43,50 @@ export function generateTeamQueryKey(teamId: Team['teamId']) {
  */
 export function generateProjectsQueryKey(teamId: Team['teamId']) {
   return [queryKeys.teams, teamId, queryKeys.projects];
+}
+
+/**
+ * 팀원의 목록 queryKey 생성 함수
+ *
+ * @export
+ * @param {Team['teamId']} teamId - 팀 ID
+ * @returns {(string | number)[]}
+ */
+export function generateCoworkersQueryKey(teamId: Team['teamId']) {
+  return [queryKeys.teams, teamId, queryKeys.coworkers];
+}
+
+/**
+ * 팀원 추가에 대한 queryKey 생성 함수
+ *
+ * @export
+ * @param {Team['teamId']} teamId - 팀 ID
+ * @returns {(string | number)[]}
+ */
+export function generateAddCoworkerQueryKey(teamId: Team['teamId']) {
+  return [queryKeys.teams, teamId, queryKeys.coworkers];
+}
+
+/**
+ * 팀원 삭제에 대한 queryKey 생성 함수
+ *
+ * @export
+ * @param {Team['teamId']} teamId - 팀 ID
+ * @returns {(string | number)[]}
+ */
+export function generateDeleteCoworkerQueryKey(teamId: Team['teamId']) {
+  return [queryKeys.teams, teamId, queryKeys.coworkers];
+}
+
+/**
+ * 팀원 권한 수정에 대한 queryKey 생성 함수
+ *
+ * @export
+ * @param {Team['teamId']} teamId - 팀 ID
+ * @returns {(string | number)[]}
+ */
+export function generateUpdateRoleQueryKey(teamId: Team['teamId']) {
+  return [queryKeys.teams, teamId, queryKeys.coworkers];
 }
 
 /**

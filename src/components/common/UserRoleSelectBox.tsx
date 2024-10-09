@@ -1,8 +1,8 @@
 import React from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { PROJECT_ROLES, TEAM_ROLES } from '@constants/role';
 import type { User } from '@/types/UserType';
 import type { RoleName } from '@/types/RoleType';
-import { PROJECT_ROLES, TEAM_ROLES } from '@/constants/role';
 
 type UserRoleSelectBoxProps<T extends RoleName> = {
   userId: User['userId'];
