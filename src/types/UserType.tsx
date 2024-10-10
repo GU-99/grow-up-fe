@@ -11,11 +11,6 @@ export type User = {
   profileImageName: string | null;
 };
 
-export type UserRole = {
-  userId: number;
-  roleName: string;
-};
-
 export type UserInfo = User & {
   password: string;
 };

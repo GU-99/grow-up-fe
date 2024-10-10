@@ -1,7 +1,7 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { SearchUser, User } from '@/types/UserType';
-import type { Team, TeamCoworker, TeamForm, TeamUpdateInfo } from '@/types/TeamType';
+import type { Team, TeamCoworker, TeamForm, TeamInfoForm } from '@/types/TeamType';
 import type { TeamRoleName } from '@/types/RoleType';
 
 /**
@@ -130,6 +130,7 @@ export async function removeTeamMember(teamId: number, userId: number, axiosConf
  * @param {number} userId
  * @param {TeamRoleName} roleName
  * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateTeamRole(
   teamId: number,
@@ -163,6 +164,6 @@ export async function findTeamCoworker(teamId: number, axiosConfig: AxiosRequest
  * @param {AxiosRequestConfig} [axiosConfig={}]
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function updateTeamInfo(teamId: number, teamInfo: TeamUpdateInfo, axiosConfig: AxiosRequestConfig = {}) {
+export async function updateTeamInfo(teamId: number, teamInfo: TeamInfoForm, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.patch(`/team/${teamId}`, teamInfo, axiosConfig);
 }

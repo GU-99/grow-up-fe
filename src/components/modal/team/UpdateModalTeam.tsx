@@ -23,6 +23,7 @@ import useToast from '@hooks/useToast';
 import type { Team, TeamForm } from '@/types/TeamType';
 import type { TeamRoleName } from '@/types/RoleType';
 import type { AllSearchCallback } from '@/types/SearchCallbackType';
+import type { User } from '@/types/UserType';
 
 type UpdateModalTeamProps = {
   teamId: Team['teamId'];
@@ -33,13 +34,13 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   const updateTeamFormId = 'updateTeamForm';
   const [keyword, setKeyword] = useState('');
   const { toastInfo, toastWarn } = useToast();
-  const { loading, data: userList = [], clearData, fetchData } = useAxios(findUser);
+  const { loading: isSearching, data: userList = [], clearData, fetchData } = useAxios(findUser);
 
-  const { teamName, content, coworkers, isLoading, isError } = useReadTeam(teamId);
+  const { teamName, content, coworkers, isLoading: isTeamLoading, isError } = useReadTeam(teamId);
 
   const { mutate: updateTeamMutation } = useUpdateTeamInfo();
   const { mutate: addTeamCoworkerMutation } = useAddTeamCoworker(teamId);
-  const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker(teamId);
+  const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker();
   const { mutate: updateTeamCoworkerRoleMutation } = useUpdateTeamCoworkerRole(teamId);
 
   const searchCallbackInfo: AllSearchCallback = useMemo(
@@ -57,7 +58,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   } = methods;
 
   useEffect(() => {
-    if (teamName && content) {
+    if (teamName && content && coworkers) {
       reset({ teamName, content, coworkers });
     }
   }, [teamName, content, coworkers, reset]);
@@ -71,30 +72,24 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     handleClose();
   };
 
-  const handleCoworkersClick = (userId: number, roleName: TeamRoleName) => {
+  const handleCoworkersClick = (userId: User['userId'], roleName: TeamRoleName) => {
     const isIncludedUser = coworkers.find((coworker) => coworker.userId === userId);
     if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
-
-    const validRole = TEAM_ROLES.includes(roleName);
-    if (!validRole) {
-      return toastWarn('유효하지 않은 역할입니다.');
-    }
 
     addTeamCoworkerMutation({ userId, roleName });
     setKeyword('');
     clearData();
   };
 
-  const handleRemoveUser = (userId: number) => {
-    deleteCoworkerMutation(userId);
+  const handleRemoveUser = (userId: User['userId']) => {
+    deleteCoworkerMutation({ teamId, userId });
   };
 
-  // 권한 변경 핸들러
-  const handleRoleChange = (userId: number, roleName: TeamRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
     updateTeamCoworkerRoleMutation({ userId, roleName });
   };
 
-  if (isLoading || loading) {
+  if (isTeamLoading) {
     return <Spinner />;
   }
 
@@ -103,7 +98,6 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
       <ModalLayout onClose={handleClose}>
         <FormProvider {...methods}>
           <form id="updateTeamForm" onSubmit={handleSubmit(handleFormSubmit)}>
-            {/* 팀명 불러오기 */}
             <DuplicationCheckInput
               id="teamName"
               label="팀명"
@@ -112,7 +106,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
               errors={errors.teamName?.message}
               register={register('teamName', TEAM_VALIDATION_RULES.TEAM_NAME)}
             />
-            {/* 팀 설명 불러오기 */}
+
             <DescriptionTextarea
               id="teamDescription"
               label="팀 설명"
@@ -123,18 +117,17 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
             />
           </form>
         </FormProvider>
-        {/* 팀명 및 팀 설명 수정 제출 */}
+
         <ModalButton formId={updateTeamFormId} backgroundColor="bg-main">
           수정
         </ModalButton>
 
-        {/* 팀원 추가 , 팀원 삭제 , 권한 설정 즉시반영  */}
         <div className="my-16">
           <SearchUserInput
             id="search"
             label="팀원"
             keyword={keyword}
-            loading={loading}
+            loading={isSearching}
             userList={userList}
             searchCallbackInfo={searchCallbackInfo}
             onKeywordChange={handleKeywordChange}

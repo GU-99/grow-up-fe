@@ -12,8 +12,7 @@ import {
   ROLE_DUMMY,
   USER_DUMMY,
 } from '@mocks/mockData';
-import { TeamForm } from '@/types/TeamType';
-import { UserRole } from '@/types/UserType';
+import type { TeamCoworker, TeamCoworkerInfo, TeamForm } from '@/types/TeamType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -271,7 +270,7 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/invitation`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-    const { userId, roleName } = (await request.json()) as UserRole;
+    const { userId, roleName } = (await request.json()) as TeamCoworkerInfo;
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
@@ -312,6 +311,16 @@ const teamServiceHandler = [
     TEAM_USER_DUMMY.length = 0;
     TEAM_USER_DUMMY.push(...filteredTeamUsers);
 
+    const filteredProjectUsers = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.userId !== Number(userId));
+
+    PROJECT_USER_DUMMY.length = 0;
+    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+
+    const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => taskUser.userId !== Number(userId));
+
+    TASK_USER_DUMMY.length = 0;
+    TASK_USER_DUMMY.push(...filteredTaskUsers);
+
     return new HttpResponse(null, { status: 204 });
   }),
 
@@ -319,12 +328,12 @@ const teamServiceHandler = [
   http.patch(`${BASE_URL}/team/:teamId/user/:userId/role`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId, userId } = params;
-    const { roleName } = (await request.json()) as UserRole;
+    const { roleName } = (await request.json()) as TeamCoworker;
 
     if (!accessToken) {
       return new HttpResponse(null, { status: 401 });
     }
-    // 2. 유효한 역할인지 확인
+
     const role = ROLE_DUMMY.find((role) => role.roleName === roleName);
     if (!role) {
       return HttpResponse.json({ message: '유효하지 않은 역할입니다.' }, { status: 400 });

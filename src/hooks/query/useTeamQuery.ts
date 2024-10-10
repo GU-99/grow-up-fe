@@ -16,7 +16,8 @@ import {
 } from '@services/teamService';
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
-import type { Team, TeamCoworker, TeamForm, TeamListWithApproval, TeamUpdateInfo } from '@/types/TeamType';
+import type { Team, TeamCoworker, TeamForm, TeamListWithApproval, TeamInfoForm } from '@/types/TeamType';
+import type { User } from '@/types/UserType';
 
 // 전체 팀 목록 조회
 export function useReadTeams() {
@@ -148,7 +149,7 @@ export function useUpdateTeamInfo() {
   const teamsQueryKey = generateTeamsQueryKey();
 
   const mutation = useMutation({
-    mutationFn: ({ teamId, teamInfo }: { teamId: Team['teamId']; teamInfo: TeamUpdateInfo }) =>
+    mutationFn: ({ teamId, teamInfo }: { teamId: Team['teamId']; teamInfo: TeamInfoForm }) =>
       updateTeamInfo(teamId, teamInfo),
     onError: () => {
       toastError('팀 정보 수정에 실패했습니다. 다시 시도해 주세요.');
@@ -183,17 +184,18 @@ export function useAddTeamCoworker(teamId: Team['teamId']) {
 }
 
 // 팀원 삭제
-export function useDeleteTeamCoworker(teamId: Team['teamId']) {
+export function useDeleteTeamCoworker() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: (userId: number) => removeTeamMember(teamId, userId),
+    mutationFn: ({ teamId, userId }: { teamId: Team['teamId']; userId: User['userId'] }) =>
+      removeTeamMember(teamId, userId),
     onError: () => {
       toastError('팀원 삭제에 실패했습니다. 다시 시도해 주세요.');
     },
-    onSuccess: () => {
+    onSuccess: (_, { teamId }) => {
+      const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
       toastSuccess('팀원을 삭제하였습니다.');
       queryClient.invalidateQueries({ queryKey: teamCoworkersQueryKey });
     },
@@ -223,7 +225,7 @@ export function useUpdateTeamCoworkerRole(teamId: Team['teamId']) {
   return mutation;
 }
 
-// 팀원 목록 가져오기 훅
+// 팀원 목록 조회
 export function useReadTeamCoworkers(teamId: Team['teamId']) {
   const {
     data: coworkers = [] as TeamCoworker[],
@@ -235,15 +237,13 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
       const { data } = await findTeamCoworker(teamId);
       return data;
     },
-    enabled: !!teamId,
   });
 
   return { coworkers, isLoading, isError };
 }
 
-// 수정할 팀 목록 조회
+// 팀 상세 조회
 export function useReadTeam(teamId: Team['teamId']) {
-  // 팀 목록을 가져오기
   const { joinedTeamList, invitedTeamList } = useReadTeams();
 
   const teamList = useMemo(() => {
@@ -254,14 +254,13 @@ export function useReadTeam(teamId: Team['teamId']) {
     return teamList.find((team) => team.teamId === teamId);
   }, [teamList, teamId]);
 
-  // 팀원 목록 가져오기
   const {
     coworkers: teamCoworkers,
     isLoading: isTeamCoworkersLoading,
     isError: isTeamCoworkersError,
   } = useReadTeamCoworkers(teamId);
 
-  const result = useMemo(
+  const team = useMemo(
     () => ({
       teamName: teamInfo?.teamName,
       content: teamInfo?.content,
@@ -272,5 +271,5 @@ export function useReadTeam(teamId: Team['teamId']) {
     [teamInfo, teamCoworkers, isTeamCoworkersError, isTeamCoworkersLoading],
   );
 
-  return result;
+  return team;
 }
