@@ -6,7 +6,7 @@ type RenameKeys<T, R extends { [K in keyof R]: K extends keyof T ? string : neve
 };
 
 type StatusKeyMapping = {
-  sortOrder: 'statusOrder';
+  sortOrder: 'statusSortOrder';
 };
 
 export type Task = {
