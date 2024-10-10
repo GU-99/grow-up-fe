@@ -308,18 +308,24 @@ const teamServiceHandler = [
       (teamUser) => !(teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId)),
     );
 
-    TEAM_USER_DUMMY.length = 0;
-    TEAM_USER_DUMMY.push(...filteredTeamUsers);
+    if (TEAM_USER_DUMMY.length !== filteredTeamUsers.length) {
+      TEAM_USER_DUMMY.length = 0;
+      TEAM_USER_DUMMY.push(...filteredTeamUsers);
+    }
 
     const filteredProjectUsers = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.userId !== Number(userId));
 
-    PROJECT_USER_DUMMY.length = 0;
-    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+    if (PROJECT_USER_DUMMY.length !== filteredProjectUsers.length) {
+      PROJECT_USER_DUMMY.length = 0;
+      PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+    }
 
     const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => taskUser.userId !== Number(userId));
 
-    TASK_USER_DUMMY.length = 0;
-    TASK_USER_DUMMY.push(...filteredTaskUsers);
+    if (TASK_USER_DUMMY.length !== filteredTaskUsers.length) {
+      TASK_USER_DUMMY.length = 0;
+      TASK_USER_DUMMY.push(...filteredTaskUsers);
+    }
 
     return new HttpResponse(null, { status: 204 });
   }),

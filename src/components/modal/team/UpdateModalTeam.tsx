@@ -34,13 +34,13 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   const updateTeamFormId = 'updateTeamForm';
   const [keyword, setKeyword] = useState('');
   const { toastInfo, toastWarn } = useToast();
-  const { loading: isSearching, data: userList = [], clearData, fetchData } = useAxios(findUser);
+  const { loading: isUserLoading, data: userList = [], clearData, fetchData } = useAxios(findUser);
 
   const { teamName, content, coworkers, isLoading: isTeamLoading, isError } = useReadTeam(teamId);
 
   const { mutate: updateTeamMutation } = useUpdateTeamInfo();
   const { mutate: addTeamCoworkerMutation } = useAddTeamCoworker(teamId);
-  const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker();
+  const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker(teamId);
   const { mutate: updateTeamCoworkerRoleMutation } = useUpdateTeamCoworkerRole(teamId);
 
   const searchCallbackInfo: AllSearchCallback = useMemo(
@@ -82,7 +82,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   };
 
   const handleRemoveUser = (userId: User['userId']) => {
-    deleteCoworkerMutation({ teamId, userId });
+    deleteCoworkerMutation(userId);
   };
 
   const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
@@ -127,7 +127,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
             id="search"
             label="팀원"
             keyword={keyword}
-            loading={isSearching}
+            loading={isUserLoading}
             userList={userList}
             searchCallbackInfo={searchCallbackInfo}
             onKeywordChange={handleKeywordChange}

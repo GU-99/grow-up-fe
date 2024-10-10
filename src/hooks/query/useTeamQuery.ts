@@ -61,17 +61,17 @@ export function useLeaveTeam() {
 }
 
 // 팀 삭제
-export function useDeleteTeam(teamId: Team['teamId']) {
+export function useDeleteTeam() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
     mutationFn: (teamId: Team['teamId']) => deleteTeam(teamId),
     onError: () => {
       toastError('팀 삭제를 실패했습니다. 다시 시도해 주세요.');
     },
-    onSuccess: () => {
+    onSuccess: (_, teamId) => {
+      const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
       toastSuccess('팀을 삭제하였습니다.');
       queryClient.invalidateQueries({ queryKey: teamCoworkersQueryKey });
     },
@@ -184,18 +184,17 @@ export function useAddTeamCoworker(teamId: Team['teamId']) {
 }
 
 // 팀원 삭제
-export function useDeleteTeamCoworker() {
+export function useDeleteTeamCoworker(teamId: Team['teamId']) {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
+  const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: ({ teamId, userId }: { teamId: Team['teamId']; userId: User['userId'] }) =>
-      removeTeamMember(teamId, userId),
+    mutationFn: (userId: number) => removeTeamMember(teamId, userId),
     onError: () => {
       toastError('팀원 삭제에 실패했습니다. 다시 시도해 주세요.');
     },
-    onSuccess: (_, { teamId }) => {
-      const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
+    onSuccess: () => {
       toastSuccess('팀원을 삭제하였습니다.');
       queryClient.invalidateQueries({ queryKey: teamCoworkersQueryKey });
     },
