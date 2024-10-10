@@ -146,7 +146,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
                 <StatusRadio statusFieldName="statusId" statusList={statusList} />
 
                 <DuplicationCheckInput
-                  id="name"
+                  id="taskName"
                   label="일정"
                   value={watch('taskName')}
                   placeholder="일정명을 입력해주세요."
