@@ -40,11 +40,11 @@ export async function createTeam(teamData: TeamForm, axiosConfig: AxiosRequestCo
  *
  * @export
  * @async
- * @param {number} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function leaveTeam(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function leaveTeam(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/leave`, {}, axiosConfig);
 }
 
@@ -53,11 +53,11 @@ export async function leaveTeam(teamId: number, axiosConfig: AxiosRequestConfig 
  *
  * @export
  * @async
- * @param {number} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function deleteTeam(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function deleteTeam(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.delete(`/team/${teamId}`, axiosConfig);
 }
 
@@ -66,11 +66,11 @@ export async function deleteTeam(teamId: number, axiosConfig: AxiosRequestConfig
  *
  * @export
  * @async
- * @param {number} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function acceptTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function acceptTeamInvitation(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/invitation/accept`, {}, axiosConfig);
 }
 
@@ -79,11 +79,11 @@ export async function acceptTeamInvitation(teamId: number, axiosConfig: AxiosReq
  *
  * @export
  * @async
- * @param {number} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId - 팀 아이디
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function declineTeamInvitation(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function declineTeamInvitation(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post(`/team/${teamId}/invitation/decline`, {}, axiosConfig);
 }
 
@@ -92,15 +92,15 @@ export async function declineTeamInvitation(teamId: number, axiosConfig: AxiosRe
  *
  * @export
  * @async
- * @param {number} teamId
- * @param {number} userId
+ * @param {Team['teamId']} teamId
+ * @param {User['userId']} userId
  * @param {string} roleName
  * @param {AxiosRequestConfig} [axiosConfig={}]
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function addTeamMember(
-  teamId: number,
-  userId: number,
+  teamId: Team['teamId'],
+  userId: User['userId'],
   roleName: TeamRoleName,
   axiosConfig: AxiosRequestConfig = {},
 ) {
@@ -112,12 +112,16 @@ export async function addTeamMember(
  *
  * @export
  * @async
- * @param {number} teamId
- * @param {number} userId
+ * @param {Team['teamId']} teamId
+ * @param {User['userId']} userId
  * @param {AxiosRequestConfig} [axiosConfig={}]
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function removeTeamMember(teamId: number, userId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function removeTeamMember(
+  teamId: Team['teamId'],
+  userId: User['userId'],
+  axiosConfig: AxiosRequestConfig = {},
+) {
   return authAxios.delete(`/team/${teamId}/user/${userId}`, axiosConfig);
 }
 
@@ -126,15 +130,15 @@ export async function removeTeamMember(teamId: number, userId: number, axiosConf
  *
  * @export
  * @async
- * @param {number} teamId
- * @param {number} userId
+ * @param {Team['teamId']} teamId
+ * @param {User['userId']} userId
  * @param {TeamRoleName} roleName
  * @param {AxiosRequestConfig} [axiosConfig={}]
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateTeamRole(
-  teamId: number,
-  userId: number,
+  teamId: Team['teamId'],
+  userId: User['userId'],
   roleName: TeamRoleName,
   axiosConfig: AxiosRequestConfig = {},
 ) {
@@ -146,11 +150,11 @@ export async function updateTeamRole(
  *
  * @export
  * @async
- * @param {number} teamId
+ * @param {Team['teamId']} teamId
  * @param {AxiosRequestConfig} [axiosConfig={}] -
  * @returns {Promise<AxiosResponse<TeamCoworker[]>>}
  */
-export async function findTeamCoworker(teamId: number, axiosConfig: AxiosRequestConfig = {}) {
+export async function findTeamCoworker(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<TeamCoworker[]>(`/team/${teamId}/user`, axiosConfig);
 }
 
@@ -159,11 +163,15 @@ export async function findTeamCoworker(teamId: number, axiosConfig: AxiosRequest
  *
  * @export
  * @async
- * @param {number} teamId
+ * @param {Team['teamId']} teamId
  * @param {TeamForm} teamData
  * @param {AxiosRequestConfig} [axiosConfig={}]
  * @returns {Promise<AxiosResponse<void>>}
  */
-export async function updateTeamInfo(teamId: number, teamInfo: TeamInfoForm, axiosConfig: AxiosRequestConfig = {}) {
+export async function updateTeamInfo(
+  teamId: Team['teamId'],
+  teamInfo: TeamInfoForm,
+  axiosConfig: AxiosRequestConfig = {},
+) {
   return authAxios.patch(`/team/${teamId}`, teamInfo, axiosConfig);
 }

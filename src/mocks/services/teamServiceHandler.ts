@@ -12,7 +12,7 @@ import {
   ROLE_DUMMY,
   USER_DUMMY,
 } from '@mocks/mockData';
-import type { TeamCoworker, TeamCoworkerForm, TeamForm } from '@/types/TeamType';
+import type { TeamCoworkerForm, TeamForm } from '@/types/TeamType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -334,7 +334,7 @@ const teamServiceHandler = [
   http.patch(`${BASE_URL}/team/:teamId/user/:userId/role`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId, userId } = params;
-    const { roleName } = (await request.json()) as TeamCoworker;
+    const { roleName } = (await request.json()) as TeamCoworkerForm;
 
     if (!accessToken) {
       return new HttpResponse(null, { status: 401 });

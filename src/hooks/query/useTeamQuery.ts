@@ -16,7 +16,14 @@ import {
 } from '@services/teamService';
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
-import type { Team, TeamCoworker, TeamForm, TeamListWithApproval, TeamInfoForm } from '@/types/TeamType';
+import type {
+  Team,
+  TeamCoworker,
+  TeamForm,
+  TeamListWithApproval,
+  TeamInfoForm,
+  TeamCoworkerForm,
+} from '@/types/TeamType';
 import type { User } from '@/types/UserType';
 
 // 전체 팀 목록 조회
@@ -170,7 +177,7 @@ export function useAddTeamCoworker(teamId: Team['teamId']) {
   const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: ({ userId, roleName }: TeamCoworker) => addTeamMember(teamId, userId, roleName),
+    mutationFn: ({ userId, roleName }: TeamCoworkerForm) => addTeamMember(teamId, userId, roleName),
     onError: () => {
       toastError('팀원 추가에 실패했습니다. 다시 시도해 주세요.');
     },
@@ -190,7 +197,7 @@ export function useDeleteTeamCoworker(teamId: Team['teamId']) {
   const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: (userId: number) => removeTeamMember(teamId, userId),
+    mutationFn: (userId: User['userId']) => removeTeamMember(teamId, userId),
     onError: () => {
       toastError('팀원 삭제에 실패했습니다. 다시 시도해 주세요.');
     },
@@ -210,7 +217,7 @@ export function useUpdateTeamCoworkerRole(teamId: Team['teamId']) {
   const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
 
   const mutation = useMutation({
-    mutationFn: ({ userId, roleName }: TeamCoworker) => updateTeamRole(teamId, userId, roleName),
+    mutationFn: ({ userId, roleName }: TeamCoworkerForm) => updateTeamRole(teamId, userId, roleName),
 
     onError: () => {
       toastError('팀원 권한 변경에 실패했습니다. 다시 시도해 주세요.');

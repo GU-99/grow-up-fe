@@ -12,21 +12,20 @@ import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { SearchUser } from '@/types/UserType';
+import type { SearchUser, User } from '@/types/UserType';
 import type { TeamRoleName } from '@/types/RoleType';
-import type { TeamCoworkerInfo, TeamForm } from '@/types/TeamType';
+import type { TeamCoworker, TeamForm } from '@/types/TeamType';
 import type { AllSearchCallback } from '@/types/SearchCallbackType';
 
 type ModalTeamFormProps = {
   formId: string;
-  teamId?: number;
   onSubmit: SubmitHandler<TeamForm>;
 };
 
-export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFormProps) {
+export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) {
   const [keyword, setKeyword] = useState('');
   const [showTooltip, setShowTooltip] = useState(false);
-  const [coworkerInfos, setCoworkerInfos] = useState<TeamCoworkerInfo[]>([]);
+  const [coworkerInfos, setCoworkerInfos] = useState<TeamCoworker[]>([]);
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUser);
   const { toastInfo } = useToast();
 
@@ -52,18 +51,24 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
     register,
   } = methods;
 
-  const handleRoleChange = (userId: number, roleName: TeamRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
     const updatedCoworkerInfos = coworkerInfos.map((coworkerInfo) =>
       coworkerInfo.userId === userId ? { ...coworkerInfo, roleName } : coworkerInfo,
     );
-    const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName }) => ({ userId, roleName }));
+    const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName }) => ({
+      userId,
+      roleName,
+    }));
     setValue('coworkers', updatedCoworkers);
     setCoworkerInfos(updatedCoworkerInfos);
   };
 
-  const handleRemoveUser = (userId: number) => {
+  const handleRemoveUser = (userId: User['userId']) => {
     const filteredCoworkerInfos = coworkerInfos.filter((coworkerInfo) => coworkerInfo.userId !== userId);
-    const filteredCoworkers = filteredCoworkerInfos.map(({ userId, roleName }) => ({ userId, roleName }));
+    const filteredCoworkers = filteredCoworkerInfos.map(({ userId, roleName }) => ({
+      userId,
+      roleName,
+    }));
     setValue('coworkers', filteredCoworkers);
     setCoworkerInfos(filteredCoworkerInfos);
   };
@@ -76,11 +81,14 @@ export default function ModalTeamForm({ formId, teamId, onSubmit }: ModalTeamFor
     const isIncludedUser = coworkerInfos.find((coworkerInfo) => coworkerInfo.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
 
-    const updatedCoworkerInfos: TeamCoworkerInfo[] = [
+    const updatedCoworkerInfos: TeamCoworker[] = [
       ...coworkerInfos,
       { userId: user.userId, nickname: user.nickname, roleName: 'MATE' },
     ];
-    const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName }) => ({ userId, roleName }));
+    const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName }) => ({
+      userId,
+      roleName,
+    }));
     setCoworkerInfos(updatedCoworkerInfos);
     setValue('coworkers', updatedCoworkers);
     setKeyword('');

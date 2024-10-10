@@ -138,7 +138,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
               <UserRoleSelectBox
                 key={userId}
                 userId={userId}
-                nickname={nickname || '이름 없음'}
+                nickname={nickname}
                 roles={TEAM_ROLES}
                 defaultValue={roleName as TeamRoleName}
                 onRoleChange={handleRoleChange}
