@@ -11,6 +11,7 @@ export const queryKeys = {
   tasks: 'tasks',
   files: 'files',
   assignees: 'assignees',
+  coworkers: 'coworkers',
 };
 
 /**
@@ -42,6 +43,17 @@ export function generateTeamsQueryKey() {
  */
 export function generateProjectsQueryKey(teamId: Team['teamId']) {
   return [queryKeys.teams, teamId, queryKeys.projects];
+}
+
+/**
+ * 팀원의 목록 queryKey 생성 함수
+ *
+ * @export
+ * @param {Team['teamId']} teamId - 팀 ID
+ * @returns {(string | number)[]}
+ */
+export function generateTeamCoworkersQueryKey(teamId: Team['teamId']) {
+  return [queryKeys.teams, teamId, queryKeys.coworkers];
 }
 
 /**

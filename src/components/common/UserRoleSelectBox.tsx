@@ -1,14 +1,13 @@
 import React from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { PROJECT_ROLES, TEAM_ROLES } from '@constants/role';
 import type { User } from '@/types/UserType';
-import type { RoleName, TeamRoleName } from '@/types/RoleType';
-import { PROJECT_ROLES, TEAM_ROLES } from '@/constants/role';
+import type { RoleName } from '@/types/RoleType';
 
-type CheckTeamRole<T> = T extends TeamRoleName ? 'MATE' : 'ASSIGNEE';
 type UserRoleSelectBoxProps<T extends RoleName> = {
   userId: User['userId'];
   nickname: User['nickname'];
-  defaultValue: CheckTeamRole<T>;
+  defaultValue: RoleName;
   roles: typeof TEAM_ROLES | typeof PROJECT_ROLES;
   onRoleChange: (userId: number, roleName: T) => void;
   onRemoveUser: (userId: number) => void;
