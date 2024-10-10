@@ -21,9 +21,9 @@ function getCalendarTask(statusTasks: TaskListWithStatus[]) {
   const calendarTasks: TaskWithStatus[] = [];
 
   statusTasks.forEach((statusTask) => {
-    const { statusName, colorCode, sortOrder: statusOrder, tasks } = statusTask;
+    const { statusName, colorCode, sortOrder: statusSortOrder, tasks } = statusTask;
     tasks.forEach((task) => {
-      calendarTasks.push({ statusName, colorCode, statusOrder, ...task });
+      calendarTasks.push({ statusName, colorCode, statusSortOrder, ...task });
     });
   });
 
@@ -90,18 +90,16 @@ export default function CalendarPage() {
     [],
   );
 
-  const state = {
-    events: getCalendarTask(statusTaskList)
-      .map((task) => ({
-        title: task.name,
-        start: new Date(task.startDate),
-        end: new Date(task.endDate),
-        allDays: true,
-        task: { ...task },
-      }))
-      .sort((a, b) => a.start.getTime() - b.start.getTime()),
-  };
-  const startDate = state.events.length ? state.events[0].start : null;
+  const events: CustomEvent[] = getCalendarTask(statusTaskList)
+    .map((task) => ({
+      title: task.taskName,
+      start: new Date(task.startDate),
+      end: new Date(task.endDate),
+      allDay: true,
+      task: { ...task },
+    }))
+    .sort((a, b) => a.start.getTime() - b.start.getTime());
+  const startDate = events.length && events[0].start ? events[0].start : null;
 
   // ToDo: DnD, Resize 이벤트 추가 생각해보기
   // ToDo: 할일 추가 모달 Form 작업 완료시 모달 컴포넌트 분리
@@ -118,7 +116,7 @@ export default function CalendarPage() {
         onNavigate={handleNavigate}
         drilldownView={null}
         views={views}
-        events={state.events}
+        events={events}
         components={customComponents}
         titleAccessor="title"
         startAccessor="start"
