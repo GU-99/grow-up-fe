@@ -78,7 +78,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     if (task) {
       reset({
         statusId: task.statusId.toString(),
-        name: task.name,
+        taskName: task.taskName,
         content: task.content,
         startDate: task.startDate,
         endDate: task.endDate,
@@ -148,10 +148,10 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
                 <DuplicationCheckInput
                   id="name"
                   label="일정"
-                  value={watch('name')}
+                  value={watch('taskName')}
                   placeholder="일정명을 입력해주세요."
-                  errors={errors.name?.message}
-                  register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
+                  errors={errors.taskName?.message}
+                  register={register('taskName', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
                 />
 
                 <PeriodDateInput

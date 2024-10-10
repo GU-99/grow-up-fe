@@ -32,11 +32,11 @@ import type {
 } from '@/types/TaskType';
 import { TaskFile } from '@/types/FileType';
 
-function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['name']) {
+function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['taskName']) {
   const taskNameList = taskList
     .map((statusTask) => statusTask.tasks)
     .flat()
-    .map((task) => task.name);
+    .map((task) => task.taskName);
 
   return excludedTaskName ? taskNameList.filter((taskName) => taskName !== excludedTaskName) : taskNameList;
 }
@@ -98,7 +98,7 @@ export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Tas
         .find((task) => task.taskId === taskId),
     [statusTaskList, taskId],
   );
-  const taskNameList = useMemo(() => getTaskNameList(statusTaskList, task?.name), [statusTaskList, task?.name]);
+  const taskNameList = useMemo(() => getTaskNameList(statusTaskList, task?.taskName), [statusTaskList, task?.taskName]);
 
   return { task, statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
 }
