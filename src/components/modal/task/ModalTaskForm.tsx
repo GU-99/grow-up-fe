@@ -58,7 +58,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const methods = useForm<TaskForm>({
     mode: 'onChange',
     defaultValues: {
-      name: '',
+      taskName: '',
       content: '',
       assignees: [],
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
@@ -146,10 +146,10 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
         <DuplicationCheckInput
           id="name"
           label="일정"
-          value={watch('name')}
+          value={watch('taskName')}
           placeholder="일정명을 입력해주세요."
-          errors={errors.name?.message}
-          register={register('name', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
+          errors={errors.taskName?.message}
+          register={register('taskName', TASK_VALIDATION_RULES.TASK_NAME(taskNameList))}
         />
 
         <PeriodDateInput

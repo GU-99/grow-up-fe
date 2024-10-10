@@ -43,7 +43,7 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
       <DuplicationCheckInput
-        id="name"
+        id="statusName"
         label="상태명"
         value={watch('statusName')}
         placeholder="상태명을 입력하세요."

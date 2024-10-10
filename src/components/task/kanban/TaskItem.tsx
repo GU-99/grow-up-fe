@@ -19,7 +19,7 @@ export default function TaskItem({ task, colorCode }: TaskItemProps) {
   const { showModal: showDetailModal, openModal: openDetailModal, closeModal: closeDetailModal } = useModal();
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
-  const { taskId, name, sortOrder } = task;
+  const { taskId, taskName, sortOrder } = task;
   const index = useMemo(() => sortOrder - 1, [sortOrder]);
   const draggableId = useMemo(() => generatePrefixId(taskId, DND_DRAGGABLE_PREFIX.TASK), [taskId]);
 
@@ -40,7 +40,7 @@ export default function TaskItem({ task, colorCode }: TaskItemProps) {
             {...dragProvided.dragHandleProps}
           >
             <div style={{ borderColor: colorCode }} className="size-8 shrink-0 rounded-full border" />
-            <div className="select-none truncate">{name}</div>
+            <div className="select-none truncate">{taskName}</div>
           </div>
         )}
       </Draggable>

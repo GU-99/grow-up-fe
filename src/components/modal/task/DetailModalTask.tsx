@@ -30,7 +30,7 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
   const { fetchData } = useAxios(downloadTaskFile);
   const { toastError } = useToast();
 
-  const { name, startDate, endDate } = task;
+  const { taskName, startDate, endDate } = task;
   const period = useMemo(
     () => (endDate && startDate !== endDate ? `${startDate} - ${endDate}` : startDate),
     [startDate, endDate],
@@ -77,7 +77,7 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">일정명</h2>
-                <span>{name}</span>
+                <span>{taskName}</span>
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">기간</h2>

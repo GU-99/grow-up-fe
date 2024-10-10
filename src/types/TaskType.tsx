@@ -12,7 +12,7 @@ type StatusKeyMapping = {
 export type Task = {
   taskId: number;
   statusId: number;
-  name: string;
+  taskName: string;
   content: string;
   startDate: string;
   endDate: string;
