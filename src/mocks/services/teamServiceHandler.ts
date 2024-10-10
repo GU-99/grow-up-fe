@@ -12,7 +12,7 @@ import {
   ROLE_DUMMY,
   USER_DUMMY,
 } from '@mocks/mockData';
-import type { TeamCoworker, TeamCoworkerInfo, TeamForm } from '@/types/TeamType';
+import type { TeamCoworker, TeamCoworkerForm, TeamForm } from '@/types/TeamType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -270,7 +270,7 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/invitation`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-    const { userId, roleName } = (await request.json()) as TeamCoworkerInfo;
+    const { userId, roleName } = (await request.json()) as TeamCoworkerForm;
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
