@@ -21,7 +21,7 @@ export default function ListProject({ data, targetId }: ListProjectProps) {
             className="flex h-30 flex-col justify-center px-10"
           >
             <small className="font-bold text-category">project</small>
-            <span>{item.name}</span>
+            <span>{item.projectName}</span>
           </Link>
         </li>
       ))}
