@@ -40,7 +40,7 @@ export default function CalendarPage() {
   const [selectedTask, setSelectedTask] = useState<Task>({
     taskId: 0,
     statusId: 0,
-    name: '',
+    taskName: '',
     content: '',
     startDate: '',
     endDate: '',
@@ -55,8 +55,8 @@ export default function CalendarPage() {
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
   const handleSelectEvent = (event: CustomEvent) => {
-    const { taskId, statusId, name, content, startDate, endDate, sortOrder } = event.task;
-    const task: Task = { taskId, statusId, name, content, startDate, endDate, sortOrder };
+    const { taskId, statusId, taskName, content, startDate, endDate, sortOrder } = event.task;
+    const task: Task = { taskId, statusId, taskName, content, startDate, endDate, sortOrder };
     setSelectedTask(task);
     openDetailModal();
   };
@@ -93,7 +93,7 @@ export default function CalendarPage() {
   const state = {
     events: getCalendarTask(statusTaskList)
       .map((task) => ({
-        title: task.name,
+        title: task.taskName,
         start: new Date(task.startDate),
         end: new Date(task.endDate),
         allDays: true,

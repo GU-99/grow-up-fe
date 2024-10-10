@@ -36,7 +36,7 @@ export default function ProjectLayout() {
             {/* ToDo: LabelTitle 공통 컴포넌트로 추출할 것 */}
             <div>
               <small className="mr-5 font-bold text-category">project</small>
-              <span className="text-emphasis">{project?.name}</span>
+              <span className="text-emphasis">{project?.projectName}</span>
             </div>
             <div className="flex cursor-pointer items-center text-sm text-main">
               <RiSettings5Fill /> Project Setting

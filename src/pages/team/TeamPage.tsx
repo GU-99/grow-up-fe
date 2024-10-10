@@ -57,7 +57,7 @@ export default function TeamPage() {
                   <div className="flex max-h-full grow">
                     <div className="max-h-full w-60 shrink-0">
                       <small className="flex flex-col text-xs font-bold text-category">project</small>
-                      <p className="truncate">{project.name}</p>
+                      <p className="truncate">{project.projectName}</p>
                     </div>
 
                     <div className="flex max-h-full max-w-350 flex-col px-4">

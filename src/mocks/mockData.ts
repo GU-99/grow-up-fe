@@ -581,7 +581,7 @@ export const PROJECT_DUMMY: Project[] = [
   {
     projectId: 1,
     teamId: 1,
-    name: 'AITalk',
+    projectName: 'AITalk',
     content: '상담용 챗봇을 만드는 프로젝트',
     startDate: null,
     endDate: null,
@@ -589,7 +589,7 @@ export const PROJECT_DUMMY: Project[] = [
   {
     projectId: 2,
     teamId: 1,
-    name: 'GrowUp',
+    projectName: 'GrowUp',
     content: '팀원을 모아 프로젝트를 진행하며, 진척도를 관리하는 프로젝트',
     startDate: new Date('2024-05-15 00:00:00'),
     endDate: new Date('2024-09-01  00:00:00'),
@@ -597,7 +597,7 @@ export const PROJECT_DUMMY: Project[] = [
   {
     projectId: 3,
     teamId: 2,
-    name: 'WithMe',
+    projectName: 'WithMe',
     content: '이벤트/모임을 등록하여 참여자를 모집하는 프로젝트',
     startDate: new Date('2023-06-05 00:00:00'),
     endDate: new Date('2023-09-12 00:00:00'),
@@ -720,7 +720,7 @@ export const TASK_DUMMY: Task[] = [
   // 프로젝트2 완료 상태
   {
     taskId: 1,
-    name: 'task 상태 추가 모달 작업하기',
+    taskName: 'task 상태 추가 모달 작업하기',
     sortOrder: 1,
     statusId: 6,
     content: '',
@@ -729,7 +729,7 @@ export const TASK_DUMMY: Task[] = [
   },
   {
     taskId: 2,
-    name: 'project layout 작성하기',
+    taskName: 'project layout 작성하기',
     sortOrder: 2,
     statusId: 6,
     content: '',
@@ -738,7 +738,7 @@ export const TASK_DUMMY: Task[] = [
   },
   {
     taskId: 3,
-    name: 'tailwindcss 설정하기',
+    taskName: 'tailwindcss 설정하기',
     sortOrder: 3,
     statusId: 6,
     content: '',
@@ -748,7 +748,7 @@ export const TASK_DUMMY: Task[] = [
   // 프로젝트2 진행중 상태
   {
     taskId: 4,
-    name: 'API 명세서 작성하기',
+    taskName: 'API 명세서 작성하기',
     sortOrder: 2,
     statusId: 5,
     content: '',
@@ -757,7 +757,7 @@ export const TASK_DUMMY: Task[] = [
   },
   {
     taskId: 5,
-    name: 'DnD 기술 조사하기',
+    taskName: 'DnD 기술 조사하기',
     sortOrder: 1,
     statusId: 5,
     content: `# AITalk\n## 주제\nDnD 기술 조사하기\n\n※\`DnD\`란 Drag and Drop의 약자다\n\n## 라이브러리 선정\n[react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) 등과 같이 다양한 라이브러리 중 어느 것을 선정할 것인가?`,
@@ -767,7 +767,7 @@ export const TASK_DUMMY: Task[] = [
   // 프로젝트2 할일 상태
   {
     taskId: 6,
-    name: '할일 추가 모달 구현하기',
+    taskName: '할일 추가 모달 구현하기',
     sortOrder: 1,
     statusId: 4,
     content: '',
@@ -776,7 +776,7 @@ export const TASK_DUMMY: Task[] = [
   },
   {
     taskId: 7,
-    name: 'ID 찾기 페이지 작성하기',
+    taskName: 'ID 찾기 페이지 작성하기',
     sortOrder: 2,
     statusId: 4,
     content: '',
@@ -785,7 +785,7 @@ export const TASK_DUMMY: Task[] = [
   },
   {
     taskId: 8,
-    name: 'DnD 구현하기',
+    taskName: 'DnD 구현하기',
     sortOrder: 3,
     statusId: 4,
     content: '',
