@@ -14,12 +14,13 @@ type LinkContainerProps = {
 };
 
 export default function LinkContainer({ initialLinks, isImmediateUpdate }: LinkContainerProps) {
-  const { setValue } = useFormContext();
+  const { setValue, watch } = useFormContext();
   const { editUserInfo } = useStore();
   const [link, setLink] = useState<string>('');
-  const [links, setLinks] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
   const { toastWarn } = useToast();
+
+  const links: string[] = watch('links', initialLinks);
 
   const { mutate: updateLinksMutate, isPending: updateLinksIsPending } = useUpdateLinks();
 
@@ -29,10 +30,10 @@ export default function LinkContainer({ initialLinks, isImmediateUpdate }: LinkC
 
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => setLink(e.target.value);
 
+  // TODO: 링크 업데이트 후작업 처리 방법 고민해 보기
   const handleUpdateLinks = (userLinks: EditUserLinksForm) => {
     updateLinksMutate(userLinks, {
       onSuccess: () => {
-        setLinks(userLinks.links);
         setValue('links', userLinks.links);
         setLink('');
         editUserInfo(userLinks);
@@ -54,7 +55,6 @@ export default function LinkContainer({ initialLinks, isImmediateUpdate }: LinkC
 
     if (isImmediateUpdate) return handleUpdateLinks({ links: updatedLinks });
 
-    setLinks(updatedLinks);
     setValue('links', updatedLinks);
     setLink('');
   };
@@ -64,7 +64,6 @@ export default function LinkContainer({ initialLinks, isImmediateUpdate }: LinkC
 
     if (isImmediateUpdate) return handleUpdateLinks({ links: filteredData });
 
-    setLinks(filteredData);
     setValue('links', filteredData);
   };
 
