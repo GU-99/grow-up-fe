@@ -45,9 +45,22 @@ export default function TaskItem({ task, colorCode }: TaskItemProps) {
         )}
       </Draggable>
       {showDetailModal && (
-        <DetailModalTask project={project} task={task} openUpdateModal={openUpdateModal} onClose={closeDetailModal} />
+        <DetailModalTask
+          projectId={project.projectId}
+          statusId={task.statusId}
+          taskId={task.taskId}
+          openUpdateModal={openUpdateModal}
+          onClose={closeDetailModal}
+        />
       )}
-      {showUpdateModal && <UpdateModalTask project={project} taskId={task.taskId} onClose={closeUpdateModal} />}
+      {showUpdateModal && (
+        <UpdateModalTask
+          project={project}
+          taskId={task.taskId}
+          openDetailModal={openDetailModal}
+          onClose={closeUpdateModal}
+        />
+      )}
     </>
   );
 }

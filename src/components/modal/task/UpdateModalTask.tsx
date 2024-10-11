@@ -38,10 +38,16 @@ import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 type UpdateModalTaskProps = {
   project: Project;
   taskId: Task['taskId'];
+  openDetailModal: () => void;
   onClose: () => void;
 };
 
-export default function UpdateModalTask({ project, taskId, onClose: handleClose }: UpdateModalTaskProps) {
+export default function UpdateModalTask({
+  project,
+  taskId,
+  openDetailModal,
+  onClose: handleClose,
+}: UpdateModalTaskProps) {
   const updateTaskFormId = 'updateTaskForm';
   const { projectId, startDate, endDate } = project;
 
@@ -128,6 +134,11 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
 
   const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => updateTaskInfoMutate(formData);
 
+  const handleDetailClick = () => {
+    openDetailModal();
+    handleClose();
+  };
+
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
@@ -203,7 +214,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
             onFileDeleteClick={handleFileDeleteClick}
           />
         )}
-        <ModalButton color="text-emphasis" backgroundColor="bg-button">
+        <ModalButton color="text-emphasis" backgroundColor="bg-button" onClick={handleDetailClick}>
           돌아가기
         </ModalButton>
       </ModalLayout>
