@@ -106,7 +106,7 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
                       <li key={fileId} aria-label="file download">
                         <button
                           type="button"
-                          className="flex items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
+                          className="flex select-none items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
                           onClick={() => handleDownloadClick(fileName, uploadName)}
                         >
                           <span>{fileName}</span>
