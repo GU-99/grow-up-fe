@@ -126,10 +126,8 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     return <Spinner />;
   }
 
-  const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => {
-    updateTaskInfoMutate(formData);
-    handleClose();
-  };
+  const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => updateTaskInfoMutate(formData);
+
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
