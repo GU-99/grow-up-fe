@@ -103,15 +103,15 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
                   <h2 className="my-5 text-large font-bold">파일 다운로드</h2>
                   <ul className="flex flex-wrap gap-5">
                     {taskFileList.map(({ fileId, fileName, uploadName }) => (
-                      <li
-                        key={fileId}
-                        className="flex cursor-pointer items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
-                        aria-label="file download"
-                      >
-                        <button type="button" onClick={() => handleDownloadClick(fileName, uploadName)}>
-                          {fileName}
+                      <li key={fileId} aria-label="file download">
+                        <button
+                          type="button"
+                          className="flex items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
+                          onClick={() => handleDownloadClick(fileName, uploadName)}
+                        >
+                          <span>{fileName}</span>
+                          <LuDownload />
                         </button>
-                        <LuDownload />
                       </li>
                     ))}
                   </ul>
