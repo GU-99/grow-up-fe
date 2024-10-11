@@ -27,7 +27,7 @@ export default function CreateModalProjectStatus({ project, onClose: handleClose
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalProjectStatusForm formId={createStatusFormId} project={project} onSubmit={handleSubmit} />
-        <ModalButton formId={createStatusFormId} backgroundColor="bg-main">
+        <ModalButton formId={createStatusFormId} color="text-white" backgroundColor="bg-main">
           등록
         </ModalButton>
       </ModalLayout>

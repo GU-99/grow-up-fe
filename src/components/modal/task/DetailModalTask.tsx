@@ -119,10 +119,14 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
               )}
             </section>
             <div className="flex min-h-25 gap-10">
-              <ModalButton backgroundColor="bg-main" onClick={handleUpdateClick}>
+              <ModalButton color="text-white" backgroundColor="bg-main" onClick={handleUpdateClick}>
                 수정
               </ModalButton>
-              <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(task.taskId)}>
+              <ModalButton
+                color="text-white"
+                backgroundColor="bg-delete"
+                onClick={() => handleDeleteClick(task.taskId)}
+              >
                 삭제
               </ModalButton>
             </div>

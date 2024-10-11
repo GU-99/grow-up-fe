@@ -166,7 +166,7 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
                 <MarkdownEditor id="content" label="내용" contentFieldName="content" />
               </form>
             </FormProvider>
-            <ModalButton formId={updateTaskFormId} backgroundColor="bg-main">
+            <ModalButton formId={updateTaskFormId} color="text-white" backgroundColor="bg-main">
               수정
             </ModalButton>
           </>
@@ -203,6 +203,9 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
             onFileDeleteClick={handleFileDeleteClick}
           />
         )}
+        <ModalButton color="text-emphasis" backgroundColor="bg-button">
+          돌아가기
+        </ModalButton>
       </ModalLayout>
     </ModalPortal>
   );
