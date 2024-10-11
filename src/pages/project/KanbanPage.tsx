@@ -61,9 +61,7 @@ export default function KanbanPage() {
   const [localStatusTaskList, setLocalStatusTaskList] = useState(statusTaskList);
 
   useEffect(() => {
-    if (statusTaskList) {
-      setLocalStatusTaskList(statusTaskList);
-    }
+    if (statusTaskList) setLocalStatusTaskList(statusTaskList);
   }, [statusTaskList]);
 
   const handleDragEnd = (dropResult: DropResult) => {

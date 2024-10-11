@@ -205,18 +205,20 @@ export default function UpdateModalTask({
         {isTaskFileLoading ? (
           <Spinner />
         ) : (
-          <FileDropZone
-            id="files"
-            label="첨부파일"
-            files={taskFileList}
-            accept={TASK_SETTINGS.FILE_ACCEPT}
-            updateFiles={updateTaskFiles}
-            onFileDeleteClick={handleFileDeleteClick}
-          />
+          <section className="space-y-20">
+            <FileDropZone
+              id="files"
+              label="첨부파일"
+              files={taskFileList}
+              accept={TASK_SETTINGS.FILE_ACCEPT}
+              updateFiles={updateTaskFiles}
+              onFileDeleteClick={handleFileDeleteClick}
+            />
+            <ModalButton color="text-emphasis" backgroundColor="bg-button" onClick={handleDetailClick}>
+              돌아가기
+            </ModalButton>
+          </section>
         )}
-        <ModalButton color="text-emphasis" backgroundColor="bg-button" onClick={handleDetailClick}>
-          돌아가기
-        </ModalButton>
       </ModalLayout>
     </ModalPortal>
   );
