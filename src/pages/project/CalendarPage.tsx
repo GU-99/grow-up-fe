@@ -52,7 +52,7 @@ export default function CalendarPage() {
       const { taskId, statusId, taskName, content, startDate, endDate, sortOrder } = statusTask;
       setSelectedTask({ taskId, statusId, taskName, content, startDate, endDate, sortOrder });
     }
-  }, [statusTaskList]);
+  }, [statusTaskList, selectedTask.taskId]);
 
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
