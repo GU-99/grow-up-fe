@@ -37,7 +37,7 @@ type ModalTaskFormProps = {
 
 // ToDo: React Query Error시 처리 추가할 것
 export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
-  const { projectId, startDate: projctStartDate, endDate: projectEndDate } = project;
+  const { projectId, startDate: projectStartDate, endDate: projectEndDate } = project;
 
   const [keyword, setKeyword] = useState('');
   const [assignees, setAssignees] = useState<UserWithRole[]>([]);
@@ -159,7 +159,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
           endDateLabel="종료일"
           startDateFieldName="startDate"
           endDateFieldName="endDate"
-          limitStartDate={projctStartDate}
+          limitStartDate={projectStartDate}
           limitEndDate={projectEndDate}
         />
 
