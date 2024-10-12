@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
-import { updateUserInfo } from '@services/userService';
-import { generateUserInfoQueryKey } from '@/utils/queryKeyGenerator';
+import { updateUserInfo, uploadProfileImage } from '@services/userService';
+import useStore from '@stores/useStore';
+import { generateProfileFileQueryKey, generateUserInfoQueryKey } from '@utils/queryKeyGenerator';
 import type { EditUserInfoRequest } from '@/types/UserType';
 
 export function useUpdateUserInfo() {
@@ -15,6 +16,27 @@ export function useUpdateUserInfo() {
     onSuccess: () => {
       toastSuccess('유저 정보가 수정되었습니다.');
       queryClient.invalidateQueries({ queryKey: userInfoQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+export function useUploadProfileImage() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const { userInfo } = useStore();
+  const userProfileImageQueryKey = generateProfileFileQueryKey(userInfo.userId);
+
+  const mutation = useMutation({
+    mutationFn: ({ file }: { file: File }) =>
+      uploadProfileImage(file, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
+    onError: () => toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.'),
+    onSuccess: () => {
+      toastSuccess('이미지가 업로드되었습니다.');
+      queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
     },
   });
 

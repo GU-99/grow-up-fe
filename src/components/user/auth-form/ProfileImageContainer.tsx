@@ -1,19 +1,22 @@
+import { useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@utils/converter';
 import { USER_SETTINGS } from '@constants/settings';
 import useToast from '@hooks/useToast';
-import { useEffect } from 'react';
+import { useUploadProfileImage } from '@hooks/query/useUserQuery';
+import useStore from '@stores/useStore';
 
 type ProfileImageContainerProps = {
   imageUrl: string | null;
-  setImageUrl: (url: string) => void;
 };
 
-export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
+export default function ProfileImageContainer({ imageUrl }: ProfileImageContainerProps) {
   const { setValue } = useFormContext();
   const { toastWarn } = useToast();
+  const { mutate: uploadImage } = useUploadProfileImage();
+  const { editUserInfo } = useStore();
 
   useEffect(() => {
     return () => {
@@ -32,14 +35,17 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
       );
     }
 
-    const image = URL.createObjectURL(file);
-    setImageUrl(image);
-    setValue('profileImageName', image);
+    uploadImage({ file });
+
+    const localImageUrl = URL.createObjectURL(file);
+    const uniqueFileName = `PROFILE_IMAGE_${Date.now()}.jpg`;
+    setValue('profileImageName', localImageUrl);
+    editUserInfo({ profileImageName: uniqueFileName });
   };
 
   const handleRemoveImg = () => {
-    setImageUrl('');
-    setValue('profileImageName', '');
+    setValue('profileImageName', null);
+    editUserInfo({ profileImageName: null });
   };
 
   return (

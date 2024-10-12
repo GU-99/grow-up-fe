@@ -837,3 +837,22 @@ export const FILE_DUMMY: FileInfo[] = [
     uploadName: 'FILE_UUID_3.txt',
   },
 ];
+
+// MSW 프로필 이미지 임시 저장을 위한 변수
+export const PROFILE_IMAGE_DUMMY = [
+  {
+    userId: 1,
+    file: new Blob([''], { type: 'image/jpeg' }),
+    uploadName: 'PROFILE_IMAGE_UUID_1.jpg',
+  },
+  {
+    userId: 2,
+    file: new Blob([''], { type: 'image/jpeg' }),
+    uploadName: 'PROFILE_IMAGE_UUID_2.jpg',
+  },
+  {
+    userId: 3,
+    file: new Blob([''], { type: 'image/png' }),
+    uploadName: 'PROFILE_IMAGE_UUID_3.jpg',
+  },
+];
