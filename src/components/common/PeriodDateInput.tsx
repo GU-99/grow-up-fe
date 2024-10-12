@@ -43,8 +43,8 @@ export default function PeriodDateInput({
   const endDateStr = watch(endDateFieldName);
 
   useEffect(() => {
-    const startDate = startDateStr ? DateTime.fromJSDate(new Date(startDateStr)).startOf('day') : null;
-    const endDate = endDateStr ? DateTime.fromJSDate(new Date(endDateStr)).startOf('day') : null;
+    const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
+    const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
     if (startDate && endDate) setHasDeadline(startDate < endDate);
   }, [startDateStr, endDateStr]);
 
@@ -84,8 +84,8 @@ export default function PeriodDateInput({
           {...register(endDateFieldName, {
             ...TASK_VALIDATION_RULES.END_DATE(hasDeadline, limitStartDate, limitEndDate, watch(startDateFieldName)),
             onChange: (e) => {
-              const startDate = DateTime.fromJSDate(new Date(startDateStr)).startOf('day');
-              const endDate = DateTime.fromJSDate(new Date(e.target.value)).startOf('day');
+              const startDate = DateTime.fromISO(startDateStr).startOf('day');
+              const endDate = DateTime.fromISO(e.target.value).startOf('day');
               if (startDate > endDate) {
                 toastWarn('종료일은 시작일과 같거나 이후로 설정해주세요.');
                 setValue(endDateFieldName, startDateStr);
