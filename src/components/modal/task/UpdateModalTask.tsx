@@ -43,7 +43,7 @@ type UpdateModalTaskProps = {
 
 export default function UpdateModalTask({ project, taskId, onClose: handleClose }: UpdateModalTaskProps) {
   const updateTaskFormId = 'updateTaskForm';
-  const { projectId, startDate, endDate } = project;
+  const { projectId, startDate: projectStartDate, endDate: projectEndDate } = project;
 
   const [keyword, setKeyword] = useState('');
   const { toastInfo, toastWarn } = useToast();
@@ -155,14 +155,14 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
                 />
 
                 <PeriodDateInput
-                  startDateLabel="시작일"
-                  endDateLabel="종료일"
                   startDateId="startDate"
                   endDateId="endDate"
-                  startDate={startDate}
-                  endDate={endDate}
+                  startDateLabel="시작일"
+                  endDateLabel="종료일"
                   startDateFieldName="startDate"
                   endDateFieldName="endDate"
+                  limitStartDate={projectStartDate}
+                  limitEndDate={projectEndDate}
                 />
 
                 <MarkdownEditor id="content" label="내용" contentFieldName="content" />

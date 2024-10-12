@@ -1,33 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
 import ToggleButton from '@components/common/ToggleButton';
 
 import type { FieldError } from 'react-hook-form';
+import { DateTime } from 'luxon';
 import type { Project } from '@/types/ProjectType';
+import { DAY } from '@/constants/units';
+import useToast from '@/hooks/useToast';
 
 type PeriodDateInputProps = {
-  startDateLabel: string;
-  endDateLabel: string;
   startDateId: string;
   endDateId: string;
-  startDate: Project['startDate'];
-  endDate: Project['endDate'];
+  startDateLabel: string;
+  endDateLabel: string;
   startDateFieldName: string;
   endDateFieldName: string;
+  limitStartDate: Project['startDate'];
+  limitEndDate: Project['endDate'];
 };
 
 export default function PeriodDateInput({
-  startDateLabel,
-  endDateLabel,
   startDateId,
   endDateId,
-  startDate,
-  endDate,
+  startDateLabel,
+  endDateLabel,
   startDateFieldName,
   endDateFieldName,
+  limitStartDate,
+  limitEndDate,
 }: PeriodDateInputProps) {
   const [hasDeadline, setHasDeadline] = useState(false);
+  const { toastWarn } = useToast();
   const {
     setValue,
     getValues,
@@ -36,6 +40,14 @@ export default function PeriodDateInput({
     register,
     formState: { errors },
   } = useFormContext();
+  const startDateStr = watch(startDateFieldName);
+  const endDateStr = watch(endDateFieldName);
+
+  useEffect(() => {
+    const startDate = startDateStr ? DateTime.fromJSDate(new Date(startDateStr)).startOf('day') : null;
+    const endDate = endDateStr ? DateTime.fromJSDate(new Date(endDateStr)).startOf('day') : null;
+    if (startDate && endDate) setHasDeadline(startDate < endDate);
+  }, [startDateStr, endDateStr]);
 
   const handleDeadlineToggle = () => {
     setValue(endDateFieldName, getValues(startDateFieldName));
@@ -51,7 +63,7 @@ export default function PeriodDateInput({
           id={startDateId}
           type="date"
           {...register(startDateFieldName, {
-            ...TASK_VALIDATION_RULES.START_DATE(startDate, endDate),
+            ...TASK_VALIDATION_RULES.START_DATE(limitStartDate, limitEndDate),
             onChange: (e) => {
               if (!hasDeadline) setValue(endDateFieldName, e.target.value);
             },
@@ -70,11 +82,18 @@ export default function PeriodDateInput({
           id={endDateId}
           type="date"
           className={`${hasDeadline ? '' : '!bg-disable'}`}
-          disabled={!hasDeadline}
-          {...register(
-            endDateFieldName,
-            TASK_VALIDATION_RULES.END_DATE(hasDeadline, startDate, endDate, watch(startDateFieldName)),
-          )}
+          {...register(endDateFieldName, {
+            ...TASK_VALIDATION_RULES.END_DATE(hasDeadline, limitStartDate, limitEndDate, watch(startDateFieldName)),
+            onChange: (e) => {
+              const startDate = DateTime.fromJSDate(new Date(startDateStr)).startOf('day');
+              const endDate = DateTime.fromJSDate(new Date(e.target.value)).startOf('day');
+              if (startDate > endDate) {
+                toastWarn('종료일은 시작일과 같거나 이후로 설정해주세요.');
+                setValue(endDateFieldName, startDateStr);
+                setHasDeadline(false);
+              }
+            },
+          })}
         />
         <div className={`my-5 h-10 grow text-xs text-error ${errors[endDateFieldName] ? 'visible' : 'invisible'}`}>
           {(errors[endDateFieldName] as FieldError | undefined)?.message}
