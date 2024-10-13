@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@utils/converter';
 import { USER_SETTINGS } from '@constants/settings';
+import { JPG, PNG, SVG, WEBP } from '@constants/mimeFileType';
 import useToast from '@hooks/useToast';
 import { useUploadProfileImage } from '@hooks/query/useUserQuery';
 import useStore from '@stores/useStore';
 
 type ProfileImageContainerProps = {
   imageUrl: string | null;
+  setImageUrl: (url: string) => void;
 };
 
-export default function ProfileImageContainer({ imageUrl }: ProfileImageContainerProps) {
-  const { setValue } = useFormContext();
+export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
   const { toastWarn } = useToast();
   const { mutate: uploadImage } = useUploadProfileImage();
   const { editUserInfo } = useStore();
@@ -35,16 +35,23 @@ export default function ProfileImageContainer({ imageUrl }: ProfileImageContaine
       );
     }
 
+    const IMG_TYPE = [JPG, PNG, WEBP, SVG];
+    const permitType = IMG_TYPE.some((type) => type === file.type);
+    if (!permitType) {
+      e.target.value = '';
+      return toastWarn(`${IMG_TYPE.join(', ')} 형식의 이미지 파일만 업로드 가능합니다.`);
+    }
+
     uploadImage({ file });
 
     const localImageUrl = URL.createObjectURL(file);
-    const uniqueFileName = `PROFILE_IMAGE_${Date.now()}.jpg`;
-    setValue('profileImageName', localImageUrl);
-    editUserInfo({ profileImageName: uniqueFileName });
+    setImageUrl(localImageUrl);
+    // TODO: ZUSTAND 유저 프로필 이미지 업데이트 추후에 추가
+    // editUserInfo({ profileImageName: uniqueFileName });
   };
 
   const handleRemoveImg = () => {
-    setValue('profileImageName', null);
+    setImageUrl('');
     editUserInfo({ profileImageName: null });
   };
 

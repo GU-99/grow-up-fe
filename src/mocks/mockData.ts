@@ -842,17 +842,17 @@ export const FILE_DUMMY: FileInfo[] = [
 export const PROFILE_IMAGE_DUMMY = [
   {
     userId: 1,
-    file: new Blob(['프로필_이미지_1'], { type: 'image/jpeg' }),
+    file: new Blob([], { type: 'image/jpeg' }),
     uploadName: 'PROFILE_IMAGE_UUID_1.jpg',
   },
   {
     userId: 2,
-    file: new Blob(['프로필_이미지_2'], { type: 'image/jpeg' }),
+    file: new Blob([], { type: 'image/jpeg' }),
     uploadName: 'PROFILE_IMAGE_UUID_2.jpg',
   },
   {
     userId: 3,
-    file: new Blob(['프로필_이미지_3'], { type: 'image/png' }),
+    file: new Blob([], { type: 'image/png' }),
     uploadName: 'PROFILE_IMAGE_UUID_3.jpg',
   },
 ];

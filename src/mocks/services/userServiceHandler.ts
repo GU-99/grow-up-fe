@@ -92,6 +92,9 @@ const userServiceHandler = [
     const { fileName, extension } = fileNameParser(file.name);
     const uploadName = extension ? `${fileName}_${Date.now()}.${extension}` : `${fileName}_${Date.now()}`;
 
+    // 유저 정보에 이미지 추가
+    USER_DUMMY[userIndex].profileImageName = uploadName;
+
     // 프로필 이미지 더미 데이터 추가
     const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
     if (profileImageIndex !== -1) {
@@ -103,9 +106,6 @@ const userServiceHandler = [
         uploadName,
       });
     }
-
-    // 유저 정보에 이미지 링크 추가 (UUID.extension)
-    USER_DUMMY[userIndex].profileImageName = uploadName;
 
     return HttpResponse.json(null, { status: 200 });
   }),

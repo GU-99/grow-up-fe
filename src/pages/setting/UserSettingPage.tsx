@@ -25,7 +25,7 @@ export default function UserSettingPage() {
       profileImageName: userInfoData.profileImageName,
     },
   });
-  const { formState, register, watch, handleSubmit } = methods;
+  const { formState, register, watch, setValue, handleSubmit } = methods;
   const nickname = watch('nickname');
 
   const { checkedNickname, lastCheckedNickname, handleCheckNickname } = useNicknameDuplicateCheck(
@@ -52,7 +52,10 @@ export default function UserSettingPage() {
       <div className="mx-auto max-w-300 py-30">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* 프로필 이미지 */}
-          <ProfileImageContainer imageUrl={watch('profileImageName')} />
+          <ProfileImageContainer
+            imageUrl={watch('profileImageName')}
+            setImageUrl={(url: string) => setValue('profileImageName', url)}
+          />
 
           {/* 아이디 */}
           <ValidationInput
