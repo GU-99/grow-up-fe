@@ -9,6 +9,7 @@ import {
 } from '@mocks/mockData';
 import { NICKNAME_REGEX } from '@constants/regex';
 import { convertTokenToUserId } from '@utils/converter';
+import { fileNameParser } from '@utils/fileNameParser';
 import type { Team } from '@/types/TeamType';
 import type { Role } from '@/types/RoleType';
 import type { EditUserInfoForm, User } from '@/types/UserType';
@@ -88,8 +89,10 @@ const userServiceHandler = [
       );
     }
 
-    const uploadName = `PROFILE_IMAGE_UUID_${PROFILE_IMAGE_DUMMY.length + 1}.jpg`;
+    const { fileName, extension } = fileNameParser(file.name);
+    const uploadName = extension ? `${fileName}_${Date.now()}.${extension}` : `${fileName}_${Date.now()}`;
 
+    // 프로필 이미지 더미 데이터 추가
     const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
     if (profileImageIndex !== -1) {
       PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = uploadName;
@@ -101,14 +104,10 @@ const userServiceHandler = [
       });
     }
 
-    console.log(PROFILE_IMAGE_DUMMY);
+    // 유저 정보에 이미지 링크 추가 (UUID.extension)
+    USER_DUMMY[userIndex].profileImageName = uploadName;
 
-    // URL 경로 설정
-    const imageUrl = `${BASE_URL}/images/${uploadName}`;
-
-    USER_DUMMY[userIndex].profileImageName = imageUrl;
-
-    return HttpResponse.json({ imageUrl }, { status: 200 });
+    return HttpResponse.json(null, { status: 200 });
   }),
   // 가입한 팀 목록 조회 API
   http.get(`${BASE_URL}/user/team`, ({ request }) => {
