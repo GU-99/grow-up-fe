@@ -6,6 +6,7 @@ import { PROJECT_DUMMY, TEAM_DUMMY } from '@mocks/mockData';
 import CreateModalProject from '@components/modal/project/CreateModalProject';
 import useModal from '@hooks/useModal';
 import UpdateModalProject from '@components/modal/project/UpdateModalProject';
+import { useDeleteProject } from '@hooks/query/useProjectQuery';
 import type { Project } from '@/types/ProjectType';
 
 export default function TeamPage() {
@@ -16,6 +17,8 @@ export default function TeamPage() {
   const [teamName, setTeamName] = useState<string>('');
   const [selectedProjectId, setSelectedProjectId] = useState<Project['projectId'] | null>(null);
 
+  const { mutate: deleteProject } = useDeleteProject(Number(teamId));
+
   // ToDo:  react-query로 대체
   useEffect(() => {
     const projects = PROJECT_DUMMY.filter((project) => project.teamId.toString() === teamId);
@@ -25,11 +28,16 @@ export default function TeamPage() {
     if (team) {
       setTeamName(team.teamName);
     }
-  }, [teamId]);
+  }, [teamId, teamProjects]);
 
   const handleOpenUpdateModal = (projectId: Project['projectId']) => {
     setSelectedProjectId(projectId);
     openUpdateModal();
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent, projectId: Project['projectId']) => {
+    e.preventDefault();
+    deleteProject(projectId);
   };
 
   return (
@@ -80,12 +88,11 @@ export default function TeamPage() {
                       setting
                     </button>
 
-                    {/* ToDo: 프로젝트 삭제 기능 */}
                     <button
                       className="hover:brightness-200"
                       type="button"
                       aria-label="Delete"
-                      onClick={(e) => e.preventDefault()}
+                      onClick={(e) => handleDeleteClick(e, project.projectId)}
                     >
                       <FaRegTrashAlt size={20} />
                     </button>

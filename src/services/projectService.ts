@@ -1,6 +1,6 @@
 import { authAxios } from '@services/axiosProvider';
 
-import type { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { User, SearchUser, UserWithRole } from '@/types/UserType';
@@ -47,4 +47,17 @@ export async function getProjectList(teamId: Team['teamId'], axiosConfig: AxiosR
  */
 export async function getProjectUserRoleList(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<UserWithRole[]>(`/project/${projectId}/user`, axiosConfig);
+}
+
+/**
+ * 프로젝트 삭제 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteProject(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.delete<AxiosResponse<void>>(`/project/${projectId}`, axiosConfig);
 }

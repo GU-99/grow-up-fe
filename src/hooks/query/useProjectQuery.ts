@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenerator';
-import { getProjectList, getProjectUserRoleList } from '@services/projectService';
+import { deleteProject, getProjectList, getProjectUserRoleList } from '@services/projectService';
 
+import useToast from '@hooks/useToast';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 
@@ -40,4 +41,24 @@ export function useReadProjectUserRoleList(projectId: Project['projectId']) {
   });
 
   return { projectUserRoleList, isProjectUserRoleLoading, isErrorProjectUserRole, projectUserRoleError };
+}
+
+// 프로젝트 삭제
+export function useDeleteProject(teamId: Team['teamId']) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+
+  const mutation = useMutation({
+    mutationFn: (projectId: Project['projectId']) => deleteProject(projectId),
+    onError: () => {
+      toastError('프로젝트 삭제를 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      const projectsQueryKey = generateProjectsQueryKey(teamId);
+      toastSuccess('프로젝트를 삭제하였습니다.');
+      queryClient.invalidateQueries({ queryKey: projectsQueryKey });
+    },
+  });
+
+  return mutation;
 }
