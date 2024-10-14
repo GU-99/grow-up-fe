@@ -35,11 +35,11 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
       );
     }
 
-    const IMG_TYPE = [JPG, PNG, WEBP, SVG];
-    const permitType = IMG_TYPE.some((type) => type === file.type);
+    const IMG_EXTENSIONS = [JPG, PNG, WEBP, SVG];
+    const permitType = IMG_EXTENSIONS.some((extensions) => extensions === file.type);
     if (!permitType) {
       e.target.value = '';
-      return toastWarn(`${IMG_TYPE.join(', ')} 형식의 이미지 파일만 업로드 가능합니다.`);
+      return toastWarn(`${IMG_EXTENSIONS.join(', ')} 형식의 이미지 파일만 업로드 가능합니다.`);
     }
 
     uploadImage({ file });

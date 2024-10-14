@@ -96,15 +96,19 @@ const userServiceHandler = [
     USER_DUMMY[userIndex].profileImageName = uploadName;
 
     // 프로필 이미지 더미 데이터 추가
-    const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
-    if (profileImageIndex !== -1) {
-      PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = uploadName;
-    } else {
-      PROFILE_IMAGE_DUMMY.push({
-        userId,
-        file: new Blob([file], { type: file.type }),
-        uploadName,
-      });
+    try {
+      const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
+      if (profileImageIndex !== -1) {
+        PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = uploadName;
+      } else {
+        PROFILE_IMAGE_DUMMY.push({
+          userId,
+          file: new Blob([file], { type: file.type }),
+          uploadName,
+        });
+      }
+    } catch (error) {
+      return HttpResponse.json({ message: '프로필 이미지 저장 중 오류가 발생했습니다.' }, { status: 500 });
     }
 
     return HttpResponse.json(null, { status: 200 });
