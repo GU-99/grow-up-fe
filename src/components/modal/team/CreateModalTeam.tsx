@@ -24,7 +24,7 @@ export default function CreateModalTeam({ onClose: handleClose }: CreateModalPro
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalTeamForm formId={createTeamFormId} onSubmit={handleSubmit} />
-        <ModalButton formId={createTeamFormId} backgroundColor="bg-main">
+        <ModalButton formId={createTeamFormId} color="text-white" backgroundColor="bg-main">
           등록
         </ModalButton>
       </ModalLayout>

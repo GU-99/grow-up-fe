@@ -27,7 +27,12 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalProjectForm formId={updateProjectFormId} projectId={projectId} onSubmit={handleSubmit} />
-        <ModalButton formId={updateProjectFormId} backgroundColor="bg-main" onClick={handleUpdateClick}>
+        <ModalButton
+          formId={updateProjectFormId}
+          color="text-white"
+          backgroundColor="bg-main"
+          onClick={handleUpdateClick}
+        >
           수정
         </ModalButton>
       </ModalLayout>

@@ -61,10 +61,10 @@ export default function UpdateModalProjectStatus({
               onSubmit={handleSubmit}
             />
             <div className="flex min-h-25 w-4/5 gap-10">
-              <ModalButton formId={updateStatusFormId} backgroundColor="bg-main">
+              <ModalButton formId={updateStatusFormId} color="text-white" backgroundColor="bg-main">
                 수정
               </ModalButton>
-              <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(statusId)}>
+              <ModalButton color="text-white" backgroundColor="bg-delete" onClick={() => handleDeleteClick(statusId)}>
                 삭제
               </ModalButton>
             </div>

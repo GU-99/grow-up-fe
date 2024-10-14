@@ -22,7 +22,7 @@ export default function CreateModalProject({ onClose: handleClose }: CreateModal
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalProjectForm formId={createProjectFormId} onSubmit={handleSubmit} />
-        <ModalButton formId={createProjectFormId} backgroundColor="bg-main">
+        <ModalButton formId={createProjectFormId} color="text-white" backgroundColor="bg-main">
           등록
         </ModalButton>
       </ModalLayout>
