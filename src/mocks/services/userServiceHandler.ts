@@ -4,7 +4,7 @@ import { NICKNAME_REGEX } from '@constants/regex';
 import { convertTokenToUserId } from '@utils/converter';
 import type { Team } from '@/types/TeamType';
 import type { Role } from '@/types/RoleType';
-import type { EditUserInfoForm, User } from '@/types/UserType';
+import type { EditUserInfoForm, EditUserLinksForm, User } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -50,6 +50,35 @@ const userServiceHandler = [
     };
 
     return HttpResponse.json(userInfo, { status: 200 });
+  }),
+  // 링크 변경 API
+  http.patch(`${BASE_URL}/user/links`, async ({ request }) => {
+    const accessToken = request.headers.get('Authorization');
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const { links } = (await request.json()) as EditUserLinksForm;
+
+    let userId;
+    // ToDo: 추후 삭제
+    if (accessToken === JWT_TOKEN_DUMMY) {
+      const payload = JWT_TOKEN_DUMMY.split('.')[1];
+      userId = Number(payload.replace('mocked-payload-', ''));
+    } else {
+      // 토큰에서 userId 추출
+      userId = convertTokenToUserId(accessToken);
+    }
+
+    const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
+
+    if (userIndex === -1) {
+      return HttpResponse.json(
+        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+    USER_DUMMY[userIndex].links = links;
+
+    return HttpResponse.json(null, { status: 200 });
   }),
   // 유저 검색 API
   http.get(`${BASE_URL}/user/search`, ({ request }) => {
