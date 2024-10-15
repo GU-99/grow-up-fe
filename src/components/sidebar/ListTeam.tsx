@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { IoIosSettings } from 'react-icons/io';
-import UpdateModalTeam from '@components/modal/team/UpdateModalTeam'; // Import the UpdateModalTeam component
+import UpdateModalTeam from '@components/modal/team/UpdateModalTeam';
 import useModal from '@hooks/useModal';
 import type { Team } from '@/types/TeamType';
 
@@ -37,7 +37,7 @@ export default function ListTeam({ data, targetId }: ListTeamProps) {
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleOpenUpdateModal(team.teamId); // Open the update modal with the selected team ID
+                  handleOpenUpdateModal(team.teamId);
                 }}
               >
                 <IoIosSettings size={20} />

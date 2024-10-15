@@ -3,16 +3,14 @@ import ListSidebar from '@components/sidebar/ListSidebar';
 import ListTeam from '@components/sidebar/ListTeam';
 import CreateModalTeam from '@components/modal/team/CreateModalTeam';
 import useModal from '@hooks/useModal';
-import { TEAM_DUMMY } from '@mocks/mockData';
 import { useMemo } from 'react';
-import { Team } from '@/types/TeamType';
+import { useReadTeams } from '@hooks/query/useTeamQuery';
 
 export default function TeamLayout() {
   const { showModal: showTeamModal, openModal: openTeamModal, closeModal: closeTeamModal } = useModal();
   const location = useLocation();
   const { teamId } = useParams();
-  // TODO: 내가 가입된 팀만 가져오기
-  const teamData: Team[] = TEAM_DUMMY;
+  const { joinedTeamList: teamData } = useReadTeams();
   const selectedTeam = useMemo(() => teamData.find((team) => team.teamId.toString() === teamId), [teamId, teamData]);
   const hasProjectRoute = location.pathname.split('/').includes('projects');
 
@@ -24,7 +22,7 @@ export default function TeamLayout() {
     <>
       <section className="flex h-full gap-10 p-15">
         <ListSidebar title="팀 목록" showButton text="팀 생성" onClick={openTeamModal}>
-          <ListTeam data={TEAM_DUMMY} targetId={teamId} />
+          <ListTeam data={teamData} targetId={teamId} />
         </ListSidebar>
         <section className="flex grow flex-col border border-list bg-contents-box">
           {teamData.length === 0 ? (
