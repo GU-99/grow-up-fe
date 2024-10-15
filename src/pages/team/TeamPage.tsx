@@ -28,7 +28,7 @@ export default function TeamPage() {
     if (team) {
       setTeamName(team.teamName);
     }
-  }, [teamId, teamProjects]);
+  }, [teamId]);
 
   const handleOpenUpdateModal = (projectId: Project['projectId']) => {
     setSelectedProjectId(projectId);

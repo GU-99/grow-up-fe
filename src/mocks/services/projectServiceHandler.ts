@@ -73,9 +73,13 @@ const projectServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const { projectId } = params;
 
-    if (!accessToken) return new HttpResponse(null, { status: 403 });
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const projectIdToDelete = Number(projectId);
+
+    const statusIdsToDelete = STATUS_DUMMY.filter((status) => status.projectId === projectIdToDelete).map(
+      (status) => status.statusId,
+    );
 
     const filteredProjects = PROJECT_DUMMY.filter((project) => project.projectId !== projectIdToDelete);
     PROJECT_DUMMY.length = 0;
@@ -90,9 +94,6 @@ const projectServiceHandler = [
     const filteredStatuses = STATUS_DUMMY.filter((status) => status.projectId !== projectIdToDelete);
     STATUS_DUMMY.length = 0;
     STATUS_DUMMY.push(...filteredStatuses);
-    const statusIdsToDelete = STATUS_DUMMY.filter((status) => status.projectId === projectIdToDelete).map(
-      (status) => status.statusId,
-    );
 
     const filteredTasks = TASK_DUMMY.filter((task) => !statusIdsToDelete.includes(task.statusId));
     TASK_DUMMY.length = 0;
@@ -100,14 +101,14 @@ const projectServiceHandler = [
 
     const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => {
       const taskExists = TASK_DUMMY.some((task) => task.taskId === taskUser.taskId);
-      return !taskExists;
+      return taskExists;
     });
     TASK_USER_DUMMY.length = 0;
     TASK_USER_DUMMY.push(...filteredTaskUsers);
 
     const filteredTaskFiles = TASK_FILE_DUMMY.filter((taskFile) => {
       const taskExists = TASK_DUMMY.some((task) => task.taskId === taskFile.taskId);
-      return !taskExists;
+      return taskExists;
     });
     TASK_FILE_DUMMY.length = 0;
     TASK_FILE_DUMMY.push(...filteredTaskFiles);
