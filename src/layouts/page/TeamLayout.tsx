@@ -5,17 +5,17 @@ import CreateModalTeam from '@components/modal/team/CreateModalTeam';
 import useModal from '@hooks/useModal';
 import { useMemo } from 'react';
 import { useReadTeams } from '@hooks/query/useTeamQuery';
-import Spinner from '@/components/common/Spinner';
+import Spinner from '@components/common/Spinner';
 
 export default function TeamLayout() {
   const { showModal: showTeamModal, openModal: openTeamModal, closeModal: closeTeamModal } = useModal();
   const location = useLocation();
   const { teamId } = useParams();
-  const { joinedTeamList: teamData, isLoading } = useReadTeams();
+  const { joinedTeamList: teamData, isLoading: isTeamLoading } = useReadTeams();
   const selectedTeam = useMemo(() => teamData.find((team) => team.teamId.toString() === teamId), [teamId, teamData]);
   const hasProjectRoute = location.pathname.split('/').includes('projects');
 
-  if (isLoading) {
+  if (isTeamLoading) {
     return <Spinner />;
   }
 

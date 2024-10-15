@@ -66,8 +66,8 @@ export async function getProjectUserRoleList(projectId: Project['projectId'], ax
  * @async
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<void>>}
+ * @returns {Promise<void>}
  */
 export async function deleteProject(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.delete<AxiosResponse<void>>(`/project/${projectId}`, axiosConfig);
+  return authAxios.delete<void>(`/project/${projectId}`, axiosConfig);
 }

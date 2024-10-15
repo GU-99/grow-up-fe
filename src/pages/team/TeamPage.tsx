@@ -19,7 +19,7 @@ export default function TeamPage() {
   const { joinedTeamList, isLoading } = useReadTeams();
   const [selectedProjectId, setSelectedProjectId] = useState<Project['projectId'] | null>(null);
 
-  const { mutate: deleteProject } = useDeleteProject(Number(teamId));
+  const { mutate: deleteProjectMutate } = useDeleteProject(Number(teamId));
 
   const team = joinedTeamList.find((team) => team.teamId.toString() === teamId);
   const teamName = team ? team.teamName : '';
@@ -31,7 +31,7 @@ export default function TeamPage() {
 
   const handleDeleteClick = (e: React.MouseEvent, projectId: Project['projectId']) => {
     e.preventDefault();
-    deleteProject(projectId);
+    deleteProjectMutate(projectId);
   };
 
   if (isProjectLoading || isLoading) {

@@ -4,9 +4,9 @@ import ModalButton from '@components/modal/ModalButton';
 import ModalProjectStatusForm from '@components/modal/project-status/ModalProjectStatusForm';
 
 import type { SubmitHandler } from 'react-hook-form';
+import { useCreateStatus } from '@hooks/query/useStatusQuery';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatusForm } from '@/types/ProjectStatusType';
-import { useCreateStatus } from '@/hooks/query/useStatusQuery';
 
 type CreateModalProjectStatusProps = {
   project: Project;

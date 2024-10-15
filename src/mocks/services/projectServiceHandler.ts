@@ -68,6 +68,7 @@ const projectServiceHandler = [
 
     return HttpResponse.json(userRoleList);
   }),
+
   // 프로젝트 삭제 API
   http.delete(`${BASE_URL}/project/:projectId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
@@ -82,36 +83,48 @@ const projectServiceHandler = [
     );
 
     const filteredProjects = PROJECT_DUMMY.filter((project) => project.projectId !== projectIdToDelete);
-    PROJECT_DUMMY.length = 0;
-    PROJECT_DUMMY.push(...filteredProjects);
+    if (PROJECT_DUMMY.length !== filteredProjects.length) {
+      PROJECT_DUMMY.length = 0;
+      PROJECT_DUMMY.push(...filteredProjects);
+    }
 
     const filteredProjectUsers = PROJECT_USER_DUMMY.filter(
       (projectUser) => projectUser.projectId !== projectIdToDelete,
     );
-    PROJECT_USER_DUMMY.length = 0;
-    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+    if (PROJECT_USER_DUMMY.length !== filteredProjectUsers.length) {
+      PROJECT_USER_DUMMY.length = 0;
+      PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+    }
 
     const filteredStatuses = STATUS_DUMMY.filter((status) => status.projectId !== projectIdToDelete);
-    STATUS_DUMMY.length = 0;
-    STATUS_DUMMY.push(...filteredStatuses);
+    if (STATUS_DUMMY.length !== filteredStatuses.length) {
+      STATUS_DUMMY.length = 0;
+      STATUS_DUMMY.push(...filteredStatuses);
+    }
 
     const filteredTasks = TASK_DUMMY.filter((task) => !statusIdsToDelete.includes(task.statusId));
-    TASK_DUMMY.length = 0;
-    TASK_DUMMY.push(...filteredTasks);
+    if (TASK_DUMMY.length !== filteredTasks.length) {
+      TASK_DUMMY.length = 0;
+      TASK_DUMMY.push(...filteredTasks);
+    }
 
     const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => {
       const taskExists = TASK_DUMMY.some((task) => task.taskId === taskUser.taskId);
       return taskExists;
     });
-    TASK_USER_DUMMY.length = 0;
-    TASK_USER_DUMMY.push(...filteredTaskUsers);
+    if (TASK_USER_DUMMY.length !== filteredTaskUsers.length) {
+      TASK_USER_DUMMY.length = 0;
+      TASK_USER_DUMMY.push(...filteredTaskUsers);
+    }
 
     const filteredTaskFiles = TASK_FILE_DUMMY.filter((taskFile) => {
       const taskExists = TASK_DUMMY.some((task) => task.taskId === taskFile.taskId);
       return taskExists;
     });
-    TASK_FILE_DUMMY.length = 0;
-    TASK_FILE_DUMMY.push(...filteredTaskFiles);
+    if (TASK_FILE_DUMMY.length !== filteredTaskFiles.length) {
+      TASK_FILE_DUMMY.length = 0;
+      TASK_FILE_DUMMY.push(...filteredTaskFiles);
+    }
 
     return new HttpResponse(null, { status: 204 });
   }),
