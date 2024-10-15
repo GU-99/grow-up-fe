@@ -39,6 +39,12 @@ type FileInfo = {
   uploadName: string;
 };
 
+type ImageInfo = {
+  userId: number;
+  file: Blob;
+  uploadName: string;
+};
+
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const VERIFICATION_CODE_DUMMY = '1234';
@@ -839,20 +845,4 @@ export const FILE_DUMMY: FileInfo[] = [
 ];
 
 // MSW 프로필 이미지 임시 저장을 위한 변수
-export const PROFILE_IMAGE_DUMMY = [
-  {
-    userId: 1,
-    file: new Blob([], { type: 'image/jpeg' }),
-    uploadName: 'PROFILE_IMAGE_UUID_1.jpg',
-  },
-  {
-    userId: 2,
-    file: new Blob([], { type: 'image/jpeg' }),
-    uploadName: 'PROFILE_IMAGE_UUID_2.jpg',
-  },
-  {
-    userId: 3,
-    file: new Blob([], { type: 'image/png' }),
-    uploadName: 'PROFILE_IMAGE_UUID_3.jpg',
-  },
-];
+export const PROFILE_IMAGE_DUMMY: ImageInfo[] = [];

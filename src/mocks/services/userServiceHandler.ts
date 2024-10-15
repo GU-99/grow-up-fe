@@ -37,7 +37,7 @@ const userServiceHandler = [
 
     const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
 
-    if (!userId || userIndex === -1) {
+    if (userIndex === -1) {
       return HttpResponse.json(
         { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
         { status: 401 },
@@ -125,19 +125,15 @@ const userServiceHandler = [
     USER_DUMMY[userIndex].profileImageName = uploadName;
 
     // 프로필 이미지 더미 데이터 추가
-    try {
-      const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
-      if (profileImageIndex !== -1) {
-        PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = uploadName;
-      } else {
-        PROFILE_IMAGE_DUMMY.push({
-          userId,
-          file: new Blob([file], { type: file.type }),
-          uploadName,
-        });
-      }
-    } catch (error) {
-      return HttpResponse.json({ message: '프로필 이미지 저장 중 오류가 발생했습니다.' }, { status: 500 });
+    const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
+    if (profileImageIndex !== -1) {
+      PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = uploadName;
+    } else {
+      PROFILE_IMAGE_DUMMY.push({
+        userId,
+        file: new Blob([file], { type: file.type }),
+        uploadName,
+      });
     }
 
     return HttpResponse.json(null, { status: 200 });

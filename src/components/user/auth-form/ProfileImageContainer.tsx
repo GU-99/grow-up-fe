@@ -15,7 +15,7 @@ type ProfileImageContainerProps = {
 
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
   const { toastWarn } = useToast();
-  const { mutate: uploadImage } = useUploadProfileImage();
+  const { mutate: uploadImageMutate } = useUploadProfileImage();
   const { editUserInfo } = useStore();
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
       return toastWarn(`${IMG_EXTENSIONS.join(', ')} 형식의 이미지 파일만 업로드 가능합니다.`);
     }
 
-    uploadImage({ file });
+    uploadImageMutate({ file });
 
     const localImageUrl = URL.createObjectURL(file);
     setImageUrl(localImageUrl);
