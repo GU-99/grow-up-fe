@@ -1,6 +1,6 @@
 import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
-import type { EditUserInfoRequest, EditUserInfoResponse, SearchUser } from '@/types/UserType';
+import type { EditUserInfoRequest, EditUserInfoResponse, EditUserLinksForm, SearchUser } from '@/types/UserType';
 import type { TeamListWithApproval } from '@/types/TeamType';
 
 /**
@@ -14,6 +14,19 @@ import type { TeamListWithApproval } from '@/types/TeamType';
  */
 export async function updateUserInfo(userInfoForm: EditUserInfoRequest, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.patch<EditUserInfoResponse>('/user', userInfoForm, axiosConfig);
+}
+
+/**
+ * 링크 변경 API
+ *
+ * @export
+ * @async
+ * @param {EditUserLinksForm} links - 링크 리스트
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse>}
+ */
+export async function updateLinks(links: EditUserLinksForm, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.patch('/user/links', links, axiosConfig);
 }
 
 /**

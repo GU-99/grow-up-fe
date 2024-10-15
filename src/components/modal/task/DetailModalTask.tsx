@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { LuDownload } from 'react-icons/lu';
 import ModalPortal from '@components/modal/ModalPortal';
 import ModalLayout from '@layouts/ModalLayout';
@@ -10,31 +9,38 @@ import { downloadTaskFile } from '@services/taskService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
-import { useDeleteTask, useReadAssignees, useReadTaskFiles } from '@hooks/query/useTaskQuery';
+import { useDeleteTask, useReadAssignees, useReadStatusTasks, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 
 import type { Task } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
+import type { ProjectStatus } from '@/types/ProjectStatusType';
 
 type ViewModalTaskProps = {
-  project: Project;
-  task: Task;
+  projectId: Project['projectId'];
+  statusId: ProjectStatus['statusId'];
+  taskId: Task['taskId'];
   openUpdateModal: () => void;
   onClose: () => void;
 };
 
-export default function DetailModalTask({ project, task, openUpdateModal, onClose: handleClose }: ViewModalTaskProps) {
-  const { mutate: deleteTaskMutate } = useDeleteTask(project.projectId);
-  const { status, isStatusLoading } = useReadStatuses(project.projectId, task.statusId);
-  const { assigneeList, isAssigneeLoading } = useReadAssignees(project.projectId, task.taskId);
-  const { taskFileList, isTaskFileLoading } = useReadTaskFiles(project.projectId, task.taskId);
+export default function DetailModalTask({
+  projectId,
+  statusId,
+  taskId,
+  openUpdateModal,
+  onClose: handleClose,
+}: ViewModalTaskProps) {
+  const { mutate: deleteTaskMutate } = useDeleteTask(projectId);
+  const { status, isStatusLoading } = useReadStatuses(projectId, statusId);
+  const { task, isTaskLoading } = useReadStatusTasks(projectId, taskId);
+  const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
+  const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
   const { fetchData } = useAxios(downloadTaskFile);
   const { toastError } = useToast();
 
-  const { taskName, startDate, endDate } = task;
-  const period = useMemo(
-    () => (endDate && startDate !== endDate ? `${startDate} - ${endDate}` : startDate),
-    [startDate, endDate],
-  );
+  const getTaskPeriod = ({ startDate, endDate }: Task) => {
+    return endDate && startDate !== endDate ? `${startDate} - ${endDate}` : startDate;
+  };
 
   const handleUpdateClick = () => {
     openUpdateModal();
@@ -45,7 +51,7 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
   const handleDeleteClick = (taskId: Task['taskId']) => deleteTaskMutate(taskId);
 
   const handleDownloadClick = async (originName: string, uploadName: string) => {
-    const response = await fetchData(project.projectId, task.taskId, uploadName);
+    const response = await fetchData(projectId, taskId, uploadName);
     if (response == null) return toastError('파일 다운로드 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
 
     const blob = new Blob([response.data], { type: response.headers['content-type'] });
@@ -64,7 +70,7 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {isStatusLoading || isAssigneeLoading || isTaskFileLoading ? (
+        {isStatusLoading || isTaskLoading || isAssigneeLoading || isTaskFileLoading || !task ? (
           <Spinner />
         ) : (
           <article className="flex h-full flex-col justify-center gap-20">
@@ -77,11 +83,11 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">일정명</h2>
-                <span>{taskName}</span>
+                <span>{task.taskName}</span>
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">기간</h2>
-                <span>{period}</span>
+                <span>{getTaskPeriod(task)}</span>
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">수행자</h2>
@@ -103,15 +109,15 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
                   <h2 className="my-5 text-large font-bold">파일 다운로드</h2>
                   <ul className="flex flex-wrap gap-5">
                     {taskFileList.map(({ fileId, fileName, uploadName }) => (
-                      <li
-                        key={fileId}
-                        className="flex cursor-pointer items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
-                        aria-label="file download"
-                      >
-                        <button type="button" onClick={() => handleDownloadClick(fileName, uploadName)}>
-                          {fileName}
+                      <li key={fileId} aria-label="file download">
+                        <button
+                          type="button"
+                          className="flex select-none items-center gap-5 rounded-md bg-button px-4 py-2 hover:bg-sub"
+                          onClick={() => handleDownloadClick(fileName, uploadName)}
+                        >
+                          <span>{fileName}</span>
+                          <LuDownload />
                         </button>
-                        <LuDownload />
                       </li>
                     ))}
                   </ul>
@@ -119,10 +125,10 @@ export default function DetailModalTask({ project, task, openUpdateModal, onClos
               )}
             </section>
             <div className="flex min-h-25 gap-10">
-              <ModalButton backgroundColor="bg-main" onClick={handleUpdateClick}>
+              <ModalButton color="text-white" backgroundColor="bg-main" onClick={handleUpdateClick}>
                 수정
               </ModalButton>
-              <ModalButton backgroundColor="bg-delete" onClick={() => handleDeleteClick(task.taskId)}>
+              <ModalButton color="text-white" backgroundColor="bg-delete" onClick={() => handleDeleteClick(taskId)}>
                 삭제
               </ModalButton>
             </div>

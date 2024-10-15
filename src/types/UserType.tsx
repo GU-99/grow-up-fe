@@ -26,6 +26,7 @@ export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 export type EditUserInfoForm = Omit<User, 'userId' | 'provider' | 'links'>;
 export type EditUserInfoResponse = Pick<User, 'userId' | 'nickname' | 'bio'>;
 export type EditUserInfoRequest = Omit<EditUserInfoResponse, 'userId'>;
+export type EditUserLinksForm = Pick<User, 'links'>;
 
 export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageName'> & {
   verificationCode: string;

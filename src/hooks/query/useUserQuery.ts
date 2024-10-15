@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
-import { updateUserInfo, uploadProfileImage } from '@services/userService';
+import { updateLinks, updateUserInfo, uploadProfileImage } from '@services/userService';
 import useStore from '@stores/useStore';
-import { generateProfileFileQueryKey, generateUserInfoQueryKey } from '@utils/queryKeyGenerator';
-import type { EditUserInfoRequest } from '@/types/UserType';
+import { generateLinksQueryKey, generateProfileFileQueryKey, generateUserInfoQueryKey } from '@utils/queryKeyGenerator';
+import type { EditUserInfoRequest, EditUserLinksForm } from '@/types/UserType';
 
 export function useUpdateUserInfo() {
   const queryClient = useQueryClient();
@@ -37,6 +37,24 @@ export function useUploadProfileImage() {
     onSuccess: () => {
       toastSuccess('이미지가 업로드되었습니다.');
       queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+export function useUpdateLinks() {
+  const { userInfo } = useStore();
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const linksQueryKey = generateLinksQueryKey(userInfo.userId);
+
+  const mutation = useMutation({
+    mutationFn: (data: EditUserLinksForm) => updateLinks(data),
+    onError: () => toastError('링크 수정에 실패했습니다. 다시 시도해 주세요.'),
+    onSuccess: () => {
+      toastSuccess('링크가 수정되었습니다.');
+      queryClient.invalidateQueries({ queryKey: linksQueryKey });
     },
   });
 

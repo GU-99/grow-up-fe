@@ -118,7 +118,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
           </form>
         </FormProvider>
 
-        <ModalButton formId={updateTeamFormId} backgroundColor="bg-main">
+        <ModalButton formId={updateTeamFormId} color="text-white" backgroundColor="bg-main">
           수정
         </ModalButton>
 

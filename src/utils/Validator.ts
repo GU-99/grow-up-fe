@@ -16,15 +16,16 @@ export default class Validator {
   }
 
   public static isWithinDateRange(start: Date | string, end: Date | string, target: Date | string) {
-    const startDate = DateTime.fromJSDate(new Date(start));
-    const endDate = DateTime.fromJSDate(new Date(end));
-    const targetDate = DateTime.fromJSDate(new Date(target));
+    const startDate = DateTime.fromJSDate(new Date(start)).startOf('day');
+    const endDate = DateTime.fromJSDate(new Date(end)).startOf('day');
+    const targetDate = DateTime.fromJSDate(new Date(target)).startOf('day');
     return targetDate >= startDate && targetDate < endDate;
   }
 
   public static isEarlierStartDate(start: Date | string, end: Date | string) {
-    const startDate = DateTime.fromJSDate(new Date(start));
-    const endDate = DateTime.fromJSDate(new Date(end));
+    const startDate = DateTime.fromJSDate(new Date(start)).startOf('day');
+    const endDate = DateTime.fromJSDate(new Date(end)).startOf('day');
+    console.log(startDate.toISODate(), endDate.toISODate());
     return startDate <= endDate;
   }
 

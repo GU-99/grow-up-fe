@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DateTime, Settings } from 'luxon';
 import { Calendar, luxonLocalizer, Views } from 'react-big-calendar';
+import Spinner from '@components/common/Spinner';
 import DetailModalTask from '@components/modal/task/DetailModalTask';
 import UpdateModalTask from '@components/modal/task/UpdateModalTask';
 import CalendarToolbar from '@components/task/calendar/CalendarToolbar';
@@ -33,24 +34,25 @@ function getCalendarTask(statusTasks: TaskListWithStatus[]) {
 const dt = DateTime.local();
 Settings.defaultZone = dt.zoneName;
 const localizer = luxonLocalizer(DateTime, { firstDayOfWeek: 7 });
+const initialTask = { taskId: 0, statusId: 0, taskName: '', content: '', startDate: '', endDate: '', sortOrder: 0 };
 
-// ToDo: Loading시 infinite spinner UI 보이도록 변경할 것
 // ToDo: Error 발생시 처리 추가할 것
 export default function CalendarPage() {
-  const [selectedTask, setSelectedTask] = useState<Task>({
-    taskId: 0,
-    statusId: 0,
-    taskName: '',
-    content: '',
-    startDate: '',
-    endDate: '',
-    sortOrder: 0,
-  });
+  const [selectedTask, setSelectedTask] = useState<Task>(initialTask);
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
   const { project } = useProjectContext();
   const { statusTaskList, isTaskLoading, isTaskError, taskError } = useReadStatusTasks(project.projectId);
   const { showModal: showDetailModal, openModal: openDetailModal, closeModal: closeDetailModal } = useModal();
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
+
+  // 일정 정보 수정시 데이터 동기화를 위한 처리
+  useEffect(() => {
+    const statusTask = getCalendarTask(statusTaskList).find((task) => task.taskId === selectedTask.taskId);
+    if (statusTask) {
+      const { taskId, statusId, taskName, content, startDate, endDate, sortOrder } = statusTask;
+      setSelectedTask({ taskId, statusId, taskName, content, startDate, endDate, sortOrder });
+    }
+  }, [statusTaskList, selectedTask.taskId]);
 
   const handleNavigate = useCallback((newDate: Date) => setDate(newDate), [setDate]);
 
@@ -90,55 +92,69 @@ export default function CalendarPage() {
     [],
   );
 
-  const events: CustomEvent[] = getCalendarTask(statusTaskList)
-    .map((task) => ({
-      title: task.taskName,
-      start: new Date(task.startDate),
-      end: new Date(task.endDate),
-      allDay: true,
-      task: { ...task },
-    }))
-    .sort((a, b) => a.start.getTime() - b.start.getTime());
+  const events: CustomEvent[] = useMemo(() => {
+    return getCalendarTask(statusTaskList)
+      .map((task) => ({
+        title: task.taskName,
+        start: new Date(task.startDate),
+        end: new Date(task.endDate),
+        allDay: true,
+        task: { ...task },
+      }))
+      .sort((a, b) => a.start.getTime() - b.start.getTime());
+  }, [statusTaskList]);
   const startDate = events.length && events[0].start ? events[0].start : null;
 
   // ToDo: DnD, Resize 이벤트 추가 생각해보기
-  // ToDo: 할일 추가 모달 Form 작업 완료시 모달 컴포넌트 분리
-  // ToDo: 캘린더 크기 전체적으로 조정
   // ToDo: 코드 리팩토링
   return (
     <div className="flex h-full min-h-375 w-full min-w-260 flex-col">
-      <CalendarToolbar date={date} startDate={startDate} onClick={handleNavigate} />
-      <Calendar
-        toolbar={false}
-        localizer={localizer}
-        defaultView="month"
-        date={date}
-        onNavigate={handleNavigate}
-        drilldownView={null}
-        views={views}
-        events={events}
-        components={customComponents}
-        titleAccessor="title"
-        startAccessor="start"
-        endAccessor="end"
-        allDayAccessor="allDay"
-        popup
-        showAllEvents={false}
-        dayPropGetter={handleDayPropGetter}
-        eventPropGetter={handleEventPropGetter}
-        selectable
-        onSelectSlot={handleSelectSlot}
-        onSelectEvent={handleSelectEvent}
-      />
-      {showDetailModal && (
-        <DetailModalTask
-          project={project}
-          task={selectedTask}
-          openUpdateModal={openUpdateModal}
-          onClose={closeDetailModal}
-        />
+      {isTaskLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          <CalendarToolbar date={date} startDate={startDate} onClick={handleNavigate} />
+          <Calendar
+            toolbar={false}
+            localizer={localizer}
+            defaultView="month"
+            date={date}
+            onNavigate={handleNavigate}
+            drilldownView={null}
+            views={views}
+            events={events}
+            components={customComponents}
+            titleAccessor="title"
+            startAccessor="start"
+            endAccessor="end"
+            allDayAccessor="allDay"
+            popup
+            showAllEvents={false}
+            dayPropGetter={handleDayPropGetter}
+            eventPropGetter={handleEventPropGetter}
+            selectable
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={handleSelectEvent}
+          />
+          {showDetailModal && (
+            <DetailModalTask
+              projectId={project.projectId}
+              statusId={selectedTask.statusId}
+              taskId={selectedTask.taskId}
+              openUpdateModal={openUpdateModal}
+              onClose={closeDetailModal}
+            />
+          )}
+          {showUpdateModal && (
+            <UpdateModalTask
+              project={project}
+              taskId={selectedTask.taskId}
+              openDetailModal={openDetailModal}
+              onClose={closeUpdateModal}
+            />
+          )}
+        </>
       )}
-      {showUpdateModal && <UpdateModalTask project={project} taskId={selectedTask.taskId} onClose={closeUpdateModal} />}
     </div>
   );
 }
