@@ -27,7 +27,7 @@ export default function TeamPage() {
   };
 
   if (isProjectLoading) {
-    <Spinner />;
+    return <Spinner />;
   }
 
   return (
