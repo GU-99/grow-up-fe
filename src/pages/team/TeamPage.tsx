@@ -1,34 +1,28 @@
 import { IoIosSettings } from 'react-icons/io';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { useParams, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { PROJECT_DUMMY, TEAM_DUMMY } from '@mocks/mockData';
+import { useState } from 'react';
 import CreateModalProject from '@components/modal/project/CreateModalProject';
 import useModal from '@hooks/useModal';
 import UpdateModalProject from '@components/modal/project/UpdateModalProject';
-import { useDeleteProject } from '@hooks/query/useProjectQuery';
+import { useReadProjects, useDeleteProject } from '@hooks/query/useProjectQuery';
+import Spinner from '@components/common/Spinner';
+import { useReadTeams } from '@hooks/query/useTeamQuery';
+
 import type { Project } from '@/types/ProjectType';
 
 export default function TeamPage() {
   const { showModal: showProjectModal, openModal: openProjectModal, closeModal: closeProjectModal } = useModal();
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
   const { teamId } = useParams();
-  const [teamProjects, setTeamProjects] = useState<Project[]>([]);
-  const [teamName, setTeamName] = useState<string>('');
+  const { projectList: teamProjects, isProjectLoading } = useReadProjects(Number(teamId));
+  const { joinedTeamList, isLoading } = useReadTeams();
   const [selectedProjectId, setSelectedProjectId] = useState<Project['projectId'] | null>(null);
 
   const { mutate: deleteProject } = useDeleteProject(Number(teamId));
 
-  // ToDo:  react-query로 대체
-  useEffect(() => {
-    const projects = PROJECT_DUMMY.filter((project) => project.teamId.toString() === teamId);
-    setTeamProjects(projects);
-
-    const team = TEAM_DUMMY.find((team) => team.teamId.toString() === teamId);
-    if (team) {
-      setTeamName(team.teamName);
-    }
-  }, [teamId]);
+  const team = joinedTeamList.find((team) => team.teamId.toString() === teamId);
+  const teamName = team ? team.teamName : '';
 
   const handleOpenUpdateModal = (projectId: Project['projectId']) => {
     setSelectedProjectId(projectId);
@@ -39,6 +33,10 @@ export default function TeamPage() {
     e.preventDefault();
     deleteProject(projectId);
   };
+
+  if (isProjectLoading || isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <section className="flex h-full flex-col">

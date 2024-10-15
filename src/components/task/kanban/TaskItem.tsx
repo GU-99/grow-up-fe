@@ -14,12 +14,13 @@ type TaskItemProps = {
   colorCode: ProjectStatus['colorCode'];
 };
 
+// ToDo: React Reparenting 관련된 문제가 있음.
 export default function TaskItem({ task, colorCode }: TaskItemProps) {
   const { project } = useProjectContext();
   const { showModal: showDetailModal, openModal: openDetailModal, closeModal: closeDetailModal } = useModal();
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
-  const { taskId, taskName, sortOrder } = task;
+  const { taskId, statusId, taskName, sortOrder } = task;
   const index = useMemo(() => sortOrder - 1, [sortOrder]);
   const draggableId = useMemo(() => generatePrefixId(taskId, DND_DRAGGABLE_PREFIX.TASK), [taskId]);
 
@@ -45,9 +46,22 @@ export default function TaskItem({ task, colorCode }: TaskItemProps) {
         )}
       </Draggable>
       {showDetailModal && (
-        <DetailModalTask project={project} task={task} openUpdateModal={openUpdateModal} onClose={closeDetailModal} />
+        <DetailModalTask
+          projectId={project.projectId}
+          statusId={statusId}
+          taskId={taskId}
+          openUpdateModal={openUpdateModal}
+          onClose={closeDetailModal}
+        />
       )}
-      {showUpdateModal && <UpdateModalTask project={project} taskId={task.taskId} onClose={closeUpdateModal} />}
+      {showUpdateModal && (
+        <UpdateModalTask
+          project={project}
+          taskId={taskId}
+          openDetailModal={openDetailModal}
+          onClose={closeUpdateModal}
+        />
+      )}
     </>
   );
 }

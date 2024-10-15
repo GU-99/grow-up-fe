@@ -33,7 +33,17 @@ export async function findUserByProject(
  * @returns {Promise<AxiosResponse<Project[]>>}
  */
 export async function getProjectList(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get<Project[]>(`/team/${teamId}/project`, axiosConfig);
+  return authAxios.get<Project[]>(`/team/${teamId}/project`, {
+    transformResponse: (data) => {
+      const parsedData: Project[] = JSON.parse(data);
+      return parsedData.map((data) => {
+        data.startDate = data.startDate && new Date(data.startDate);
+        data.endDate = data.endDate && new Date(data.endDate);
+        return data;
+      });
+    },
+    ...axiosConfig,
+  });
 }
 
 /**

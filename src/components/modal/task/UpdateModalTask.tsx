@@ -38,12 +38,18 @@ import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
 type UpdateModalTaskProps = {
   project: Project;
   taskId: Task['taskId'];
+  openDetailModal: () => void;
   onClose: () => void;
 };
 
-export default function UpdateModalTask({ project, taskId, onClose: handleClose }: UpdateModalTaskProps) {
+export default function UpdateModalTask({
+  project,
+  taskId,
+  openDetailModal,
+  onClose: handleClose,
+}: UpdateModalTaskProps) {
   const updateTaskFormId = 'updateTaskForm';
-  const { projectId, startDate, endDate } = project;
+  const { projectId, startDate: projectStartDate, endDate: projectEndDate } = project;
 
   const [keyword, setKeyword] = useState('');
   const { toastInfo, toastWarn } = useToast();
@@ -126,10 +132,13 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
     return <Spinner />;
   }
 
-  const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => {
-    updateTaskInfoMutate(formData);
+  const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => updateTaskInfoMutate(formData);
+
+  const handleDetailClick = () => {
+    openDetailModal();
     handleClose();
   };
+
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
@@ -155,20 +164,20 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
                 />
 
                 <PeriodDateInput
-                  startDateLabel="시작일"
-                  endDateLabel="종료일"
                   startDateId="startDate"
                   endDateId="endDate"
-                  startDate={startDate}
-                  endDate={endDate}
+                  startDateLabel="시작일"
+                  endDateLabel="종료일"
                   startDateFieldName="startDate"
                   endDateFieldName="endDate"
+                  limitStartDate={projectStartDate}
+                  limitEndDate={projectEndDate}
                 />
 
                 <MarkdownEditor id="content" label="내용" contentFieldName="content" />
               </form>
             </FormProvider>
-            <ModalButton formId={updateTaskFormId} backgroundColor="bg-main">
+            <ModalButton formId={updateTaskFormId} color="text-white" backgroundColor="bg-main">
               수정
             </ModalButton>
           </>
@@ -196,14 +205,19 @@ export default function UpdateModalTask({ project, taskId, onClose: handleClose 
         {isTaskFileLoading ? (
           <Spinner />
         ) : (
-          <FileDropZone
-            id="files"
-            label="첨부파일"
-            files={taskFileList}
-            accept={TASK_SETTINGS.FILE_ACCEPT}
-            updateFiles={updateTaskFiles}
-            onFileDeleteClick={handleFileDeleteClick}
-          />
+          <section className="space-y-20">
+            <FileDropZone
+              id="files"
+              label="첨부파일"
+              files={taskFileList}
+              accept={TASK_SETTINGS.FILE_ACCEPT}
+              updateFiles={updateTaskFiles}
+              onFileDeleteClick={handleFileDeleteClick}
+            />
+            <ModalButton color="text-emphasis" backgroundColor="bg-button" onClick={handleDetailClick}>
+              돌아가기
+            </ModalButton>
+          </section>
         )}
       </ModalLayout>
     </ModalPortal>

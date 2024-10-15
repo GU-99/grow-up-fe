@@ -182,7 +182,7 @@ export function useUpdateTaskInfo(projectId: Project['projectId'], taskId: Task[
     onError: () => toastError('일정 정보 수정에 실패했습니다. 잠시 후 다시 시도해 주세요.'),
     onSuccess: () => {
       toastSuccess('일정 정보를 수정했습니다.');
-      queryClient.invalidateQueries({ queryKey: tasksQueryKey });
+      queryClient.invalidateQueries({ queryKey: tasksQueryKey, exact: true });
     },
   });
 

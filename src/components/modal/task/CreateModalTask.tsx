@@ -48,7 +48,7 @@ export default function CreateModalTask({ project, onClose: handleClose }: Creat
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <ModalTaskForm formId={createTaskFormId} project={project} onSubmit={handleSubmit} />
-        <ModalButton formId={createTaskFormId} backgroundColor="bg-main">
+        <ModalButton formId={createTaskFormId} color="text-white" backgroundColor="bg-main">
           등록
         </ModalButton>
       </ModalLayout>
