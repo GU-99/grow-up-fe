@@ -16,7 +16,7 @@ export default function TeamPage() {
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
   const { teamId } = useParams();
   const { projectList: teamProjects, isProjectLoading } = useReadProjects(Number(teamId));
-  const { joinedTeamList, isLoading } = useReadTeams();
+  const { joinedTeamList, isLoading: isTeamLoading } = useReadTeams();
   const [selectedProjectId, setSelectedProjectId] = useState<Project['projectId'] | null>(null);
 
   const { mutate: deleteProjectMutate } = useDeleteProject(Number(teamId));
@@ -34,7 +34,7 @@ export default function TeamPage() {
     deleteProjectMutate(projectId);
   };
 
-  if (isProjectLoading || isLoading) {
+  if (isProjectLoading || isTeamLoading) {
     return <Spinner />;
   }
 
