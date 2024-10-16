@@ -21,5 +21,5 @@ export const PROJECT_ROLE_INFO: RoleInfo[] = [
     label: 'LEADER',
     description: '상태 및 일정 생성 권한\n수행자 할당 가능\n',
   },
-  { roleName: 'MATE', label: 'MATE', description: '일정 쓰기\n일정 삭제(본인 것만) ' },
+  { roleName: 'ASSIGNEE', label: 'ASSIGNEE', description: '일정 쓰기\n일정 삭제(본인 것만) ' },
 ];
