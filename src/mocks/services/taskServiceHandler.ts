@@ -30,8 +30,11 @@ import { convertTokenToUserId } from '@utils/converter';
 
 import type { UserWithRole } from '@/types/UserType';
 import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
+import { TASK_DUMMY, TASK_FILE_DUMMY } from '../mockData';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+let autoIncrementIdForTask = TASK_DUMMY.length + 1;
+let autoIncrementIdForTaskFile = TASK_FILE_DUMMY.length + 1;
 
 const taskServiceHandler = [
   // 일정 목록 조회 API
@@ -87,7 +90,7 @@ const taskServiceHandler = [
     if (!statusIds.includes(taskInfoFormStatusId)) return new HttpResponse(null, { status: 400 });
 
     // 일정 정보 추가
-    const taskId = Date.now();
+    const taskId = autoIncrementIdForTask++;
     assignees.forEach((userId) => createAssignee({ taskId, userId }));
 
     const newTask = { ...taskInfoForm, statusId: taskInfoFormStatusId, taskId };
@@ -124,7 +127,7 @@ const taskServiceHandler = [
     if (!task) return new HttpResponse(null, { status: 404 });
 
     // 일정 파일 정보 추가
-    const newFileId = Date.now();
+    const newFileId = autoIncrementIdForTaskFile++;
     const { fileName, extension } = fileNameParser(file.name);
     const uploadName = extension ? `${fileName}_${Date.now()}.${extension}` : `${fileName}_${Date.now()}`;
     createTaskFile({
@@ -206,7 +209,7 @@ const taskServiceHandler = [
       deleteTaskFileInMemory(taskId, fileId);
     } catch (error) {
       console.error((error as Error).message);
-      return new HttpResponse(null, { status: 404 });
+      return new HttpResponse(null, { status: 500 });
     }
 
     return new HttpResponse(null, { status: 204 });
@@ -337,7 +340,7 @@ const taskServiceHandler = [
       updateTask(taskId, taskInfoData);
     } catch (error) {
       console.error((error as Error).message);
-      return new HttpResponse(null, { status: 404 });
+      return new HttpResponse(null, { status: 500 });
     }
 
     return new HttpResponse(null, { status: 200 });
