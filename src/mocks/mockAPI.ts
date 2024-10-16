@@ -39,6 +39,8 @@ export function findProjectUser(projectId: Project['projectId'], userId: User['u
 }
 
 /* ================= 프로젝트(Project ) 관련 처리 ================= */
+
+// 프로젝트 조회
 export function findProject(projectId: Project['projectId']) {
   return PROJECT_DUMMY.find((project) => project.projectId === projectId);
 }
@@ -101,6 +103,7 @@ export function findAllAssignee(taskId: Task['taskId']) {
   return TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId === taskId);
 }
 
+// 일정 수행자 삭제
 export function deleteAssignee(taskId: Task['taskId'], userId: User['userId']) {
   const index = TASK_USER_DUMMY.findIndex(
     (taskUser) => taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId),
