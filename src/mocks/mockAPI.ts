@@ -10,12 +10,12 @@ import {
   USER_DUMMY,
 } from '@mocks/mockData';
 
-import type { FileInfo, TaskUser, UploadTaskFile } from '@mocks/mockData';
 import type { Role } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
+import type { TaskFileForMemory, TaskUser, UploadTaskFile } from '@/types/MockType';
 
 /* ===================== 역할(Role) 관련 처리 ===================== */
 
@@ -157,17 +157,17 @@ export function reorderTaskByStatus(statusId: ProjectStatus['statusId']) {
 /* =============== 업로드 파일 임시 저장 관련 처리 =============== */
 
 // 업로드된 일정 파일을 메모리 임시 저장
-export function saveTaskFileInMemory(taskFile: FileInfo) {
+export function saveTaskFileInMemory(taskFile: TaskFileForMemory) {
   FILE_DUMMY.push(taskFile);
 }
 
 // 임시 저장된 일정 파일 다운로드
-export function downloadTaskFileInMemory(uploadName: FileInfo['uploadName']) {
+export function downloadTaskFileInMemory(uploadName: TaskFileForMemory['uploadName']) {
   return FILE_DUMMY.find((file) => file.uploadName === uploadName);
 }
 
 // 임시 저장된 일정 파일 삭제
-export function deleteTaskFileInMemory(taskId: FileInfo['taskId'], fileId: FileInfo['fileId']) {
+export function deleteTaskFileInMemory(taskId: TaskFileForMemory['taskId'], fileId: TaskFileForMemory['fileId']) {
   const fileIndex = FILE_DUMMY.findIndex((file) => file.taskId === taskId && file.fileId === fileId);
 
   if (fileIndex === -1) throw new Error('일정 파일(In memory)을 찾을 수 없습니다.');
@@ -175,7 +175,7 @@ export function deleteTaskFileInMemory(taskId: FileInfo['taskId'], fileId: FileI
 }
 
 // 임시 저장된 특정 일정의 모든 파일 삭제
-export function deleteAllTaskFileInMemory(taskId: FileInfo['taskId']) {
+export function deleteAllTaskFileInMemory(taskId: TaskFileForMemory['taskId']) {
   const filteredFile = FILE_DUMMY.filter((file) => file.taskId !== taskId);
   if (filteredFile.length !== FILE_DUMMY.length) {
     FILE_DUMMY.length = 0;
