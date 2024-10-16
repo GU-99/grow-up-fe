@@ -27,10 +27,10 @@ import {
 } from '@mocks/mockAPI';
 import { fileNameParser } from '@utils/fileNameParser';
 import { convertTokenToUserId } from '@utils/converter';
+import { TASK_DUMMY, TASK_FILE_DUMMY } from '@mocks/mockData';
 
 import type { UserWithRole } from '@/types/UserType';
 import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
-import { TASK_DUMMY, TASK_FILE_DUMMY } from '../mockData';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 let autoIncrementIdForTask = TASK_DUMMY.length + 1;
