@@ -2,24 +2,44 @@ import { ChangeEvent, useState } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa6';
 import { useFormContext } from 'react-hook-form';
 import { USER_SETTINGS } from '@constants/settings';
+import Spinner from '@components/common/Spinner';
 import useToast from '@hooks/useToast';
+import { useUpdateLinks } from '@hooks/query/useUserQuery';
+import useStore from '@stores/useStore';
+import { EditUserLinksForm } from '@/types/UserType';
 
 type LinkContainerProps = {
   initialLinks: string[];
+  isImmediateUpdate: boolean;
 };
 
-export default function LinkContainer({ initialLinks }: LinkContainerProps) {
-  const { setValue } = useFormContext();
+export default function LinkContainer({ initialLinks, isImmediateUpdate }: LinkContainerProps) {
+  const { setValue, watch } = useFormContext();
+  const { editUserInfo } = useStore();
   const [link, setLink] = useState<string>('');
-  const [links, setLinks] = useState<string[]>(initialLinks);
   const [isFocused, setIsFocused] = useState(false);
   const { toastWarn } = useToast();
+
+  const links: string[] = watch('links', initialLinks);
+
+  const { mutate: updateLinksMutate, isPending: updateLinksIsPending } = useUpdateLinks();
 
   const handleFocus = () => setIsFocused(true);
 
   const handleBlur = () => setIsFocused(false);
 
   const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => setLink(e.target.value);
+
+  // TODO: 링크 업데이트 후작업 처리 방법 고민해 보기
+  const handleUpdateLinks = (userLinks: EditUserLinksForm) => {
+    updateLinksMutate(userLinks, {
+      onSuccess: () => {
+        setValue('links', userLinks.links);
+        setLink('');
+        editUserInfo(userLinks);
+      },
+    });
+  };
 
   const handleAddLink = (newLink: string) => {
     if (newLink.trim() === '') return;
@@ -32,19 +52,30 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
     if (isIncludedLink) return toastWarn('이미 등록된 링크입니다.');
 
     const updatedLinks = [...links, newLink.trim()];
-    setLinks(updatedLinks);
+
+    if (isImmediateUpdate) return handleUpdateLinks({ links: updatedLinks });
+
     setValue('links', updatedLinks);
     setLink('');
   };
 
   const handleRemoveLink = (removeLink: string) => {
     const filteredData = links.filter((linkItem) => linkItem !== removeLink);
-    setLinks(filteredData);
+
+    if (isImmediateUpdate) return handleUpdateLinks({ links: filteredData });
+
     setValue('links', filteredData);
   };
 
   return (
-    <section>
+    <section className="relative">
+      {updateLinksIsPending && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-50">
+          <span className="text-white">
+            <Spinner />
+          </span>
+        </div>
+      )}
       <label className="font-bold" htmlFor="link">
         링크
       </label>
@@ -81,7 +112,8 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
             onBlur={handleBlur}
             onChange={handleLinkChange}
             type="text"
-            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정...
+            // TODO: 전체적으로 인풋 관련 스타일링 수정 필요, div 전체를 input이 덮을 수 있도록 수정
+            disabled={updateLinksIsPending}
             className="h-full grow bg-inherit outline-none placeholder:text-emphasis"
           />
           <button
@@ -89,6 +121,7 @@ export default function LinkContainer({ initialLinks }: LinkContainerProps) {
             onClick={() => handleAddLink(link)}
             className="flex size-18 items-center justify-center rounded-lg bg-sub"
             aria-label="추가"
+            disabled={updateLinksIsPending}
           >
             <FaPlus className="size-8" />
           </button>
