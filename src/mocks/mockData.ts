@@ -20,19 +20,19 @@ type ProjectUser = {
   roleId: number;
 };
 
-type TaskUser = {
+export type TaskUser = {
   taskId: number;
   userId: number;
 };
 
-type TaskFile = {
+export type UploadTaskFile = {
   fileId: number;
   taskId: number;
   fileName: string;
   uploadName: string;
 };
 
-type FileInfo = {
+export type FileInfo = {
   fileId: number;
   taskId: number;
   file: Blob;
@@ -795,7 +795,7 @@ export const TASK_DUMMY: Task[] = [
 ];
 
 // ToDo: 파일 업로드, 다운로드 구현시 더미 정보 제대로 채울 것
-export const TASK_FILE_DUMMY: TaskFile[] = [
+export const TASK_FILE_DUMMY: UploadTaskFile[] = [
   {
     fileId: 1,
     taskId: 1,
