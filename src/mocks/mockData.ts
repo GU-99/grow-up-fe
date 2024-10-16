@@ -6,38 +6,7 @@ import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus } from '@/types/ProjectStatusType';
 import type { Task } from '@/types/TaskType';
 import type { Role } from '@/types/RoleType';
-
-type TeamUser = {
-  teamId: number;
-  userId: number;
-  roleId: number;
-  isPendingApproval: boolean;
-};
-
-type ProjectUser = {
-  projectId: number;
-  userId: number;
-  roleId: number;
-};
-
-type TaskUser = {
-  taskId: number;
-  userId: number;
-};
-
-type TaskFile = {
-  fileId: number;
-  taskId: number;
-  fileName: string;
-  uploadName: string;
-};
-
-type FileInfo = {
-  fileId: number;
-  taskId: number;
-  file: Blob;
-  uploadName: string;
-};
+import type { ProjectUser, TaskFileForMemory, TaskUser, TeamUser, UploadTaskFile } from '@/types/MockType';
 
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
@@ -795,7 +764,7 @@ export const TASK_DUMMY: Task[] = [
 ];
 
 // ToDo: 파일 업로드, 다운로드 구현시 더미 정보 제대로 채울 것
-export const TASK_FILE_DUMMY: TaskFile[] = [
+export const TASK_FILE_DUMMY: UploadTaskFile[] = [
   {
     fileId: 1,
     taskId: 1,
@@ -817,7 +786,7 @@ export const TASK_FILE_DUMMY: TaskFile[] = [
 ];
 
 // MSW 파일 임시 저장을 위한 변수
-export const FILE_DUMMY: FileInfo[] = [
+export const FILE_DUMMY: TaskFileForMemory[] = [
   {
     fileId: 1,
     taskId: 1,
