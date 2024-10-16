@@ -94,14 +94,13 @@ const userServiceHandler = [
 
     return HttpResponse.json(filteredUsers);
   }),
-  // 가입한 팀 목록 조회 API
+  // 전체 팀 목록 조회 API (가입한 팀, 대기중인 팀)
   http.get(`${BASE_URL}/user/team`, ({ request }) => {
     const accessToken = request.headers.get('Authorization');
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    const [header, payload, signature] = accessToken.split('.');
-    const userId = payload.replace('mocked-payload-', '');
+    const userId = convertTokenToUserId(accessToken);
 
     // 유저가 속한 모든 팀 목록 추출
     const teamUserList = TEAM_USER_DUMMY.filter((row) => row.userId === Number(userId));
