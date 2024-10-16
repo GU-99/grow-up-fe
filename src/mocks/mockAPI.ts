@@ -105,9 +105,7 @@ export function findAllAssignee(taskId: Task['taskId']) {
 
 // 일정 수행자 삭제
 export function deleteAssignee(taskId: Task['taskId'], userId: User['userId']) {
-  const index = TASK_USER_DUMMY.findIndex(
-    (taskUser) => taskUser.taskId === Number(taskId) && taskUser.userId === Number(userId),
-  );
+  const index = TASK_USER_DUMMY.findIndex((taskUser) => taskUser.taskId === taskId && taskUser.userId === userId);
   if (index === -1) throw new Error('수행자를 찾을 수 없습니다.');
   TASK_USER_DUMMY.splice(index, 1);
 }
@@ -154,7 +152,9 @@ export function deleteAllTaskFile(taskId: Task['taskId']) {
 export function reorderTaskByStatus(statusId: ProjectStatus['statusId']) {
   TASK_DUMMY.filter((target) => target.statusId === statusId)
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .forEach((task, index) => (task.sortOrder = index + 1));
+    .forEach((task, index) => {
+      task.sortOrder = index + 1;
+    });
 }
 
 /* =============== 업로드 파일 임시 저장 관련 처리 =============== */
