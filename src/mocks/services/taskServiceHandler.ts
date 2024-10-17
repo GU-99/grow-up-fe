@@ -56,7 +56,7 @@ const taskServiceHandler = [
     if (!project) return new HttpResponse(null, { status: 404 });
 
     // 유저의 팀 접근 권한 확인
-    const teamUser = findTeamUser(projectId, userId);
+    const teamUser = findTeamUser(project.teamId, userId);
     if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 프로젝트 상태 정보 취득
@@ -273,7 +273,7 @@ const taskServiceHandler = [
     if (!project) return new HttpResponse(null, { status: 404 });
 
     // 유저의 팀 접근 권한 확인
-    const teamUser = findTeamUser(projectId, userId);
+    const teamUser = findTeamUser(project.teamId, userId);
     if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 일정 수행자 (유저/일정 ID) 정보 취득
@@ -317,7 +317,7 @@ const taskServiceHandler = [
     if (!project) return new HttpResponse(null, { status: 404 });
 
     // 유저의 팀 접근 권한 확인
-    const teamUser = findTeamUser(projectId, userId);
+    const teamUser = findTeamUser(project.teamId, userId);
     if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 모든 일정 파일 정보 조회

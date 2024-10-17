@@ -36,7 +36,7 @@ const statusServiceHandler = [
     if (!project) return new HttpResponse(null, { status: 404 });
 
     // 유저의 팀 접근 권한 확인
-    const teamUser = findTeamUser(projectId, userId);
+    const teamUser = findTeamUser(project.teamId, userId);
     if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 프로젝트의 모든 상태 정보 조회
