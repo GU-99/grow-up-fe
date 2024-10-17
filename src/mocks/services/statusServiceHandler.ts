@@ -1,101 +1,153 @@
 import { http, HttpResponse } from 'msw';
-import { PROJECT_DUMMY, STATUS_DUMMY } from '@mocks/mockData';
-import { getStatusHash } from '@mocks/mockHash';
+import { STATUS_DUMMY } from '@mocks/mockData';
+import {
+  createProjectStatus,
+  deleteProjectStatus,
+  findAllProjectStatus,
+  findProjectStatus,
+  findProjectUser,
+  reorderStatusByProject,
+  updateProjectStatus,
+} from '@mocks/mockAPI';
+import { convertTokenToUserId } from '@utils/converter';
 
 import type { ProjectStatusForm, StatusOrderForm } from '@/types/ProjectStatusType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+let authIncrementIdForStatus = STATUS_DUMMY.length + 1;
 
 const statusServiceHandler = [
   // 프로젝트 상태 목록 조회 API
   http.get(`${BASE_URL}/project/:projectId/status`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const { projectId } = params;
+    const projectId = Number(params.projectId);
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    const statusList = STATUS_DUMMY.filter((status) => status.projectId === Number(projectId)).sort(
-      (a, b) => a.sortOrder - b.sortOrder,
-    );
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
-    return HttpResponse.json(statusList);
+    // 유저의 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, userId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 프로젝트의 모든 상태 정보 조회
+    const statuses = findAllProjectStatus(projectId).sort((a, b) => a.sortOrder - b.sortOrder);
+
+    return HttpResponse.json(statuses);
   }),
+
   // 프로젝트 상태 생성 API
   http.post(`${BASE_URL}/project/:projectId/status`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const { projectId } = params;
+    const projectId = Number(params.projectId);
     const formData = (await request.json()) as ProjectStatusForm;
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    STATUS_DUMMY.push({ statusId: STATUS_DUMMY.length, projectId: Number(projectId), ...formData });
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
+
+    // 유저의 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, userId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 프로젝트 상태 생성
+    createProjectStatus({ statusId: authIncrementIdForStatus++, projectId, ...formData });
 
     return new HttpResponse(null, { status: 200 });
   }),
-  // 상태 순서 변경 API
+
+  // 프로젝트 상태 순서 변경 API
   http.patch(`${BASE_URL}/project/:projectId/status/order`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { statuses: statusOrders } = (await request.json()) as StatusOrderForm;
-    const { projectId } = params;
+    const projectId = Number(params.projectId);
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
+
+    // 유저의 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, userId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 상태 순서 재정렬
     for (let i = 0; i < statusOrders.length; i++) {
       const { statusId, sortOrder } = statusOrders[i];
 
-      const statusHash = getStatusHash();
-      const target = statusHash[statusId];
-      if (!target) return new HttpResponse(null, { status: 404 });
-      if (target.projectId !== Number(projectId)) return new HttpResponse(null, { status: 400 });
+      const status = findProjectStatus(Number(statusId));
+      if (!status) return new HttpResponse(null, { status: 404 });
+      if (status.projectId !== projectId) return new HttpResponse(null, { status: 400 });
 
-      target.statusId = statusId;
-      target.sortOrder = sortOrder;
+      status.sortOrder = sortOrder;
     }
 
     return new HttpResponse(null, { status: 204 });
   }),
+
   // 프로젝트 상태 수정 API
   http.patch(`${BASE_URL}/project/:projectId/status/:statusId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const { projectId, statusId } = params;
-    const formData = (await request.json()) as ProjectStatusForm;
+    const projectId = Number(params.projectId);
+    const statusId = Number(params.statusId);
+    const newStatusInfo = (await request.json()) as ProjectStatusForm;
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    const status = STATUS_DUMMY.find(
-      (status) => status.projectId === Number(projectId) && status.statusId === Number(statusId),
-    );
-    if (!status) return new HttpResponse(null, { status: 404 });
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
-    status.statusName = formData.statusName;
-    status.colorCode = formData.colorCode;
-    status.sortOrder = formData.sortOrder;
+    // 유저의 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, userId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 프로젝트 상태 정보 수정
+    try {
+      updateProjectStatus(statusId, newStatusInfo);
+    } catch (error) {
+      console.error((error as Error).message);
+      return new HttpResponse(null, { status: 500 });
+    }
     return new HttpResponse(null, { status: 204 });
   }),
+
   // 프로젝트 상태 삭제 API
   http.delete(`${BASE_URL}/project/:projectId/status/:statusId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
-    const { projectId, statusId } = params;
+    const projectId = Number(params.projectId);
+    const statusId = Number(params.statusId);
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    // ToDo: JWT의 userId 정보를 가져와 프로젝트 권한 확인이 필요.
-    const project = PROJECT_DUMMY.find((project) => project.projectId === Number(projectId));
-    if (!project) return new HttpResponse(null, { status: 404 });
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
-    const statuses = STATUS_DUMMY.filter((status) => status.projectId === project.projectId);
-    if (statuses.length === 0) return new HttpResponse(null, { status: 404 });
+    // 유저의 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, userId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
 
-    const isIncludedStatus = statuses.map((status) => status.statusId).includes(Number(statusId));
-    if (!isIncludedStatus) return new HttpResponse(null, { status: 404 });
-
-    const statusIndex = STATUS_DUMMY.findIndex((status) => status.statusId === Number(statusId));
-    if (statusIndex !== -1) STATUS_DUMMY.splice(statusIndex, 1);
+    // 프로젝트 상태 삭제
+    try {
+      deleteProjectStatus(statusId);
+    } catch (error) {
+      console.error((error as Error).message);
+      return new HttpResponse(null, { status: 500 });
+    }
 
     // 프로젝튼 상태 순서 재정렬
-    STATUS_DUMMY.filter((status) => status.projectId === Number(projectId))
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .forEach((status, index) => (status.sortOrder = index + 1));
+    reorderStatusByProject(projectId);
 
     return new HttpResponse(null, { status: 204 });
   }),

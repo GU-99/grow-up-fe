@@ -13,7 +13,7 @@ import {
 import type { Role } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
-import type { ProjectStatus } from '@/types/ProjectStatusType';
+import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
 import type { TaskFileForMemory, TaskUser, UploadTaskFile } from '@/types/MockType';
 
@@ -47,7 +47,12 @@ export function findProject(projectId: Project['projectId']) {
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */
 
-// 상태 정보 조회
+// 프로젝트 상태 정보 생성
+export function createProjectStatus(newStatus: ProjectStatus) {
+  STATUS_DUMMY.push(newStatus);
+}
+
+// 프로젝트 상태 정보 조회
 export function findProjectStatus(statusId: ProjectStatus['statusId']) {
   return STATUS_DUMMY.find((status) => status.statusId === statusId);
 }
@@ -55,6 +60,33 @@ export function findProjectStatus(statusId: ProjectStatus['statusId']) {
 // 프로젝트의 모든 상태 정보 조회
 export function findAllProjectStatus(projectId: Project['projectId']) {
   return STATUS_DUMMY.filter((status) => status.projectId === projectId);
+}
+
+// 프로젝트 상태 정보 수정
+export function updateProjectStatus(statusId: ProjectStatus['statusId'], newStatusInfo: ProjectStatusForm) {
+  const status = findProjectStatus(statusId);
+  if (!status) throw new Error('프로젝트 상태를 찾을 수 없습니다.');
+
+  const { statusName, colorCode, sortOrder } = newStatusInfo;
+  status.statusName = statusName;
+  status.colorCode = colorCode;
+  status.sortOrder = sortOrder;
+}
+
+// 프로젝트 상태 정보 삭제
+export function deleteProjectStatus(statusId: ProjectStatus['statusId']) {
+  const statusIndex = STATUS_DUMMY.findIndex((status) => status.statusId === statusId);
+  if (statusIndex === -1) throw new Error('프로젝트 상태를 찾을 수 없습니다.');
+  STATUS_DUMMY.splice(statusIndex, 1);
+}
+
+// 프로젝트 상태 순서 재정렬
+export function reorderStatusByProject(projectId: Project['projectId']) {
+  STATUS_DUMMY.filter((status) => status.projectId === projectId)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .forEach((status, index) => {
+      status.sortOrder = index + 1;
+    });
 }
 
 /* ===================== 일정(Task) 관련 처리 ===================== */
@@ -75,10 +107,16 @@ export function findAllTask(statusId: ProjectStatus['statusId']) {
 }
 
 // 일정 수정
-export function updateTask(taskId: Task['taskId'], taskInfoData: TaskUpdateForm) {
-  const taskIndex = TASK_DUMMY.findIndex((task) => task.taskId === taskId);
-  if (taskIndex === -1) throw new Error('일정 정보를 찾을 수 없습니다.');
-  TASK_DUMMY[taskIndex] = { ...TASK_DUMMY[taskIndex], ...taskInfoData, statusId: Number(taskInfoData.statusId) };
+export function updateTask(taskId: Task['taskId'], newTaskInfo: TaskUpdateForm) {
+  const task = findTask(taskId);
+  if (!task) throw new Error('일정 정보를 찾을 수 없습니다.');
+
+  const { statusId, taskName, content, startDate, endDate } = newTaskInfo;
+  task.statusId = Number(statusId);
+  task.taskName = taskName;
+  task.content = content;
+  task.startDate = startDate;
+  task.endDate = endDate;
 }
 
 // 일정 삭제
