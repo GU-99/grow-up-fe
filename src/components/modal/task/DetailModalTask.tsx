@@ -48,7 +48,10 @@ export default function DetailModalTask({
   };
 
   // ToDo: 유저 권한 확인하는 로직 추가할 것
-  const handleDeleteClick = (taskId: Task['taskId']) => deleteTaskMutate(taskId);
+  const handleDeleteClick = (taskId: Task['taskId']) => {
+    deleteTaskMutate(taskId);
+    handleClose();
+  };
 
   const handleDownloadClick = async (originName: string, uploadName: string) => {
     const response = await fetchData(projectId, taskId, uploadName);
