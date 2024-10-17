@@ -175,3 +175,23 @@ export const TEAM_VALIDATION_RULES = deepFreeze({
     },
   },
 });
+
+export const PROJECT_VALIDATION_RULES = deepFreeze({
+  PROJECT_NAME: {
+    required: '프로젝트명을 입력해주세요.',
+    maxLength: {
+      value: 10,
+      message: '프로젝트명은 최대 10자리까지 입력 가능합니다.',
+    },
+    pattern: {
+      value: TEAM_NAME_PATTERN,
+      message: '프로젝트명은 한글, 영문, 숫자만 포함 가능합니다.',
+    },
+  },
+  PROJECT_DESCRIPTION: {
+    maxLength: {
+      value: 200,
+      message: '프로젝트 설명은 최대 200자까지 입력 가능합니다.',
+    },
+  },
+});

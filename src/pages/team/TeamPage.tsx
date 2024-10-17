@@ -45,7 +45,7 @@ export default function TeamPage() {
           <small className="text-xs font-bold text-category">team</small>
           <span>{teamName}</span>
         </div>
-        <button type="button" onClick={openProjectModal} className="hover:brightness-70 text-section mr-10">
+        <button type="button" onClick={openProjectModal} className="mr-10 font-bold text-main hover:brightness-50">
           + 프로젝트 생성
         </button>
       </header>
