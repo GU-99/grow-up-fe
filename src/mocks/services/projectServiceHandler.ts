@@ -26,7 +26,7 @@ const projectServiceHandler = [
   // 프로젝트 소속 유저 검색 API
   http.get(`${BASE_URL}/project/:projectId/user/search`, ({ request, params }) => {
     const url = new URL(request.url);
-    const nickname = url.searchParams.get('nickname');
+    const nickname = url.searchParams.get('nickname') || '';
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
 
@@ -48,13 +48,12 @@ const projectServiceHandler = [
     const searchUsers: SearchUser[] = [];
     for (let i = 0; i < projectUsers.length; i++) {
       const user = findUser(projectUsers[i].userId);
-      if (!user) return new HttpResponse(null, { status: 500 });
+      if (!user) return new HttpResponse(null, { status: 404 });
       searchUsers.push({ userId: user.userId, nickname: user.nickname });
     }
 
     // 접두사(nickname)과 일치하는 유저 정보 최대 5명 추출
-    const prefixRegex = new RegExp(`^${nickname}`);
-    const matchedSearchUsers = searchUsers.filter((user) => prefixRegex.test(user.nickname)).slice(0, 5);
+    const matchedSearchUsers = searchUsers.filter((user) => user.nickname.startsWith(nickname)).slice(0, 5);
 
     return HttpResponse.json(matchedSearchUsers);
   }),
@@ -110,7 +109,7 @@ const projectServiceHandler = [
 
       const user = findUser(userId);
       const role = findRole(roleId);
-      if (!user || !role) return new HttpResponse(null, { status: 500 });
+      if (!user || !role) return new HttpResponse(null, { status: 404 });
 
       userRoles.push({ userId, nickname: user.nickname, roleName: role.roleName });
     }

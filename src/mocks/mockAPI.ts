@@ -137,7 +137,7 @@ export function reorderStatusByProject(projectId: Project['projectId']) {
 
 // 일정과 연결된 모든 유저 삭제
 export function deleteAllTaskUser(taskId: Task['taskId']) {
-  const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId === taskId);
+  const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId !== taskId);
   if (filteredTaskUsers.length !== TASK_USER_DUMMY.length) {
     TASK_USER_DUMMY.length = 0;
     TASK_USER_DUMMY.push(...filteredTaskUsers);
