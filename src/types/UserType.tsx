@@ -17,6 +17,8 @@ export type UserInfo = User & {
   password: string | null;
 };
 
+export type UserProfileImageForm = Pick<User, 'profileImageName'>;
+
 export type SearchUser = Pick<User, 'userId' | 'nickname'>;
 export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
 
