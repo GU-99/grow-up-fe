@@ -16,6 +16,7 @@ import {
 } from '@services/teamService';
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
+import useStore from '@stores/useStore';
 import type {
   Team,
   TeamCoworker,
@@ -28,13 +29,14 @@ import type { User } from '@/types/UserType';
 
 // 전체 팀 목록 조회
 export function useReadTeams() {
+  const { userInfo } = useStore();
   const {
     data = [],
     isLoading,
     isError,
     error,
   } = useQuery<TeamListWithApproval[], Error>({
-    queryKey: generateTeamsQueryKey(),
+    queryKey: generateTeamsQueryKey(userInfo.userId),
     queryFn: async () => {
       const { data } = await getTeamList();
       return data;
@@ -51,8 +53,8 @@ export function useReadTeams() {
 export function useLeaveTeam() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamsQueryKey = generateTeamsQueryKey();
-
+  const { userInfo } = useStore();
+  const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
   const mutation = useMutation({
     mutationFn: (teamId: Team['teamId']) => leaveTeam(teamId),
     onError: () => {
@@ -91,7 +93,8 @@ export function useDeleteTeam() {
 export function useApproveTeamInvitation() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamsQueryKey = generateTeamsQueryKey();
+  const { userInfo } = useStore();
+  const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
     mutationFn: (teamId: Team['teamId']) => acceptTeamInvitation(teamId),
@@ -111,7 +114,8 @@ export function useApproveTeamInvitation() {
 export function useRejectTeamInvitation() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamsQueryKey = generateTeamsQueryKey();
+  const { userInfo } = useStore();
+  const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
     mutationFn: (teamId: Team['teamId']) => declineTeamInvitation(teamId),
@@ -131,7 +135,8 @@ export function useRejectTeamInvitation() {
 export function useCreateTeam() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamsQueryKey = generateTeamsQueryKey();
+  const { userInfo } = useStore();
+  const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
     mutationFn: async (data: TeamForm) => {
@@ -142,7 +147,7 @@ export function useCreateTeam() {
     },
     onSuccess: () => {
       toastSuccess('팀을 성공적으로 생성했습니다.');
-      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey, exact: true });
     },
   });
 
@@ -153,7 +158,8 @@ export function useCreateTeam() {
 export function useUpdateTeamInfo() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const teamsQueryKey = generateTeamsQueryKey();
+  const { userInfo } = useStore();
+  const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
     mutationFn: ({ teamId, teamInfo }: { teamId: Team['teamId']; teamInfo: TeamInfoForm }) =>

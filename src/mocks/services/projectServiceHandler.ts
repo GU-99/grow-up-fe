@@ -41,8 +41,7 @@ const projectServiceHandler = [
   http.get(`${BASE_URL}/team/:teamId/project`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    if (!Number(teamId) || !accessToken) return new HttpResponse(null, { status: 401 });
 
     const projectList = PROJECT_DUMMY.filter((project) => project.teamId === Number(teamId));
 
