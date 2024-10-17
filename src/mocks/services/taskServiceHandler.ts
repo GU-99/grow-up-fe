@@ -318,7 +318,7 @@ const taskServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
-    const taskInfoData = (await request.json()) as TaskUpdateForm;
+    const newTaskInfo = (await request.json()) as TaskUpdateForm;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -337,7 +337,7 @@ const taskServiceHandler = [
 
     // 일정 정보 수정
     try {
-      updateTask(taskId, taskInfoData);
+      updateTask(taskId, newTaskInfo);
     } catch (error) {
       console.error((error as Error).message);
       return new HttpResponse(null, { status: 500 });
