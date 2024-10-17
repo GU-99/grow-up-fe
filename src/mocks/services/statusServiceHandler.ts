@@ -4,8 +4,10 @@ import {
   createProjectStatus,
   deleteProjectStatus,
   findAllProjectStatus,
+  findProject,
   findProjectStatus,
   findProjectUser,
+  findTeamUser,
   reorderStatusByProject,
   updateProjectStatus,
 } from '@mocks/mockAPI';
@@ -29,9 +31,13 @@ const statusServiceHandler = [
     const userId = convertTokenToUserId(accessToken);
     if (!userId) return new HttpResponse(null, { status: 401 });
 
-    // 유저의 프로젝트 접근 권한 확인
-    const projectUser = findProjectUser(projectId, userId);
-    if (!projectUser) return new HttpResponse(null, { status: 403 });
+    // 프로젝트 정보 취득
+    const project = findProject(projectId);
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    // 유저의 팀 접근 권한 확인
+    const teamUser = findTeamUser(projectId, userId);
+    if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 프로젝트의 모든 상태 정보 조회
     const statuses = findAllProjectStatus(projectId).sort((a, b) => a.sortOrder - b.sortOrder);
