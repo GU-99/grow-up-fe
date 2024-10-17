@@ -39,11 +39,12 @@ export function generateLinksQueryKey(userId: number) {
 /**
  * 유저의 팀 목록 queryKey 생성 함수
  *
- * @export
+ * @export\
+ * @param {number} userId
  * @returns {(string | number)[]}
  */
-export function generateTeamsQueryKey() {
-  return [queryKeys.teams];
+export function generateTeamsQueryKey(userId: number) {
+  return [queryKeys.teams, userId];
 }
 
 /**
