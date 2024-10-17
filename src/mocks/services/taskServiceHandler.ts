@@ -16,10 +16,12 @@ import {
   findAllTask,
   findAllTaskFile,
   findAssignee,
+  findProject,
   findProjectStatus,
   findProjectUser,
   findRole,
   findTask,
+  findTeamUser,
   findUser,
   reorderTaskByStatus,
   saveTaskFileInMemory,
@@ -49,9 +51,13 @@ const taskServiceHandler = [
     const userId = convertTokenToUserId(accessToken);
     if (!userId) return new HttpResponse(null, { status: 401 });
 
-    // 유저의 프로젝트 접근 권한 확인
-    const projectUser = findProjectUser(projectId, userId);
-    if (!projectUser) return new HttpResponse(null, { status: 403 });
+    // 프로젝트 정보 취득
+    const project = findProject(projectId);
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    // 유저의 팀 접근 권한 확인
+    const teamUser = findTeamUser(project.teamId, userId);
+    if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 프로젝트 상태 정보 취득
     const statuses = findAllProjectStatus(projectId);
@@ -262,9 +268,13 @@ const taskServiceHandler = [
     const userId = convertTokenToUserId(accessToken);
     if (!userId) return new HttpResponse(null, { status: 401 });
 
-    // 유저의 프로젝트 접근 권한 확인
-    const projectUser = findProjectUser(projectId, userId);
-    if (!projectUser) return new HttpResponse(null, { status: 403 });
+    // 프로젝트 정보 취득
+    const project = findProject(projectId);
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    // 유저의 팀 접근 권한 확인
+    const teamUser = findTeamUser(project.teamId, userId);
+    if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 일정 수행자 (유저/일정 ID) 정보 취득
     const taskUsers = findAllAssignee(taskId);
@@ -302,9 +312,13 @@ const taskServiceHandler = [
     const userId = convertTokenToUserId(accessToken);
     if (!userId) return new HttpResponse(null, { status: 401 });
 
-    // 유저의 프로젝트 접근 권한 확인
-    const projectUser = findProjectUser(projectId, userId);
-    if (!projectUser) return new HttpResponse(null, { status: 403 });
+    // 프로젝트 정보 취득
+    const project = findProject(projectId);
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    // 유저의 팀 접근 권한 확인
+    const teamUser = findTeamUser(project.teamId, userId);
+    if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 모든 일정 파일 정보 조회
     const files = findAllTaskFile(taskId);
@@ -318,7 +332,7 @@ const taskServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
-    const taskInfoData = (await request.json()) as TaskUpdateForm;
+    const newTaskInfo = (await request.json()) as TaskUpdateForm;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -337,7 +351,7 @@ const taskServiceHandler = [
 
     // 일정 정보 수정
     try {
-      updateTask(taskId, taskInfoData);
+      updateTask(taskId, newTaskInfo);
     } catch (error) {
       console.error((error as Error).message);
       return new HttpResponse(null, { status: 500 });
