@@ -17,15 +17,8 @@ const userServiceHandler = [
 
     const { nickname, bio } = (await request.json()) as EditUserInfoForm;
 
-    let userId;
-    // ToDo: 추후 삭제
-    if (accessToken === JWT_TOKEN_DUMMY) {
-      const payload = JWT_TOKEN_DUMMY.split('.')[1];
-      userId = Number(payload.replace('mocked-payload-', ''));
-    } else {
-      // 토큰에서 userId 추출
-      userId = convertTokenToUserId(accessToken);
-    }
+    // 토큰에서 userId 추출
+    const userId = convertTokenToUserId(accessToken);
 
     const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
 
@@ -58,15 +51,7 @@ const userServiceHandler = [
 
     const { links } = (await request.json()) as EditUserLinksForm;
 
-    let userId;
-    // ToDo: 추후 삭제
-    if (accessToken === JWT_TOKEN_DUMMY) {
-      const payload = JWT_TOKEN_DUMMY.split('.')[1];
-      userId = Number(payload.replace('mocked-payload-', ''));
-    } else {
-      // 토큰에서 userId 추출
-      userId = convertTokenToUserId(accessToken);
-    }
+    const userId = convertTokenToUserId(accessToken);
 
     const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
 
