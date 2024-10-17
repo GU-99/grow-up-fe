@@ -7,11 +7,13 @@ import {
   TASK_DUMMY,
   TASK_FILE_DUMMY,
   TASK_USER_DUMMY,
+  TEAM_USER_DUMMY,
   USER_DUMMY,
 } from '@mocks/mockData';
 
 import type { Role } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
+import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
@@ -31,18 +33,51 @@ export function findUser(userId: User['userId']) {
   return USER_DUMMY.find((user) => user.userId === userId);
 }
 
-/* ============= 프로젝트 유저(Project User) 관련 처리 ============= */
+/* ============= 팀에 연결된 유저(Team User) 관련 처리 ============= */
 
-// 프로젝트 유저 조회
+// 팀과 연결된 유저 조회
+export function findTeamUser(teamId: Team['teamId'], userId: User['userId']) {
+  return TEAM_USER_DUMMY.find((teamUser) => teamUser.teamId === teamId && teamUser.userId === userId);
+}
+
+/* ========= 프로젝트에 연결된 유저(Project User) 관련 처리 ========= */
+
+// 프로젝트와 연결된 유저 조회
 export function findProjectUser(projectId: Project['projectId'], userId: User['userId']) {
   return PROJECT_USER_DUMMY.find((projectUser) => projectUser.projectId === projectId && projectUser.userId === userId);
 }
 
-/* ================= 프로젝트(Project ) 관련 처리 ================= */
+// 프로젝트의 연결된 모든 유저 조회
+export function findAllProjectUser(projectId: Project['projectId']) {
+  return PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId === projectId);
+}
+
+// 프로젝트와 연결된 모든 유저 삭제
+export function deleteAllProjectUser(projectId: Project['projectId']) {
+  const filteredProjectUsers = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId !== projectId);
+  if (PROJECT_USER_DUMMY.length !== filteredProjectUsers.length) {
+    PROJECT_USER_DUMMY.length = 0;
+    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+  }
+}
+
+/* ================= 프로젝트(Project) 관련 처리 ================= */
 
 // 프로젝트 조회
 export function findProject(projectId: Project['projectId']) {
   return PROJECT_DUMMY.find((project) => project.projectId === projectId);
+}
+
+// 특정 팀의 모든 프로젝트 조회
+export function findAllProject(teamId: Team['teamId']) {
+  return PROJECT_DUMMY.filter((project) => project.teamId === teamId);
+}
+
+// 프로젝트 삭제
+export function deleteProject(projectId: Project['projectId']) {
+  const projectIndex = PROJECT_DUMMY.findIndex((project) => project.projectId === projectId);
+  if (projectIndex === -1) throw new Error('프로젝트를 찾을 수 없습니다.');
+  PROJECT_DUMMY.splice(projectIndex, 1);
 }
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */
@@ -80,6 +115,15 @@ export function deleteProjectStatus(statusId: ProjectStatus['statusId']) {
   STATUS_DUMMY.splice(statusIndex, 1);
 }
 
+// 특정 프로젝트의 모든 상태 삭제
+export function deleteAllProjectStatus(projectId: Project['projectId']) {
+  const filteredStatuses = STATUS_DUMMY.filter((status) => status.projectId !== projectId);
+  if (filteredStatuses.length !== STATUS_DUMMY.length) {
+    STATUS_DUMMY.length = 0;
+    STATUS_DUMMY.push(...filteredStatuses);
+  }
+}
+
 // 프로젝트 상태 순서 재정렬
 export function reorderStatusByProject(projectId: Project['projectId']) {
   STATUS_DUMMY.filter((status) => status.projectId === projectId)
@@ -87,6 +131,17 @@ export function reorderStatusByProject(projectId: Project['projectId']) {
     .forEach((status, index) => {
       status.sortOrder = index + 1;
     });
+}
+
+/* ============ 일정에 연결된 유저(Task User) 관련 처리 ============ */
+
+// 일정과 연결된 모든 유저 삭제
+export function deleteAllTaskUser(taskId: Task['taskId']) {
+  const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId === taskId);
+  if (filteredTaskUsers.length !== TASK_USER_DUMMY.length) {
+    TASK_USER_DUMMY.length = 0;
+    TASK_USER_DUMMY.push(...filteredTaskUsers);
+  }
 }
 
 /* ===================== 일정(Task) 관련 처리 ===================== */
@@ -124,6 +179,16 @@ export function deleteTask(taskId: Task['taskId']) {
   const taskIndex = TASK_DUMMY.findIndex((task) => task.taskId === taskId);
   if (taskIndex === -1) throw new Error('일정 정보를 찾을 수 없습니다.');
   TASK_DUMMY.splice(taskIndex, 1);
+}
+
+// 특정 프로젝트의 모든 일정 삭제
+export function deleteAllTask(projectId: Project['projectId']) {
+  const statusIds = findAllProjectStatus(projectId).map((status) => status.statusId);
+  const filteredTasks = TASK_DUMMY.filter((task) => !statusIds.includes(task.statusId));
+  if (TASK_DUMMY.length !== filteredTasks.length) {
+    TASK_DUMMY.length = 0;
+    TASK_DUMMY.push(...filteredTasks);
+  }
 }
 
 // 일정 수행자 추가
