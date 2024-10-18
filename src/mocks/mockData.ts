@@ -8,6 +8,12 @@ import type { Task } from '@/types/TaskType';
 import type { Role } from '@/types/RoleType';
 import type { ProjectUser, TaskFileForMemory, TaskUser, TeamUser, UploadTaskFile } from '@/types/MockType';
 
+type ImageInfo = {
+  userId: number;
+  file: Blob;
+  uploadName: string;
+};
+
 export const JWT_TOKEN_DUMMY = 'mocked-header.mocked-payload-4.mocked-signature';
 
 export const VERIFICATION_CODE_DUMMY = '1234';
@@ -806,3 +812,6 @@ export const FILE_DUMMY: TaskFileForMemory[] = [
     uploadName: 'FILE_UUID_3.txt',
   },
 ];
+
+// MSW 프로필 이미지 임시 저장을 위한 변수
+export const PROFILE_IMAGE_DUMMY: ImageInfo[] = [];
