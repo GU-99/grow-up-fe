@@ -16,7 +16,7 @@ type ProfileImageContainerProps = {
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
   const { toastWarn } = useToast();
   const { mutate: uploadImageMutate } = useUploadProfileImage();
-  const { editUserInfo } = useStore();
+  const { editUserInfo, userInfo } = useStore();
 
   useEffect(() => {
     return () => {
@@ -46,8 +46,6 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
 
     const localImageUrl = URL.createObjectURL(file);
     setImageUrl(localImageUrl);
-    // TODO: ZUSTAND 유저 프로필 이미지 업데이트 추후에 추가
-    // editUserInfo({ profileImageName: uniqueFileName });
   };
 
   const handleRemoveImg = () => {

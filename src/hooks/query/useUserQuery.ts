@@ -25,7 +25,7 @@ export function useUpdateUserInfo() {
 export function useUploadProfileImage() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
-  const { userInfo } = useStore();
+  const { userInfo, editUserInfo } = useStore();
   const userProfileImageQueryKey = generateProfileFileQueryKey(userInfo.userId);
 
   const mutation = useMutation({
@@ -34,8 +34,13 @@ export function useUploadProfileImage() {
         headers: { 'Content-Type': 'multipart/form-data' },
       }),
     onError: () => toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.'),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      const { imageName } = response.data;
+
+      if (!imageName) return toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
+
       toastSuccess('이미지가 업로드되었습니다.');
+      editUserInfo({ profileImageName: imageName });
       queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
     },
   });

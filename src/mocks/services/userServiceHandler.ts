@@ -140,7 +140,7 @@ const userServiceHandler = [
       });
     }
 
-    return HttpResponse.json(null, { status: 200 });
+    return HttpResponse.json({ imageName: uploadName }, { status: 200 });
   }),
   // 전체 팀 목록 조회 API (가입한 팀, 대기중인 팀)
   http.get(`${BASE_URL}/user/team`, ({ request }) => {
