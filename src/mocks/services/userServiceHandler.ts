@@ -109,9 +109,13 @@ const userServiceHandler = [
       userId = convertTokenToUserId(accessToken);
     }
 
-    const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
+    if (!userId) {
+      return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
+    }
 
-    if (!userId || userIndex === -1) {
+    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
+
+    if (userIndex === -1) {
       return HttpResponse.json(
         { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
         { status: 401 },
