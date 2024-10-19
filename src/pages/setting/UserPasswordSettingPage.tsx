@@ -1,4 +1,4 @@
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
@@ -6,11 +6,11 @@ import ValidationInput from '@components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
 import { updateUserPassword } from '@services/authService';
-// import { useStore } from '@stores/useStore';
+import { useStore } from '@stores/useStore';
 import { UpdatePasswordForm } from '@/types/UserType';
 
 export default function UserPasswordSettingPage() {
-  // const { isVerified } = useStore();
+  const { isVerified } = useStore();
   const navigate = useNavigate();
   const { toastSuccess, toastError } = useToast();
   const {
@@ -22,10 +22,9 @@ export default function UserPasswordSettingPage() {
     mode: 'onChange',
   });
 
-  // ToDo: 이메일 인증 API가 확정된 후 활성화
-  // useEffect(() => {
-  //   if (!isVerified) navigate('/setting/auth', { replace: true });
-  // }, []);
+  useEffect(() => {
+    if (!isVerified) navigate('/setting/auth', { replace: true });
+  }, []);
 
   const onSubmit = async (data: UpdatePasswordForm) => {
     const { checkNewPassword, ...submitData } = data;
