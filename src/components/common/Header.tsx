@@ -7,7 +7,7 @@ import { logout } from '@services/authService';
 import useToast from '@hooks/useToast';
 
 export default function Header() {
-  const { userInfo: userInfoData, onLogout, clearUserInfo } = useStore();
+  const { userInfo: userInfoData, onLogout, clearUserInfo, isAuthenticated } = useStore();
   const navigate = useNavigate();
   const { toastSuccess } = useToast();
 
@@ -33,7 +33,9 @@ export default function Header() {
         </Link>
       </div>
       <nav className="flex items-center">
-        <div className="tracking-tight text-white">{userInfoData.nickname}님의 Grow Up! 응원합니다.</div>
+        {isAuthenticated && (
+          <div className="tracking-tight text-white">{userInfoData.nickname}님의 Grow Up! 응원합니다.</div>
+        )}
         <NavLink to="/" className="ml-10 hover:brightness-90">
           {({ isActive }) => <FiHome className={`size-20 ${isActive ? 'text-selected' : 'text-white'}`} />}
         </NavLink>
@@ -43,9 +45,9 @@ export default function Header() {
         <button
           type="button"
           className="ml-10 h-20 rounded-md bg-white px-4 tracking-tight hover:brightness-90"
-          onClick={handleLogout}
+          onClick={isAuthenticated ? handleLogout : () => navigate('/signin')}
         >
-          Logout
+          {isAuthenticated ? 'Logout' : 'Login'}
         </button>
       </nav>
     </header>

@@ -278,15 +278,8 @@ const authServiceHandler = [
 
   // 로그아웃 API
   http.post(`${BASE_URL}/user/logout`, async ({ cookies }) => {
-    const { refreshToken, refreshTokenExpiresAt } = cookies;
+    const { refreshToken } = cookies;
     const currentTime = Date.now();
-
-    if (!refreshToken || !refreshTokenExpiresAt) {
-      return HttpResponse.json(
-        { message: '리프레시 토큰이 유효하지 않습니다. 다시 로그인해 주세요.' },
-        { status: 401 },
-      );
-    }
 
     return new HttpResponse(null, {
       status: 200,
