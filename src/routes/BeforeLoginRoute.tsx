@@ -3,9 +3,9 @@ import type { PropsWithChildren } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export default function BeforeLoginRoute({ children }: PropsWithChildren) {
-  const { isAuthenticated } = useStore();
+  const { isAuthenticated, userInfo } = useStore();
 
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated || userInfo.userId) return <Navigate to="/" replace />;
 
   return children || <Outlet />;
 }
