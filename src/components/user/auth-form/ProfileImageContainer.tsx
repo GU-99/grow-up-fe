@@ -4,11 +4,11 @@ import { FaRegTrashCan } from 'react-icons/fa6';
 import { convertBytesToString } from '@utils/converter';
 import { USER_SETTINGS } from '@constants/settings';
 import { JPG, PNG, SVG, WEBP } from '@constants/mimeFileType';
+import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import { useUploadProfileImage } from '@hooks/query/useUserQuery';
 import useStore from '@stores/useStore';
 import { getProfileImage } from '@services/userService';
-import useAxios from '@/hooks/useAxios';
 
 type ProfileImageContainerProps = {
   imageUrl: string | null;
