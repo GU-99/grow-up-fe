@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AfterLoginRoute from '@routes/AfterLoginRoute';
 import BeforeLoginRoute from '@routes/BeforeLoginRoute';
 
@@ -66,7 +66,7 @@ export default function MainRouter() {
       ),
       errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <TeamPage /> },
+        { index: true, element: <Navigate to="/teams" replace /> },
         {
           path: 'setting',
           element: <SettingLayout />,

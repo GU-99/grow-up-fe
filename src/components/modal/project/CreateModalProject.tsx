@@ -4,7 +4,7 @@ import ModalButton from '@components/modal/ModalButton';
 import ModalProjectForm from '@components/modal/project/ModalProjectForm';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { Project } from '@/types/ProjectType';
+import type { ProjectForm } from '@/types/ProjectType';
 
 type CreateModalProjectProps = {
   onClose: () => void;
@@ -13,7 +13,7 @@ type CreateModalProjectProps = {
 export default function CreateModalProject({ onClose: handleClose }: CreateModalProjectProps) {
   const createProjectFormId = 'createProjectForm';
 
-  const handleSubmit: SubmitHandler<Project> = async (data) => {
+  const handleSubmit: SubmitHandler<ProjectForm> = async (data) => {
     console.log('프로젝트 생성 폼 제출');
     console.log(data);
     handleClose();

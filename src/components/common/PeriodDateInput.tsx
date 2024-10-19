@@ -80,7 +80,8 @@ export default function PeriodDateInput({
         <input
           id={endDateId}
           type="date"
-          className={`${hasDeadline ? '' : '!bg-disable'}`}
+          className={`${hasDeadline ? '' : '!bg-disable outline-none'}`}
+          readOnly={!hasDeadline}
           {...register(endDateFieldName, {
             ...TASK_VALIDATION_RULES.END_DATE(hasDeadline, limitStartDate, limitEndDate, watch(startDateFieldName)),
             onChange: (e) => {

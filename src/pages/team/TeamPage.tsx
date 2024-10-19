@@ -5,9 +5,10 @@ import { useState } from 'react';
 import CreateModalProject from '@components/modal/project/CreateModalProject';
 import useModal from '@hooks/useModal';
 import UpdateModalProject from '@components/modal/project/UpdateModalProject';
-import { useReadProjects } from '@hooks/query/useProjectQuery';
+import { useReadProjects, useDeleteProject } from '@hooks/query/useProjectQuery';
 import Spinner from '@components/common/Spinner';
 import { useReadTeams } from '@hooks/query/useTeamQuery';
+
 import type { Project } from '@/types/ProjectType';
 
 export default function TeamPage() {
@@ -15,8 +16,10 @@ export default function TeamPage() {
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
   const { teamId } = useParams();
   const { projectList: teamProjects, isProjectLoading } = useReadProjects(Number(teamId));
-  const { joinedTeamList } = useReadTeams();
+  const { joinedTeamList, isLoading: isTeamLoading } = useReadTeams();
   const [selectedProjectId, setSelectedProjectId] = useState<Project['projectId'] | null>(null);
+
+  const { mutate: deleteProjectMutate } = useDeleteProject(Number(teamId));
 
   const team = joinedTeamList.find((team) => team.teamId.toString() === teamId);
   const teamName = team ? team.teamName : '';
@@ -26,7 +29,12 @@ export default function TeamPage() {
     openUpdateModal();
   };
 
-  if (isProjectLoading) {
+  const handleDeleteClick = (e: React.MouseEvent, projectId: Project['projectId']) => {
+    e.preventDefault();
+    deleteProjectMutate(projectId);
+  };
+
+  if (isProjectLoading || isTeamLoading) {
     return <Spinner />;
   }
 
@@ -37,7 +45,7 @@ export default function TeamPage() {
           <small className="text-xs font-bold text-category">team</small>
           <span>{teamName}</span>
         </div>
-        <button type="button" onClick={openProjectModal} className="hover:brightness-70 text-section mr-10">
+        <button type="button" onClick={openProjectModal} className="mr-10 font-bold text-main hover:brightness-50">
           + 프로젝트 생성
         </button>
       </header>
@@ -78,12 +86,11 @@ export default function TeamPage() {
                       setting
                     </button>
 
-                    {/* ToDo: 프로젝트 삭제 기능 */}
                     <button
                       className="hover:brightness-200"
                       type="button"
                       aria-label="Delete"
-                      onClick={(e) => e.preventDefault()}
+                      onClick={(e) => handleDeleteClick(e, project.projectId)}
                     >
                       <FaRegTrashAlt size={20} />
                     </button>
