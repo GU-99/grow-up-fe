@@ -7,6 +7,8 @@ import { JPG, PNG, SVG, WEBP } from '@constants/mimeFileType';
 import useToast from '@hooks/useToast';
 import { useUploadProfileImage } from '@hooks/query/useUserQuery';
 import useStore from '@stores/useStore';
+import { getProfileImage } from '@services/userService';
+import useAxios from '@/hooks/useAxios';
 
 type ProfileImageContainerProps = {
   imageUrl: string | null;
@@ -15,8 +17,24 @@ type ProfileImageContainerProps = {
 
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
   const { toastWarn } = useToast();
-  const { mutate: uploadImageMutate } = useUploadProfileImage();
   const { editUserInfo, userInfo } = useStore();
+  const { mutate: uploadImageMutate } = useUploadProfileImage();
+  const { fetchData } = useAxios(getProfileImage);
+  const { toastError } = useToast();
+
+  useEffect(() => {
+    const handleGetProfileImage = async (uploadName: string) => {
+      const response = await fetchData(uploadName);
+      if (response == null)
+        return toastError('프로필 이미지 조회 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const profileImageUrl = URL.createObjectURL(blob);
+      setImageUrl(profileImageUrl);
+    };
+
+    if (userInfo.profileImageName) handleGetProfileImage(userInfo.profileImageName);
+  }, [userInfo.profileImageName]);
 
   useEffect(() => {
     return () => {

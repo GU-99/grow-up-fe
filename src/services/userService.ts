@@ -30,7 +30,7 @@ export async function updateLinks(links: EditUserLinksForm, axiosConfig: AxiosRe
 }
 
 /**
- * 유저 프로필 업로드 API
+ * 유저 프로필 이미지 업로드 API
  *
  * @export
  * @async
@@ -42,6 +42,22 @@ export async function uploadProfileImage(file: File, axiosConfig: AxiosRequestCo
   const fileFormData = new FormData();
   fileFormData.append('file', file);
   return authAxios.postForm(`/user/profile/image`, fileFormData, axiosConfig);
+}
+
+/**
+ * 유저 프로필 이미지 조회 API
+ *
+ * @export
+ * @async
+ * @param {string} fileName - 파일명
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<Blob>>}
+ */
+export async function getProfileImage(fileName: string, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get<Blob>(`/file/profile/${fileName}`, {
+    ...axiosConfig,
+    responseType: 'blob',
+  });
 }
 
 /**

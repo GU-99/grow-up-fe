@@ -142,6 +142,40 @@ const userServiceHandler = [
 
     return HttpResponse.json({ imageName: uploadName }, { status: 200 });
   }),
+  // 유저 프로필 이미지 조회 API
+  http.get(`${BASE_URL}/file/profile/:fileName`, async ({ request, params }) => {
+    const { fileName } = params;
+
+    const accessToken = request.headers.get('Authorization');
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) {
+      return HttpResponse.json({ message: '토큰에 유저 정보가 존재하지 않습니다.' }, { status: 401 });
+    }
+
+    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
+    if (userIndex === -1) {
+      return HttpResponse.json(
+        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    const decodedFileName = decodeURIComponent(fileName.toString());
+    const fileInfo = PROFILE_IMAGE_DUMMY.find((file) => file.uploadName === decodedFileName);
+    if (!fileInfo) return new HttpResponse(null, { status: 404 });
+
+    if (fileInfo.userId !== Number(userId))
+      return HttpResponse.json({ message: '해당 파일에 접근 권한이 없습니다.' }, { status: 401 });
+
+    const buffer = await fileInfo.file.arrayBuffer();
+    return HttpResponse.arrayBuffer(buffer, {
+      headers: {
+        'Content-Type': fileInfo.file.type,
+      },
+    });
+  }),
   // 전체 팀 목록 조회 API (가입한 팀, 대기중인 팀)
   http.get(`${BASE_URL}/user/team`, ({ request }) => {
     const accessToken = request.headers.get('Authorization');
