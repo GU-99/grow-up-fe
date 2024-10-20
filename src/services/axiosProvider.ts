@@ -35,7 +35,7 @@ export const authAxios = axiosProvider({
 export const Interceptor = ({ children }: InterceptorProps) => {
   const { toastError } = useToast();
   const navigate = useNavigate();
-  const { onLogout, setAccessToken, clearUserInfo } = useStore.getState();
+  const { onLogout, onLogin, clearUserInfo } = useStore.getState();
 
   useEffect(() => {
     // 요청 인터셉터
@@ -75,7 +75,7 @@ export const Interceptor = ({ children }: InterceptorProps) => {
 
             if (!newAccessToken) throw new Error('토큰 발급에 실패했습니다.');
 
-            setAccessToken(newAccessToken.split(' ')[1]);
+            onLogin(newAccessToken.split(' ')[1]);
 
             // 기존 설정 객체에 새로운 액세스 토큰 적용
             originalRequest.headers.Authorization = newAccessToken;
