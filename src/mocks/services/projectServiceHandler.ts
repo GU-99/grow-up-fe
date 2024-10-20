@@ -63,7 +63,6 @@ const projectServiceHandler = [
     const accessToken = request.headers.get('Authorization');
 
     const teamId = Number(params.teamId);
-    if (!Number(teamId) || !accessToken) return new HttpResponse(null, { status: 401 });
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
