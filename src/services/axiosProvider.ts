@@ -27,7 +27,6 @@ export const defaultAxios = axiosProvider();
 export const authAxios = axiosProvider({
   headers: {
     'Content-Type': 'application/json',
-    Authorization: JWT_TOKEN_DUMMY,
   },
   withCredentials: true,
 });
