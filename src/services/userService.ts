@@ -30,6 +30,21 @@ export async function updateLinks(links: EditUserLinksForm, axiosConfig: AxiosRe
 }
 
 /**
+ * 유저 프로필 업로드 API
+ *
+ * @export
+ * @async
+ * @param {File} file - 파일 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function uploadProfileImage(file: File, axiosConfig: AxiosRequestConfig = {}) {
+  const fileFormData = new FormData();
+  fileFormData.append('file', file);
+  return authAxios.postForm(`/user/profile/image`, fileFormData, axiosConfig);
+}
+
+/**
  * 유저 목록을 검색하는 API
  *
  * @export

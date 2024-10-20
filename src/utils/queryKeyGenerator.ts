@@ -4,6 +4,7 @@ import type { Project } from '@/types/ProjectType';
 
 export const queryKeys = {
   userInfo: 'userInfo',
+  profileImage: 'profileImage',
   links: 'links',
   users: 'users',
   teams: 'teams',
@@ -23,6 +24,17 @@ export const queryKeys = {
  */
 export function generateUserInfoQueryKey() {
   return [queryKeys.userInfo];
+}
+
+/**
+ * 유저 프로필 이미지 queryKey 생성 함수
+ *
+ * @export
+ * @param {number} userId - 유저의 고유 ID
+ * @returns {(string | number)[]}
+ */
+export function generateProfileFileQueryKey(userId: number) {
+  return [queryKeys.profileImage, userId];
 }
 
 /**

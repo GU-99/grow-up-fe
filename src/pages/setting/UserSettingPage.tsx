@@ -25,7 +25,7 @@ export default function UserSettingPage() {
       profileImageName: userInfoData.profileImageName,
     },
   });
-  const { formState, register, setValue, watch, handleSubmit } = methods;
+  const { formState, register, watch, setValue, handleSubmit } = methods;
   const nickname = watch('nickname');
 
   const { checkedNickname, lastCheckedNickname, handleCheckNickname } = useNicknameDuplicateCheck(

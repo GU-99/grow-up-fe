@@ -1,10 +1,12 @@
+import { useEffect } from 'react';
 import { GoPlusCircle } from 'react-icons/go';
 import { FaRegTrashCan } from 'react-icons/fa6';
-import { useFormContext } from 'react-hook-form';
 import { convertBytesToString } from '@utils/converter';
 import { USER_SETTINGS } from '@constants/settings';
+import { JPG, PNG, SVG, WEBP } from '@constants/mimeFileType';
 import useToast from '@hooks/useToast';
-import { useEffect } from 'react';
+import { useUploadProfileImage } from '@hooks/query/useUserQuery';
+import useStore from '@stores/useStore';
 
 type ProfileImageContainerProps = {
   imageUrl: string | null;
@@ -12,8 +14,9 @@ type ProfileImageContainerProps = {
 };
 
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
-  const { setValue } = useFormContext();
   const { toastWarn } = useToast();
+  const { mutate: uploadImageMutate } = useUploadProfileImage();
+  const { editUserInfo, userInfo } = useStore();
 
   useEffect(() => {
     return () => {
@@ -32,14 +35,22 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
       );
     }
 
-    const image = URL.createObjectURL(file);
-    setImageUrl(image);
-    setValue('profileImageName', image);
+    const IMG_EXTENSIONS = [JPG, PNG, WEBP, SVG];
+    const permitType = IMG_EXTENSIONS.some((extensions) => extensions === file.type);
+    if (!permitType) {
+      e.target.value = '';
+      return toastWarn(`${IMG_EXTENSIONS.join(', ')} 형식의 이미지 파일만 업로드 가능합니다.`);
+    }
+
+    uploadImageMutate({ file });
+
+    const localImageUrl = URL.createObjectURL(file);
+    setImageUrl(localImageUrl);
   };
 
   const handleRemoveImg = () => {
     setImageUrl('');
-    setValue('profileImageName', '');
+    editUserInfo({ profileImageName: null });
   };
 
   return (
