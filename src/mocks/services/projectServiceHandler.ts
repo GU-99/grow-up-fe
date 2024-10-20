@@ -61,6 +61,7 @@ const projectServiceHandler = [
   // 프로젝트 목록 조회 API
   http.get(`${BASE_URL}/team/:teamId/project`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
+
     const teamId = Number(params.teamId);
 
     // 유저 인증 확인

@@ -1,6 +1,7 @@
 import type { Task } from '@/types/TaskType';
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
+import type { User } from '@/types/UserType';
 
 export const queryKeys = {
   userInfo: 'userInfo',
@@ -41,21 +42,22 @@ export function generateProfileFileQueryKey(userId: number) {
  * 유저 링크 queryKey 생성 함수
  *
  * @export
- * @param {number} userId - 유저의 고유 ID
+ * @param {userId: User['userId']} userId - 유저의 고유 ID
  * @returns {(string | number)[]}
  */
-export function generateLinksQueryKey(userId: number) {
+export function generateLinksQueryKey(userId: User['userId']) {
   return [queryKeys.links, userId];
 }
 
 /**
  * 유저의 팀 목록 queryKey 생성 함수
  *
- * @export
+ * @export\
+ * @param {userId: User['userId']} userId
  * @returns {(string | number)[]}
  */
-export function generateTeamsQueryKey() {
-  return [queryKeys.teams];
+export function generateTeamsQueryKey(userId: User['userId']) {
+  return [queryKeys.teams, userId];
 }
 
 /**
