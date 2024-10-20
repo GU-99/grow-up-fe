@@ -20,7 +20,6 @@ export function useReadProjects(teamId: Team['teamId']) {
       const { data } = await getProjectList(teamId);
       return data;
     },
-    enabled: !!teamId,
   });
 
   return { projectList, isProjectLoading, isProjectError, projectError };
