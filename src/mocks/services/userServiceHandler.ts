@@ -1,12 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import {
-  JWT_TOKEN_DUMMY,
-  PROFILE_IMAGE_DUMMY,
-  ROLE_DUMMY,
-  TEAM_DUMMY,
-  TEAM_USER_DUMMY,
-  USER_DUMMY,
-} from '@mocks/mockData';
+import { PROFILE_IMAGE_DUMMY, ROLE_DUMMY, TEAM_DUMMY, TEAM_USER_DUMMY, USER_DUMMY } from '@mocks/mockData';
 import { NICKNAME_REGEX } from '@constants/regex';
 import { convertTokenToUserId } from '@utils/converter';
 import { fileNameParser } from '@utils/fileNameParser';
@@ -84,22 +77,12 @@ const userServiceHandler = [
     if (!file) return new HttpResponse(null, { status: 400 });
     if (!(file instanceof File)) return new HttpResponse('업로드된 문서는 파일이 아닙니다.', { status: 400 });
 
-    let userId;
-    // ToDo: 추후 삭제
-    if (accessToken === JWT_TOKEN_DUMMY) {
-      const payload = JWT_TOKEN_DUMMY.split('.')[1];
-      userId = Number(payload.replace('mocked-payload-', ''));
-    } else {
-      // 토큰에서 userId 추출
-      userId = convertTokenToUserId(accessToken);
-    }
-
+    const userId = convertTokenToUserId(accessToken);
     if (!userId) {
       return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
     }
 
     const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
-
     if (userIndex === -1) {
       return HttpResponse.json(
         { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
@@ -152,7 +135,7 @@ const userServiceHandler = [
     if (!fileInfo) return new HttpResponse(null, { status: 404 });
 
     if (fileInfo.userId !== Number(userId))
-      return HttpResponse.json({ message: '해당 파일에 접근 권한이 없습니다.' }, { status: 401 });
+      return HttpResponse.json({ message: '해당 파일에 접근 권한이 없습니다.' }, { status: 403 });
 
     const buffer = await fileInfo.file.arrayBuffer();
     return HttpResponse.arrayBuffer(buffer, {
