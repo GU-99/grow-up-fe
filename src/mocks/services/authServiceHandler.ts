@@ -228,18 +228,10 @@ const authServiceHandler = [
         return HttpResponse.json({ message: '리프레시 토큰이 만료되었습니다.' }, { status: 401 });
       }
 
-      let newAccessToken;
+      const userId = convertTokenToUserId(accessToken);
+      if (!userId) return new HttpResponse(null, { status: 401 });
 
-      // ToDo: 추후 삭제
-      if (accessToken === JWT_TOKEN_DUMMY) {
-        newAccessToken = 'newMockedAccessToken';
-      } else {
-        // 토큰에서 userId 추출하도록 수정
-        const userId = convertTokenToUserId(accessToken);
-        if (!userId) return new HttpResponse(null, { status: 401 });
-
-        newAccessToken = generateDummyToken(userId);
-      }
+      const newAccessToken = generateDummyToken(userId);
 
       // 액세스 토큰 갱신
       return new HttpResponse(null, {
@@ -259,16 +251,8 @@ const authServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    let userId;
-    // ToDo: 추후 삭제
-    if (accessToken === JWT_TOKEN_DUMMY) {
-      const payload = JWT_TOKEN_DUMMY.split('.')[1];
-      userId = Number(payload.replace('mocked-payload-', ''));
-    } else {
-      // 토큰에서 userId 추출
-      userId = convertTokenToUserId(accessToken);
-      if (!userId) return new HttpResponse(null, { status: 401 });
-    }
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
     const foundUser = USER_DUMMY.find((user) => user.userId === userId);
     if (!foundUser) return new HttpResponse(null, { status: 404 });
@@ -378,16 +362,8 @@ const authServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return HttpResponse.json({ message: '인증 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    let userId;
-    // ToDo: 추후 삭제
-    if (accessToken === JWT_TOKEN_DUMMY) {
-      const payload = JWT_TOKEN_DUMMY.split('.')[1];
-      userId = Number(payload.replace('mocked-payload-', ''));
-    } else {
-      // 토큰에서 userId 추출
-      userId = convertTokenToUserId(accessToken);
-      if (!userId) return new HttpResponse(null, { status: 401 });
-    }
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
     const existingUser = USER_DUMMY.find((user) => user.userId === Number(userId));
     if (!existingUser) return HttpResponse.json({ message: '해당 사용자를 찾을 수 없습니다.' }, { status: 404 });
