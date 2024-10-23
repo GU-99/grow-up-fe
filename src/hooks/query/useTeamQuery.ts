@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateTeamCoworkersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenerator';
-
 import { getTeamList } from '@services/userService';
 import {
   acceptTeamInvitation,
@@ -13,6 +12,7 @@ import {
   leaveTeam,
   removeTeamMember,
   updateTeamInfo,
+  findUserByTeam,
 } from '@services/teamService';
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
@@ -285,3 +285,21 @@ export function useReadTeam(teamId: Team['teamId']) {
 
   return team;
 }
+
+// // 팀원 검색 목록 조회
+// export function useSearchTeamCoworker(teamId: Team['teamId'], nickname: User['nickname']) {
+//   const {
+//     data: searchedCoworkers = [] as TeamCoworker[],
+//     isLoading,
+//     isError,
+//   } = useQuery({
+//     queryKey: generateSearchTeamCoworkersQueryKey(teamId, nickname),
+//     queryFn: async () => {
+//       const { data } = await findUserByTeam(teamId, nickname);
+//       return data;
+//     },
+//     enabled: !!nickname,
+//   });
+
+//   return { searchedCoworkers, isLoading, isError };
+// }

@@ -13,6 +13,9 @@ import {
   USER_DUMMY,
 } from '@mocks/mockData';
 import type { TeamCoworkerForm, TeamForm } from '@/types/TeamType';
+import { convertTokenToUserId } from '@/utils/converter';
+import { findAllTeamUsers, findTeamUser, findUser } from '../mockAPI';
+import { SearchUser } from '@/types/UserType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -20,13 +23,36 @@ const teamServiceHandler = [
   // 팀 소속 유저 검색 API
   http.get(`${BASE_URL}/team/:teamId/user/search`, ({ request, params }) => {
     const url = new URL(request.url);
-    const nickname = url.searchParams.get('nickname');
+    const nickname = url.searchParams.get('nickname') || '';
     const accessToken = request.headers.get('Authorization');
-    const { teamId } = params;
+    const teamId = Number(params.teamId);
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    return HttpResponse.json([]);
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
+
+    // 유저의 팀 접근 권한 확인
+    const teamUser = findTeamUser(teamId, userId);
+    if (!teamUser) return new HttpResponse(null, { status: 403 });
+
+    // 팀에 속한 모든 유저 검색
+    const teamUsers = findAllTeamUsers(teamId);
+    const searchUsers: SearchUser[] = [];
+
+    // 팀 유저 정보 취득
+    for (let i = 0; i < teamUsers.length; i++) {
+      const user = findUser(teamUsers[i].userId);
+      if (!user) return new HttpResponse(null, { status: 404 });
+      searchUsers.push({ userId: user.userId, nickname: user.nickname });
+    }
+
+    // 접두사(nickname)과 일치하는 유저 정보 최대 5명 추출
+    const matchedSearchUsers = searchUsers.filter((user) => user.nickname.startsWith(nickname)).slice(0, 5);
+
+    return HttpResponse.json(matchedSearchUsers);
   }),
   // 팀 생성 API
   http.post(`${BASE_URL}/team`, async ({ request }) => {
