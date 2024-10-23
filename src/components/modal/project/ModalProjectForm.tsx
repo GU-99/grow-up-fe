@@ -1,6 +1,5 @@
-import { FormProvider, useForm } from 'react-hook-form';
-
-import type { SubmitHandler } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import RoleTooltip from '@components/common/RoleTooltip';
 import { PROJECT_ROLE_INFO, PROJECT_ROLES } from '@constants/role';
@@ -11,28 +10,36 @@ import PeriodDateInput from '@components/common/PeriodDateInput';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import useAxios from '@hooks/useAxios';
-import { findUser } from '@services/userService';
-import { AllSearchCallback } from '@/types/SearchCallbackType';
+import useToast from '@hooks/useToast';
+import { findUserByTeam } from '@services/teamService';
+import { useParams } from 'react-router-dom';
+import type { SubmitHandler } from 'react-hook-form';
+import type { TeamSearchCallback } from '@/types/SearchCallbackType';
 import type { ProjectRoleName } from '@/types/RoleType';
-import type { Project, ProjectCoworkerInfo, ProjectForm } from '@/types/ProjectType';
-import type { SearchUser } from '@/types/UserType';
+import type { Project, ProjectCoworker, ProjectForm } from '@/types/ProjectType';
+import type { SearchUser, User } from '@/types/UserType';
 
 type ModalProjectFormProps = {
   formId: string;
-  projectId?: Project['projectId'];
   onSubmit: SubmitHandler<ProjectForm>;
 };
 
-export default function ModalProjectForm({ formId, projectId, onSubmit }: ModalProjectFormProps) {
+export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const [coworkerInfos, setCoworkerInfos] = useState<ProjectCoworkerInfo[]>([]);
-  // TODO: 프로젝트 생성 팀 사용자 찾기로 바꾸기
-  const { loading, data: userList = [], fetchData } = useAxios(findUser);
+  const [coworkerInfos, setCoworkerInfos] = useState<ProjectCoworker[]>([]);
+  const { toastInfo } = useToast();
+  const { teamId: teamIdString } = useParams();
+  const teamId = Number(teamIdString);
+  const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
-  // TODO: 프로젝트 생성 팀 사용자 찾기로 바꾸기
-  const searchCallbackInfo: AllSearchCallback = useMemo(
-    () => ({ type: 'ALL', searchCallback: fetchData }),
+  const searchCallbackInfo: TeamSearchCallback = useMemo(
+    () => ({
+      type: 'TEAM',
+      searchCallback: (teamId: number, nickname: User['nickname']) => {
+        return fetchData(teamId, nickname);
+      },
+    }),
     [fetchData],
   );
 
@@ -41,8 +48,8 @@ export default function ModalProjectForm({ formId, projectId, onSubmit }: ModalP
     defaultValues: {
       projectName: '',
       content: '',
-      startDate: new Date(),
-      endDate: null,
+      startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
+      endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
       coworkers: [],
     },
   });
@@ -50,38 +57,73 @@ export default function ModalProjectForm({ formId, projectId, onSubmit }: ModalP
   const {
     watch,
     handleSubmit,
+    setValue,
     formState: { errors },
     register,
   } = methods;
 
-  const startDate = watch('startDate') || new Date();
-  const endDate = watch('endDate') || null;
+  const handleRoleChange = (userId: User['userId'], roleName: ProjectRoleName) => {
+    const updatedCoworkerInfos = coworkerInfos.map((coworkerInfo) =>
+      coworkerInfo.userId === userId ? { ...coworkerInfo, roleName } : coworkerInfo,
+    );
 
-  const handleCoworkersClick = (user: SearchUser) => {
-    console.log(user);
+    const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName, nickname }) => ({
+      userId,
+      roleName,
+      nickname,
+    }));
+
+    setValue('coworkers', updatedCoworkers);
+    setCoworkerInfos(updatedCoworkerInfos);
+  };
+
+  const handleRemoveUser = (userId: User['userId']) => {
+    const filteredCoworkerInfos = coworkerInfos.filter((coworkerInfo) => coworkerInfo.userId !== userId);
+    const filteredCoworkers = filteredCoworkerInfos.map(({ userId, roleName, nickname }) => ({
+      userId,
+      roleName,
+      nickname,
+    }));
+
+    setValue('coworkers', filteredCoworkers);
+    setCoworkerInfos(filteredCoworkerInfos);
   };
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value.trim());
   };
 
-  const handleRoleChange = (userId: number, roleName: ProjectRoleName) => {
-    console.log(userId, roleName);
+  const handleCoworkersClick = (user: SearchUser) => {
+    const isIncludedUser = coworkerInfos.find((coworkerInfo) => coworkerInfo.userId === user.userId);
+    if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
+
+    const updatedCoworkerInfos: ProjectCoworker[] = [
+      ...coworkerInfos,
+      { userId: user.userId, nickname: user.nickname, roleName: 'ASSIGNEE' },
+    ];
+    const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName, nickname }) => ({
+      userId,
+      roleName,
+      nickname,
+    }));
+    setCoworkerInfos(updatedCoworkerInfos);
+    setValue('coworkers', updatedCoworkers);
+    setKeyword('');
+    clearData();
   };
 
-  const handleRemoveUser = (userId: number) => {
-    console.log(userId);
-  };
+  const handleSubmitForm: SubmitHandler<ProjectForm> = (formData: ProjectForm) => onSubmit(formData);
 
   return (
     <FormProvider {...methods}>
-      <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>
+      <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(handleSubmitForm)}>
         <div className="relative" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
           <p className="text-sky-700">
             <strong>프로젝트 권한 정보</strong>
           </p>
           <RoleTooltip showTooltip={showTooltip} rolesInfo={PROJECT_ROLE_INFO} />
         </div>
+
         <DuplicationCheckInput
           id="projectName"
           label="프로젝트 명"
@@ -90,16 +132,16 @@ export default function ModalProjectForm({ formId, projectId, onSubmit }: ModalP
           errors={errors.projectName?.message}
           register={register('projectName', PROJECT_VALIDATION_RULES.PROJECT_NAME)}
         />
-        <div className="mb-30">
-          <DescriptionTextarea
-            id="content"
-            label="프로젝트 설명"
-            fieldName="content"
-            placeholder="프로젝트 내용을 입력해주세요."
-            validationRole={PROJECT_VALIDATION_RULES.PROJECT_DESCRIPTION}
-            errors={errors.content?.message}
-          />
-        </div>
+
+        <DescriptionTextarea
+          id="content"
+          label="프로젝트 설명"
+          fieldName="content"
+          placeholder="프로젝트 내용을 입력해주세요."
+          validationRole={PROJECT_VALIDATION_RULES.PROJECT_DESCRIPTION}
+          errors={errors.content?.message}
+        />
+
         <PeriodDateInput
           startDateLabel="시작일"
           endDateLabel="종료일"
@@ -107,34 +149,31 @@ export default function ModalProjectForm({ formId, projectId, onSubmit }: ModalP
           endDateId="endDate"
           startDateFieldName="startDate"
           endDateFieldName="endDate"
-          limitStartDate={startDate}
-          limitEndDate={endDate}
         />
 
-        <div className="mb-16">
-          <SearchUserInput
-            id="search"
-            label="팀원"
-            keyword={keyword}
-            loading={loading}
-            userList={userList}
-            searchCallbackInfo={searchCallbackInfo}
-            onKeywordChange={handleKeywordChange}
-            onUserClick={handleCoworkersClick}
-          />
-          <div className="flex flex-wrap">
-            {coworkerInfos.map(({ userId, nickname }) => (
-              <UserRoleSelectBox
-                key={userId}
-                userId={userId}
-                nickname={nickname}
-                roles={PROJECT_ROLES}
-                defaultValue="MATE"
-                onRoleChange={handleRoleChange}
-                onRemoveUser={handleRemoveUser}
-              />
-            ))}
-          </div>
+        <SearchUserInput
+          id="search"
+          label="팀원"
+          keyword={keyword}
+          loading={loading}
+          userList={userList}
+          searchId={teamId}
+          searchCallbackInfo={searchCallbackInfo}
+          onKeywordChange={handleKeywordChange}
+          onUserClick={handleCoworkersClick}
+        />
+        <div className="flex flex-wrap">
+          {coworkerInfos.map(({ userId, nickname }) => (
+            <UserRoleSelectBox
+              key={userId}
+              userId={userId}
+              nickname={nickname}
+              roles={PROJECT_ROLES}
+              defaultValue="MATE"
+              onRoleChange={handleRoleChange}
+              onRemoveUser={handleRemoveUser}
+            />
+          ))}
         </div>
       </form>
     </FormProvider>

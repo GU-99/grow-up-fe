@@ -4,6 +4,8 @@ import ModalButton from '@components/modal/ModalButton';
 import ModalProjectForm from '@components/modal/project/ModalProjectForm';
 
 import type { SubmitHandler } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+import { useCreateProject } from '@hooks/query/useProjectQuery';
 import type { ProjectForm } from '@/types/ProjectType';
 
 type CreateModalProjectProps = {
@@ -12,10 +14,13 @@ type CreateModalProjectProps = {
 
 export default function CreateModalProject({ onClose: handleClose }: CreateModalProjectProps) {
   const createProjectFormId = 'createProjectForm';
+  const { teamId } = useParams();
+
+  const numberTeamId = Number(teamId);
+  const { mutate: createProjectMutate } = useCreateProject(numberTeamId);
 
   const handleSubmit: SubmitHandler<ProjectForm> = async (data) => {
-    console.log('프로젝트 생성 폼 제출');
-    console.log(data);
+    createProjectMutate(data);
     handleClose();
   };
   return (

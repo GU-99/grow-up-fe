@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenerator';
-import { deleteProject, getProjectList, getProjectUserRoleList } from '@services/projectService';
+import { createProject, deleteProject, getProjectList, getProjectUserRoleList } from '@services/projectService';
 
 import useToast from '@hooks/useToast';
 import type { Team } from '@/types/TeamType';
-import type { Project } from '@/types/ProjectType';
+import type { Project, ProjectForm } from '@/types/ProjectType';
 
 // Todo: Project Query CUD로직 작성하기
 // 팀에 속한 프로젝트 목록 조회
@@ -57,6 +57,27 @@ export function useDeleteProject(teamId: Team['teamId']) {
     onSuccess: () => {
       const projectsQueryKey = generateProjectsQueryKey(teamId);
       toastSuccess('프로젝트를 삭제하였습니다.');
+      queryClient.invalidateQueries({ queryKey: projectsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 프로젝트 생성
+export function useCreateProject(teamId: Team['teamId']) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const projectsQueryKey = generateProjectsQueryKey(teamId);
+
+  const mutation = useMutation({
+    mutationFn: (projectData: ProjectForm) => createProject(teamId, projectData),
+    onError: (error) => {
+      console.log(error);
+      toastError('프로젝트 생성을 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('프로젝트를 생성하였습니다.');
       queryClient.invalidateQueries({ queryKey: projectsQueryKey });
     },
   });

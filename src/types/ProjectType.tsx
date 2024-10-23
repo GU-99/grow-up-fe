@@ -7,18 +7,23 @@ export type Project = {
   teamId: number;
   projectName: string;
   content: string;
-  startDate: Date | null;
+  startDate: Date;
   endDate: Date | null;
 };
 
 export type ProjectCoworker = {
   userId: User['userId'];
   roleName: ProjectRoleName;
-  nickname?: string;
+  nickname: string;
 };
 
-export type ProjectCoworkerInfo = ProjectCoworker & { nickname: User['nickname'] };
-
-export type ProjectForm = Omit<Project, 'projectId' | 'teamId'> & {
-  coworkers: ProjectCoworker[];
+export type ProjectInfoForm = {
+  projectName: string;
+  content: string;
+  startDate: string;
+  endDate: string | null;
+};
+export type ProjectCoworkerForm = Omit<ProjectCoworker, 'nickname'>;
+export type ProjectForm = ProjectInfoForm & {
+  coworkers: ProjectCoworkerForm[];
 };

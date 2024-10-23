@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import {
+  createProject,
+  createProjectUser,
   deleteAllProjectStatus,
   deleteAllProjectUser,
   deleteAllTask,
@@ -14,13 +16,17 @@ import {
   findProject,
   findProjectUser,
   findRole,
+  findRoleByRoleName,
   findTeamUser,
   findUser,
 } from '@mocks/mockAPI';
+import { PROJECT_DUMMY } from '@mocks/mockData';
 import { convertTokenToUserId } from '@utils/converter';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
+import { Project, ProjectForm } from '@/types/ProjectType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
 
 const projectServiceHandler = [
   // 프로젝트 소속 유저 검색 API
@@ -56,6 +62,54 @@ const projectServiceHandler = [
     const matchedSearchUsers = searchUsers.filter((user) => user.nickname.startsWith(nickname)).slice(0, 5);
 
     return HttpResponse.json(matchedSearchUsers);
+  }),
+
+  // 프로젝트 생성 API
+  http.post(`${BASE_URL}/team/:teamId/project`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const teamId = Number(params.teamId);
+    const { coworkers, ...projectInfo } = (await request.json()) as ProjectForm;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
+
+    // 팀 접근 권한 확인
+    const teamUser = findTeamUser(teamId, userId);
+    if (!teamUser) return new HttpResponse('매칭되는 팀 역할이 없습니다.', { status: 403 });
+
+    // 팀 역할별 권한 확인
+    const userRole = findRole(teamUser.roleId);
+    if (!userRole) return new HttpResponse(null, { status: 500 });
+    if (!(userRole.roleName === 'HEAD' || userRole.roleName === 'LEADER')) {
+      return new HttpResponse('팀 생성 권한이 없습니다.', { status: 403 });
+    }
+
+    // 프로젝트 생성
+    const projectId = autoIncrementIdForProject++;
+    const newProject: Project = {
+      projectId,
+      teamId,
+      ...projectInfo,
+      startDate: new Date(projectInfo.startDate),
+      endDate: projectInfo.endDate ? new Date(projectInfo.endDate) : null,
+    };
+    createProject(newProject);
+
+    // 프로젝트 유저 연결 생성
+    // ToDo: 중간에 잘못되면 일관성, 정합성을 유지할 수 없음 수정 필요.
+    coworkers.push({ userId, roleName: 'ADMIN' });
+    for (let i = 0; i < coworkers.length; i++) {
+      const coworker = coworkers[i];
+      const role = findRoleByRoleName(coworker.roleName);
+      if (!role) return new HttpResponse(null, { status: 500 });
+
+      const { roleId } = role;
+      createProjectUser({ userId, projectId, roleId });
+    }
+
+    return new HttpResponse(null, { status: 200 });
   }),
 
   // 프로젝트 목록 조회 API
