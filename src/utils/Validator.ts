@@ -19,7 +19,7 @@ export default class Validator {
     const startDate = DateTime.fromJSDate(new Date(start)).startOf('day');
     const endDate = DateTime.fromJSDate(new Date(end)).startOf('day');
     const targetDate = DateTime.fromJSDate(new Date(target)).startOf('day');
-    return targetDate >= startDate && targetDate < endDate;
+    return targetDate >= startDate && targetDate <= endDate;
   }
 
   public static isEarlierStartDate(start: Date | string, end: Date | string) {

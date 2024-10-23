@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { useFormContext } from 'react-hook-form';
-import { TASK_VALIDATION_RULES } from '@constants/formValidationRules';
+import { PERIOD_VALIDATION_RULES } from '@constants/formValidationRules';
 import ToggleButton from '@components/common/ToggleButton';
 import useToast from '@hooks/useToast';
 
 import type { FieldError } from 'react-hook-form';
-import type { Project } from '@/types/ProjectType';
 
 type PeriodDateInputProps = {
   startDateId: string;
@@ -15,8 +14,8 @@ type PeriodDateInputProps = {
   endDateLabel: string;
   startDateFieldName: string;
   endDateFieldName: string;
-  limitStartDate: Project['startDate'];
-  limitEndDate: Project['endDate'];
+  limitStartDate?: string | Date | null;
+  limitEndDate?: string | Date | null;
 };
 
 export default function PeriodDateInput({
@@ -26,8 +25,8 @@ export default function PeriodDateInput({
   endDateLabel,
   startDateFieldName,
   endDateFieldName,
-  limitStartDate,
-  limitEndDate,
+  limitStartDate = null,
+  limitEndDate = null,
 }: PeriodDateInputProps) {
   const [hasDeadline, setHasDeadline] = useState(false);
   const { toastWarn } = useToast();
@@ -62,7 +61,7 @@ export default function PeriodDateInput({
           id={startDateId}
           type="date"
           {...register(startDateFieldName, {
-            ...TASK_VALIDATION_RULES.START_DATE(limitStartDate, limitEndDate),
+            ...PERIOD_VALIDATION_RULES.START_DATE(limitStartDate, limitEndDate),
             onChange: (e) => {
               if (!hasDeadline) setValue(endDateFieldName, e.target.value);
             },
@@ -83,14 +82,13 @@ export default function PeriodDateInput({
           className={`${hasDeadline ? '' : '!bg-disable outline-none'}`}
           readOnly={!hasDeadline}
           {...register(endDateFieldName, {
-            ...TASK_VALIDATION_RULES.END_DATE(hasDeadline, limitStartDate, limitEndDate, watch(startDateFieldName)),
+            ...PERIOD_VALIDATION_RULES.END_DATE(hasDeadline, limitStartDate, limitEndDate, watch(startDateFieldName)),
             onChange: (e) => {
               const startDate = DateTime.fromISO(startDateStr).startOf('day');
               const endDate = DateTime.fromISO(e.target.value).startOf('day');
               if (startDate > endDate) {
                 toastWarn('종료일은 시작일과 같거나 이후로 설정해주세요.');
                 setValue(endDateFieldName, startDateStr);
-                setHasDeadline(false);
               }
             },
           })}

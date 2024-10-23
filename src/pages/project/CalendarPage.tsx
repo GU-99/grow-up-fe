@@ -68,11 +68,18 @@ export default function CalendarPage() {
   }, []);
 
   const handleDayPropGetter: DayPropGetter = (targetDate) => {
-    if (!project.startDate || !project.endDate) return {};
+    // 기간 설정시
+    if (project.endDate) {
+      const isWithinRange = Validator.isWithinDateRange(project.startDate, project.endDate, targetDate);
+      const bgColor = isWithinRange ? '' : '!bg-[#D9D9D9]';
+      return { className: bgColor };
+    }
 
-    const isWithinRange = Validator.isWithinDateRange(project.startDate, project.endDate, targetDate);
-    const bgColor = isWithinRange ? '' : '!bg-[#D9D9D9]';
+    const isEarlierStartDate = Validator.isEarlierStartDate(project.startDate, targetDate);
+    const bgColor = isEarlierStartDate ? '' : '!bg-[#D9D9D9]';
     return { className: bgColor };
+
+    // 범위
   };
   const handleEventPropGetter: EventPropGetter<CustomEvent> = () => ({
     style: { padding: '0px', backgroundColor: 'inherit' },
@@ -103,7 +110,6 @@ export default function CalendarPage() {
       }))
       .sort((a, b) => a.start.getTime() - b.start.getTime());
   }, [statusTaskList]);
-  const startDate = events.length && events[0].start ? events[0].start : null;
 
   // ToDo: DnD, Resize 이벤트 추가 생각해보기
   // ToDo: 코드 리팩토링
@@ -113,7 +119,7 @@ export default function CalendarPage() {
         <Spinner />
       ) : (
         <>
-          <CalendarToolbar date={date} startDate={startDate} onClick={handleNavigate} />
+          <CalendarToolbar date={date} startDate={project.startDate} onClick={handleNavigate} />
           <Calendar
             toolbar={false}
             localizer={localizer}
