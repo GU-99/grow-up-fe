@@ -21,12 +21,13 @@ export default function DescriptionTextarea({
   const { register } = useFormContext();
 
   return (
-    <label htmlFor={id}>
+    <label htmlFor={id} className="flex flex-col">
       <h3 className="text-large">{label}</h3>
       <textarea
         id={id}
-        className="h-100 w-full rounded-md border border-input p-10 text-regular placeholder:text-xs"
+        className="w-full rounded-md border border-input p-10 text-regular placeholder:text-xs"
         placeholder={placeholder}
+        rows={5}
         {...(validationRole ? register(fieldName, validationRole) : register(fieldName))}
       />
       <div className={`my-5 h-10 text-xs text-error ${errors ? 'visible' : 'invisible'}`}>{errors}</div>
