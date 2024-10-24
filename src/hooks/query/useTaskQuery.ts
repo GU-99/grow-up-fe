@@ -30,16 +30,7 @@ import type {
   TaskUpdateForm,
   TaskUploadForm,
 } from '@/types/TaskType';
-import { TaskFile } from '@/types/FileType';
-
-function getTaskNameList(taskList: TaskListWithStatus[], excludedTaskName?: Task['taskName']) {
-  const taskNameList = taskList
-    .map((statusTask) => statusTask.tasks)
-    .flat()
-    .map((task) => task.taskName);
-
-  return excludedTaskName ? taskNameList.filter((taskName) => taskName !== excludedTaskName) : taskNameList;
-}
+import type { TaskFile } from '@/types/FileType';
 
 // 일정 생성
 export function useCreateStatusTask(projectId: Project['projectId']) {
@@ -76,12 +67,12 @@ export function useUploadTaskFile(projectId: Project['projectId']) {
 }
 
 // 상태별 일정 목록 조회
-export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Task['taskId']) {
+export function useReadStatusTasks(projectId: Project['projectId']) {
   const {
     data: statusTaskList = [],
-    isLoading: isTaskLoading,
-    isError: isTaskError,
-    error: taskError,
+    isLoading: isTasksLoading,
+    isError: isTasksError,
+    error: tasksError,
   } = useQuery({
     queryKey: generateTasksQueryKey(projectId),
     queryFn: async () => {
@@ -90,7 +81,13 @@ export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Tas
     },
   });
 
-  const task = useMemo(
+  return { statusTaskList, isTasksLoading, isTasksError, tasksError };
+}
+
+export function useReadStatusTask(projectId: Project['projectId'], taskId: Task['taskId']) {
+  const { statusTaskList, isTasksLoading, isTasksError, tasksError } = useReadStatusTasks(projectId);
+
+  const statusTask = useMemo(
     () =>
       statusTaskList
         .map((statusTask) => statusTask.tasks)
@@ -98,9 +95,8 @@ export function useReadStatusTasks(projectId: Project['projectId'], taskId?: Tas
         .find((task) => task.taskId === taskId),
     [statusTaskList, taskId],
   );
-  const taskNameList = useMemo(() => getTaskNameList(statusTaskList, task?.taskName), [statusTaskList, task?.taskName]);
 
-  return { task, statusTaskList, taskNameList, isTaskLoading, isTaskError, taskError };
+  return { statusTask, isTasksLoading, isTasksError, tasksError };
 }
 
 // 일정 목록 순서 변경

@@ -9,7 +9,7 @@ import { downloadTaskFile } from '@services/taskService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
-import { useDeleteTask, useReadAssignees, useReadStatusTasks, useReadTaskFiles } from '@hooks/query/useTaskQuery';
+import { useDeleteTask, useReadAssignees, useReadStatusTask, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 
 import type { Task } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
@@ -32,7 +32,7 @@ export default function DetailModalTask({
 }: ViewModalTaskProps) {
   const { mutate: deleteTaskMutate } = useDeleteTask(projectId);
   const { status, isStatusLoading } = useReadStatuses(projectId, statusId);
-  const { task, isTaskLoading } = useReadStatusTasks(projectId, taskId);
+  const { statusTask, isTasksLoading } = useReadStatusTask(projectId, taskId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
   const { fetchData } = useAxios(downloadTaskFile);
@@ -73,7 +73,7 @@ export default function DetailModalTask({
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {isStatusLoading || isTaskLoading || isAssigneeLoading || isTaskFileLoading || !task ? (
+        {isStatusLoading || isTasksLoading || isAssigneeLoading || isTaskFileLoading || !statusTask ? (
           <Spinner />
         ) : (
           <article className="flex h-full flex-col justify-center gap-20">
@@ -86,11 +86,11 @@ export default function DetailModalTask({
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">일정명</h2>
-                <span>{task.taskName}</span>
+                <span>{statusTask.taskName}</span>
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">기간</h2>
-                <span>{getTaskPeriod(task)}</span>
+                <span>{getTaskPeriod(statusTask)}</span>
               </div>
               <div className="flex gap-10">
                 <h2 className="w-50 shrink-0 text-large font-bold">수행자</h2>
@@ -105,7 +105,7 @@ export default function DetailModalTask({
               </div>
               <div>
                 <h2 className="my-5 text-large font-bold">일정 내용</h2>
-                <CustomMarkdown markdown={task.content} />
+                <CustomMarkdown markdown={statusTask.content} />
               </div>
               {taskFileList.length > 0 && (
                 <div>
