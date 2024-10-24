@@ -15,12 +15,11 @@ import { findUserByTeam } from '@services/teamService';
 import useAxios from '@hooks/useAxios';
 import { PROJECT_DEFAULT_ROLE, PROJECT_ROLES } from '@constants/role';
 import Spinner from '@components/common/Spinner';
+import { useReadProjectUserRoleList, useReadProjectDetail } from '@hooks/query/useProjectQuery';
 import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
 import type { Project, ProjectForm } from '@/types/ProjectType';
-
-import { useReadProjectUserRoleList, useReadProjectDetail } from '@/hooks/query/useProjectQuery';
 
 type UpdateModalProjectProps = {
   projectId: Project['projectId'];
@@ -76,7 +75,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     handleClose();
   };
 
-  if (isProjectLoading) {
+  if (isProjectLoading || isProjectCoworkersLoading) {
     return <Spinner />;
   }
 
@@ -84,7 +83,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
         <FormProvider {...methods}>
-          <form id="updateTeamForm" onSubmit={handleSubmit(handleFormSubmit)}>
+          <form id={updateProjectFormId} onSubmit={handleSubmit(handleFormSubmit)}>
             <DuplicationCheckInput
               id="projectName"
               label="프로젝트 명"
