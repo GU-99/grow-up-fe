@@ -24,7 +24,7 @@ export default function UpdateModalProjectStatus({
 }: UpdateModalProjectStatusProps) {
   const updateStatusFormId = 'updateStatusForm';
 
-  const { statusTaskList, isTaskLoading } = useReadStatusTasks(project.projectId);
+  const { statusTaskList, isTasksLoading } = useReadStatusTasks(project.projectId);
   const { mutate: updateStatusMutate } = useUpdateStatus(project.projectId, statusId);
   const { mutate: deleteStatusMutate } = useDeleteStatus(project.projectId);
   const { toastWarn } = useToast();
@@ -50,7 +50,7 @@ export default function UpdateModalProjectStatus({
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {isTaskLoading ? (
+        {isTasksLoading ? (
           <Spinner />
         ) : (
           <>

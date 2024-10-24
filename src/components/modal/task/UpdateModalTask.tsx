@@ -22,12 +22,14 @@ import {
   useDeleteAssignee,
   useDeleteTaskFile,
   useReadAssignees,
+  useReadStatusTask,
   useReadStatusTasks,
   useReadTaskFiles,
   useUpdateTaskInfo,
 } from '@hooks/query/useTaskQuery';
 import { useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
+import { getTaskNameList } from '@utils/extractNameList';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser } from '@/types/UserType';
@@ -60,8 +62,14 @@ export default function UpdateModalTask({
     [fetchData],
   );
 
+  const { statusTaskList, isTasksLoading } = useReadStatusTasks(projectId);
+  const { statusTask } = useReadStatusTask(projectId, taskId);
+  const taskNameList = useMemo(
+    () => getTaskNameList(statusTaskList, statusTask?.taskName),
+    [statusTaskList, statusTask?.taskName],
+  );
+
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
-  const { task, taskNameList, isTaskLoading } = useReadStatusTasks(projectId, taskId);
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
@@ -81,16 +89,16 @@ export default function UpdateModalTask({
   } = methods;
 
   useEffect(() => {
-    if (task) {
+    if (statusTask) {
       reset({
-        statusId: task.statusId.toString(),
-        taskName: task.taskName,
-        content: task.content,
-        startDate: task.startDate,
-        endDate: task.endDate,
+        statusId: statusTask.statusId.toString(),
+        taskName: statusTask.taskName,
+        content: statusTask.content,
+        startDate: statusTask.startDate,
+        endDate: statusTask.endDate,
       });
     }
-  }, [task, reset]);
+  }, [statusTask, reset]);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
@@ -128,10 +136,6 @@ export default function UpdateModalTask({
 
   const handleFileDeleteClick = (fileId: string) => deleteTaskFileMutate(Number(fileId));
 
-  if (isStatusLoading || isTaskLoading || isProjectCoworkersLoading || isTaskFileLoading || isAssigneeLoading) {
-    return <Spinner />;
-  }
-
   const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => updateTaskInfoMutate(formData);
 
   const handleDetailClick = () => {
@@ -142,7 +146,7 @@ export default function UpdateModalTask({
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {isStatusLoading || isTaskLoading ? (
+        {isStatusLoading || isTasksLoading ? (
           <Spinner />
         ) : (
           <>

@@ -27,6 +27,7 @@ import type { Project } from '@/types/ProjectType';
 import type { CustomFile } from '@/types/FileType';
 import type { Task, TaskForm } from '@/types/TaskType';
 import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
+import { getTaskNameList } from '@/utils/extractNameList';
 
 type ModalTaskFormProps = {
   formId: string;
@@ -44,7 +45,8 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
-  const { taskNameList, isTaskLoading } = useReadStatusTasks(projectId);
+  const { statusTaskList, isTasksLoading } = useReadStatusTasks(projectId);
+  const taskNameList = useMemo(() => getTaskNameList(statusTaskList), [statusTaskList]);
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
   const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const { isValidTaskFile } = useTaskFile(project.projectId);
@@ -136,7 +138,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setFiles(filteredFiles);
   };
 
-  if (isStatusLoading || isTaskLoading || isProjectCoworkersLoading) return <Spinner />;
+  if (isStatusLoading || isTasksLoading || isProjectCoworkersLoading) return <Spinner />;
 
   return (
     <FormProvider {...methods}>
