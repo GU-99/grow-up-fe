@@ -77,7 +77,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   } = methods;
 
   useEffect(() => {
-    if (!isStatusLoading && statusList) {
+    if (!isStatusLoading && statusList.length > 0) {
       setValue('statusId', statusList[0].statusId);
     }
   }, [isStatusLoading, statusList]);
