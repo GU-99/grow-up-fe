@@ -44,12 +44,12 @@ export function useReadProjectDetail(teamId: Team['teamId'], projectId: Project[
 }
 
 // 프로젝트 팀원 목록 조회
-export function useReadProjectUserRoleList(projectId: Project['projectId']) {
+export function useReadProjectCoworkers(projectId: Project['projectId']) {
   const {
-    data: projectUserRoleList = [],
-    isLoading: isProjectUserRoleLoading,
-    isError: isErrorProjectUserRole,
-    error: projectUserRoleError,
+    data: projectCoworkers = [],
+    isLoading: isProjectCoworkersLoading,
+    isError: isProjectCoworkersError,
+    error: projectCoworkersError,
   } = useQuery({
     queryKey: generateProjectUsersQueryKey(projectId),
     queryFn: async () => {
@@ -58,7 +58,7 @@ export function useReadProjectUserRoleList(projectId: Project['projectId']) {
     },
   });
 
-  return { projectUserRoleList, isProjectUserRoleLoading, isErrorProjectUserRole, projectUserRoleError };
+  return { projectCoworkers, isProjectCoworkersLoading, isProjectCoworkersError, projectCoworkersError };
 }
 
 // 프로젝트 삭제

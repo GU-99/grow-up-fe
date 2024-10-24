@@ -1,21 +1,21 @@
-import ModalPortal from '@components/modal/ModalPortal';
-import ModalLayout from '@layouts/ModalLayout';
-import ModalButton from '@components/modal/ModalButton';
-
-import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
-import PeriodDateInput from '@components/common/PeriodDateInput';
-import DescriptionTextarea from '@components/common/DescriptionTextarea';
-import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import SearchUserInput from '@components/common/SearchUserInput';
-import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
-import { findUserByTeam } from '@services/teamService';
-import useAxios from '@hooks/useAxios';
-import { PROJECT_DEFAULT_ROLE, PROJECT_ROLES } from '@constants/role';
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import ModalLayout from '@layouts/ModalLayout';
 import Spinner from '@components/common/Spinner';
-import { useReadProjectUserRoleList, useReadProjectDetail } from '@hooks/query/useProjectQuery';
+import ModalPortal from '@components/modal/ModalPortal';
+import ModalButton from '@components/modal/ModalButton';
+import PeriodDateInput from '@components/common/PeriodDateInput';
+import SearchUserInput from '@components/common/SearchUserInput';
+import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
+import DescriptionTextarea from '@components/common/DescriptionTextarea';
+import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import { PROJECT_DEFAULT_ROLE, PROJECT_ROLES } from '@constants/role';
+import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
+import useAxios from '@hooks/useAxios';
+import { useReadProjectDetail, useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
+import { findUserByTeam } from '@services/teamService';
+
 import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
@@ -32,8 +32,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
   const [keyword, setKeyword] = useState('');
 
   const { projectInfo, isLoading: isProjectLoading } = useReadProjectDetail(Number(teamId), projectId);
-  const { projectUserRoleList: coworkers, isProjectUserRoleLoading: isProjectCoworkersLoading } =
-    useReadProjectUserRoleList(projectId);
+  const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
 
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
@@ -129,7 +128,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
             onUserClick={() => {}} // 팀원 추가 클릭 핸들러
           />
           <div className="flex flex-wrap">
-            {coworkers.map(({ userId, nickname }) => (
+            {projectCoworkers.map(({ userId, nickname }) => (
               <UserRoleSelectBox
                 key={userId}
                 userId={userId}

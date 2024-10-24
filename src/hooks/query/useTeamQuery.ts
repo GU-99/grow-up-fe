@@ -138,9 +138,7 @@ export function useCreateTeam() {
   const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
-    mutationFn: async (data: TeamForm) => {
-      return createTeam(data);
-    },
+    mutationFn: async (data: TeamForm) => createTeam(data),
     onError: () => {
       toastError('팀 생성에 실패했습니다. 다시 시도해 주세요.');
     },
