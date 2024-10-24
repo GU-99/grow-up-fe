@@ -136,10 +136,6 @@ export default function UpdateModalTask({
 
   const handleFileDeleteClick = (fileId: string) => deleteTaskFileMutate(Number(fileId));
 
-  if (isStatusLoading || isTasksLoading || isProjectUserRoleLoading || isTaskFileLoading || isAssigneeLoading) {
-    return <Spinner />;
-  }
-
   const handleFormSubmit: SubmitHandler<TaskUpdateForm> = async (formData) => updateTaskInfoMutate(formData);
 
   const handleDetailClick = () => {
