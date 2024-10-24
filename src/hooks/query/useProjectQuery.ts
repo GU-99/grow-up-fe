@@ -72,8 +72,7 @@ export function useCreateProject(teamId: Team['teamId']) {
 
   const mutation = useMutation({
     mutationFn: (projectData: ProjectForm) => createProject(teamId, projectData),
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
       toastError('프로젝트 생성을 실패했습니다. 다시 시도해 주세요.');
     },
     onSuccess: () => {

@@ -106,7 +106,7 @@ const projectServiceHandler = [
       if (!role) return new HttpResponse(null, { status: 500 });
 
       const { roleId } = role;
-      createProjectUser({ userId, projectId, roleId });
+      createProjectUser({ userId: coworker.userId, projectId, roleId });
     }
 
     return new HttpResponse(null, { status: 200 });

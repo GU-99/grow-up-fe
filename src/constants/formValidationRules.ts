@@ -181,17 +181,17 @@ export const PROJECT_VALIDATION_RULES = deepFreeze({
 });
 
 export const PERIOD_VALIDATION_RULES = deepFreeze({
-  START_DATE: (periodStatDate: Date | string | null, periodEndDate: Date | string | null) => ({
+  START_DATE: (periodStartDate: Date | string | null, periodEndDate: Date | string | null) => ({
     required: '시작일을 선택해주세요.',
-    validate: getDateValidation(periodStatDate, periodEndDate),
+    validate: getDateValidation(periodStartDate, periodEndDate),
   }),
   END_DATE: (
     hasDeadline: boolean,
-    periodStatDate: Date | string | null,
+    periodStartDate: Date | string | null,
     periodEndDate: Date | string | null,
     referenceDate: Date | string,
   ) => ({
     required: hasDeadline && '종료일을 선택해주세요.',
-    validate: getDateValidation(periodStatDate, periodEndDate, referenceDate),
+    validate: getDateValidation(periodStartDate, periodEndDate, referenceDate),
   }),
 });

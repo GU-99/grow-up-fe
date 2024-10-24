@@ -55,6 +55,7 @@ export default function TeamPage() {
         <button
           type="button"
           onClick={handleCreateProjectClick}
+          aria-label="새 프로젝트 생성"
           className="mr-10 font-bold text-main hover:brightness-50"
         >
           + 프로젝트 생성

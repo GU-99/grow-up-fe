@@ -169,7 +169,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
               userId={userId}
               nickname={nickname}
               roles={PROJECT_ROLES}
-              defaultValue="MATE"
+              defaultValue="ASSIGNEE"
               onRoleChange={handleRoleChange}
               onRemoveUser={handleRemoveUser}
             />
