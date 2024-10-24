@@ -19,7 +19,7 @@ export default function StatusRadio({ statusFieldName, statusList }: StatusRadio
   return (
     <>
       {/* ToDo: 상태 선택 리팩토링 할 것 */}
-      <div className="flex items-center justify-start gap-4">
+      <div className="flex flex-wrap items-center justify-start gap-4">
         {statusList.map((status) => {
           const { statusId, statusName, colorCode } = status;
           const isChecked = Number(watch(statusFieldName)) === statusId;

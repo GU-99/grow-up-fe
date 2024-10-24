@@ -9,21 +9,33 @@ import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
 import CreateModalTask from '@components/modal/task/CreateModalTask';
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
+import useToast from '@hooks/useToast';
+import { useReadStatuses } from '@hooks/query/useStatusQuery';
 
 export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
   const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
+
+  const { statusList, isStatusLoading } = useReadStatuses(Number(projectId));
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(Number(projectId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
+  const { toastWarn } = useToast();
 
   const project = useMemo(
     () => projectList?.find((project) => project.projectId.toString() === projectId),
     [projectList, projectId],
   );
 
-  if (isProjectLoading || isProjectCoworkersLoading) return <Spinner />;
+  if (isProjectLoading || isProjectCoworkersLoading || isStatusLoading) return <Spinner />;
   if (!project) return <Navigate to="/error" replace />;
+
+  const handleCreateTaskClick = () => {
+    if (statusList.length === 0) {
+      return toastWarn('등록된 프로젝트 상태가 없습니다. 상태를 등록한 이후에 다시 시도해주세요.');
+    }
+    openTaskModal();
+  };
 
   return (
     <>
@@ -58,7 +70,7 @@ export default function ProjectLayout() {
                 </li>
               </ul>
               <div className="text-main *:ml-10">
-                <button type="button" className="outline-none" onClick={openTaskModal}>
+                <button type="button" className="outline-none" onClick={handleCreateTaskClick}>
                   + 할일 추가
                 </button>
                 <button type="button" className="outline-none" onClick={openStatusModal}>
