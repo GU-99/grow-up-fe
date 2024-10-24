@@ -9,6 +9,7 @@ import { useReadProjects, useDeleteProject } from '@hooks/query/useProjectQuery'
 import Spinner from '@components/common/Spinner';
 import { useReadTeams } from '@hooks/query/useTeamQuery';
 
+import useToast from '@hooks/useToast';
 import type { Project } from '@/types/ProjectType';
 
 export default function TeamPage() {
@@ -18,6 +19,7 @@ export default function TeamPage() {
   const { projectList: teamProjects, isProjectLoading } = useReadProjects(Number(teamId));
   const { joinedTeamList, isLoading: isTeamLoading } = useReadTeams();
   const [selectedProjectId, setSelectedProjectId] = useState<Project['projectId'] | null>(null);
+  const { toastWarn } = useToast();
 
   const { mutate: deleteProjectMutate } = useDeleteProject(Number(teamId));
 
@@ -27,6 +29,11 @@ export default function TeamPage() {
   const handleOpenUpdateModal = (projectId: Project['projectId']) => {
     setSelectedProjectId(projectId);
     openUpdateModal();
+  };
+
+  const handleCreateProjectClick = () => {
+    if (!teamId) return toastWarn('팀을 선택한 후 프로젝트 생성을 진행해주세요.');
+    openProjectModal();
   };
 
   const handleDeleteClick = (e: React.MouseEvent, projectId: Project['projectId']) => {
@@ -45,7 +52,12 @@ export default function TeamPage() {
           <small className="text-xs font-bold text-category">team</small>
           <span>{teamName}</span>
         </div>
-        <button type="button" onClick={openProjectModal} className="mr-10 font-bold text-main hover:brightness-50">
+        <button
+          type="button"
+          onClick={handleCreateProjectClick}
+          aria-label="새 프로젝트 생성"
+          className="mr-10 font-bold text-main hover:brightness-50"
+        >
           + 프로젝트 생성
         </button>
       </header>

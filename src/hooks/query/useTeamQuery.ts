@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateTeamCoworkersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenerator';
-
 import { getTeamList } from '@services/userService';
 import {
   acceptTeamInvitation,

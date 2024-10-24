@@ -2,34 +2,31 @@ import Validator from '@utils/Validator';
 import { deepFreeze } from '@utils/deepFreeze';
 import { EMAIL_REGEX, ID_REGEX, NICKNAME_REGEX, PASSWORD_REGEX, TEAM_NAME_PATTERN } from '@constants/regex';
 import { USER_SETTINGS } from '@constants/settings';
-import type { Project } from '@/types/ProjectType';
-import type { Task } from '@/types/TaskType';
 
 type ValidateOption = { [key: string]: (value: string) => string | boolean };
 
-// ToDo: 리팩토링을 해야하나? 나중에 시간날 때 생각해보기
-function getTaskDateValidation(
-  projectStartDate: Project['startDate'],
-  projectEndDate: Project['endDate'],
-  taskStartDate?: Task['startDate'],
+function getDateValidation(
+  periodStartDate: Date | string | null,
+  periodEndDate: Date | string | null,
+  referenceDate?: Date | string,
 ) {
   const validation: ValidateOption = {};
-
-  if (taskStartDate) {
-    validation.isEarlierDate = (taskEndDate: string) =>
-      !Validator.isEarlierStartDate(taskStartDate, taskEndDate) ? '시작일 이후로 설정해주세요.' : true;
+  // 기준일이 설정되어 있다면, 기준일 이후로 설정되는가 검증
+  if (referenceDate) {
+    validation.isEarlierDate = (date: string) => {
+      return !Validator.isEarlierStartDate(referenceDate, date) ? '시작일 이후로 설정해주세요.' : true;
+    };
   }
 
-  if (projectStartDate && projectEndDate) {
-    validation.isWithinDateRange = (taskDate: string) =>
-      !Validator.isWithinDateRange(projectStartDate, projectEndDate, taskDate)
-        ? '프로젝트 기간 내로 설정해주세요.'
-        : true;
+  // 기간이 설정되어 있다면, 기간 내에 속하는가 검증
+  if (periodStartDate && periodEndDate) {
+    validation.isWithinDateRange = (date: string) => {
+      return !Validator.isWithinDateRange(periodStartDate, periodEndDate, date) ? '기간 내로 설정해주세요.' : true;
+    };
   }
 
   return validation;
 }
-
 // ToDo: Form 별로 Validation 분리하기
 export const STATUS_VALIDATION_RULES = deepFreeze({
   STATUS_NAME: (nameList: string[]) => ({
@@ -141,19 +138,6 @@ export const TASK_VALIDATION_RULES = deepFreeze({
         Validator.isDuplicatedName(nameList, value) ? '이미 사용중인 일정명입니다.' : true,
     },
   }),
-  START_DATE: (projectStartDate: Project['startDate'], projectEndDate: Project['endDate']) => ({
-    required: '시작일을 선택해주세요.',
-    validate: getTaskDateValidation(projectStartDate, projectEndDate),
-  }),
-  END_DATE: (
-    hasDeadline: boolean,
-    projectStartDate: Project['startDate'],
-    projectEndDate: Project['endDate'],
-    taskStartDate: Task['startDate'],
-  ) => ({
-    required: hasDeadline && '종료일을 선택해주세요.',
-    validate: getTaskDateValidation(projectStartDate, projectEndDate, taskStartDate),
-  }),
 });
 
 export const TEAM_VALIDATION_RULES = deepFreeze({
@@ -194,4 +178,20 @@ export const PROJECT_VALIDATION_RULES = deepFreeze({
       message: '프로젝트 설명은 최대 200자까지 입력 가능합니다.',
     },
   },
+});
+
+export const PERIOD_VALIDATION_RULES = deepFreeze({
+  START_DATE: (periodStartDate: Date | string | null, periodEndDate: Date | string | null) => ({
+    required: '시작일을 선택해주세요.',
+    validate: getDateValidation(periodStartDate, periodEndDate),
+  }),
+  END_DATE: (
+    hasDeadline: boolean,
+    periodStartDate: Date | string | null,
+    periodEndDate: Date | string | null,
+    referenceDate: Date | string,
+  ) => ({
+    required: hasDeadline && '종료일을 선택해주세요.',
+    validate: getDateValidation(periodStartDate, periodEndDate, referenceDate),
+  }),
 });

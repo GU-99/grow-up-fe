@@ -17,13 +17,18 @@ import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
-import type { TaskFileForMemory, TaskUser, UploadTaskFile } from '@/types/MockType';
+import type { ProjectUser, TaskFileForMemory, TaskUser, UploadTaskFile } from '@/types/MockType';
 
 /* ===================== 역할(Role) 관련 처리 ===================== */
 
 // 역할 조회
 export function findRole(roleId: Role['roleId']) {
   return ROLE_DUMMY.find((role) => role.roleId === roleId);
+}
+
+// ToDo: 유저 ID로 조회해야하나, 현재 이름을 넘겨주고 있어서 임시로 만든 조회 방법 수정 필요
+export function findRoleByRoleName(roleName: Role['roleName']) {
+  return ROLE_DUMMY.find((role) => role.roleName === roleName);
 }
 
 /* ===================== 유저(User) 관련 처리 ===================== */
@@ -40,7 +45,19 @@ export function findTeamUser(teamId: Team['teamId'], userId: User['userId']) {
   return TEAM_USER_DUMMY.find((teamUser) => teamUser.teamId === teamId && teamUser.userId === userId);
 }
 
+// 팀에 속한 모든 유저 조회
+export function findAllTeamUsers(teamId: Team['teamId']) {
+  return TEAM_USER_DUMMY.filter((teamUser) => teamUser.teamId === teamId);
+}
+
+/* ====================== 팀(Team) 관련 처리 ====================== */
+
 /* ========= 프로젝트에 연결된 유저(Project User) 관련 처리 ========= */
+
+// 프로젝트와 유저 연결 생성
+export function createProjectUser(newProjectUser: ProjectUser) {
+  PROJECT_USER_DUMMY.push(newProjectUser);
+}
 
 // 프로젝트와 연결된 유저 조회
 export function findProjectUser(projectId: Project['projectId'], userId: User['userId']) {
@@ -62,6 +79,11 @@ export function deleteAllProjectUser(projectId: Project['projectId']) {
 }
 
 /* ================= 프로젝트(Project) 관련 처리 ================= */
+
+// 프로젝트 생성
+export function createProject(newProject: Project) {
+  PROJECT_DUMMY.push(newProject);
+}
 
 // 프로젝트 조회
 export function findProject(projectId: Project['projectId']) {

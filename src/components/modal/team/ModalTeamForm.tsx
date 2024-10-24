@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
-import { TEAM_ROLE_INFO, TEAM_ROLES } from '@constants/role';
+import { TEAM_DEFAULT_ROLE, TEAM_ROLE_INFO, TEAM_ROLES } from '@constants/role';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import { findUser } from '@services/userService';
 import RoleTooltip from '@components/common/RoleTooltip';
@@ -83,7 +83,7 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
 
     const updatedCoworkerInfos: TeamCoworker[] = [
       ...coworkerInfos,
-      { userId: user.userId, nickname: user.nickname, roleName: 'MATE' },
+      { userId: user.userId, nickname: user.nickname, roleName: TEAM_DEFAULT_ROLE },
     ];
     const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName }) => ({
       userId,
@@ -143,7 +143,7 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
                 userId={userId}
                 nickname={nickname}
                 roles={TEAM_ROLES}
-                defaultValue="MATE"
+                defaultValue={TEAM_DEFAULT_ROLE}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}
               />

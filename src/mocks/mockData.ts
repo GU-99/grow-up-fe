@@ -558,7 +558,7 @@ export const PROJECT_DUMMY: Project[] = [
     teamId: 1,
     projectName: 'AITalk',
     content: '상담용 챗봇을 만드는 프로젝트',
-    startDate: null,
+    startDate: new Date('2024-05-15'),
     endDate: null,
   },
   {
@@ -566,16 +566,16 @@ export const PROJECT_DUMMY: Project[] = [
     teamId: 1,
     projectName: 'GrowUp',
     content: '팀원을 모아 프로젝트를 진행하며, 진척도를 관리하는 프로젝트',
-    startDate: new Date('2024-05-15 00:00:00'),
-    endDate: new Date('2024-09-01  00:00:00'),
+    startDate: new Date('2024-05-15'),
+    endDate: new Date('2024-08-31'),
   },
   {
     projectId: 3,
     teamId: 2,
     projectName: 'WithMe',
     content: '이벤트/모임을 등록하여 참여자를 모집하는 프로젝트',
-    startDate: new Date('2023-06-05 00:00:00'),
-    endDate: new Date('2023-09-12 00:00:00'),
+    startDate: new Date('2023-06-05'),
+    endDate: new Date('2023-09-12'),
   },
 ] as const;
 

@@ -2,7 +2,7 @@ import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Team } from '@/types/TeamType';
-import type { Project } from '@/types/ProjectType';
+import type { Project, ProjectForm } from '@/types/ProjectType';
 import type { User, SearchUser, UserWithRole } from '@/types/UserType';
 
 /**
@@ -57,6 +57,24 @@ export async function getProjectList(teamId: Team['teamId'], axiosConfig: AxiosR
  */
 export async function getProjectUserRoleList(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.get<UserWithRole[]>(`/project/${projectId}/user`, axiosConfig);
+}
+
+/**
+ * 프로젝트 생성 API
+ *
+ * @export
+ * @async
+ * @param {Team['teamId']} teamId - 팀 ID
+ * @param {ProjectForm} projectData - 프로젝트 생성 정보 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function createProject(
+  teamId: Team['teamId'],
+  projectData: ProjectForm,
+  axiosConfig: AxiosRequestConfig = {},
+): Promise<AxiosResponse<void>> {
+  return authAxios.post(`/team/${teamId}/project`, projectData, axiosConfig);
 }
 
 /**
