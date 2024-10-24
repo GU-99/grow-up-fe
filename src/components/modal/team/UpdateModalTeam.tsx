@@ -16,7 +16,7 @@ import Spinner from '@components/common/Spinner';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
-import { TEAM_ROLES } from '@constants/role';
+import { TEAM_DEFAULT_ROLE, TEAM_ROLES } from '@constants/role';
 import { findUser } from '@services/userService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
@@ -131,7 +131,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
             userList={userList}
             searchCallbackInfo={searchCallbackInfo}
             onKeywordChange={handleKeywordChange}
-            onUserClick={(user) => handleCoworkersClick(user.userId, 'MATE')}
+            onUserClick={(user) => handleCoworkersClick(user.userId, TEAM_DEFAULT_ROLE)}
           />
           <div className="flex flex-wrap">
             {coworkers.map(({ userId, nickname, roleName }) => (

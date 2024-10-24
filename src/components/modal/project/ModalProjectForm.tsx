@@ -2,7 +2,7 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import RoleTooltip from '@components/common/RoleTooltip';
-import { PROJECT_ROLE_INFO, PROJECT_ROLES } from '@constants/role';
+import { PROJECT_DEFAULT_ROLE, PROJECT_ROLE_INFO, PROJECT_ROLES } from '@constants/role';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
@@ -16,8 +16,9 @@ import { useParams } from 'react-router-dom';
 import type { SubmitHandler } from 'react-hook-form';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
 import type { ProjectRoleName } from '@/types/RoleType';
-import type { Project, ProjectCoworker, ProjectForm } from '@/types/ProjectType';
+import type { ProjectCoworker, ProjectForm } from '@/types/ProjectType';
 import type { SearchUser, User } from '@/types/UserType';
+import type { Team } from '@/types/TeamType';
 
 type ModalProjectFormProps = {
   formId: string;
@@ -29,15 +30,14 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
   const [keyword, setKeyword] = useState('');
   const [coworkerInfos, setCoworkerInfos] = useState<ProjectCoworker[]>([]);
   const { toastInfo } = useToast();
-  const { teamId: teamIdString } = useParams();
-  const teamId = Number(teamIdString);
+  const { teamId } = useParams();
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
   const searchCallbackInfo: TeamSearchCallback = useMemo(
     () => ({
       type: 'TEAM',
-      searchCallback: (teamId: number, nickname: User['nickname']) => {
-        return fetchData(teamId, nickname);
+      searchCallback: (teamId: Team['teamId'], nickname: User['nickname']) => {
+        return fetchData(Number(teamId), nickname);
       },
     }),
     [fetchData],
@@ -99,7 +99,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
 
     const updatedCoworkerInfos: ProjectCoworker[] = [
       ...coworkerInfos,
-      { userId: user.userId, nickname: user.nickname, roleName: 'ASSIGNEE' },
+      { userId: user.userId, nickname: user.nickname, roleName: PROJECT_DEFAULT_ROLE },
     ];
     const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName, nickname }) => ({
       userId,
@@ -157,7 +157,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
           keyword={keyword}
           loading={loading}
           userList={userList}
-          searchId={teamId}
+          searchId={Number(teamId)}
           searchCallbackInfo={searchCallbackInfo}
           onKeywordChange={handleKeywordChange}
           onUserClick={handleCoworkersClick}
@@ -169,7 +169,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
               userId={userId}
               nickname={nickname}
               roles={PROJECT_ROLES}
-              defaultValue="ASSIGNEE"
+              defaultValue={PROJECT_DEFAULT_ROLE}
               onRoleChange={handleRoleChange}
               onRemoveUser={handleRemoveUser}
             />

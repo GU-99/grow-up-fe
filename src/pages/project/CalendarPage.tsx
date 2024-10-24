@@ -78,8 +78,6 @@ export default function CalendarPage() {
     const isEarlierStartDate = Validator.isEarlierStartDate(project.startDate, targetDate);
     const bgColor = isEarlierStartDate ? '' : '!bg-[#D9D9D9]';
     return { className: bgColor };
-
-    // 범위
   };
   const handleEventPropGetter: EventPropGetter<CustomEvent> = () => ({
     style: { padding: '0px', backgroundColor: 'inherit' },
