@@ -216,7 +216,7 @@ const teamServiceHandler = [
     const { teamId } = params;
 
     // 유저 인증 확인
-    if (!accessToken) return new HttpResponse(null, { status: 403 });
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     // 유저 아이디 정보 취득
     const userId = convertTokenToUserId(accessToken);
