@@ -8,7 +8,6 @@ import type { TaskListWithStatus } from '@/types/TaskType';
 import type { ProjectStatus, ProjectStatusForm, StatusOrder } from '@/types/ProjectStatusType';
 
 // 프로젝트 상태 목록 조회
-// ToDo: React Query 로직과 initialValue, nameList 등을 구하는 로직이 사실 관련이 없는 것 같음. 분리 고려하기.
 export function useReadStatuses(projectId: Project['projectId']) {
   const {
     data: statusList = [],
