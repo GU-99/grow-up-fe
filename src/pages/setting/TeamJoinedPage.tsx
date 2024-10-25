@@ -1,14 +1,13 @@
 import Spinner from '@components/common/Spinner';
 import { useDeleteTeam, useLeaveTeam, useReadTeams } from '@hooks/query/useTeamQuery';
-import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
+
+import { useStore } from '@stores/useStore';
 
 export default function JoinedTeamPage() {
   const { joinedTeamList, isLoading } = useReadTeams();
   const { mutate: leaveTeam } = useLeaveTeam();
   const { mutate: deleteTeam } = useDeleteTeam();
-  // TODO: 실제 userId로 넣어주기
-  const [, payload] = JWT_TOKEN_DUMMY.split('.');
-  const userId = Number(payload.replace('mocked-payload-', ''));
+  const { userInfo } = useStore();
   if (isLoading) return <Spinner />;
 
   return (
@@ -32,7 +31,7 @@ export default function JoinedTeamPage() {
                 </div>
               </div>
               <div className="flex shrink-0 flex-col gap-4">
-                {team.creatorId === userId && (
+                {team.creatorId === userInfo.userId && (
                   <button
                     type="button"
                     className="rounded-md bg-red-500 px-5 py-2 text-sm text-white hover:brightness-90"

@@ -61,14 +61,15 @@ const teamServiceHandler = [
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
-    const [, payload] = JWT_TOKEN_DUMMY.split('.');
-    const creatorId = Number(payload.replace('mocked-payload-', ''));
+    // 유저 아이디 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
     // 팀 ID 생성 및 팀 추가
     const newTeamId = TEAM_DUMMY.length + 1;
     TEAM_DUMMY.push({
       teamId: newTeamId,
-      creatorId,
+      creatorId: userId,
       teamName,
       content,
     });
@@ -97,7 +98,7 @@ const teamServiceHandler = [
 
     TEAM_USER_DUMMY.push({
       teamId: newTeamId,
-      userId: creatorId,
+      userId,
       roleId: creatorRole.roleId,
       isPendingApproval: true,
     });
@@ -114,10 +115,12 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/leave`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-    const [, payload] = JWT_TOKEN_DUMMY.split('.');
-    // 실제 userId로 넣어주기
-    const userId = Number(payload.replace('mocked-payload-', ''));
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
     const filteredTeamUsers = TEAM_USER_DUMMY.filter(
       (teamUser) => !(teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId)),
@@ -211,11 +214,13 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/invitation/accept`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-    // TODO: 실제 userId로 넣어주기
-    const [, payload] = JWT_TOKEN_DUMMY.split('.');
-    const userId = Number(payload.replace('mocked-payload-', ''));
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 403 });
+
+    // 유저 아이디 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
     const teamUser = TEAM_USER_DUMMY.find(
       (teamUser) => teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId),
@@ -231,11 +236,13 @@ const teamServiceHandler = [
   http.post(`${BASE_URL}/team/:teamId/invitation/decline`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
-    // TODO: 실제 userId로 넣어주기
-    const [, payload] = JWT_TOKEN_DUMMY.split('.');
-    const userId = Number(payload.replace('mocked-payload-', ''));
 
+    // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 403 });
+
+    // 유저 아이디 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
 
     const filteredTeamUsers = TEAM_USER_DUMMY.filter(
       (teamUser) => !(teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId)),
