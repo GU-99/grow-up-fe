@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
+import { getProjectNameList } from '@utils/extractNameList';
 import ModalLayout from '@layouts/ModalLayout';
 import Spinner from '@components/common/Spinner';
 import ModalPortal from '@components/modal/ModalPortal';
@@ -13,7 +14,7 @@ import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import { PROJECT_DEFAULT_ROLE, PROJECT_ROLES } from '@constants/role';
 import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
 import useAxios from '@hooks/useAxios';
-import { useReadProjectDetail, useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
+import { useReadProjectDetail, useReadProjectCoworkers, useReadProjects } from '@hooks/query/useProjectQuery';
 import { findUserByTeam } from '@services/teamService';
 
 import type { User } from '@/types/UserType';
@@ -30,9 +31,13 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
   const updateProjectFormId = 'updateProjectForm';
   const { teamId } = useParams();
   const [keyword, setKeyword] = useState('');
-
-  const { projectInfo, isLoading: isProjectLoading } = useReadProjectDetail(Number(teamId), projectId);
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
+  const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
+  const { projectInfo, isLoading: isProjectInfoLoading } = useReadProjectDetail(Number(teamId), projectId);
+  const projectNameList = useMemo(
+    () => getProjectNameList(projectList, projectInfo?.projectName),
+    [projectList, projectInfo?.projectName],
+  );
 
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
@@ -74,7 +79,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     handleClose();
   };
 
-  if (isProjectLoading || isProjectCoworkersLoading) {
+  if (isProjectInfoLoading || isProjectCoworkersLoading) {
     return <Spinner />;
   }
 
@@ -89,7 +94,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
               value={watch('projectName')}
               placeholder="프로젝트명을 입력해주세요."
               errors={errors.projectName?.message}
-              register={register('projectName', PROJECT_VALIDATION_RULES.PROJECT_NAME)}
+              register={register('projectName', PROJECT_VALIDATION_RULES.PROJECT_NAME(projectNameList))}
             />
 
             <DescriptionTextarea

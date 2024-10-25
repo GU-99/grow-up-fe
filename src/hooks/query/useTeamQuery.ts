@@ -42,10 +42,26 @@ export function useReadTeams() {
     },
   });
 
+  const teamList = data;
   const joinedTeamList = data.filter((team) => team.isPendingApproval === true);
   const invitedTeamList = data.filter((team) => team.isPendingApproval === false);
 
-  return { joinedTeamList, invitedTeamList, isLoading, isError, error };
+  return { joinedTeamList, invitedTeamList, teamList, isLoading, isError, error };
+}
+
+// 팀 정보 조회
+export function useReadTeamInfo(teamId: Team['teamId']) {
+  const { joinedTeamList, invitedTeamList } = useReadTeams();
+
+  const teamList = useMemo(() => {
+    return [...joinedTeamList, ...invitedTeamList];
+  }, [joinedTeamList, invitedTeamList]);
+
+  const teamInfo = useMemo(() => {
+    return teamList.find((team) => team.teamId === teamId);
+  }, [teamList, teamId]);
+
+  return { teamInfo };
 }
 
 // 팀 탈퇴
@@ -249,36 +265,4 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
   });
 
   return { coworkers, isLoading, isError };
-}
-
-// 팀 상세 조회
-export function useReadTeam(teamId: Team['teamId']) {
-  const { joinedTeamList, invitedTeamList } = useReadTeams();
-
-  const teamList = useMemo(() => {
-    return [...joinedTeamList, ...invitedTeamList];
-  }, [joinedTeamList, invitedTeamList]);
-
-  const teamInfo = useMemo(() => {
-    return teamList.find((team) => team.teamId === teamId);
-  }, [teamList, teamId]);
-
-  const {
-    coworkers: teamCoworkers,
-    isLoading: isTeamCoworkersLoading,
-    isError: isTeamCoworkersError,
-  } = useReadTeamCoworkers(teamId);
-
-  const team = useMemo(
-    () => ({
-      teamName: teamInfo?.teamName,
-      content: teamInfo?.content,
-      coworkers: teamCoworkers,
-      isLoading: isTeamCoworkersLoading,
-      isError: isTeamCoworkersError,
-    }),
-    [teamInfo, teamCoworkers, isTeamCoworkersError, isTeamCoworkersLoading],
-  );
-
-  return team;
 }

@@ -141,7 +141,7 @@ export const TASK_VALIDATION_RULES = deepFreeze({
 });
 
 export const TEAM_VALIDATION_RULES = deepFreeze({
-  TEAM_NAME: {
+  TEAM_NAME: (nameList: string[]) => ({
     required: '팀명을 입력해주세요.',
     maxLength: {
       value: 10,
@@ -151,7 +151,12 @@ export const TEAM_VALIDATION_RULES = deepFreeze({
       value: TEAM_NAME_PATTERN,
       message: '팀명은 한글, 영문, 숫자만 포함 가능합니다.',
     },
-  },
+    validate: {
+      isNotEmpty: (name: string) => (Validator.isEmptyString(name) ? '팀명을 제대로 입력해주세요.' : true),
+      isNotDuplicatedName: (value: string) =>
+        Validator.isDuplicatedName(nameList, value) ? '이미 사용 중인 팀명입니다.' : true,
+    },
+  }),
   TEAM_DESCRIPTION: {
     maxLength: {
       value: 200,
@@ -161,7 +166,7 @@ export const TEAM_VALIDATION_RULES = deepFreeze({
 });
 
 export const PROJECT_VALIDATION_RULES = deepFreeze({
-  PROJECT_NAME: {
+  PROJECT_NAME: (nameList: string[]) => ({
     required: '프로젝트명을 입력해주세요.',
     maxLength: {
       value: 10,
@@ -171,7 +176,12 @@ export const PROJECT_VALIDATION_RULES = deepFreeze({
       value: TEAM_NAME_PATTERN,
       message: '프로젝트명은 한글, 영문, 숫자만 포함 가능합니다.',
     },
-  },
+    validate: {
+      isNotEmpty: (name: string) => (Validator.isEmptyString(name) ? '프로젝트명을 제대로 입력해주세요.' : true),
+      isNotDuplicatedName: (value: string) =>
+        Validator.isDuplicatedName(nameList, value) ? '이미 사용 중인 프로젝트명입니다.' : true,
+    },
+  }),
   PROJECT_DESCRIPTION: {
     maxLength: {
       value: 200,

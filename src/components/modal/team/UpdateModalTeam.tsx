@@ -1,22 +1,25 @@
+import { useEffect, useMemo, useState } from 'react';
 import ModalLayout from '@layouts/ModalLayout';
 import ModalPortal from '@components/modal/ModalPortal';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   useAddTeamCoworker,
   useDeleteTeamCoworker,
-  useReadTeam,
+  useReadTeamCoworkers,
+  useReadTeamInfo,
+  useReadTeams,
   useUpdateTeamCoworkerRole,
   useUpdateTeamInfo,
 } from '@hooks/query/useTeamQuery';
-import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import { useEffect, useMemo, useState } from 'react';
-import ModalButton from '@components/modal/ModalButton';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
+import { TEAM_DEFAULT_ROLE, TEAM_ROLES } from '@constants/role';
 import Spinner from '@components/common/Spinner';
-import DescriptionTextarea from '@components/common/DescriptionTextarea';
+import ModalButton from '@components/modal/ModalButton';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
-import { TEAM_DEFAULT_ROLE, TEAM_ROLES } from '@constants/role';
+import DescriptionTextarea from '@components/common/DescriptionTextarea';
+import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import { getTeamNameList } from '@utils/extractNameList';
 import { findUser } from '@services/userService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
@@ -34,14 +37,18 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   const updateTeamFormId = 'updateTeamForm';
   const [keyword, setKeyword] = useState('');
   const { toastInfo, toastWarn } = useToast();
-  const { loading: isUserLoading, data: userList = [], clearData, fetchData } = useAxios(findUser);
 
-  const { teamName, content, coworkers, isLoading: isTeamLoading, isError } = useReadTeam(teamId);
+  const { coworkers, isLoading: isTeamCoworkersLoading } = useReadTeamCoworkers(teamId);
+  const { teamList, isLoading: isTeamListLoading } = useReadTeams();
+  const { teamInfo } = useReadTeamInfo(Number(teamId));
+  const teamNameList = useMemo(() => getTeamNameList(teamList, teamInfo?.teamName), [teamList, teamInfo?.teamName]);
 
   const { mutate: updateTeamMutation } = useUpdateTeamInfo();
   const { mutate: addTeamCoworkerMutation } = useAddTeamCoworker(teamId);
   const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker(teamId);
   const { mutate: updateTeamCoworkerRoleMutation } = useUpdateTeamCoworkerRole(teamId);
+
+  const { loading: isUserLoading, data: userList = [], clearData, fetchData } = useAxios(findUser);
 
   const searchCallbackInfo: AllSearchCallback = useMemo(
     () => ({ type: 'ALL', searchCallback: fetchData }),
@@ -58,10 +65,10 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   } = methods;
 
   useEffect(() => {
-    if (teamName && content && coworkers) {
-      reset({ teamName, content, coworkers });
+    if (teamInfo?.teamName && teamInfo?.content && coworkers) {
+      reset({ teamName: teamInfo.teamName, content: teamInfo.content, coworkers });
     }
-  }, [teamName, content, coworkers, reset]);
+  }, [teamInfo, coworkers, reset]);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value.trim());
@@ -89,7 +96,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     updateTeamCoworkerRoleMutation({ userId, roleName });
   };
 
-  if (isTeamLoading) {
+  if (isTeamCoworkersLoading || isTeamListLoading) {
     return <Spinner />;
   }
 
@@ -104,7 +111,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
               value={watch('teamName')}
               placeholder="팀명을 입력해주세요."
               errors={errors.teamName?.message}
-              register={register('teamName', TEAM_VALIDATION_RULES.TEAM_NAME)}
+              register={register('teamName', TEAM_VALIDATION_RULES.TEAM_NAME(teamNameList))}
             />
 
             <DescriptionTextarea
