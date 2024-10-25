@@ -29,9 +29,9 @@ import {
 } from '@hooks/query/useTaskQuery';
 import { useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
-import type { SubmitHandler } from 'react-hook-form';
-import { getTaskNameList } from '@/utils/extractDataList';
+import { getTaskNameList } from '@utils/extractDataList';
 
+import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser } from '@/types/UserType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';

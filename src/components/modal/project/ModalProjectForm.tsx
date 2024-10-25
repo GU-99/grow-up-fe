@@ -16,7 +16,7 @@ import { useReadProjects } from '@hooks/query/useProjectQuery';
 import { findUserByTeam } from '@services/teamService';
 import { useParams } from 'react-router-dom';
 import type { SubmitHandler } from 'react-hook-form';
-import { getProjectNameList } from '@/utils/extractDataList';
+import { getProjectNameList } from '@utils/extractDataList';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
 import type { ProjectRoleName } from '@/types/RoleType';
 import type { ProjectCoworker, ProjectForm } from '@/types/ProjectType';
