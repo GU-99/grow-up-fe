@@ -30,7 +30,7 @@ import type { User } from '@/types/UserType';
 export function useReadTeams() {
   const { userInfo } = useStore();
   const {
-    data = [],
+    data: teamList = [],
     isLoading,
     isError,
     error,
@@ -42,9 +42,8 @@ export function useReadTeams() {
     },
   });
 
-  const teamList = data;
-  const joinedTeamList = data.filter((team) => team.isPendingApproval === true);
-  const invitedTeamList = data.filter((team) => team.isPendingApproval === false);
+  const joinedTeamList = teamList.filter((team) => team.isPendingApproval === true);
+  const invitedTeamList = teamList.filter((team) => team.isPendingApproval === false);
 
   return { joinedTeamList, invitedTeamList, teamList, isLoading, isError, error };
 }
