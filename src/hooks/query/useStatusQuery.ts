@@ -1,62 +1,19 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
-import { PROJECT_STATUS_COLORS } from '@constants/projectStatus';
 import { createStatus, deleteStatus, getStatusList, updateStatus, updateStatusesOrder } from '@services/statusService';
 import { generateProjectQueryKey, generateStatusesQueryKey, generateTasksQueryKey } from '@utils/queryKeyGenerator';
 import type { Project } from '@/types/ProjectType';
 import type { TaskListWithStatus } from '@/types/TaskType';
-import type { ProjectStatus, ProjectStatusForm, StatusOrder, UsableColor } from '@/types/ProjectStatusType';
-
-function getStatusNameList(statusList: ProjectStatus[], excludedName?: ProjectStatus['statusName']) {
-  const statusNameList = statusList.map((projectStatus) => projectStatus.statusName);
-
-  const statusNameSet = new Set(statusNameList);
-  if (excludedName && statusNameSet.has(excludedName)) {
-    statusNameSet.delete(excludedName);
-  }
-
-  return [...statusNameSet.values()];
-}
-
-function getStatusColorList(statusList: ProjectStatus[], excludedColor?: ProjectStatus['colorCode']) {
-  const statusColorList = statusList.map((projectStatus) => projectStatus.colorCode);
-
-  const statusColorSet = new Set(statusColorList);
-  if (excludedColor && statusColorSet.has(excludedColor)) {
-    statusColorSet.delete(excludedColor);
-  }
-
-  return [...statusColorSet.values()];
-}
-
-function getUsableStatusColorList(
-  statusList: ProjectStatus[],
-  excludedColor?: ProjectStatus['colorCode'],
-): UsableColor[] {
-  const statusColorMap = new Map();
-  Object.values(PROJECT_STATUS_COLORS).forEach((colorCode) => {
-    statusColorMap.set(colorCode, { colorCode, isUsable: true });
-  });
-
-  statusList.forEach(({ colorCode }) => {
-    if (!statusColorMap.has(colorCode)) throw Error('[Error] 등록되지 않은 색상입니다.');
-
-    if (excludedColor === colorCode) return;
-    statusColorMap.set(colorCode, { ...statusColorMap.get(colorCode), isUsable: false });
-  });
-
-  return [...statusColorMap.values()];
-}
+import type { ProjectStatus, ProjectStatusForm, StatusOrder } from '@/types/ProjectStatusType';
 
 // 프로젝트 상태 목록 조회
-// ToDo: React Query 로직과 initialValue, nameList 등을 구하는 로직이 사실 관련이 없는 것 같음. 분리 고려하기.
-export function useReadStatuses(projectId: Project['projectId'], statusId?: ProjectStatus['statusId']) {
+export function useReadStatuses(projectId: Project['projectId']) {
   const {
     data: statusList = [],
-    isLoading: isStatusLoading,
-    isError: isStatusError,
-    error: statusError,
+    isLoading: isStatusesLoading,
+    isError: isStatusesError,
+    error: statusesError,
   } = useQuery({
     queryKey: generateStatusesQueryKey(projectId),
     queryFn: async () => {
@@ -65,33 +22,21 @@ export function useReadStatuses(projectId: Project['projectId'], statusId?: Proj
     },
   });
 
-  const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList, statusId]);
-  const initialValue = useMemo(
-    () => ({
-      statusName: status?.statusName || '',
-      colorCode: status?.colorCode || '',
-      sortOrder: status?.sortOrder || statusList.length + 1,
-    }),
-    [status, statusList],
-  );
-  const nameList = useMemo(() => getStatusNameList(statusList, status?.statusName), [statusList, status?.statusName]);
-  const colorList = useMemo(() => getStatusColorList(statusList, status?.colorCode), [statusList, status?.colorCode]);
-  const usableColorList = useMemo(
-    () => getUsableStatusColorList(statusList, status?.colorCode),
-    [statusList, status?.colorCode],
-  );
-
   return {
-    status,
     statusList,
-    isStatusLoading,
-    isStatusError,
-    statusError,
-    initialValue,
-    nameList,
-    colorList,
-    usableColorList,
+    isStatusesLoading,
+    isStatusesError,
+    statusesError,
   };
+}
+
+// 단일 상태 상세 조회
+export function useReadStatus(projectId: Project['projectId'], statusId: ProjectStatus['statusId']) {
+  const { statusList, isStatusesLoading, isStatusesError, statusesError } = useReadStatuses(projectId);
+
+  const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList, statusId]);
+
+  return { status, isStatusesLoading, isStatusesError, statusesError };
 }
 
 // 프로젝트 상태 생성

@@ -8,7 +8,7 @@ import CustomMarkdown from '@components/common/CustomMarkdown';
 import { downloadTaskFile } from '@services/taskService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
-import { useReadStatuses } from '@hooks/query/useStatusQuery';
+import { useReadStatus } from '@hooks/query/useStatusQuery';
 import { useDeleteTask, useReadAssignees, useReadStatusTask, useReadTaskFiles } from '@hooks/query/useTaskQuery';
 
 import type { Task } from '@/types/TaskType';
@@ -31,7 +31,7 @@ export default function DetailModalTask({
   onClose: handleClose,
 }: ViewModalTaskProps) {
   const { mutate: deleteTaskMutate } = useDeleteTask(projectId);
-  const { status, isStatusLoading } = useReadStatuses(projectId, statusId);
+  const { status, isStatusesLoading } = useReadStatus(projectId, statusId);
   const { statusTask, isTasksLoading } = useReadStatusTask(projectId, taskId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
@@ -73,7 +73,7 @@ export default function DetailModalTask({
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {isStatusLoading || isTasksLoading || isAssigneeLoading || isTaskFileLoading || !statusTask ? (
+        {isStatusesLoading || isTasksLoading || isAssigneeLoading || isTaskFileLoading || !statusTask ? (
           <Spinner />
         ) : (
           <article className="flex h-full flex-col justify-center gap-20">

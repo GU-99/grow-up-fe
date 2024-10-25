@@ -1,12 +1,13 @@
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiProhibited2Fill } from 'react-icons/ri';
 import { STATUS_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
-
 import type { SubmitHandler } from 'react-hook-form';
-import { useEffect } from 'react';
+import { getStatusColorList, getStatusNameList, getUsableStatusColorList } from '@utils/extractDataList';
+
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Project } from '@/types/ProjectType';
 
@@ -18,9 +19,22 @@ type ModalProjectStatusFormProps = {
 };
 
 export default function ModalProjectStatusForm({ formId, project, statusId, onSubmit }: ModalProjectStatusFormProps) {
-  const { isStatusLoading, initialValue, nameList, colorList, usableColorList } = useReadStatuses(
-    project.projectId,
-    statusId,
+  const { statusList, isStatusesLoading } = useReadStatuses(project.projectId);
+  const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList, statusId]);
+
+  const nameList = useMemo(() => getStatusNameList(statusList, status?.statusName), [statusList, status?.statusName]);
+  const colorList = useMemo(() => getStatusColorList(statusList, status?.colorCode), [statusList, status?.colorCode]);
+  const usableColorList = useMemo(
+    () => getUsableStatusColorList(statusList, status?.colorCode),
+    [statusList, status?.colorCode],
+  );
+  const initialValue = useMemo(
+    () => ({
+      statusName: status?.statusName || '',
+      colorCode: status?.colorCode || '',
+      sortOrder: status?.sortOrder || statusList.length + 1,
+    }),
+    [status, statusList],
   );
 
   const {
@@ -38,7 +52,7 @@ export default function ModalProjectStatusForm({ formId, project, statusId, onSu
     reset(initialValue);
   }, [initialValue, reset]);
 
-  if (isStatusLoading) return <Spinner />;
+  if (isStatusesLoading) return <Spinner />;
 
   return (
     <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(onSubmit)}>

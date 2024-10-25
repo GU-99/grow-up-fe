@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import ModalLayout from '@layouts/ModalLayout';
-import ModalPortal from '@components/modal/ModalPortal';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   useAddTeamCoworker,
@@ -11,18 +9,21 @@ import {
   useUpdateTeamCoworkerRole,
   useUpdateTeamInfo,
 } from '@hooks/query/useTeamQuery';
-import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import { TEAM_DEFAULT_ROLE, TEAM_ROLES } from '@constants/role';
+import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
+import ModalLayout from '@layouts/ModalLayout';
 import Spinner from '@components/common/Spinner';
+import ModalPortal from '@components/modal/ModalPortal';
 import ModalButton from '@components/modal/ModalButton';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import { getTeamNameList } from '@utils/extractNameList';
+import { getTeamNameList } from '@utils/extractDataList';
 import { findUser } from '@services/userService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
+
 import type { Team, TeamForm } from '@/types/TeamType';
 import type { TeamRoleName } from '@/types/RoleType';
 import type { AllSearchCallback } from '@/types/SearchCallbackType';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
-import { getProjectNameList } from '@utils/extractNameList';
+import { getProjectNameList } from '@utils/extractDataList';
 import ModalLayout from '@layouts/ModalLayout';
 import Spinner from '@components/common/Spinner';
 import ModalPortal from '@components/modal/ModalPortal';
