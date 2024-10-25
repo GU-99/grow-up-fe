@@ -3,7 +3,7 @@ import { Navigate, NavLink, Outlet, useParams } from 'react-router-dom';
 import { RiSettings5Fill } from 'react-icons/ri';
 import useModal from '@hooks/useModal';
 import { ProjectContext } from '@hooks/useProjectContext';
-import { useReadProjects, useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
+import { useReadProjectCoworkers, useReadProjects } from '@hooks/query/useProjectQuery';
 import Spinner from '@components/common/Spinner';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
@@ -15,8 +15,9 @@ import { useReadStatuses } from '@hooks/query/useStatusQuery';
 export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
   const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
-  const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(Number(projectId));
+
   const { statusList, isStatusLoading } = useReadStatuses(Number(projectId));
+  const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(Number(projectId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
   const { toastWarn } = useToast();
@@ -26,7 +27,7 @@ export default function ProjectLayout() {
     [projectList, projectId],
   );
 
-  if (isProjectLoading || isProjectUserRoleLoading || isStatusLoading) return <Spinner />;
+  if (isProjectLoading || isProjectCoworkersLoading || isStatusLoading) return <Spinner />;
   if (!project) return <Navigate to="/error" replace />;
 
   const handleCreateTaskClick = () => {
@@ -78,7 +79,7 @@ export default function ProjectLayout() {
               </div>
             </div>
             <div className="flex grow overflow-auto p-10">
-              <Outlet context={{ project, projectUserRoleList } satisfies ProjectContext} />
+              <Outlet context={{ project, projectCoworkers } satisfies ProjectContext} />
             </div>
           </div>
         </section>

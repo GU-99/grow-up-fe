@@ -17,7 +17,6 @@ import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import useTaskFile from '@hooks/useTaskFile';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
-import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
 import {
   useAddAssignee,
   useDeleteAssignee,
@@ -28,6 +27,7 @@ import {
   useReadTaskFiles,
   useUpdateTaskInfo,
 } from '@hooks/query/useTaskQuery';
+import { useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
 import { getTaskNameList } from '@utils/extractNameList';
 
@@ -70,7 +70,7 @@ export default function UpdateModalTask({
   );
 
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
-  const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(projectId);
+  const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
 
@@ -106,7 +106,7 @@ export default function UpdateModalTask({
     const isIncludedUser = assigneeList.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
-    const userWithRole = projectUserRoleList.find((projectUser) => projectUser.userId === user.userId);
+    const userWithRole = projectCoworkers.find((projectUser) => projectUser.userId === user.userId);
     if (!userWithRole) {
       return toastWarn('프로젝트 팀원 목록에서 추가한 사용자를 찾을 수 없습니다. 확인 후 다시 시도해주세요.');
     }
@@ -187,7 +187,7 @@ export default function UpdateModalTask({
           </>
         )}
         <hr className="my-20" />
-        {isProjectUserRoleLoading || isAssigneeLoading ? (
+        {isProjectCoworkersLoading || isAssigneeLoading ? (
           <Spinner />
         ) : (
           <section>

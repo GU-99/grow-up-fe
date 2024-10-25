@@ -5,11 +5,14 @@ import useToast from '@hooks/useToast';
 import { TEAM_DEFAULT_ROLE, TEAM_ROLE_INFO, TEAM_ROLES } from '@constants/role';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import { findUser } from '@services/userService';
+import Spinner from '@components/common/Spinner';
 import RoleTooltip from '@components/common/RoleTooltip';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import { useReadTeams } from '@hooks/query/useTeamQuery';
+import { getTeamNameList } from '@utils/extractNameList';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, User } from '@/types/UserType';
@@ -28,6 +31,9 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
   const [coworkerInfos, setCoworkerInfos] = useState<TeamCoworker[]>([]);
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUser);
   const { toastInfo } = useToast();
+
+  const { teamList, isLoading: isTeamListLoading } = useReadTeams();
+  const teamNameList = useMemo(() => getTeamNameList(teamList), [teamList]);
 
   const searchCallbackInfo: AllSearchCallback = useMemo(
     () => ({ type: 'ALL', searchCallback: fetchData }),
@@ -97,6 +103,8 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
 
   const handleSubmitForm: SubmitHandler<TeamForm> = (formData: TeamForm) => onSubmit(formData);
 
+  if (isTeamListLoading) return <Spinner />;
+
   return (
     <FormProvider {...methods}>
       <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(handleSubmitForm)}>
@@ -113,7 +121,7 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
           value={watch('teamName')}
           placeholder="팀명을 입력해주세요."
           errors={errors.teamName?.message}
-          register={register('teamName', TEAM_VALIDATION_RULES.TEAM_NAME)}
+          register={register('teamName', TEAM_VALIDATION_RULES.TEAM_NAME(teamNameList))}
         />
 
         <DescriptionTextarea

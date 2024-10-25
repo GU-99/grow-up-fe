@@ -17,7 +17,7 @@ import useAxios from '@hooks/useAxios';
 import useTaskFile from '@hooks/useTaskFile';
 import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
-import { useReadProjectUserRoleList } from '@hooks/query/useProjectQuery';
+import { useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
 import Validator from '@utils/Validator';
 
@@ -47,8 +47,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
   const { statusTaskList, isTasksLoading } = useReadStatusTasks(projectId);
   const taskNameList = useMemo(() => getTaskNameList(statusTaskList), [statusTaskList]);
-
-  const { projectUserRoleList, isProjectUserRoleLoading } = useReadProjectUserRoleList(projectId);
+  const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
   const { data: userList = [], loading, clearData, fetchData } = useAxios(findUserByProject);
   const { isValidTaskFile } = useTaskFile(project.projectId);
   const { toastInfo, toastWarn } = useToast();
@@ -91,7 +90,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     const isIncludedUser = assignees.find((assignee) => assignee.userId === user.userId);
     if (isIncludedUser) return toastInfo('이미 포함된 수행자입니다');
 
-    const userWithRole = projectUserRoleList.find((projectUser) => projectUser.userId === user.userId);
+    const userWithRole = projectCoworkers.find((projectUser) => projectUser.userId === user.userId);
     if (!userWithRole) {
       return toastWarn('프로젝트 팀원 목록에서 추가한 사용자를 찾을 수 없습니다. 확인 후 다시 시도해주세요.');
     }
@@ -139,7 +138,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setFiles(filteredFiles);
   };
 
-  if (isStatusLoading || isTasksLoading || isProjectUserRoleLoading) return <Spinner />;
+  if (isStatusLoading || isTasksLoading || isProjectCoworkersLoading) return <Spinner />;
 
   return (
     <FormProvider {...methods}>

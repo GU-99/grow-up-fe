@@ -3,6 +3,7 @@ import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/q
 import { createProject, deleteProject, getProjectList, getProjectUserRoleList } from '@services/projectService';
 
 import useToast from '@hooks/useToast';
+import { useMemo } from 'react';
 import type { Team } from '@/types/TeamType';
 import type { Project, ProjectForm } from '@/types/ProjectType';
 
@@ -26,13 +27,29 @@ export function useReadProjects(teamId: Team['teamId']) {
   return { projectList, isProjectLoading, isProjectError, projectError };
 }
 
+// 특정 프로젝트 목록 조회
+export function useReadProjectDetail(teamId: Team['teamId'], projectId: Project['projectId']) {
+  const { projectList, isProjectLoading, isProjectError, projectError } = useReadProjects(teamId);
+
+  const projectInfo = useMemo(() => {
+    return projectList.find((project) => project.projectId === projectId);
+  }, [projectList, projectId]);
+
+  return {
+    projectInfo,
+    isLoading: isProjectLoading,
+    isError: isProjectError,
+    error: projectError,
+  };
+}
+
 // 프로젝트 팀원 목록 조회
-export function useReadProjectUserRoleList(projectId: Project['projectId']) {
+export function useReadProjectCoworkers(projectId: Project['projectId']) {
   const {
-    data: projectUserRoleList = [],
-    isLoading: isProjectUserRoleLoading,
-    isError: isErrorProjectUserRole,
-    error: projectUserRoleError,
+    data: projectCoworkers = [],
+    isLoading: isProjectCoworkersLoading,
+    isError: isProjectCoworkersError,
+    error: projectCoworkersError,
   } = useQuery({
     queryKey: generateProjectUsersQueryKey(projectId),
     queryFn: async () => {
@@ -41,7 +58,7 @@ export function useReadProjectUserRoleList(projectId: Project['projectId']) {
     },
   });
 
-  return { projectUserRoleList, isProjectUserRoleLoading, isErrorProjectUserRole, projectUserRoleError };
+  return { projectCoworkers, isProjectCoworkersLoading, isProjectCoworkersError, projectCoworkersError };
 }
 
 // 프로젝트 삭제

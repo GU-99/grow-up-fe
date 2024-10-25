@@ -30,7 +30,7 @@ import type { User } from '@/types/UserType';
 export function useReadTeams() {
   const { userInfo } = useStore();
   const {
-    data = [],
+    data: teamList = [],
     isLoading,
     isError,
     error,
@@ -42,10 +42,25 @@ export function useReadTeams() {
     },
   });
 
-  const joinedTeamList = data.filter((team) => team.isPendingApproval === true);
-  const invitedTeamList = data.filter((team) => team.isPendingApproval === false);
+  const joinedTeamList = teamList.filter((team) => team.isPendingApproval === true);
+  const invitedTeamList = teamList.filter((team) => team.isPendingApproval === false);
 
-  return { joinedTeamList, invitedTeamList, isLoading, isError, error };
+  return { joinedTeamList, invitedTeamList, teamList, isLoading, isError, error };
+}
+
+// 팀 정보 조회
+export function useReadTeamInfo(teamId: Team['teamId']) {
+  const { joinedTeamList, invitedTeamList } = useReadTeams();
+
+  const teamList = useMemo(() => {
+    return [...joinedTeamList, ...invitedTeamList];
+  }, [joinedTeamList, invitedTeamList]);
+
+  const teamInfo = useMemo(() => {
+    return teamList.find((team) => team.teamId === teamId);
+  }, [teamList, teamId]);
+
+  return { teamInfo };
 }
 
 // 팀 탈퇴
@@ -138,9 +153,7 @@ export function useCreateTeam() {
   const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
-    mutationFn: async (data: TeamForm) => {
-      return createTeam(data);
-    },
+    mutationFn: async (data: TeamForm) => createTeam(data),
     onError: () => {
       toastError('팀 생성에 실패했습니다. 다시 시도해 주세요.');
     },
@@ -251,36 +264,4 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
   });
 
   return { coworkers, isLoading, isError };
-}
-
-// 팀 상세 조회
-export function useReadTeam(teamId: Team['teamId']) {
-  const { joinedTeamList, invitedTeamList } = useReadTeams();
-
-  const teamList = useMemo(() => {
-    return [...joinedTeamList, ...invitedTeamList];
-  }, [joinedTeamList, invitedTeamList]);
-
-  const teamInfo = useMemo(() => {
-    return teamList.find((team) => team.teamId === teamId);
-  }, [teamList, teamId]);
-
-  const {
-    coworkers: teamCoworkers,
-    isLoading: isTeamCoworkersLoading,
-    isError: isTeamCoworkersError,
-  } = useReadTeamCoworkers(teamId);
-
-  const team = useMemo(
-    () => ({
-      teamName: teamInfo?.teamName,
-      content: teamInfo?.content,
-      coworkers: teamCoworkers,
-      isLoading: isTeamCoworkersLoading,
-      isError: isTeamCoworkersError,
-    }),
-    [teamInfo, teamCoworkers, isTeamCoworkersError, isTeamCoworkersLoading],
-  );
-
-  return team;
 }

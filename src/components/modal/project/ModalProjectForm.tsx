@@ -3,14 +3,17 @@ import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import RoleTooltip from '@components/common/RoleTooltip';
 import { PROJECT_DEFAULT_ROLE, PROJECT_ROLE_INFO, PROJECT_ROLES } from '@constants/role';
-import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
+import Spinner from '@components/common/Spinner';
 import PeriodDateInput from '@components/common/PeriodDateInput';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
+import DescriptionTextarea from '@components/common/DescriptionTextarea';
+import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import { getProjectNameList } from '@utils/extractNameList';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
+import { useReadProjects } from '@hooks/query/useProjectQuery';
 import { findUserByTeam } from '@services/teamService';
 import { useParams } from 'react-router-dom';
 import type { SubmitHandler } from 'react-hook-form';
@@ -32,6 +35,9 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
   const { toastInfo } = useToast();
   const { teamId } = useParams();
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
+
+  const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
+  const projectNameList = useMemo(() => getProjectNameList(projectList), [projectList]);
 
   const searchCallbackInfo: TeamSearchCallback = useMemo(
     () => ({
@@ -114,6 +120,8 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
 
   const handleSubmitForm: SubmitHandler<ProjectForm> = (formData: ProjectForm) => onSubmit(formData);
 
+  if (isProjectLoading) return <Spinner />;
+
   return (
     <FormProvider {...methods}>
       <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(handleSubmitForm)}>
@@ -130,7 +138,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
           value={watch('projectName')}
           placeholder="프로젝트명을 입력해주세요."
           errors={errors.projectName?.message}
-          register={register('projectName', PROJECT_VALIDATION_RULES.PROJECT_NAME)}
+          register={register('projectName', PROJECT_VALIDATION_RULES.PROJECT_NAME(projectNameList))}
         />
 
         <DescriptionTextarea
