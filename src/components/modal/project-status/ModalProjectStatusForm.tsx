@@ -20,7 +20,7 @@ type ModalProjectStatusFormProps = {
 
 export default function ModalProjectStatusForm({ formId, project, statusId, onSubmit }: ModalProjectStatusFormProps) {
   const { statusList, isStatusesLoading } = useReadStatuses(project.projectId);
-  const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList]);
+  const status = useMemo(() => statusList.find((status) => status.statusId === statusId), [statusList, statusId]);
 
   const nameList = useMemo(() => getStatusNameList(statusList, status?.statusName), [statusList, status?.statusName]);
   const colorList = useMemo(() => getStatusColorList(statusList, status?.colorCode), [statusList, status?.colorCode]);

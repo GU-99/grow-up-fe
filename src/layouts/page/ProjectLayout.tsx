@@ -16,7 +16,7 @@ export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
   const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
 
-  const { statusList, isStatusLoading } = useReadStatuses(Number(projectId));
+  const { statusList, isStatusesLoading } = useReadStatuses(Number(projectId));
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(Number(projectId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
@@ -27,7 +27,7 @@ export default function ProjectLayout() {
     [projectList, projectId],
   );
 
-  if (isProjectLoading || isProjectCoworkersLoading || isStatusLoading) return <Spinner />;
+  if (isProjectLoading || isProjectCoworkersLoading || isStatusesLoading) return <Spinner />;
   if (!project) return <Navigate to="/error" replace />;
 
   const handleCreateTaskClick = () => {
