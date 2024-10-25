@@ -84,6 +84,7 @@ export function useReadStatusTasks(projectId: Project['projectId']) {
   return { statusTaskList, isTasksLoading, isTasksError, tasksError };
 }
 
+// 단일 일정 상세 조회
 export function useReadStatusTask(projectId: Project['projectId'], taskId: Task['taskId']) {
   const { statusTaskList, isTasksLoading, isTasksError, tasksError } = useReadStatusTasks(projectId);
 

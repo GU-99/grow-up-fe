@@ -29,9 +29,9 @@ import {
 } from '@hooks/query/useTaskQuery';
 import { useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
-import { getTaskNameList } from '@utils/extractNameList';
-
 import type { SubmitHandler } from 'react-hook-form';
+import { getTaskNameList } from '@/utils/extractDataList';
+
 import type { SearchUser } from '@/types/UserType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
 import type { Project } from '@/types/ProjectType';
@@ -69,7 +69,7 @@ export default function UpdateModalTask({
     [statusTaskList, statusTask?.taskName],
   );
 
-  const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
+  const { statusList, isStatusesLoading } = useReadStatuses(projectId);
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
   const { assigneeList, isAssigneeLoading } = useReadAssignees(projectId, taskId);
   const { taskFileList, isTaskFileLoading } = useReadTaskFiles(projectId, taskId);
@@ -146,7 +146,7 @@ export default function UpdateModalTask({
   return (
     <ModalPortal>
       <ModalLayout onClose={handleClose}>
-        {isStatusLoading || isTasksLoading ? (
+        {isStatusesLoading || isTasksLoading ? (
           <Spinner />
         ) : (
           <>

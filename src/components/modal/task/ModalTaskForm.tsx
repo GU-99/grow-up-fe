@@ -20,31 +20,30 @@ import { useReadStatusTasks } from '@hooks/query/useTaskQuery';
 import { useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import { findUserByProject } from '@services/projectService';
 import Validator from '@utils/Validator';
+import { getTaskNameList } from '@utils/extractDataList';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project } from '@/types/ProjectType';
 import type { CustomFile } from '@/types/FileType';
-import type { Task, TaskForm } from '@/types/TaskType';
+import type { TaskForm } from '@/types/TaskType';
 import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
-import { getTaskNameList } from '@/utils/extractNameList';
 
 type ModalTaskFormProps = {
   formId: string;
   project: Project;
-  taskId?: Task['taskId'];
   onSubmit: SubmitHandler<TaskForm>;
 };
 
 // ToDo: React Query Error시 처리 추가할 것
-export default function ModalTaskForm({ formId, project, taskId, onSubmit }: ModalTaskFormProps) {
+export default function ModalTaskForm({ formId, project, onSubmit }: ModalTaskFormProps) {
   const { projectId, startDate: projectStartDate, endDate: projectEndDate } = project;
 
   const [keyword, setKeyword] = useState('');
   const [assignees, setAssignees] = useState<UserWithRole[]>([]);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
-  const { statusList, isStatusLoading } = useReadStatuses(projectId, taskId);
+  const { statusList, isStatusesLoading } = useReadStatuses(projectId);
   const { statusTaskList, isTasksLoading } = useReadStatusTasks(projectId);
   const taskNameList = useMemo(() => getTaskNameList(statusTaskList), [statusTaskList]);
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
@@ -79,10 +78,10 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
   } = methods;
 
   useEffect(() => {
-    if (!isStatusLoading && statusList.length > 0) {
+    if (!isStatusesLoading && statusList.length > 0) {
       setValue('statusId', statusList[0].statusId);
     }
-  }, [isStatusLoading, statusList]);
+  }, [isStatusesLoading, statusList]);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value.trim());
 
@@ -138,7 +137,7 @@ export default function ModalTaskForm({ formId, project, taskId, onSubmit }: Mod
     setFiles(filteredFiles);
   };
 
-  if (isStatusLoading || isTasksLoading || isProjectCoworkersLoading) return <Spinner />;
+  if (isStatusesLoading || isTasksLoading || isProjectCoworkersLoading) return <Spinner />;
 
   return (
     <FormProvider {...methods}>

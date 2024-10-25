@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
+import { useReadTeams } from '@hooks/query/useTeamQuery';
 import { TEAM_DEFAULT_ROLE, TEAM_ROLE_INFO, TEAM_ROLES } from '@constants/role';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import { findUser } from '@services/userService';
@@ -11,8 +12,7 @@ import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
-import { useReadTeams } from '@hooks/query/useTeamQuery';
-import { getTeamNameList } from '@utils/extractNameList';
+import { getTeamNameList } from '@utils/extractDataList';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, User } from '@/types/UserType';
