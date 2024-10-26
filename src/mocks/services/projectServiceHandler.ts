@@ -216,6 +216,43 @@ const projectServiceHandler = [
 
     return new HttpResponse(null, { status: 204 });
   }),
+
+  // 프로젝트 수정 API
+  http.patch(`${BASE_URL}/team/:teamId/project/:projectId`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const projectId = Number(params.projectId);
+    const teamId = Number(params.teamId);
+    const updatedProjectInfo = (await request.json()) as ProjectForm;
+
+    // 유저 인증 확인
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
+
+    // 유저의 팀 및 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, userId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 유저의 역할 권한 확인 (프로젝트 수정 권한 확인)
+    const userRole = findRole(projectUser.roleId);
+    if (!userRole || (userRole.roleName !== 'ADMIN' && userRole.roleName !== 'LEADER')) {
+      return new HttpResponse('프로젝트 수정 권한이 없습니다.', { status: 403 });
+    }
+
+    // 프로젝트 정보 취득
+    const project = findProject(projectId);
+    if (!project) return new HttpResponse(null, { status: 404 });
+
+    // 프로젝트 수정
+    project.projectName = updatedProjectInfo.projectName;
+    project.content = updatedProjectInfo.content;
+    project.startDate = new Date(updatedProjectInfo.startDate);
+    project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
+
+    return new HttpResponse(null, { status: 200 });
+  }),
 ];
 
 export default projectServiceHandler;

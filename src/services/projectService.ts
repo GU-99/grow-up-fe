@@ -2,7 +2,7 @@ import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Team } from '@/types/TeamType';
-import type { Project, ProjectForm } from '@/types/ProjectType';
+import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 import type { User, SearchUser, UserWithRole } from '@/types/UserType';
 
 /**
@@ -88,4 +88,24 @@ export async function createProject(
  */
 export async function deleteProject(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.delete<void>(`/project/${projectId}`, axiosConfig);
+}
+
+/**
+ * 프로젝트 수정 API
+ *
+ * @export
+ * @async
+ * @param {number} teamId - 팀 ID
+ * @param {number} projectId - 수정할 프로젝트 ID
+ * @param {ProjectInfoForm} formData - 수정할 프로젝트 정보 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function updateProjectInfo(
+  teamId: number,
+  projectId: number,
+  formData: ProjectInfoForm,
+  axiosConfig: AxiosRequestConfig = {},
+): Promise<AxiosResponse<void>> {
+  return authAxios.patch(`/team/${teamId}/project/${projectId}`, formData, axiosConfig);
 }

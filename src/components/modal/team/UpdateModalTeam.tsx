@@ -44,10 +44,10 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   const { teamInfo } = useReadTeamInfo(Number(teamId));
   const teamNameList = useMemo(() => getTeamNameList(teamList, teamInfo?.teamName), [teamList, teamInfo?.teamName]);
 
-  const { mutate: updateTeamMutation } = useUpdateTeamInfo();
-  const { mutate: addTeamCoworkerMutation } = useAddTeamCoworker(teamId);
-  const { mutate: deleteCoworkerMutation } = useDeleteTeamCoworker(teamId);
-  const { mutate: updateTeamCoworkerRoleMutation } = useUpdateTeamCoworkerRole(teamId);
+  const { mutate: updateTeamMutate } = useUpdateTeamInfo();
+  const { mutate: addTeamCoworkerMutate } = useAddTeamCoworker(teamId);
+  const { mutate: deleteCoworkerMutate } = useDeleteTeamCoworker(teamId);
+  const { mutate: updateTeamCoworkerRoleMutate } = useUpdateTeamCoworkerRole(teamId);
 
   const { loading: isUserLoading, data: userList = [], clearData, fetchData } = useAxios(findUser);
 
@@ -76,7 +76,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   };
 
   const handleFormSubmit: SubmitHandler<TeamForm> = async (formData) => {
-    updateTeamMutation({ teamId, teamInfo: formData });
+    updateTeamMutate({ teamId, teamInfo: formData });
     handleClose();
   };
 
@@ -84,17 +84,17 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     const isIncludedUser = coworkers.find((coworker) => coworker.userId === userId);
     if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
 
-    addTeamCoworkerMutation({ userId, roleName });
+    addTeamCoworkerMutate({ userId, roleName });
     setKeyword('');
     clearData();
   };
 
   const handleRemoveUser = (userId: User['userId']) => {
-    deleteCoworkerMutation(userId);
+    deleteCoworkerMutate(userId);
   };
 
   const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
-    updateTeamCoworkerRoleMutation({ userId, roleName });
+    updateTeamCoworkerRoleMutate({ userId, roleName });
   };
 
   if (isTeamCoworkersLoading || isTeamListLoading) {

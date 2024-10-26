@@ -1,11 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenerator';
-import { createProject, deleteProject, getProjectList, getProjectUserRoleList } from '@services/projectService';
+import {
+  createProject,
+  deleteProject,
+  getProjectList,
+  getProjectUserRoleList,
+  updateProjectInfo,
+} from '@services/projectService';
 
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
 import type { Team } from '@/types/TeamType';
-import type { Project, ProjectForm } from '@/types/ProjectType';
+import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 
 // Todo: Project Query CUD로직 작성하기
 // 팀에 속한 프로젝트 목록 조회
@@ -94,6 +100,26 @@ export function useCreateProject(teamId: Team['teamId']) {
     },
     onSuccess: () => {
       toastSuccess('프로젝트를 생성하였습니다.');
+      queryClient.invalidateQueries({ queryKey: projectsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+// 프로젝트 수정
+export function useUpdateProject(teamId: Project['teamId']) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const projectsQueryKey = generateProjectsQueryKey(teamId);
+
+  const mutation = useMutation({
+    mutationFn: ({ projectId, formData }: { projectId: Project['projectId']; formData: ProjectInfoForm }) =>
+      updateProjectInfo(teamId, projectId, formData),
+    onError: () => {
+      toastError('프로젝트 수정을 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('프로젝트를 수정하였습니다.');
       queryClient.invalidateQueries({ queryKey: projectsQueryKey });
     },
   });
