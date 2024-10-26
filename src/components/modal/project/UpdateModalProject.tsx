@@ -25,7 +25,7 @@ import { findUserByTeam } from '@services/teamService';
 import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
-import type { Project, ProjectForm } from '@/types/ProjectType';
+import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 
 type UpdateModalProjectProps = {
   projectId: Project['projectId'];
@@ -44,7 +44,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     [projectList, projectInfo?.projectName],
   );
 
-  const { mutate: updateProjectMutation } = useUpdateProject(Number(teamId));
+  const { mutate: updateProjectMutate } = useUpdateProject(Number(teamId));
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
   const searchCallbackInfo: TeamSearchCallback = useMemo(
@@ -81,8 +81,8 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     setKeyword(e.target.value.trim());
   };
 
-  const handleFormSubmit: SubmitHandler<ProjectForm> = (formData) => {
-    updateProjectMutation({ projectId, formData });
+  const handleFormSubmit: SubmitHandler<ProjectInfoForm> = (formData) => {
+    updateProjectMutate({ projectId, formData });
     handleClose();
   };
 

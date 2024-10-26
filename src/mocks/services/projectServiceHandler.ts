@@ -235,15 +235,15 @@ const projectServiceHandler = [
     const projectUser = findProjectUser(projectId, userId);
     if (!projectUser) return new HttpResponse(null, { status: 403 });
 
-    // 프로젝트 정보 취득
-    const project = findProject(projectId);
-    if (!project) return new HttpResponse(null, { status: 404 });
-
     // 유저의 역할 권한 확인 (프로젝트 수정 권한 확인)
     const userRole = findRole(projectUser.roleId);
     if (!userRole || (userRole.roleName !== 'ADMIN' && userRole.roleName !== 'LEADER')) {
       return new HttpResponse('프로젝트 수정 권한이 없습니다.', { status: 403 });
     }
+
+    // 프로젝트 정보 취득
+    const project = findProject(projectId);
+    if (!project) return new HttpResponse(null, { status: 404 });
 
     // 프로젝트 수정
     project.projectName = updatedProjectInfo.projectName;
