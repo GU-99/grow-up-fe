@@ -14,7 +14,12 @@ import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import { PROJECT_DEFAULT_ROLE, PROJECT_ROLES } from '@constants/role';
 import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
 import useAxios from '@hooks/useAxios';
-import { useReadProjectDetail, useReadProjectCoworkers, useReadProjects } from '@hooks/query/useProjectQuery';
+import {
+  useReadProjectDetail,
+  useReadProjectCoworkers,
+  useReadProjects,
+  useUpdateProject,
+} from '@hooks/query/useProjectQuery';
 import { findUserByTeam } from '@services/teamService';
 
 import type { User } from '@/types/UserType';
@@ -39,6 +44,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     [projectList, projectInfo?.projectName],
   );
 
+  const { mutate: updateProjectMutation } = useUpdateProject(Number(teamId));
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
   const searchCallbackInfo: TeamSearchCallback = useMemo(
@@ -75,7 +81,8 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     setKeyword(e.target.value.trim());
   };
 
-  const handleFormSubmit: SubmitHandler<ProjectForm> = async (data) => {
+  const handleFormSubmit: SubmitHandler<ProjectForm> = (formData) => {
+    updateProjectMutation({ projectId, formData });
     handleClose();
   };
 
