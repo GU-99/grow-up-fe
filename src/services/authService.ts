@@ -22,7 +22,7 @@ import type {
  * @async
  * @param {UserSignUpRequest} signUpForm  - 회원가입 폼 데이터
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function signUp(signUpForm: UserSignUpRequest, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user', signUpForm, axiosConfig);
@@ -35,7 +35,7 @@ export async function signUp(signUpForm: UserSignUpRequest, axiosConfig: AxiosRe
  * @async
  * @param {CheckNicknameForm} nicknameForm - 닉네임
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function checkNicknameDuplicate(nicknameForm: CheckNicknameForm, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/nickname', nicknameForm, axiosConfig);
@@ -48,7 +48,7 @@ export async function checkNicknameDuplicate(nicknameForm: CheckNicknameForm, ax
  * @async
  * @param {UserSignInForm} loginForm - 로그인 폼 데이터
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/login', loginForm, axiosConfig);
@@ -62,7 +62,7 @@ export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequest
  * @param {string} code - 인가 코드
  * @param {SocialLoginProvider} provider - 공급업체 유형
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function socialLogin(provider: SocialLoginProvider, code: string, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post(`user/login/${provider}`, { code }, axiosConfig);
@@ -74,7 +74,7 @@ export async function socialLogin(provider: SocialLoginProvider, code: string, a
  * @export
  * @async
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function getAccessToken(axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/refresh', null, { ...axiosConfig, withCredentials: true });
@@ -98,7 +98,7 @@ export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
  * @export
  * @async
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function logout(axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/logout', null, { ...axiosConfig, withCredentials: true });
@@ -110,7 +110,7 @@ export async function logout(axiosConfig: AxiosRequestConfig = {}) {
  * @export
  * @async
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post('test', null, axiosConfig);
@@ -123,7 +123,7 @@ export async function postTest(axiosConfig: AxiosRequestConfig = {}) {
  * @async
  * @param {RequestEmailCode} email - 이메일
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function sendEmailCode(email: RequestEmailCode, axiosConfig: AxiosRequestConfig = {}) {
   return defaultAxios.post('user/verify/send', email, axiosConfig);
@@ -136,7 +136,7 @@ export async function sendEmailCode(email: RequestEmailCode, axiosConfig: AxiosR
  * @async
  * @param {EmailVerificationForm} verifyForm - 이메일, 인증번호 폼
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function checkEmailCode(verifyForm: EmailVerificationForm, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.post('user/verify/code', verifyForm, axiosConfig);
@@ -175,7 +175,7 @@ export async function searchUserPassword(searchPasswordForm: SearchPasswordForm,
  * @async
  * @param {UpdatePasswordRequest} updatePasswordForm - 비밀번호 변경 요청 데이터
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateUserPassword(
   updatePasswordForm: UpdatePasswordRequest,

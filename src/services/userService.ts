@@ -23,7 +23,7 @@ export async function updateUserInfo(userInfoForm: EditUserInfoRequest, axiosCon
  * @async
  * @param {EditUserLinksForm} links - 링크 리스트
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse>}
+ * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateLinks(links: EditUserLinksForm, axiosConfig: AxiosRequestConfig = {}) {
   return authAxios.patch('/user/links', links, axiosConfig);
