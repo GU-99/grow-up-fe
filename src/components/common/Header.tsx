@@ -45,9 +45,9 @@ export default function Header() {
         <button
           type="button"
           className="ml-10 h-20 rounded-md bg-white px-4 tracking-tight hover:brightness-90"
-          onClick={isAuthenticated || userInfoData.userId ? handleLogout : () => navigate('/signin')}
+          onClick={isAuthenticated ? handleLogout : () => navigate('/signin')}
         >
-          {isAuthenticated || userInfoData.userId ? 'Logout' : 'Login'}
+          {isAuthenticated ? 'Logout' : 'Login'}
         </button>
       </nav>
     </header>
