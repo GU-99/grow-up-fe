@@ -20,10 +20,11 @@ import {
   findTeamUser,
   findUser,
 } from '@mocks/mockAPI';
-import { PROJECT_DUMMY } from '@mocks/mockData';
+import { PROJECT_DUMMY, PROJECT_USER_DUMMY } from '@mocks/mockData';
 import { convertTokenToUserId } from '@utils/converter';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
 import { Project, ProjectForm } from '@/types/ProjectType';
+import { ProjectRoleName } from '@/types/RoleType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
@@ -250,6 +251,88 @@ const projectServiceHandler = [
     project.content = updatedProjectInfo.content;
     project.startDate = new Date(updatedProjectInfo.startDate);
     project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
+
+    return new HttpResponse(null, { status: 200 });
+  }),
+  // 프로젝트 팀원 추가 API
+  http.post(`${BASE_URL}/project/:projectId/user/invitation`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const projectId = Number(params.projectId);
+    const { userId, roleName } = (await request.json()) as { userId: number; roleName: ProjectRoleName };
+
+    // 유저 인증 확인
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // 유저 ID 정보 취득
+    const currentUserId = convertTokenToUserId(accessToken);
+    if (!currentUserId) return new HttpResponse(null, { status: 401 });
+
+    // 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, currentUserId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 권한 확인 (ADMIN 또는 LEADER만 추가 가능)
+    const userRole = findRole(projectUser.roleId);
+    if (!userRole || (userRole.roleName !== 'ADMIN' && userRole.roleName !== 'LEADER')) {
+      return new HttpResponse('팀원 추가 권한이 없습니다.', { status: 403 });
+    }
+
+    // 역할 유효성 검사
+    const role = findRoleByRoleName(roleName);
+    if (!role) {
+      return new HttpResponse('유효하지 않은 역활입니다..', { status: 400 });
+    }
+    // 프로젝트 팀원 추가
+    const newUser = {
+      projectId,
+      userId: Number(userId),
+      roleId: role.roleId,
+    };
+
+    PROJECT_USER_DUMMY.push(newUser);
+
+    return new HttpResponse(null, { status: 200 });
+  }),
+
+  // 프로젝트 팀원 권한 변경 API
+  http.patch(`${BASE_URL}/project/:projectId/user/:userId/role`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const projectId = Number(params.projectId);
+    const userId = Number(params.userId);
+    const { roleName } = (await request.json()) as { roleName: ProjectRoleName };
+
+    // 유저 인증 확인
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // 요청한 유저 ID 정보 취득
+    const currentUserId = convertTokenToUserId(accessToken);
+    if (!currentUserId) return new HttpResponse(null, { status: 401 });
+
+    // 프로젝트 접근 권한 확인
+    const projectUser = findProjectUser(projectId, currentUserId);
+    if (!projectUser) return new HttpResponse(null, { status: 403 });
+
+    // 요청한 유저의 역할 확인 (ADMIN 또는 LEADER만 권한 변경 가능)
+    const userRole = findRole(projectUser.roleId);
+    if (!userRole || (userRole.roleName !== 'ADMIN' && userRole.roleName !== 'LEADER')) {
+      return new HttpResponse('권한 변경 권한이 없습니다.', { status: 403 });
+    }
+
+    // 역할 유효성 검사
+    const newRole = findRoleByRoleName(roleName);
+    if (!newRole) {
+      return new HttpResponse('유효하지 않은 역할입니다.', { status: 400 });
+    }
+
+    // 프로젝트 팀원 정보 조회
+    const targetProjectUser = findProjectUser(projectId, userId);
+    if (!targetProjectUser) return new HttpResponse(null, { status: 404 });
+
+    const projectUserIndex = PROJECT_USER_DUMMY.findIndex(
+      (user) => user.projectId === projectId && user.userId === userId,
+    );
+
+    PROJECT_USER_DUMMY[projectUserIndex].roleId = newRole.roleId;
 
     return new HttpResponse(null, { status: 200 });
   }),

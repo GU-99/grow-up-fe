@@ -1,17 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { generateProjectsQueryKey, generateProjectUsersQueryKey } from '@utils/queryKeyGenerator';
 import {
+  addProjectCoworker,
   createProject,
   deleteProject,
   getProjectList,
   getProjectUserRoleList,
   updateProjectInfo,
+  updateProjectRole,
 } from '@services/projectService';
 
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
 import type { Team } from '@/types/TeamType';
 import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
+import type { ProjectRoleName } from '@/types/RoleType';
+import type { User } from '@/types/UserType';
 
 // Todo: Project Query CUD로직 작성하기
 // 팀에 속한 프로젝트 목록 조회
@@ -121,6 +125,48 @@ export function useUpdateProject(teamId: Project['teamId']) {
     onSuccess: () => {
       toastSuccess('프로젝트를 수정하였습니다.');
       queryClient.invalidateQueries({ queryKey: projectsQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 프로젝트 인원 추가
+export function useAddProjectCoworker(projectId: Project['projectId']) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const projectUsersQueryKey = generateProjectUsersQueryKey(projectId);
+
+  const mutation = useMutation({
+    mutationFn: ({ userId, roleName }: { userId: User['userId']; roleName: ProjectRoleName }) =>
+      addProjectCoworker(projectId, userId, roleName),
+    onError: () => {
+      toastError('유저 초대에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('유저를 성공적으로 초대했습니다.');
+      queryClient.invalidateQueries({ queryKey: projectUsersQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 프로젝트 유저 권한 변경
+export function useUpdateProjectRole(projectId: Project['projectId']) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const projectUsersQueryKey = generateProjectUsersQueryKey(projectId);
+
+  const mutation = useMutation({
+    mutationFn: ({ userId, roleName }: { userId: User['userId']; roleName: ProjectRoleName }) =>
+      updateProjectRole(projectId, userId, roleName),
+    onError: () => {
+      toastError('유저 권한 업데이트에 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('유저 권한을 성공적으로 업데이트했습니다.');
+      queryClient.invalidateQueries({ queryKey: projectUsersQueryKey });
     },
   });
 
