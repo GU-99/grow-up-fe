@@ -78,6 +78,20 @@ export function deleteAllProjectUser(projectId: Project['projectId']) {
   }
 }
 
+// 프로젝트 유저의 역할 업데이트
+export function updateProjectUserRole(
+  projectId: Project['projectId'],
+  userId: User['userId'],
+  newRoleId: Role['roleId'],
+) {
+  const projectUser = findProjectUser(projectId, userId);
+  if (projectUser) {
+    projectUser.roleId = newRoleId;
+    return projectUser;
+  }
+  return null;
+}
+
 /* ================= 프로젝트(Project) 관련 처리 ================= */
 
 // 프로젝트 생성

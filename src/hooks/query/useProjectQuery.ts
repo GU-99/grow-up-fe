@@ -13,7 +13,7 @@ import {
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
 import type { Team } from '@/types/TeamType';
-import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
+import type { Project, ProjectCoworkerForm, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 import type { ProjectRoleName } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
 
@@ -138,8 +138,7 @@ export function useAddProjectCoworker(projectId: Project['projectId']) {
   const projectUsersQueryKey = generateProjectUsersQueryKey(projectId);
 
   const mutation = useMutation({
-    mutationFn: ({ userId, roleName }: { userId: User['userId']; roleName: ProjectRoleName }) =>
-      addProjectCoworker(projectId, userId, roleName),
+    mutationFn: ({ userId, roleName }: ProjectCoworkerForm) => addProjectCoworker(projectId, userId, roleName),
     onError: () => {
       toastError('유저 초대에 실패했습니다. 다시 시도해 주세요.');
     },
@@ -159,8 +158,7 @@ export function useUpdateProjectRole(projectId: Project['projectId']) {
   const projectUsersQueryKey = generateProjectUsersQueryKey(projectId);
 
   const mutation = useMutation({
-    mutationFn: ({ userId, roleName }: { userId: User['userId']; roleName: ProjectRoleName }) =>
-      updateProjectRole(projectId, userId, roleName),
+    mutationFn: ({ userId, roleName }: ProjectCoworkerForm) => updateProjectRole(projectId, userId, roleName),
     onError: () => {
       toastError('유저 권한 업데이트에 실패했습니다. 다시 시도해 주세요.');
     },
