@@ -280,7 +280,7 @@ const projectServiceHandler = [
     // 역할 유효성 검사
     const role = findRoleByRoleName(roleName);
     if (!role) {
-      return new HttpResponse('유효하지 않은 역활입니다..', { status: 400 });
+      return new HttpResponse('유효하지 않은 역할입니다.', { status: 400 });
     }
     // 프로젝트 팀원 추가
     const newUser = {
@@ -331,6 +331,10 @@ const projectServiceHandler = [
     const projectUserIndex = PROJECT_USER_DUMMY.findIndex(
       (user) => user.projectId === projectId && user.userId === userId,
     );
+
+    if (projectUserIndex === -1) {
+      return new HttpResponse('해당 유저를 찾을 수 없습니다.', { status: 404 });
+    }
 
     PROJECT_USER_DUMMY[projectUserIndex].roleId = newRole.roleId;
 
