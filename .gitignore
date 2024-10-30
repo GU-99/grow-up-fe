@@ -30,6 +30,7 @@ dist-ssr
 .env.test
 .env.production
 .env.local
+.env.staging
 .env.development.local
 .env.test.local
 .env.production.local
@@ -37,3 +38,5 @@ dist-ssr
 # etc
 .history
 .eslintcache
+tsconfig.tsbuildinfo
+tsconfig.*.tsbuildinfo
