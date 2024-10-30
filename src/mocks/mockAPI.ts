@@ -14,7 +14,7 @@ import {
 import type { Role } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
-import type { Project } from '@/types/ProjectType';
+import type { Project, ProjectForm } from '@/types/ProjectType';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
 import type { ProjectUser, TaskFileForMemory, TaskUser, UploadTaskFile } from '@/types/MockType';
@@ -114,6 +114,19 @@ export function deleteProject(projectId: Project['projectId']) {
   const projectIndex = PROJECT_DUMMY.findIndex((project) => project.projectId === projectId);
   if (projectIndex === -1) throw new Error('프로젝트를 찾을 수 없습니다.');
   PROJECT_DUMMY.splice(projectIndex, 1);
+}
+
+// 프로젝트 정보 수정
+export function updateProject(projectId: Project['projectId'], updatedProjectInfo: ProjectForm) {
+  const project = findProject(projectId);
+  if (project) {
+    project.projectName = updatedProjectInfo.projectName;
+    project.content = updatedProjectInfo.content;
+    project.startDate = new Date(updatedProjectInfo.startDate);
+    project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
+    return project;
+  }
+  return null;
 }
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */
