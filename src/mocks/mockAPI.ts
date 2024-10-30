@@ -85,11 +85,10 @@ export function updateProjectUserRole(
   newRoleId: Role['roleId'],
 ) {
   const projectUser = findProjectUser(projectId, userId);
-  if (projectUser) {
-    projectUser.roleId = newRoleId;
-    return projectUser;
-  }
-  return null;
+  if (!projectUser) throw new Error('프로젝트 유저를 찾을 수 없습니다.');
+
+  projectUser.roleId = newRoleId;
+  return projectUser;
 }
 
 /* ================= 프로젝트(Project) 관련 처리 ================= */
@@ -119,14 +118,13 @@ export function deleteProject(projectId: Project['projectId']) {
 // 프로젝트 정보 수정
 export function updateProject(projectId: Project['projectId'], updatedProjectInfo: ProjectForm) {
   const project = findProject(projectId);
-  if (project) {
-    project.projectName = updatedProjectInfo.projectName;
-    project.content = updatedProjectInfo.content;
-    project.startDate = new Date(updatedProjectInfo.startDate);
-    project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
-    return project;
-  }
-  return null;
+  if (!project) throw new Error('프로젝트를 찾을 수 없습니다.');
+
+  project.projectName = updatedProjectInfo.projectName;
+  project.content = updatedProjectInfo.content;
+  project.startDate = new Date(updatedProjectInfo.startDate);
+  project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
+  return project;
 }
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */

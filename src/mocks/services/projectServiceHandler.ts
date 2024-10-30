@@ -25,8 +25,8 @@ import {
 import { PROJECT_DUMMY, PROJECT_USER_DUMMY } from '@mocks/mockData';
 import { convertTokenToUserId } from '@utils/converter';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
-import { Project, ProjectCoworkerForm, ProjectForm } from '@/types/ProjectType';
-import { ProjectRoleName } from '@/types/RoleType';
+import type { Project, ProjectForm } from '@/types/ProjectType';
+import type { UpdateRole } from '@/types/RoleType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
@@ -259,11 +259,10 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 팀원 추가 API
-  http.post(`${BASE_URL}/project/:projectId/user/:userId`, async ({ request, params }) => {
+  http.post(`${BASE_URL}/project/:projectId/user/invitation`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
-    const projectCoworkerId = Number(params.userId);
-    const { roleName } = (await request.json()) as { roleName: ProjectRoleName };
+    const { userId: projectCoworkerId, roleName } = (await request.json()) as UpdateRole;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -295,11 +294,11 @@ const projectServiceHandler = [
     // 프로젝트 팀원 추가
     const newUser = {
       projectId,
-      userId: Number(projectCoworkerId),
+      userId: projectCoworkerId,
       roleId: role.roleId,
     };
 
-    PROJECT_USER_DUMMY.push(newUser);
+    createProjectUser(newUser);
 
     return new HttpResponse(null, { status: 200 });
   }),
@@ -309,7 +308,7 @@ const projectServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const projectCoworkerId = Number(params.userId);
-    const { roleName } = (await request.json()) as { roleName: ProjectRoleName };
+    const { roleName } = (await request.json()) as UpdateRole;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
