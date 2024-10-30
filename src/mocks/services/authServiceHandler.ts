@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { http, HttpResponse } from 'msw';
 import { AUTH_SETTINGS } from '@constants/settings';
-import { JWT_TOKEN_DUMMY, TEMP_PASSWORD_DUMMY, USER_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
+import { TEMP_PASSWORD_DUMMY, USER_DUMMY, VERIFICATION_CODE_DUMMY } from '@mocks/mockData';
 import { EMAIL_REGEX } from '@constants/regex';
 import { convertTokenToUserId, generateDummyToken } from '@utils/converter';
 import {
@@ -306,7 +306,6 @@ const authServiceHandler = [
     return HttpResponse.json(null, { status: 200 });
   }),
 
-  // ToDo: API 확정 후 수정
   // 이메일 인증 번호 확인 API
   http.post(`${BASE_URL}/user/verify/code`, async ({ request }) => {
     const { email, verificationCode } = (await request.json()) as EmailVerificationForm;
@@ -316,7 +315,7 @@ const authServiceHandler = [
     };
 
     if (!verifyUserEmailAndCode(email, verificationCode)) {
-      return HttpResponse.json({ message: '인증번호가 일치하지 않습니다.' }, { status: 401 });
+      return HttpResponse.json({ message: '인증번호가 일치하지 않습니다.' }, { status: 400 });
     }
 
     return HttpResponse.json(null, { status: 200 });
