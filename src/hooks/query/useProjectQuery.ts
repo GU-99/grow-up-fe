@@ -14,8 +14,6 @@ import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
 import type { Team } from '@/types/TeamType';
 import type { Project, ProjectCoworkerForm, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
-import type { ProjectRoleName } from '@/types/RoleType';
-import type { User } from '@/types/UserType';
 
 // Todo: Project Query CUD로직 작성하기
 // 팀에 속한 프로젝트 목록 조회

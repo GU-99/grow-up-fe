@@ -1,5 +1,3 @@
-import type { User } from '@/types/UserType';
-
 export type TeamRoleName = 'HEAD' | 'LEADER' | 'MATE';
 
 export type ProjectRoleName = 'ADMIN' | 'LEADER' | 'ASSIGNEE';
