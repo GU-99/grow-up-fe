@@ -2,7 +2,6 @@ import { ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { SECOND } from '@constants/units';
-import { JWT_TOKEN_DUMMY } from '@mocks/mockData';
 import useToast from '@hooks/useToast';
 import { getAccessToken } from '@services/authService';
 import { useStore } from '@stores/useStore';

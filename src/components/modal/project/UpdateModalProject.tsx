@@ -86,7 +86,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     handleClose();
   };
 
-  if (isProjectInfoLoading || isProjectCoworkersLoading) {
+  if (isProjectLoading || isProjectInfoLoading || isProjectCoworkersLoading) {
     return <Spinner />;
   }
 

@@ -37,7 +37,7 @@ type UpdateModalTeamProps = {
 export default function UpdateModalTeam({ teamId, onClose: handleClose }: UpdateModalTeamProps) {
   const updateTeamFormId = 'updateTeamForm';
   const [keyword, setKeyword] = useState('');
-  const { toastInfo, toastWarn } = useToast();
+  const { toastInfo } = useToast();
 
   const { coworkers, isLoading: isTeamCoworkersLoading } = useReadTeamCoworkers(teamId);
   const { teamList, isLoading: isTeamListLoading } = useReadTeams();
