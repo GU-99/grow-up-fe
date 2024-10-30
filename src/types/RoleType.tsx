@@ -17,8 +17,3 @@ export type Role = {
   roleName: RoleName;
   roleType: 'TEAM' | 'PROJECT';
 };
-
-export type UpdateRole = {
-  userId: User['userId'];
-  roleName: ProjectRoleName;
-};

@@ -88,7 +88,6 @@ export function updateProjectUserRole(
   if (!projectUser) throw new Error('프로젝트 유저를 찾을 수 없습니다.');
 
   projectUser.roleId = newRoleId;
-  return projectUser;
 }
 
 /* ================= 프로젝트(Project) 관련 처리 ================= */
@@ -124,7 +123,6 @@ export function updateProject(projectId: Project['projectId'], updatedProjectInf
   project.content = updatedProjectInfo.content;
   project.startDate = new Date(updatedProjectInfo.startDate);
   project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
-  return project;
 }
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */

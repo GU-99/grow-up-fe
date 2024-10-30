@@ -22,11 +22,10 @@ import {
   updateProject,
   updateProjectUserRole,
 } from '@mocks/mockAPI';
-import { PROJECT_DUMMY, PROJECT_USER_DUMMY } from '@mocks/mockData';
+import { PROJECT_DUMMY } from '@mocks/mockData';
 import { convertTokenToUserId } from '@utils/converter';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
-import type { Project, ProjectForm } from '@/types/ProjectType';
-import type { UpdateRole } from '@/types/RoleType';
+import type { Project, ProjectCoworkerForm, ProjectForm } from '@/types/ProjectType';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
@@ -252,8 +251,13 @@ const projectServiceHandler = [
     const project = findProject(projectId);
     if (!project || project.teamId !== teamId) return new HttpResponse(null, { status: 404 });
 
-    const updatedProject = updateProject(projectId, updatedProjectInfo);
-    if (!updatedProject) return new HttpResponse('프로젝트 수정 실패', { status: 500 });
+    // 프로젝트 정보 수정
+    try {
+      updateProject(projectId, updatedProjectInfo);
+    } catch (error) {
+      console.error((error as Error).message);
+      return new HttpResponse('프로젝트 수정 실패', { status: 500 });
+    }
 
     return new HttpResponse(null, { status: 200 });
   }),
@@ -262,7 +266,7 @@ const projectServiceHandler = [
   http.post(`${BASE_URL}/project/:projectId/user/invitation`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
-    const { userId: projectCoworkerId, roleName } = (await request.json()) as UpdateRole;
+    const { userId: projectCoworkerId, roleName } = (await request.json()) as ProjectCoworkerForm;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -308,7 +312,7 @@ const projectServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const projectCoworkerId = Number(params.userId);
-    const { roleName } = (await request.json()) as UpdateRole;
+    const { roleName } = (await request.json()) as ProjectCoworkerForm;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -338,8 +342,10 @@ const projectServiceHandler = [
     }
 
     // 프로젝트 유저의 역할 업데이트
-    const updatedProjectUser = updateProjectUserRole(projectId, projectCoworkerId, newRole.roleId);
-    if (!updatedProjectUser) {
+    try {
+      updateProjectUserRole(projectId, projectCoworkerId, newRole.roleId);
+    } catch (error) {
+      console.error((error as Error).message);
       return new HttpResponse('해당 유저를 찾을 수 없습니다.', { status: 404 });
     }
 
