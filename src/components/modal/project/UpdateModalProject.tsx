@@ -13,12 +13,15 @@ import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import { PROJECT_DEFAULT_ROLE, PROJECT_ROLES } from '@constants/role';
 import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
+import useToast from '@hooks/useToast';
 import useAxios from '@hooks/useAxios';
 import {
   useReadProjectDetail,
   useReadProjectCoworkers,
   useReadProjects,
   useUpdateProject,
+  useAddProjectCoworker,
+  useUpdateProjectRole,
 } from '@hooks/query/useProjectQuery';
 import { findUserByTeam } from '@services/teamService';
 
@@ -26,6 +29,7 @@ import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
 import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
+import type { ProjectRoleName } from '@/types/RoleType';
 
 type UpdateModalProjectProps = {
   projectId: Project['projectId'];
@@ -34,8 +38,9 @@ type UpdateModalProjectProps = {
 
 export default function UpdateModalProject({ projectId, onClose: handleClose }: UpdateModalProjectProps) {
   const updateProjectFormId = 'updateProjectForm';
-  const { teamId } = useParams();
   const [keyword, setKeyword] = useState('');
+  const { toastInfo } = useToast();
+  const { teamId } = useParams();
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(projectId);
   const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
   const { projectInfo, isLoading: isProjectInfoLoading } = useReadProjectDetail(Number(teamId), projectId);
@@ -45,6 +50,8 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
   );
 
   const { mutate: updateProjectMutate } = useUpdateProject(Number(teamId));
+  const { mutate: addProjectCoworkerMutate } = useAddProjectCoworker(projectId);
+  const { mutate: updateProjectCoworkerRoleMutate } = useUpdateProjectRole(projectId);
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUserByTeam);
 
   const searchCallbackInfo: TeamSearchCallback = useMemo(
@@ -81,12 +88,25 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     setKeyword(e.target.value.trim());
   };
 
+  const handleCoworkersClick = (userId: User['userId'], roleName: ProjectRoleName) => {
+    const isIncludedUser = projectCoworkers.find((coworker) => coworker.userId === userId);
+    if (isIncludedUser) return toastInfo('이미 포함된 프로젝트 멤버입니다');
+
+    addProjectCoworkerMutate({ userId, roleName });
+    setKeyword('');
+    clearData();
+  };
+
+  const handleRoleChange = (userId: User['userId'], roleName: ProjectRoleName) => {
+    updateProjectCoworkerRoleMutate({ userId, roleName });
+  };
+
   const handleFormSubmit: SubmitHandler<ProjectInfoForm> = (formData) => {
     updateProjectMutate({ projectId, formData });
     handleClose();
   };
 
-  if (isProjectLoading || isProjectInfoLoading || isProjectCoworkersLoading) {
+  if (isProjectInfoLoading || isProjectCoworkersLoading || isProjectLoading) {
     return <Spinner />;
   }
 
@@ -137,17 +157,17 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
             searchId={Number(teamId)}
             searchCallbackInfo={searchCallbackInfo}
             onKeywordChange={handleKeywordChange}
-            onUserClick={() => {}} // 팀원 추가 클릭 핸들러
+            onUserClick={(user) => handleCoworkersClick(user.userId, PROJECT_DEFAULT_ROLE)}
           />
           <div className="flex flex-wrap">
-            {projectCoworkers.map(({ userId, nickname }) => (
+            {projectCoworkers.map(({ userId, nickname, roleName }) => (
               <UserRoleSelectBox
                 key={userId}
                 userId={userId}
                 nickname={nickname}
                 roles={PROJECT_ROLES}
-                defaultValue={PROJECT_DEFAULT_ROLE}
-                onRoleChange={() => {}} // 역할 변경 핸들러
+                defaultValue={roleName as ProjectRoleName}
+                onRoleChange={handleRoleChange}
                 onRemoveUser={() => {}} // 팀원 삭제 핸들러
               />
             ))}
