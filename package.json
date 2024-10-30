@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "staging": "tsc --project tsconfig.prod.json && vite build --mode staging",
+    "build": "tsc --project tsconfig.prod.json && vite build",
+    "serve:dist": "serve -s dist -l 5713",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest --watch",
@@ -72,6 +74,7 @@
     "postcss": "^8.4.38",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.5",
+    "serve": "^14.2.4",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
