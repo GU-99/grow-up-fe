@@ -10,6 +10,7 @@ import {
   deleteAllTaskUser,
   deleteProject,
   deleteProjectUser,
+  deleteTaskUser,
   findAllProject,
   findAllProjectStatus,
   findAllProjectUser,
@@ -383,17 +384,13 @@ const projectServiceHandler = [
     try {
       const statusIds = findAllProjectStatus(projectId).map((status) => status.statusId);
 
-      const taskIds: number[] = [];
       statusIds.forEach((statusId) => {
         const tasks = findAllTask(statusId);
-        tasks.forEach((task) => taskIds.push(task.taskId));
+        tasks.forEach((task) => {
+          deleteTaskUser(task.taskId, projectCoworkerId);
+        });
       });
 
-      taskIds.forEach((taskId) => {
-        deleteAllTaskFileInMemory(taskId);
-        deleteAllTaskFile(taskId);
-        deleteAllTaskUser(taskId);
-      });
       deleteProjectUser(projectId, projectCoworkerId);
     } catch (error) {
       console.error((error as Error).message);

@@ -90,6 +90,7 @@ export function updateProjectUserRole(
   projectUser.roleId = newRoleId;
 }
 
+// 프로젝트 유저 삭제
 export function deleteProjectUser(projectId: Project['projectId'], userId: User['userId']) {
   const projectUserIndex = PROJECT_USER_DUMMY.findIndex(
     (projectUser) => projectUser.projectId === projectId && projectUser.userId === userId,
@@ -198,6 +199,17 @@ export function deleteAllTaskUser(taskId: Task['taskId']) {
   if (filteredTaskUsers.length !== TASK_USER_DUMMY.length) {
     TASK_USER_DUMMY.length = 0;
     TASK_USER_DUMMY.push(...filteredTaskUsers);
+  }
+}
+
+// 일정과 특정 유저의 연결만 삭제
+export function deleteTaskUser(taskId: Task['taskId'], userId: number) {
+  const taskUserIndex = TASK_USER_DUMMY.findIndex(
+    (taskUser) => taskUser.taskId === taskId && taskUser.userId === userId,
+  );
+
+  if (taskUserIndex !== -1) {
+    TASK_USER_DUMMY.splice(taskUserIndex, 1); // 특정 유저와의 연결 삭제
   }
 }
 
