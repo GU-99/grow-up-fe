@@ -381,10 +381,23 @@ const projectServiceHandler = [
     }
 
     try {
+      const statusIds = findAllProjectStatus(projectId).map((status) => status.statusId);
+
+      const taskIds: number[] = [];
+      statusIds.forEach((statusId) => {
+        const tasks = findAllTask(statusId);
+        tasks.forEach((task) => taskIds.push(task.taskId));
+      });
+
+      taskIds.forEach((taskId) => {
+        deleteAllTaskFileInMemory(taskId);
+        deleteAllTaskFile(taskId);
+        deleteAllTaskUser(taskId);
+      });
       deleteProjectUser(projectId, projectCoworkerId);
     } catch (error) {
       console.error((error as Error).message);
-      return new HttpResponse('해당 유저를 찾을 수 없습니다.', { status: 404 });
+      return new HttpResponse('유저 삭제 중 오류가 발생했습니다.', { status: 500 });
     }
 
     return new HttpResponse(null, { status: 200 });
