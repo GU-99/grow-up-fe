@@ -90,6 +90,18 @@ export function updateProjectUserRole(
   projectUser.roleId = newRoleId;
 }
 
+export function deleteProjectUser(projectId: Project['projectId'], userId: User['userId']) {
+  const projectUserIndex = PROJECT_USER_DUMMY.findIndex(
+    (projectUser) => projectUser.projectId === projectId && projectUser.userId === userId,
+  );
+
+  if (projectUserIndex === -1) {
+    throw new Error('프로젝트 유저를 찾을 수 없습니다.');
+  }
+
+  PROJECT_USER_DUMMY.splice(projectUserIndex, 1);
+}
+
 /* ================= 프로젝트(Project) 관련 처리 ================= */
 
 // 프로젝트 생성
