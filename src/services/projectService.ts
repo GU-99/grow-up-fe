@@ -4,6 +4,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Team } from '@/types/TeamType';
 import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 import type { User, SearchUser, UserWithRole } from '@/types/UserType';
+import type { ProjectRoleName } from '@/types/RoleType';
 
 /**
  * 프로젝트에 속한 유저 목록을 검색하는 API
@@ -108,4 +109,44 @@ export async function updateProjectInfo(
   axiosConfig: AxiosRequestConfig = {},
 ): Promise<AxiosResponse<void>> {
   return authAxios.patch(`/team/${teamId}/project/${projectId}`, formData, axiosConfig);
+}
+
+/**
+ * 프로젝트 유저 초대 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {User['userId']} userId               - 초대할 유저 ID
+ * @param {ProjectRoleName} roleName   - 유저의 역할
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function addProjectCoworker(
+  projectId: Project['projectId'],
+  userId: User['userId'],
+  roleName: ProjectRoleName,
+  axiosConfig: AxiosRequestConfig = {},
+): Promise<AxiosResponse<void>> {
+  return authAxios.post(`/project/${projectId}/user/invitation`, { userId, roleName }, axiosConfig);
+}
+
+/**
+ * 프로젝트 권한 수정 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId      - 프로젝트 ID
+ * @param {User['userId']} userId               - 유저 ID
+ * @param {ProjectRoleName} roleName   - 업데이트할 역할
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function updateProjectRole(
+  projectId: Project['projectId'],
+  userId: User['userId'],
+  roleName: ProjectRoleName,
+  axiosConfig: AxiosRequestConfig = {},
+): Promise<AxiosResponse<void>> {
+  return authAxios.patch(`/project/${projectId}/user/${userId}/role`, { roleName }, axiosConfig);
 }

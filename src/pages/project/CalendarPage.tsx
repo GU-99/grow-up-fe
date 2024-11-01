@@ -41,7 +41,7 @@ export default function CalendarPage() {
   const [selectedTask, setSelectedTask] = useState<Task>(initialTask);
   const [date, setDate] = useState<Date>(() => DateTime.now().toJSDate());
   const { project } = useProjectContext();
-  const { statusTaskList, isTaskLoading, isTaskError, taskError } = useReadStatusTasks(project.projectId);
+  const { statusTaskList, isTasksLoading } = useReadStatusTasks(project.projectId);
   const { showModal: showDetailModal, openModal: openDetailModal, closeModal: closeDetailModal } = useModal();
   const { showModal: showUpdateModal, openModal: openUpdateModal, closeModal: closeUpdateModal } = useModal();
 
@@ -113,7 +113,7 @@ export default function CalendarPage() {
   // ToDo: 코드 리팩토링
   return (
     <div className="flex h-full min-h-375 w-full min-w-260 flex-col">
-      {isTaskLoading ? (
+      {isTasksLoading ? (
         <Spinner />
       ) : (
         <>

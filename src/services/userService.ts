@@ -78,7 +78,7 @@ export async function findUser(nickname: string, axiosConfig: AxiosRequestConfig
  *
  * @export
  * @async
- * @param {AxiosRequestConfig} [axiosConnfig={}] - axios 요청 옵션 설정 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<TeamListWithApproval[]>>}
  */
 export async function getTeamList(axiosConfig: AxiosRequestConfig = {}) {

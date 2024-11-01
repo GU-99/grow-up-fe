@@ -23,7 +23,9 @@ export type ProjectInfoForm = {
   startDate: string;
   endDate: string | null;
 };
+
 export type ProjectCoworkerForm = Omit<ProjectCoworker, 'nickname'>;
+
 export type ProjectForm = ProjectInfoForm & {
   coworkers: ProjectCoworkerForm[];
 };
