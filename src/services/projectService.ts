@@ -150,3 +150,21 @@ export async function updateProjectRole(
 ): Promise<AxiosResponse<void>> {
   return authAxios.patch(`/project/${projectId}/user/${userId}/role`, { roleName }, axiosConfig);
 }
+
+/**
+ * 특정 프로젝트에서 팀원을 삭제하는 API
+ *
+ * @export
+ * @async
+ * @param {Project['projectId']} projectId     - 프로젝트 ID
+ * @param {User['userId']} userId              - 삭제할 사용자 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<void>}
+ */
+export async function deleteProjectUser(
+  projectId: Project['projectId'],
+  userId: User['userId'],
+  axiosConfig: AxiosRequestConfig = {},
+): Promise<void> {
+  return authAxios.delete(`/project/${projectId}/user/${userId}`, axiosConfig);
+}

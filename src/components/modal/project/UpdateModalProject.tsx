@@ -22,6 +22,7 @@ import {
   useUpdateProject,
   useAddProjectCoworker,
   useUpdateProjectRole,
+  useDeleteProjectUser,
 } from '@hooks/query/useProjectQuery';
 import { findUserByTeam } from '@services/teamService';
 
@@ -49,6 +50,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     [projectList, projectInfo?.projectName],
   );
 
+  const { mutate: deleteProjectUserMutate } = useDeleteProjectUser(projectId);
   const { mutate: updateProjectMutate } = useUpdateProject(Number(teamId));
   const { mutate: addProjectCoworkerMutate } = useAddProjectCoworker(projectId);
   const { mutate: updateProjectCoworkerRoleMutate } = useUpdateProjectRole(projectId);
@@ -104,6 +106,10 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
   const handleFormSubmit: SubmitHandler<ProjectInfoForm> = (formData) => {
     updateProjectMutate({ projectId, formData });
     handleClose();
+  };
+
+  const handleRemoveUser = (userId: User['userId']) => {
+    deleteProjectUserMutate(userId);
   };
 
   if (isProjectInfoLoading || isProjectCoworkersLoading || isProjectLoading) {
@@ -168,7 +174,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
                 roles={PROJECT_ROLES}
                 defaultValue={roleName as ProjectRoleName}
                 onRoleChange={handleRoleChange}
-                onRemoveUser={() => {}} // 팀원 삭제 핸들러
+                onRemoveUser={handleRemoveUser}
               />
             ))}
           </div>
