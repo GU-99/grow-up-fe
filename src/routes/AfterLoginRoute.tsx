@@ -1,8 +1,8 @@
-import useStore from '@stores/useStore';
 import { useEffect, type PropsWithChildren } from 'react';
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
-import useToast from '@/hooks/useToast';
-import { getAccessToken } from '@/services/authService';
+import useToast from '@hooks/useToast';
+import useStore from '@stores/useStore';
+import { getAccessToken } from '@services/authService';
 
 export default function AfterLoginRoute({ children }: PropsWithChildren) {
   const { toastError } = useToast();

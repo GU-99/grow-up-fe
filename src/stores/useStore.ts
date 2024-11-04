@@ -137,6 +137,7 @@ export const useStore = create<Store>()(
       partialize: (state) => ({
         userInfo: state.userInfo,
         isAuthenticated: state.isAuthenticated,
+        isVerified: state.isVerified,
       }),
     },
   ),

@@ -61,9 +61,6 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
     }
 
     uploadImageMutate({ file });
-
-    const localImageUrl = URL.createObjectURL(file);
-    setImageUrl(localImageUrl);
   };
 
   const handleRemoveImg = () => {
