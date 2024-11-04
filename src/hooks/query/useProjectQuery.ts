@@ -4,6 +4,7 @@ import {
   addProjectCoworker,
   createProject,
   deleteProject,
+  deleteProjectUser,
   getProjectList,
   getProjectUserRoleList,
   updateProjectInfo,
@@ -14,6 +15,7 @@ import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
 import type { Team } from '@/types/TeamType';
 import type { Project, ProjectCoworkerForm, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
+import type { User } from '@/types/UserType';
 
 // Todo: Project Query CUD로직 작성하기
 // 팀에 속한 프로젝트 목록 조회
@@ -163,6 +165,26 @@ export function useUpdateProjectRole(projectId: Project['projectId']) {
     onSuccess: () => {
       toastSuccess('유저 권한을 성공적으로 업데이트했습니다.');
       queryClient.invalidateQueries({ queryKey: projectUsersQueryKey });
+    },
+  });
+
+  return mutation;
+}
+
+// 프로젝트 팀원 삭제
+export function useDeleteProjectUser(projectId: Project['projectId']) {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const usersQueryKey = generateProjectUsersQueryKey(projectId);
+
+  const mutation = useMutation({
+    mutationFn: (userId: User['userId']) => deleteProjectUser(projectId, userId),
+    onError: () => {
+      toastError('프로젝트 팀원 삭제를 실패했습니다. 다시 시도해 주세요.');
+    },
+    onSuccess: () => {
+      toastSuccess('프로젝트 팀원을 성공적으로 삭제했습니다.');
+      queryClient.invalidateQueries({ queryKey: usersQueryKey });
     },
   });
 

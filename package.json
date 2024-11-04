@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "staging": "tsc --project tsconfig.prod.json && vite build --mode staging",
+    "build:staging": "tsc --project tsconfig.prod.json && vite build --mode staging",
+    "serve:staging": "serve -s dist -l 5713 --ssl-cert localhost.pem --ssl-key localhost-key.pem",
     "build": "tsc --project tsconfig.prod.json && vite build",
-    "serve:dist": "serve -s dist -l 5713",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest --watch",

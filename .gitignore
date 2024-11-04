@@ -36,6 +36,10 @@ dist-ssr
 .env.production.local
 .env.staging
 
+# https local cert
+localhost-key.pem
+localhost.pem
+
 # etc
 .history
 .eslintcache
