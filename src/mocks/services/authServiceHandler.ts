@@ -208,10 +208,7 @@ const authServiceHandler = [
   }),
 
   // 액세스 토큰 갱신 API
-  http.post(`${BASE_URL}/user/refresh`, async ({ cookies, request }) => {
-    const accessToken = request.headers.get('Authorization');
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
-
+  http.post(`${BASE_URL}/user/refresh`, async ({ cookies }) => {
     const { refreshToken, refreshTokenExpiresAt } = cookies;
     const cookieRefreshToken = Cookies.get('refreshToken');
 
@@ -228,7 +225,7 @@ const authServiceHandler = [
         return HttpResponse.json({ message: '리프레시 토큰이 만료되었습니다.' }, { status: 401 });
       }
 
-      const userId = convertTokenToUserId(accessToken);
+      const userId = convertTokenToUserId(refreshToken);
       if (!userId) return new HttpResponse(null, { status: 401 });
 
       const newAccessToken = generateDummyToken(userId);
