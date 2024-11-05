@@ -35,6 +35,10 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# https local cert
+localhost-key.pem
+localhost.pem
+
 # etc
 .history
 .eslintcache
