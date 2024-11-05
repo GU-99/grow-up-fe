@@ -35,11 +35,11 @@ export const PROJECT_ROLE_INFO: RoleInfo[] = [
   {
     roleName: 'LEADER',
     label: 'LEADER',
-    description: '프로젝트의 상태 및 일정을 보고\n새로 추가하거나 수정, 삭제할 수 있습니다.',
+    description: '프로젝트의 상태 및 일정을 보고\n상태 및 일정을 추가하거나 수정, 삭제할 수 있습니다.',
   },
   {
     roleName: 'ASSIGNEE',
     label: 'ASSIGNEE',
-    description: '프로젝트 일정을 보고\n본인이 작성한 일정만 추가, 수정 및 삭제가 가능합니다.',
+    description: '프로젝트 일정을 보고\n일정 추가, 수정 및 삭제가 가능합니다.',
   },
 ];
