@@ -8,21 +8,38 @@ export const PROJECT_DEFAULT_ROLE = 'ASSIGNEE';
 export const TEAM_DEFAULT_ROLE = 'MATE';
 
 export const TEAM_ROLE_INFO: RoleInfo[] = [
-  { roleName: 'HEAD', label: 'HEAD', description: '모든 권한 가능' },
+  {
+    roleName: 'HEAD',
+    label: 'HEAD',
+    description: '- 팀: 수정 | 삭제\n- 팀원: 초대 | 추방\n- 프로젝트: 생성 | 수정 | 삭제\n- 모든 프로젝트의 ADMIN 권한',
+  },
   {
     roleName: 'LEADER',
     label: 'LEADER',
-    description: '팀원 탈퇴(Mate만)\n프로젝트 생성 권한\n프로젝트 삭제(본인이 생성한 것만)',
+    description: '- 프로젝트: 생성 | 수정 | 삭제',
   },
-  { roleName: 'MATE', label: 'Mate', description: '프로젝트 읽기만 가능, 수정 및 생성 불가' },
+  {
+    roleName: 'MATE',
+    label: 'Mate',
+    description: '- 팀: 읽기만 가능',
+  },
 ];
 
 export const PROJECT_ROLE_INFO: RoleInfo[] = [
-  { roleName: 'ADMIN', label: 'ADMIN', description: '프로젝트 모든 권한 가능' },
+  {
+    roleName: 'ADMIN',
+    label: 'ADMIN',
+    description:
+      '- 프로젝트: 수정 | 삭제\n- 프로젝트원: 초대 | 추방\n- 상태: 생성 | 수정 | 삭제\n- 일정: 생성 | 수정 | 삭제',
+  },
   {
     roleName: 'LEADER',
     label: 'LEADER',
-    description: '상태 및 일정 생성 권한\n수행자 할당 가능\n',
+    description: '- 상태: 생성 | 수정 | 삭제\n- 일정: 생성 | 수정 | 삭제',
   },
-  { roleName: 'ASSIGNEE', label: 'ASSIGNEE', description: '일정 쓰기\n일정 삭제(본인 것만) ' },
+  {
+    roleName: 'ASSIGNEE',
+    label: 'ASSIGNEE',
+    description: '- 일정: 생성 | 수정 | 삭제',
+  },
 ];
