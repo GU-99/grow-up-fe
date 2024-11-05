@@ -11,17 +11,17 @@ export const TEAM_ROLE_INFO: RoleInfo[] = [
   {
     roleName: 'HEAD',
     label: 'HEAD',
-    description: '팀의 모든 기능을 사용할 수 있습니다.\n권한 관리, 팀원 초대 및 추방\n팀과 프로젝트 설정 및 관리 등',
+    description: '- 팀: 수정 | 삭제\n- 팀원: 초대 | 추방\n- 프로젝트: 생성 | 수정 | 삭제\n- 모든 프로젝트의 ADMIN 권한',
   },
   {
     roleName: 'LEADER',
     label: 'LEADER',
-    description: '팀과 프로젝트의 내용을 볼 수 있으며,\n본인이 작성한 항목은 추가, 수정, 삭제가 가능합니다.',
+    description: '- 프로젝트: 생성 | 수정 | 삭제',
   },
   {
     roleName: 'MATE',
     label: 'Mate',
-    description: '팀에서 프로젝트의 내용을 읽을 수 있습니다.\n추가, 수정, 삭제는 불가능합니다.',
+    description: '- 팀: 읽기만 가능',
   },
 ];
 
@@ -30,16 +30,16 @@ export const PROJECT_ROLE_INFO: RoleInfo[] = [
     roleName: 'ADMIN',
     label: 'ADMIN',
     description:
-      '프로젝트의 모든 기능을 사용할 수 있습니다.\n권한 관리, 프로젝트 멤버 초대 및 제거\n상태 및 일정 관리 등',
+      '- 프로젝트: 수정 | 삭제\n- 프로젝트원: 초대 | 추방\n- 상태: 생성 | 수정 | 삭제\n- 일정: 생성 | 수정 | 삭제',
   },
   {
     roleName: 'LEADER',
     label: 'LEADER',
-    description: '프로젝트의 상태 및 일정을 보고\n상태 및 일정을 추가하거나 수정, 삭제할 수 있습니다.',
+    description: '- 상태: 생성 | 수정 | 삭제\n- 일정: 생성 | 수정 | 삭제',
   },
   {
     roleName: 'ASSIGNEE',
     label: 'ASSIGNEE',
-    description: '프로젝트 일정을 보고\n일정 추가, 수정 및 삭제가 가능합니다.',
+    description: '- 일정: 생성 | 수정 | 삭제',
   },
 ];
