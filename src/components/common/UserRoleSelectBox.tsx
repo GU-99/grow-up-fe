@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
-import { PROJECT_ROLES, TEAM_ROLES } from '@constants/role';
+import { PROJECT_ROLES, TEAM_CREATE_ROLES, TEAM_ROLES } from '@constants/role';
 import type { User } from '@/types/UserType';
 import type { RoleName } from '@/types/RoleType';
 
@@ -8,7 +8,7 @@ type UserRoleSelectBoxProps<T extends RoleName> = {
   userId: User['userId'];
   nickname: User['nickname'];
   defaultValue: RoleName;
-  roles: typeof TEAM_ROLES | typeof PROJECT_ROLES;
+  roles: typeof TEAM_CREATE_ROLES | typeof TEAM_ROLES | typeof PROJECT_ROLES;
   onRoleChange: (userId: number, roleName: T) => void;
   onRemoveUser: (userId: number) => void;
 };
