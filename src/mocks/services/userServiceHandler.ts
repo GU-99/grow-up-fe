@@ -186,6 +186,7 @@ const userServiceHandler = [
 
     return HttpResponse.json(teamJoinStatusList);
   }),
+
   // 전체 유저 검색
   http.get(`${BASE_URL}/user/search`, ({ request }) => {
     const url = new URL(request.url);
@@ -199,19 +200,10 @@ const userServiceHandler = [
     const userId = convertTokenToUserId(accessToken);
     if (!userId) return new HttpResponse(null, { status: 401 });
 
-    // 전체 유저 목록 조회 (USER_DUMMY 사용)
-    const allUsers = USER_DUMMY;
-
-    // 유저 정보 취득
-    const searchUsers: SearchUser[] = [];
-    for (let i = 0; i < allUsers.length; i++) {
-      const user = allUsers[i];
-      if (!user) return new HttpResponse(null, { status: 404 });
-      searchUsers.push({ userId: user.userId, nickname: user.nickname });
-    }
-
     // 접두사(nickname)와 일치하는 유저 정보 최대 5명 추출
-    const matchedSearchUsers = searchUsers.filter((user) => user.nickname.startsWith(nickname)).slice(0, 5);
+    const matchedSearchUsers = USER_DUMMY.filter((user) => user.nickname.startsWith(nickname))
+      .slice(0, 5)
+      .map((user) => ({ userId: user.userId, nickname: user.nickname }));
 
     return HttpResponse.json(matchedSearchUsers);
   }),
