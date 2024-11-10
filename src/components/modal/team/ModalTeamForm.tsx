@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 import { useReadTeams } from '@hooks/query/useTeamQuery';
-import { TEAM_DEFAULT_ROLE, TEAM_ROLE_INFO, TEAM_ROLES } from '@constants/role';
+import { TEAM_CREATE_ROLES, TEAM_DEFAULT_ROLE, TEAM_ROLE_INFO } from '@constants/role';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import { findUser } from '@services/userService';
 import Spinner from '@components/common/Spinner';
@@ -150,7 +150,7 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
                 key={userId}
                 userId={userId}
                 nickname={nickname}
-                roles={TEAM_ROLES}
+                roles={TEAM_CREATE_ROLES}
                 defaultValue={TEAM_DEFAULT_ROLE}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}

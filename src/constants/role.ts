@@ -2,6 +2,7 @@ import { deepFreeze } from '@utils/deepFreeze';
 import type { RoleInfo } from '@/types/RoleType';
 
 export const TEAM_ROLES = deepFreeze(['HEAD', 'LEADER', 'MATE'] as const);
+export const TEAM_CREATE_ROLES = deepFreeze(['LEADER', 'MATE'] as const);
 export const PROJECT_ROLES = deepFreeze(['ADMIN', 'LEADER', 'ASSIGNEE'] as const);
 
 export const PROJECT_DEFAULT_ROLE = 'ASSIGNEE';
