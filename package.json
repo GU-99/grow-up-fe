@@ -10,7 +10,8 @@
     "build": "tsc --project tsconfig.prod.json && vite build",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "prepare": "husky"
