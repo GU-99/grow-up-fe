@@ -64,7 +64,10 @@ export function useDeleteProfileImage() {
     },
   });
 
-  return mutation;
+  return {
+    ...mutation,
+    mutateAsync: mutation.mutateAsync,
+  };
 }
 
 export function useUpdateLinks() {
