@@ -144,6 +144,33 @@ const userServiceHandler = [
       },
     });
   }),
+  // 유저 프로필 이미지 삭제 API
+  http.delete(`${BASE_URL}/user/profile/image`, async ({ request }) => {
+    const accessToken = request.headers.get('Authorization');
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) {
+      return HttpResponse.json({ message: '토큰에 유저 정보가 존재하지 않습니다.' }, { status: 401 });
+    }
+
+    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
+    if (userIndex === -1) {
+      return HttpResponse.json(
+        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
+        { status: 401 },
+      );
+    }
+
+    const fileIndex = PROFILE_IMAGE_DUMMY.findIndex((file) => file.userId === userId);
+    if (fileIndex === -1) {
+      return HttpResponse.json({ message: '삭제할 프로필 이미지가 없습니다.' }, { status: 404 });
+    }
+
+    PROFILE_IMAGE_DUMMY.splice(fileIndex, 1);
+
+    return new HttpResponse(null, { status: 204 });
+  }),
   // 전체 팀 목록 조회 API (가입한 팀, 대기중인 팀)
   http.get(`${BASE_URL}/user/team`, ({ request }) => {
     const accessToken = request.headers.get('Authorization');

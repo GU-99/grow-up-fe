@@ -6,7 +6,7 @@ import { USER_SETTINGS } from '@constants/settings';
 import { JPG, PNG, SVG, WEBP } from '@constants/mimeFileType';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
-import { useUploadProfileImage } from '@hooks/query/useUserQuery';
+import { useDeleteProfileImage, useUploadProfileImage } from '@hooks/query/useUserQuery';
 import useStore from '@stores/useStore';
 import { getProfileImage } from '@services/userService';
 
@@ -19,6 +19,7 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   const { toastWarn } = useToast();
   const { editUserInfo, userInfo } = useStore();
   const { mutate: uploadImageMutate } = useUploadProfileImage();
+  const { mutate: deleteImageMutate } = useDeleteProfileImage();
   const { fetchData } = useAxios(getProfileImage);
   const { toastError } = useToast();
 
@@ -64,8 +65,8 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   };
 
   const handleRemoveImg = () => {
+    deleteImageMutate();
     setImageUrl('');
-    editUserInfo({ profileImageName: null });
   };
 
   return (
