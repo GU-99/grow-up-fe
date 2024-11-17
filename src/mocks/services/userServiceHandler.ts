@@ -162,6 +162,8 @@ const userServiceHandler = [
       );
     }
 
+    USER_DUMMY[userIndex].profileImageName = null;
+
     const fileIndex = PROFILE_IMAGE_DUMMY.findIndex((file) => file.userId === userId);
     if (fileIndex === -1) {
       return HttpResponse.json({ message: '삭제할 프로필 이미지가 없습니다.' }, { status: 404 });
