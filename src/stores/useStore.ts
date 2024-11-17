@@ -46,7 +46,6 @@ const createAuthSlice: StateCreator<Store, [], [], AuthStore> = (set) => ({
 
     setTimeout(() => {
       set({
-        isAuthenticated: false,
         accessToken: null,
       });
     }, AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION);
