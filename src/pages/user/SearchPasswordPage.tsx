@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { FormProvider, useForm } from 'react-hook-form';
+import Meta from '@components/common/Meta';
 import Spinner from '@components/common/Spinner';
 import SearchResultSection from '@components/user/auth-form/SearchResultSection';
 import SearchDataForm from '@components/user/auth-form/SearchDataForm';
@@ -59,14 +60,17 @@ export default function SearchPasswordPage() {
   };
 
   return (
-    <FormProvider {...methods}>
-      <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
-        {loading && <Spinner />}
+    <>
+      <Meta title="Grow Up : 비밀번호 찾기" />
+      <FormProvider {...methods}>
+        <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
+          {loading && <Spinner />}
 
-        {!loading && tempPassword && <SearchResultSection label="임시 비밀번호" result={tempPassword} />}
+          {!loading && tempPassword && <SearchResultSection label="임시 비밀번호" result={tempPassword} />}
 
-        {!loading && !tempPassword && <SearchDataForm formType="searchPassword" {...emailVerificationProps} />}
-      </AuthFormLayout>
-    </FormProvider>
+          {!loading && !tempPassword && <SearchDataForm formType="searchPassword" {...emailVerificationProps} />}
+        </AuthFormLayout>
+      </FormProvider>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
+import Meta from '@components/common/Meta';
 import ValidationInput from '@components/common/ValidationInput';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useToast from '@hooks/useToast';
@@ -43,38 +44,41 @@ export default function UserPasswordSettingPage() {
   };
 
   return (
-    <div className="flex h-full items-center justify-center">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex w-full max-w-300 flex-col gap-8">
-        {/* 현재 비밀번호 */}
-        <ValidationInput
-          label="현재 비밀번호"
-          type="password"
-          errors={errors.password?.message}
-          register={register('password', USER_AUTH_VALIDATION_RULES.PASSWORD)}
-        />
+    <>
+      <Meta title="Grow Up : 비밀번호 변경" />
+      <div className="flex h-full items-center justify-center">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex w-full max-w-300 flex-col gap-8">
+          {/* 현재 비밀번호 */}
+          <ValidationInput
+            label="현재 비밀번호"
+            type="password"
+            errors={errors.password?.message}
+            register={register('password', USER_AUTH_VALIDATION_RULES.PASSWORD)}
+          />
 
-        {/* 신규 비밀번호 */}
-        <ValidationInput
-          label="신규 비밀번호"
-          type="password"
-          errors={errors.newPassword?.message}
-          register={register('newPassword', USER_AUTH_VALIDATION_RULES.NEW_PASSWORD(watch('password')))}
-        />
+          {/* 신규 비밀번호 */}
+          <ValidationInput
+            label="신규 비밀번호"
+            type="password"
+            errors={errors.newPassword?.message}
+            register={register('newPassword', USER_AUTH_VALIDATION_RULES.NEW_PASSWORD(watch('password')))}
+          />
 
-        {/* 신규 비밀번호 확인 */}
-        <ValidationInput
-          label="신규 비밀번호 확인"
-          type="password"
-          errors={errors.checkNewPassword?.message}
-          register={register('checkNewPassword', USER_AUTH_VALIDATION_RULES.PASSWORD_CONFIRM(watch('newPassword')))}
-        />
+          {/* 신규 비밀번호 확인 */}
+          <ValidationInput
+            label="신규 비밀번호 확인"
+            type="password"
+            errors={errors.checkNewPassword?.message}
+            register={register('checkNewPassword', USER_AUTH_VALIDATION_RULES.PASSWORD_CONFIRM(watch('newPassword')))}
+          />
 
-        <div className="flex flex-col text-center">
-          <button type="submit" className="auth-btn" disabled={isSubmitting}>
-            비밀번호 변경
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex flex-col text-center">
+            <button type="submit" className="auth-btn" disabled={isSubmitting}>
+              비밀번호 변경
+            </button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 }

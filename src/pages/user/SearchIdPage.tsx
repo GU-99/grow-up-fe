@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { useForm, FormProvider } from 'react-hook-form';
+import Meta from '@components/common/Meta';
 import Spinner from '@components/common/Spinner';
 import SearchResultSection from '@components/user/auth-form/SearchResultSection';
 import SearchDataForm from '@components/user/auth-form/SearchDataForm';
@@ -59,16 +60,19 @@ export default function SearchIdPage() {
   };
 
   return (
-    <FormProvider {...methods}>
-      <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
-        {loading && <Spinner />}
+    <>
+      <Meta title="Grow Up : 아이디 찾기" />
+      <FormProvider {...methods}>
+        <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
+          {loading && <Spinner />}
 
-        {!loading && searchIdResult && (
-          <SearchResultSection label="아이디" result={generateSecureUserId(searchIdResult)} />
-        )}
+          {!loading && searchIdResult && (
+            <SearchResultSection label="아이디" result={generateSecureUserId(searchIdResult)} />
+          )}
 
-        {!loading && !searchIdResult && <SearchDataForm formType="searchId" {...emailVerificationProps} />}
-      </AuthFormLayout>
-    </FormProvider>
+          {!loading && !searchIdResult && <SearchDataForm formType="searchId" {...emailVerificationProps} />}
+        </AuthFormLayout>
+      </FormProvider>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DateTime, Settings } from 'luxon';
 import { Calendar, luxonLocalizer, Views } from 'react-big-calendar';
+import Meta from '@components/common/Meta';
 import Spinner from '@components/common/Spinner';
 import DetailModalTask from '@components/modal/task/DetailModalTask';
 import UpdateModalTask from '@components/modal/task/UpdateModalTask';
@@ -117,6 +118,7 @@ export default function CalendarPage() {
         <Spinner />
       ) : (
         <>
+          <Meta title="Grow Up : 프로젝트 관리" />
           <CalendarToolbar date={date} startDate={project.startDate} onClick={handleNavigate} />
           <Calendar
             toolbar={false}
