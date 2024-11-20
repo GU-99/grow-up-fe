@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import Meta from '@components/common/Meta';
 import ValidationInput from '@components/common/ValidationInput';
 import FooterLinks from '@components/user/auth-form/FooterLinks';
 import SocialButton from '@components/user/auth-form/SocialButton';
@@ -69,6 +70,7 @@ export default function SignInPage() {
 
   return (
     <>
+      <Meta title="Grow Up : 로그인" />
       <AuthFormLayout onSubmit={handleSubmit(onSubmit)}>
         {/* 아이디 */}
         <ValidationInput

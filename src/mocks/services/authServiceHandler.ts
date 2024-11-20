@@ -17,11 +17,11 @@ import {
   UserSignUpRequest,
 } from '@/types/UserType';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 const authServiceHandler = [
   // 회원가입 API
-  http.post(`${BASE_URL}/user`, async ({ request }) => {
+  http.post(`${API_URL}/user`, async ({ request }) => {
     const { verificationCode, email, ...restSignUpData } = (await request.json()) as UserSignUpRequest;
 
     if (verificationCode !== VERIFICATION_CODE_DUMMY) {
@@ -51,7 +51,7 @@ const authServiceHandler = [
   }),
 
   // 닉네임 중복 확인 API
-  http.post(`${BASE_URL}/user/nickname`, async ({ request }) => {
+  http.post(`${API_URL}/user/nickname`, async ({ request }) => {
     const { nickname } = (await request.json()) as CheckNicknameForm;
 
     const nicknameExists = USER_DUMMY.some((user) => user.nickname === nickname);
@@ -61,7 +61,7 @@ const authServiceHandler = [
   }),
 
   // 로그인 API
-  http.post(`${BASE_URL}/user/login`, async ({ request }) => {
+  http.post(`${API_URL}/user/login`, async ({ request }) => {
     const { username, password } = (await request.json()) as UserSignInForm;
 
     const foundUser = USER_DUMMY.find((user) => user.username === username && user.password === password);
@@ -84,7 +84,7 @@ const authServiceHandler = [
   }),
 
   // 소셜 로그인 API
-  http.post(`${BASE_URL}/user/login/:provider`, async ({ request, params }) => {
+  http.post(`${API_URL}/user/login/:provider`, async ({ request, params }) => {
     const { provider } = params as { provider: SocialLoginProvider };
     const { code } = (await request.json()) as { code: string };
 
@@ -208,7 +208,7 @@ const authServiceHandler = [
   }),
 
   // 액세스 토큰 갱신 API
-  http.post(`${BASE_URL}/user/refresh`, async ({ cookies }) => {
+  http.post(`${API_URL}/user/refresh`, async ({ cookies }) => {
     const { refreshToken, refreshTokenExpiresAt } = cookies;
     const cookieRefreshToken = Cookies.get('refreshToken');
 
@@ -243,7 +243,7 @@ const authServiceHandler = [
   }),
 
   // 로그인 한 사용자 정보 조회 API
-  http.get(`${BASE_URL}/user/me`, async ({ request }) => {
+  http.get(`${API_URL}/user/me`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -258,7 +258,7 @@ const authServiceHandler = [
   }),
 
   // 로그아웃 API
-  http.post(`${BASE_URL}/user/logout`, async ({ cookies }) => {
+  http.post(`${API_URL}/user/logout`, async ({ cookies }) => {
     const { refreshToken } = cookies;
     const currentTime = Date.now();
 
@@ -274,7 +274,7 @@ const authServiceHandler = [
   }),
 
   // 액세스 토큰 테스트용 API
-  http.post(`${BASE_URL}/test`, ({ request }) => {
+  http.post(`${API_URL}/test`, ({ request }) => {
     console.log('테스트용 API 작동 중');
 
     const authHeader = request.headers.get('Authorization');
@@ -294,7 +294,7 @@ const authServiceHandler = [
   }),
 
   // 이메일 인증 번호 요청 API
-  http.post(`${BASE_URL}/user/verify/send`, async ({ request }) => {
+  http.post(`${API_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
 
     if (!email || !EMAIL_REGEX.test(email))
@@ -304,7 +304,7 @@ const authServiceHandler = [
   }),
 
   // 이메일 인증 번호 확인 API
-  http.post(`${BASE_URL}/user/verify/code`, async ({ request }) => {
+  http.post(`${API_URL}/user/verify/code`, async ({ request }) => {
     const { email, verificationCode } = (await request.json()) as EmailVerificationForm;
 
     const verifyUserEmailAndCode = (userEmail: string, code: string) => {
@@ -319,7 +319,7 @@ const authServiceHandler = [
   }),
 
   // 아이디 찾기 API
-  http.post(`${BASE_URL}/user/recover/username`, async ({ request }) => {
+  http.post(`${API_URL}/user/recover/username`, async ({ request }) => {
     const { email, verificationCode } = (await request.json()) as EmailVerificationForm;
 
     if (verificationCode !== VERIFICATION_CODE_DUMMY) {
@@ -336,7 +336,7 @@ const authServiceHandler = [
   }),
 
   // 비밀번호 찾기 API
-  http.post(`${BASE_URL}/user/recover/password`, async ({ request }) => {
+  http.post(`${API_URL}/user/recover/password`, async ({ request }) => {
     const { username, email, verificationCode } = (await request.json()) as SearchPasswordForm;
 
     if (verificationCode !== VERIFICATION_CODE_DUMMY) {
@@ -354,7 +354,7 @@ const authServiceHandler = [
   }),
 
   // 비밀번호 변경 API
-  http.patch(`${BASE_URL}/user/password`, async ({ request }) => {
+  http.patch(`${API_URL}/user/password`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return HttpResponse.json({ message: '인증 정보가 존재하지 않습니다.' }, { status: 401 });
 
