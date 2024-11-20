@@ -30,7 +30,6 @@ import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project, ProjectCoworkerForm, ProjectForm } from '@/types/ProjectType';
 
 const API_URL = import.meta.env.VITE_API_URL;
-console.log(API_URL);
 let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
 
 const projectServiceHandler = [
