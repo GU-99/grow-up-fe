@@ -13,11 +13,11 @@ export default function JoinedTeamPage() {
   return (
     <>
       <Meta title="Grow Up : 팀 가입 현황" />
-      <article className="h-full">
+      <article className="h-full" aria-label="가입된 팀 목록">
         {joinedTeamList && joinedTeamList.length > 0 ? (
           <ul className="min-w-300 space-y-2 text-sm">
             {joinedTeamList.map((team) => (
-              <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8">
+              <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8" aria-label="팀 이름">
                 <div className="flex max-h-full grow gap-4">
                   <div className="max-h-full w-50 shrink-0">
                     <small className="text-xs font-bold text-category">team</small>
