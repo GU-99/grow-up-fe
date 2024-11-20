@@ -6,7 +6,7 @@ import Header from '@components/common/Header';
 export default function NotFoundPage() {
   return (
     <>
-      <Meta title="Grow Up: Not Found" />
+      <Meta title="Grow Up : Not Found" />
       <Header />
       <section className="flex h-contents flex-col items-center justify-center">
         <span className="text-center text-regular tracking-tight text-emphasis">
