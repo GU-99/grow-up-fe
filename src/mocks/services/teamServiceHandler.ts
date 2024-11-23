@@ -16,11 +16,11 @@ import { convertTokenToUserId } from '@/utils/converter';
 import { findAllTeamUsers, findTeamUser, findUser } from '../mockAPI';
 import { SearchUser } from '@/types/UserType';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 const teamServiceHandler = [
   // 팀 소속 유저 검색 API
-  http.get(`${BASE_URL}/team/:teamId/user/search`, ({ request, params }) => {
+  http.get(`${API_URL}/team/:teamId/user/search`, ({ request, params }) => {
     const url = new URL(request.url);
     const nickname = url.searchParams.get('nickname') || '';
     const accessToken = request.headers.get('Authorization');
@@ -54,7 +54,7 @@ const teamServiceHandler = [
     return HttpResponse.json(matchedSearchUsers);
   }),
   // 팀 생성 API
-  http.post(`${BASE_URL}/team`, async ({ request }) => {
+  http.post(`${API_URL}/team`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamName, content, coworkers } = (await request.json()) as TeamForm;
 
@@ -111,7 +111,7 @@ const teamServiceHandler = [
   }),
 
   // 팀 탈퇴 API
-  http.post(`${BASE_URL}/team/:teamId/leave`, ({ request, params }) => {
+  http.post(`${API_URL}/team/:teamId/leave`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
     // 유저 인증 확인
@@ -154,7 +154,7 @@ const teamServiceHandler = [
   }),
 
   // 팀 삭제 API
-  http.delete(`${BASE_URL}/team/:teamId`, ({ request, params }) => {
+  http.delete(`${API_URL}/team/:teamId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
 
@@ -210,7 +210,7 @@ const teamServiceHandler = [
   }),
 
   // 팀 초대 수락 API
-  http.post(`${BASE_URL}/team/:teamId/invitation/accept`, ({ request, params }) => {
+  http.post(`${API_URL}/team/:teamId/invitation/accept`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
 
@@ -232,7 +232,7 @@ const teamServiceHandler = [
   }),
 
   // 팀 초대 거절 API
-  http.post(`${BASE_URL}/team/:teamId/invitation/decline`, ({ request, params }) => {
+  http.post(`${API_URL}/team/:teamId/invitation/decline`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
 
@@ -254,7 +254,7 @@ const teamServiceHandler = [
   }),
 
   // 팀원 목록 조회 API
-  http.get(`${BASE_URL}/team/:teamId/user`, ({ request, params }) => {
+  http.get(`${API_URL}/team/:teamId/user`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
 
@@ -279,7 +279,7 @@ const teamServiceHandler = [
   }),
 
   // 팀 정보 수정 API
-  http.patch(`${BASE_URL}/team/:teamId`, async ({ request, params }) => {
+  http.patch(`${API_URL}/team/:teamId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
     const { teamName, content } = (await request.json()) as TeamForm;
@@ -299,7 +299,7 @@ const teamServiceHandler = [
   }),
 
   // 팀원 추가 API
-  http.post(`${BASE_URL}/team/:teamId/invitation`, async ({ request, params }) => {
+  http.post(`${API_URL}/team/:teamId/invitation`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
     const { userId, roleName } = (await request.json()) as TeamCoworkerForm;
@@ -330,7 +330,7 @@ const teamServiceHandler = [
   }),
 
   // 팀원 삭제 API
-  http.delete(`${BASE_URL}/team/:teamId/user/:userId`, ({ request, params }) => {
+  http.delete(`${API_URL}/team/:teamId/user/:userId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId, userId } = params;
 
@@ -363,7 +363,7 @@ const teamServiceHandler = [
   }),
 
   // 팀원 권한 변경 API
-  http.patch(`${BASE_URL}/team/:teamId/user/:userId/role`, async ({ request, params }) => {
+  http.patch(`${API_URL}/team/:teamId/user/:userId/role`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { teamId, userId } = params;
     const { roleName } = (await request.json()) as TeamCoworkerForm;

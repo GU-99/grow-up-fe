@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { DND_DROPPABLE_PREFIX, DND_TYPE } from '@constants/dnd';
+import Meta from '@components/common/Meta';
 import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
@@ -85,21 +86,24 @@ export default function KanbanPage() {
   };
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId={DND_DROPPABLE_PREFIX.STATUS} type={DND_TYPE.STATUS} direction="horizontal">
-        {(statusDropProvided) => (
-          <section
-            className="flex grow gap-10"
-            ref={statusDropProvided.innerRef}
-            {...statusDropProvided.droppableProps}
-          >
-            {localStatusTaskList.map((statusTask) => (
-              <ProjectStatusContainer key={statusTask.statusId} statusTask={statusTask} />
-            ))}
-            {statusDropProvided.placeholder}
-          </section>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <>
+      <Meta title="Grow Up : 프로젝트 관리" />
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId={DND_DROPPABLE_PREFIX.STATUS} type={DND_TYPE.STATUS} direction="horizontal">
+          {(statusDropProvided) => (
+            <section
+              className="flex grow gap-10"
+              ref={statusDropProvided.innerRef}
+              {...statusDropProvided.droppableProps}
+            >
+              {localStatusTaskList.map((statusTask) => (
+                <ProjectStatusContainer key={statusTask.statusId} statusTask={statusTask} />
+              ))}
+              {statusDropProvided.placeholder}
+            </section>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </>
   );
 }

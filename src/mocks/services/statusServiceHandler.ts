@@ -15,12 +15,12 @@ import { convertTokenToUserId } from '@utils/converter';
 
 import type { ProjectStatusForm, StatusOrderForm } from '@/types/ProjectStatusType';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 let authIncrementIdForStatus = STATUS_DUMMY.length + 1;
 
 const statusServiceHandler = [
   // 프로젝트 상태 목록 조회 API
-  http.get(`${BASE_URL}/project/:projectId/status`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/status`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
 
@@ -46,7 +46,7 @@ const statusServiceHandler = [
   }),
 
   // 프로젝트 상태 생성 API
-  http.post(`${BASE_URL}/project/:projectId/status`, async ({ request, params }) => {
+  http.post(`${API_URL}/project/:projectId/status`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const formData = (await request.json()) as ProjectStatusForm;
@@ -69,7 +69,7 @@ const statusServiceHandler = [
   }),
 
   // 프로젝트 상태 순서 변경 API
-  http.patch(`${BASE_URL}/project/:projectId/status/order`, async ({ request, params }) => {
+  http.patch(`${API_URL}/project/:projectId/status/order`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { statuses: statusOrders } = (await request.json()) as StatusOrderForm;
     const projectId = Number(params.projectId);
@@ -100,7 +100,7 @@ const statusServiceHandler = [
   }),
 
   // 프로젝트 상태 수정 API
-  http.patch(`${BASE_URL}/project/:projectId/status/:statusId`, async ({ request, params }) => {
+  http.patch(`${API_URL}/project/:projectId/status/:statusId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const statusId = Number(params.statusId);
@@ -128,7 +128,7 @@ const statusServiceHandler = [
   }),
 
   // 프로젝트 상태 삭제 API
-  http.delete(`${BASE_URL}/project/:projectId/status/:statusId`, ({ request, params }) => {
+  http.delete(`${API_URL}/project/:projectId/status/:statusId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const statusId = Number(params.statusId);

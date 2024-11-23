@@ -34,13 +34,13 @@ import { TASK_DUMMY, TASK_FILE_DUMMY } from '@mocks/mockData';
 import type { UserWithRole } from '@/types/UserType';
 import type { TaskAssigneeForm, TaskCreationForm, TaskOrderForm, TaskUpdateForm } from '@/types/TaskType';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 let autoIncrementIdForTask = TASK_DUMMY.length + 1;
 let autoIncrementIdForTaskFile = TASK_FILE_DUMMY.length + 1;
 
 const taskServiceHandler = [
   // 일정 목록 조회 API
-  http.get(`${BASE_URL}/project/:projectId/task`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/task`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
 
@@ -74,7 +74,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 생성 API
-  http.post(`${BASE_URL}/project/:projectId/task`, async ({ request, params }) => {
+  http.post(`${API_URL}/project/:projectId/task`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { assignees, ...taskInfoForm } = (await request.json()) as TaskCreationForm;
     const projectId = Number(params.projectId);
@@ -106,7 +106,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 단일 파일 업로드 API
-  http.post(`${BASE_URL}/project/:projectId/task/:taskId/upload`, async ({ request, params }) => {
+  http.post(`${API_URL}/project/:projectId/task/:taskId/upload`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
@@ -155,7 +155,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 파일 다운로드 API
-  http.get(`${BASE_URL}/file/project/:projectId/:taskId/:fileName`, async ({ request, params }) => {
+  http.get(`${API_URL}/file/project/:projectId/:taskId/:fileName`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { projectId, taskId, fileName } = params;
 
@@ -188,7 +188,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 파일 삭제 API
-  http.delete(`${BASE_URL}/project/:projectId/task/:taskId/file/:fileId`, ({ request, params }) => {
+  http.delete(`${API_URL}/project/:projectId/task/:taskId/file/:fileId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
@@ -222,7 +222,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 순서 변경 API
-  http.patch(`${BASE_URL}/project/:projectId/task/order`, async ({ request, params }) => {
+  http.patch(`${API_URL}/project/:projectId/task/order`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { tasks: taskOrders } = (await request.json()) as TaskOrderForm;
     const projectId = Number(params.projectId);
@@ -256,7 +256,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 수행자 목록 조회
-  http.get(`${BASE_URL}/project/:projectId/task/:taskId/taskuser`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/task/:taskId/taskuser`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
@@ -300,7 +300,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 파일 목록 조회 API
-  http.get(`${BASE_URL}/project/:projectId/task/:taskId/attachment`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/task/:taskId/attachment`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
@@ -328,7 +328,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 정보 수정 API
-  http.patch(`${BASE_URL}/project/:projectId/task/:taskId`, async ({ request, params }) => {
+  http.patch(`${API_URL}/project/:projectId/task/:taskId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
@@ -361,7 +361,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 삭제 API
-  http.delete(`${BASE_URL}/project/:projectId/task/:taskId`, ({ request, params }) => {
+  http.delete(`${API_URL}/project/:projectId/task/:taskId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);
@@ -405,7 +405,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 수행자 추가 API
-  http.post(`${BASE_URL}/project/:projectId/task/:taskId/assignee`, async ({ request, params }) => {
+  http.post(`${API_URL}/project/:projectId/task/:taskId/assignee`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const taskAssigneeForm = (await request.json()) as TaskAssigneeForm;
     const projectId = Number(params.projectId);
@@ -446,7 +446,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 수행자 삭제 API
-  http.delete(`${BASE_URL}/project/:projectId/task/:taskId/assignee/:userId`, async ({ request, params }) => {
+  http.delete(`${API_URL}/project/:projectId/task/:taskId/assignee/:userId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);

@@ -29,12 +29,12 @@ import { convertTokenToUserId } from '@utils/converter';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
 import type { Project, ProjectCoworkerForm, ProjectForm } from '@/types/ProjectType';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
 
 const projectServiceHandler = [
   // 프로젝트 소속 유저 검색 API
-  http.get(`${BASE_URL}/project/:projectId/user/search`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/user/search`, ({ request, params }) => {
     const url = new URL(request.url);
     const nickname = url.searchParams.get('nickname') || '';
     const accessToken = request.headers.get('Authorization');
@@ -69,7 +69,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 생성 API
-  http.post(`${BASE_URL}/team/:teamId/project`, async ({ request, params }) => {
+  http.post(`${API_URL}/team/:teamId/project`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const teamId = Number(params.teamId);
     const { coworkers, ...projectInfo } = (await request.json()) as ProjectForm;
@@ -117,7 +117,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 목록 조회 API
-  http.get(`${BASE_URL}/team/:teamId/project`, ({ request, params }) => {
+  http.get(`${API_URL}/team/:teamId/project`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
 
     const teamId = Number(params.teamId);
@@ -139,7 +139,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 팀원 목록 조회 API
-  http.get(`${BASE_URL}/project/:projectId/user`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/user`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
 
@@ -177,7 +177,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 삭제 API
-  http.delete(`${BASE_URL}/project/:projectId`, ({ request, params }) => {
+  http.delete(`${API_URL}/project/:projectId`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
 
@@ -222,7 +222,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 수정 API
-  http.patch(`${BASE_URL}/team/:teamId/project/:projectId`, async ({ request, params }) => {
+  http.patch(`${API_URL}/team/:teamId/project/:projectId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const teamId = Number(params.teamId);
@@ -265,7 +265,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 팀원 추가 API
-  http.post(`${BASE_URL}/project/:projectId/user/invitation`, async ({ request, params }) => {
+  http.post(`${API_URL}/project/:projectId/user/invitation`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const { userId: projectCoworkerId, roleName } = (await request.json()) as ProjectCoworkerForm;
@@ -310,7 +310,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 팀원 권한 변경 API
-  http.patch(`${BASE_URL}/project/:projectId/user/:userId/role`, async ({ request, params }) => {
+  http.patch(`${API_URL}/project/:projectId/user/:userId/role`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const projectCoworkerId = Number(params.userId);
@@ -355,7 +355,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 팀원 삭제 API
-  http.delete(`${BASE_URL}/project/:projectId/user/:userId`, async ({ request, params }) => {
+  http.delete(`${API_URL}/project/:projectId/user/:userId`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const projectCoworkerId = Number(params.userId);

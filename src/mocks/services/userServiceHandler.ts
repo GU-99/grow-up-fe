@@ -7,12 +7,12 @@ import type { Team } from '@/types/TeamType';
 import type { Role } from '@/types/RoleType';
 import type { EditUserInfoForm, EditUserLinksForm, SearchUser, User } from '@/types/UserType';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 // ToDo: Dummy 데이터 Hash화 한 곳으로 모으기
 const userServiceHandler = [
   // 유저 정보 변경 API
-  http.patch(`${BASE_URL}/user`, async ({ request }) => {
+  http.patch(`${API_URL}/user`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
@@ -46,7 +46,7 @@ const userServiceHandler = [
     return HttpResponse.json(userInfo, { status: 200 });
   }),
   // 링크 변경 API
-  http.patch(`${BASE_URL}/user/links`, async ({ request }) => {
+  http.patch(`${API_URL}/user/links`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
@@ -67,7 +67,7 @@ const userServiceHandler = [
     return HttpResponse.json(null, { status: 200 });
   }),
   // 유저 프로필 이미지 업로드 API
-  http.post(`${BASE_URL}/user/profile/image`, async ({ request }) => {
+  http.post(`${API_URL}/user/profile/image`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
@@ -111,7 +111,7 @@ const userServiceHandler = [
     return HttpResponse.json({ imageName: uploadName }, { status: 200 });
   }),
   // 유저 프로필 이미지 조회 API
-  http.get(`${BASE_URL}/file/profile/:fileName`, async ({ request, params }) => {
+  http.get(`${API_URL}/file/profile/:fileName`, async ({ request, params }) => {
     const { fileName } = params;
 
     const accessToken = request.headers.get('Authorization');
@@ -174,7 +174,7 @@ const userServiceHandler = [
     return new HttpResponse(null, { status: 204 });
   }),
   // 전체 팀 목록 조회 API (가입한 팀, 대기중인 팀)
-  http.get(`${BASE_URL}/user/team`, ({ request }) => {
+  http.get(`${API_URL}/user/team`, ({ request }) => {
     const accessToken = request.headers.get('Authorization');
 
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -217,7 +217,7 @@ const userServiceHandler = [
   }),
 
   // 전체 유저 검색
-  http.get(`${BASE_URL}/user/search`, ({ request }) => {
+  http.get(`${API_URL}/user/search`, ({ request }) => {
     const url = new URL(request.url);
     const nickname = url.searchParams.get('nickname') || '';
     const accessToken = request.headers.get('Authorization');
