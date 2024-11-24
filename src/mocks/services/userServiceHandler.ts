@@ -145,7 +145,7 @@ const userServiceHandler = [
     });
   }),
   // 유저 프로필 이미지 삭제 API
-  http.delete(`${BASE_URL}/user/profile/image`, async ({ request }) => {
+  http.delete(`${API_URL}/user/profile/image`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
     if (!accessToken) return new HttpResponse(null, { status: 401 });
 
