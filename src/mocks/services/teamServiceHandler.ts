@@ -225,9 +225,7 @@ const teamServiceHandler = [
       (teamUser) => teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId),
     );
 
-    if (teamUser) {
-      teamUser.isPendingApproval = true;
-    }
+    if (teamUser) teamUser.isPendingApproval = false;
     return new HttpResponse(null, { status: 200 });
   }),
 
