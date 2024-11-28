@@ -258,8 +258,13 @@ const authServiceHandler = [
   }),
 
   // 로그아웃 API
-  http.post(`${API_URL}/user/logout`, async ({ cookies }) => {
+  http.post(`${API_URL}/user/logout`, async ({ request, cookies }) => {
+    const accessToken = request.headers.get('Authorization');
     const { refreshToken } = cookies;
+
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    if (!refreshToken) return new HttpResponse(null, { status: 400 });
+
     const currentTime = Date.now();
 
     return new HttpResponse(null, {

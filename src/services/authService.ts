@@ -101,7 +101,7 @@ export async function getUserInfo(axiosConfig: AxiosRequestConfig = {}) {
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function logout(axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/logout', null, { ...axiosConfig, withCredentials: true });
+  return authAxios.post('user/logout', null, { ...axiosConfig, withCredentials: true });
 }
 
 /**
