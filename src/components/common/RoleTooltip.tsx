@@ -9,7 +9,7 @@ type RoleTooltipProps = {
 export default function RoleTooltip({ showTooltip, rolesInfo }: RoleTooltipProps) {
   return (
     <div
-      className={`absolute left-0 top-full z-10 mt-2 w-max rounded-lg bg-gray-500 p-10 text-white shadow-lg ${!showTooltip && 'hidden'}`}
+      className={`absolute left-0 top-full z-10 mt-2 w-max space-y-10 rounded-lg bg-gray-500 p-10 leading-5 text-white shadow-lg ${!showTooltip && 'hidden'}`}
     >
       {rolesInfo.map((role) => (
         <div key={role.roleName}>

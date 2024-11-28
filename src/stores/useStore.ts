@@ -46,7 +46,6 @@ const createAuthSlice: StateCreator<Store, [], [], AuthStore> = (set) => ({
 
     setTimeout(() => {
       set({
-        isAuthenticated: false,
         accessToken: null,
       });
     }, AUTH_SETTINGS.ACCESS_TOKEN_EXPIRATION);
@@ -136,6 +135,8 @@ export const useStore = create<Store>()(
       })),
       partialize: (state) => ({
         userInfo: state.userInfo,
+        isAuthenticated: state.isAuthenticated,
+        isVerified: state.isVerified,
       }),
     },
   ),

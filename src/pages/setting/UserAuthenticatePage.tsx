@@ -3,6 +3,7 @@ import { AxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
 import { USER_AUTH_VALIDATION_RULES } from '@constants/formValidationRules';
 import useEmailVerification from '@hooks/useEmailVerification';
+import Meta from '@components/common/Meta';
 import ValidationInput from '@components/common/ValidationInput';
 import VerificationButton from '@components/user/auth-form/VerificationButton';
 import useToast from '@hooks/useToast';
@@ -38,41 +39,44 @@ function UserAuthenticatePage() {
   };
 
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-20">
-      <div className="flex w-full max-w-300 flex-col gap-20">
-        <p className="text-center text-sm text-emphasis">
-          개인정보 변경을 위한 이메일 인증 단계입니다.
-          <br />
-          인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
-        </p>
+    <>
+      <Meta title="Grow Up : 이메일 인증" />
+      <div className="flex h-full flex-col items-center justify-center gap-20">
+        <div className="flex w-full max-w-300 flex-col gap-20">
+          <p className="text-center text-sm text-emphasis">
+            개인정보 변경을 위한 이메일 인증 단계입니다.
+            <br />
+            인증요청 버튼 클릭 후, 이메일로 발송된 인증번호를 입력해주세요.
+          </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* 이메일 */}
-          <ValidationInput
-            label="이메일"
-            errors={errors.email?.message}
-            register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
-          />
-
-          {isVerificationRequested && (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            {/* 이메일 */}
             <ValidationInput
-              label="인증번호"
-              errors={errors.verificationCode?.message}
-              register={register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
+              label="이메일"
+              errors={errors.email?.message}
+              register={register('email', USER_AUTH_VALIDATION_RULES.EMAIL)}
             />
-          )}
 
-          {/* 인증 요청 및 확인 버튼 */}
-          <VerificationButton
-            isVerificationRequested={isVerificationRequested}
-            isSubmitting={isSubmitting}
-            requestCode={handleSubmit(() => requestVerificationCode(watch('email')))}
-            expireVerificationCode={expireVerificationCode}
-            buttonLabel="확인"
-          />
-        </form>
+            {isVerificationRequested && (
+              <ValidationInput
+                label="인증번호"
+                errors={errors.verificationCode?.message}
+                register={register('verificationCode', USER_AUTH_VALIDATION_RULES.VERIFICATION_CODE)}
+              />
+            )}
+
+            {/* 인증 요청 및 확인 버튼 */}
+            <VerificationButton
+              isVerificationRequested={isVerificationRequested}
+              isSubmitting={isSubmitting}
+              requestCode={handleSubmit(() => requestVerificationCode(watch('email')))}
+              expireVerificationCode={expireVerificationCode}
+              buttonLabel="확인"
+            />
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
