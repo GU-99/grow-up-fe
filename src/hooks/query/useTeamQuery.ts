@@ -42,8 +42,8 @@ export function useReadTeams() {
     },
   });
 
-  const joinedTeamList = teamList.filter((team) => team.isPendingApproval === true);
-  const invitedTeamList = teamList.filter((team) => team.isPendingApproval === false);
+  const joinedTeamList = teamList.filter((team) => team.isPendingApproval === false);
+  const invitedTeamList = teamList.filter((team) => team.isPendingApproval === true);
 
   return { joinedTeamList, invitedTeamList, teamList, isLoading, isError, error };
 }

@@ -85,7 +85,7 @@ const teamServiceHandler = [
         teamId: newTeamId,
         userId: coworker.userId,
         roleId: role.roleId,
-        isPendingApproval: false,
+        isPendingApproval: true,
       });
     }
     TEAM_USER_DUMMY.push(...validTeamUsers);
@@ -99,7 +99,7 @@ const teamServiceHandler = [
       teamId: newTeamId,
       userId,
       roleId: creatorRole.roleId,
-      isPendingApproval: true,
+      isPendingApproval: false,
     });
 
     return new HttpResponse(null, {
@@ -225,9 +225,7 @@ const teamServiceHandler = [
       (teamUser) => teamUser.teamId === Number(teamId) && teamUser.userId === Number(userId),
     );
 
-    if (teamUser) {
-      teamUser.isPendingApproval = true;
-    }
+    if (teamUser) teamUser.isPendingApproval = false;
     return new HttpResponse(null, { status: 200 });
   }),
 
@@ -321,7 +319,7 @@ const teamServiceHandler = [
       teamId: Number(teamId),
       userId: Number(userId),
       roleId: role.roleId,
-      isPendingApproval: true,
+      isPendingApproval: false,
     };
 
     TEAM_USER_DUMMY.push(newUser);
