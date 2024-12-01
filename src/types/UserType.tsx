@@ -10,14 +10,14 @@ export type User = {
   nickname: string;
   bio: string | null;
   links: string[];
-  profileImageName: string | null;
+  fileName: string | null;
 };
 
 export type UserInfo = User & {
   password: string | null;
 };
 
-export type UserProfileImageForm = Pick<User, 'profileImageName'>;
+export type UserProfileImageForm = Pick<User, 'fileName'>;
 
 export type SearchUser = Pick<User, 'userId' | 'nickname'>;
 export type UserWithRole = SearchUser & Pick<Role, 'roleName'>;
@@ -28,7 +28,7 @@ export type EditUserInfoResponse = Pick<User, 'userId' | 'nickname' | 'bio'>;
 export type EditUserInfoRequest = Omit<EditUserInfoResponse, 'userId'>;
 export type EditUserLinksForm = Pick<User, 'links'>;
 
-export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'profileImageName'> & {
+export type UserSignUpForm = Omit<User, 'userId' | 'provider' | 'fileName'> & {
   verificationCode: string;
   password: string;
   checkPassword: string;

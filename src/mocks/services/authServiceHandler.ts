@@ -42,7 +42,7 @@ const authServiceHandler = [
       userId: USER_DUMMY.length + 1,
       provider: 'LOCAL',
       email,
-      profileImageName: null,
+      fileName: null,
       ...restSignUpData,
     };
     USER_DUMMY.push(newUser);
@@ -182,7 +182,7 @@ const authServiceHandler = [
         email,
         provider,
         nickname: userInfo.id,
-        profileImageName: null,
+        fileName: null,
         bio: null,
         links: [],
       };

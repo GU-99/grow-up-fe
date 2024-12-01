@@ -33,8 +33,8 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
       setImageUrl(profileImageUrl);
     };
 
-    if (userInfo.profileImageName) handleGetProfileImage(userInfo.profileImageName);
-  }, [userInfo.profileImageName]);
+    if (userInfo.fileName) handleGetProfileImage(userInfo.fileName);
+  }, [userInfo.fileName]);
 
   useEffect(() => {
     return () => {
@@ -65,7 +65,7 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
 
   const handleRemoveImg = () => {
     setImageUrl('');
-    editUserInfo({ profileImageName: null });
+    editUserInfo({ fileName: null });
   };
 
   return (

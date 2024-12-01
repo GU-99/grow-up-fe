@@ -40,7 +40,7 @@ export function useUploadProfileImage() {
       if (!imageName) return toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
 
       toastSuccess('이미지가 업로드되었습니다.');
-      editUserInfo({ profileImageName: imageName });
+      editUserInfo({ fileName: imageName });
       queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
     },
   });
