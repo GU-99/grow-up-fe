@@ -19,7 +19,7 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   const { toastWarn } = useToast();
   const { userInfo } = useStore();
   const { mutate: uploadImageMutate } = useUploadProfileImage();
-  const { mutateAsync: deleteImageMutate } = useDeleteProfileImage();
+  const { mutateAsync: deleteImageMutateAsync } = useDeleteProfileImage();
   const { fetchData } = useAxios(getProfileImage);
   const { toastError } = useToast();
 
@@ -66,7 +66,7 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
 
   const handleRemoveImg = async () => {
     try {
-      await deleteImageMutate();
+      await deleteImageMutateAsync();
       setImageUrl('');
     } catch (error) {
       console.error('이미지 삭제 중 에러 발생:', error);
