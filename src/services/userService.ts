@@ -61,6 +61,18 @@ export async function getProfileImage(fileName: string, axiosConfig: AxiosReques
 }
 
 /**
+ * 유저 프로필 이미지 삭제 API
+ *
+ * @export
+ * @async
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<void>>}
+ */
+export async function deleteProfileImage(axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.delete('/user/profile/image', axiosConfig);
+}
+
+/**
  * 유저 목록을 검색하는 API
  *
  * @export
