@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { IoIosSettings } from 'react-icons/io';
 import useModal from '@hooks/useModal';
-import { useDeleteProject, useDeleteProjectUser, useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
+import useToast from '@hooks/useToast';
+import { useDeleteProject, useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import useStore from '@stores/useStore';
 import UpdateModalProject from '@components/modal/project/UpdateModalProject';
 
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
-import useToast from '@/hooks/useToast';
 
 type ProjectItemProps = {
   teamId: Team['teamId'];
