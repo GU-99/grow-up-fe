@@ -34,7 +34,7 @@ export default function SettingLayout() {
       <ListSidebar title={`${userInfo.nickname} 님의 정보`}>
         <ListSetting navList={navList} />
       </ListSidebar>
-      <section className="flex grow flex-col border border-list bg-contents-box">
+      <section className="flex grow flex-col overflow-x-scroll border border-list bg-contents-box">
         <header className="flex h-30 items-center justify-between border-b p-10">
           <div>
             <small className="font-bold text-category">{getTitle()}</small>

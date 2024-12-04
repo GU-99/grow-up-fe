@@ -25,7 +25,7 @@ export default function TeamSettingLayout() {
         </button>
       </section>
 
-      <section className="mt-6 h-full overflow-y-auto px-10">
+      <section className="mt-6 h-full overflow-y-auto">
         <Outlet context={{ joinedTeamList, invitedTeamList }} />
       </section>
     </section>
