@@ -6,7 +6,7 @@ import { USER_SETTINGS } from '@constants/settings';
 import { JPG, PNG, SVG, WEBP } from '@constants/mimeFileType';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
-import { useUploadProfileImage } from '@hooks/query/useUserQuery';
+import { useDeleteProfileImage, useUploadProfileImage } from '@hooks/query/useUserQuery';
 import useStore from '@stores/useStore';
 import { getProfileImage } from '@services/userService';
 
@@ -17,8 +17,9 @@ type ProfileImageContainerProps = {
 
 export default function ProfileImageContainer({ imageUrl, setImageUrl }: ProfileImageContainerProps) {
   const { toastWarn } = useToast();
-  const { editUserInfo, userInfo } = useStore();
+  const { userInfo } = useStore();
   const { mutate: uploadImageMutate } = useUploadProfileImage();
+  const { mutateAsync: deleteImageMutateAsync } = useDeleteProfileImage();
   const { fetchData } = useAxios(getProfileImage);
   const { toastError } = useToast();
 
@@ -63,9 +64,13 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
     uploadImageMutate({ file });
   };
 
-  const handleRemoveImg = () => {
-    setImageUrl('');
-    editUserInfo({ profileImageName: null });
+  const handleRemoveImg = async () => {
+    try {
+      await deleteImageMutateAsync();
+      setImageUrl('');
+    } catch (error) {
+      console.error('이미지 삭제 중 에러 발생:', error);
+    }
   };
 
   return (
