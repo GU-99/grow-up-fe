@@ -15,9 +15,9 @@ export default function JoinedTeamPage() {
       <Meta title="Grow Up : 팀 가입 현황" />
       <article className="h-full" aria-label="가입된 팀 목록">
         {joinedTeamList && joinedTeamList.length > 0 ? (
-          <ul className="max-h-[70vh] overflow-y-auto">
+          <ul className="h-full overflow-y-auto">
             {joinedTeamList.map((team) => (
-              <li key={team.teamId} className="flex items-center gap-4 border-b p-8" aria-label="팀 이름">
+              <li key={team.teamId} className="flex min-w-fit items-center gap-4 border-b p-8" aria-label="팀 이름">
                 <div className="flex grow gap-4">
                   <div className="w-64">
                     <small className="text-xs font-bold text-category">team</small>
@@ -33,7 +33,7 @@ export default function JoinedTeamPage() {
                   </div>
                 </div>
 
-                <div className="flex shrink-0 flex-col gap-4">
+                <div className="flex w-50 shrink-0 flex-col gap-4">
                   {team.creatorId === userInfo.userId && (
                     <button
                       type="button"
