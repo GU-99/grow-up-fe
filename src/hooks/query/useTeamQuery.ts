@@ -252,7 +252,7 @@ export function useUpdateTeamCoworkerRole(teamId: Team['teamId']) {
 // 팀원 목록 조회
 export function useReadTeamCoworkers(teamId: Team['teamId']) {
   const {
-    data: coworkers = [] as TeamCoworker[],
+    data: teamCoworkers = [],
     isLoading,
     isError,
   } = useQuery({
@@ -263,5 +263,5 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
     },
   });
 
-  return { coworkers, isLoading, isError };
+  return { teamCoworkers, isLoading, isError };
 }
