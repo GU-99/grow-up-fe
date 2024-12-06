@@ -9,8 +9,6 @@ export default function InvitedTeamPage() {
 
   if (isLoading) return <Spinner />;
 
-  const buttonStyles = 'rounded-md px-5 py-2 text-sm text-white hover:brightness-90'; // 버튼 스타일 재사용
-
   return (
     <>
       <Meta title="Grow Up : 팀 대기 현황" />
@@ -42,14 +40,14 @@ export default function InvitedTeamPage() {
                   <div className="flex w-50 shrink-0 flex-col gap-2">
                     <button
                       type="button"
-                      className={`${buttonStyles} bg-main`}
+                      className="rounded-md bg-main px-5 py-2 text-sm text-white hover:brightness-90"
                       onClick={() => ApproveInvitation(invite.teamId)}
                     >
                       수락하기
                     </button>
                     <button
                       type="button"
-                      className={`${buttonStyles} bg-red-500`}
+                      className="rounded-md bg-red-500 px-5 py-2 text-sm text-white hover:brightness-90"
                       onClick={() => RejectInvitation(invite.teamId)}
                     >
                       거부하기
