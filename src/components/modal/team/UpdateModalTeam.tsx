@@ -39,7 +39,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   const [keyword, setKeyword] = useState('');
   const { toastInfo } = useToast();
 
-  const { coworkers, isLoading: isTeamCoworkersLoading } = useReadTeamCoworkers(teamId);
+  const { teamCoworkers, isLoading: isTeamCoworkersLoading } = useReadTeamCoworkers(teamId);
   const { teamList, isLoading: isTeamListLoading } = useReadTeams();
   const { teamInfo } = useReadTeamInfo(Number(teamId));
   const teamNameList = useMemo(() => getTeamNameList(teamList, teamInfo?.teamName), [teamList, teamInfo?.teamName]);
@@ -66,10 +66,10 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   } = methods;
 
   useEffect(() => {
-    if (teamInfo?.teamName && teamInfo?.content && coworkers) {
-      reset({ teamName: teamInfo.teamName, content: teamInfo.content, coworkers });
+    if (teamInfo?.teamName && teamInfo?.content && teamCoworkers) {
+      reset({ teamName: teamInfo.teamName, content: teamInfo.content });
     }
-  }, [teamInfo, coworkers, reset]);
+  }, [teamInfo, teamCoworkers, reset]);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value.trim());
@@ -81,7 +81,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   };
 
   const handleCoworkersClick = (userId: User['userId'], roleName: TeamRoleName) => {
-    const isIncludedUser = coworkers.find((coworker) => coworker.userId === userId);
+    const isIncludedUser = teamCoworkers.find((coworker) => coworker.userId === userId);
     if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
 
     addTeamCoworkerMutate({ userId, roleName });
@@ -142,7 +142,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
             onUserClick={(user) => handleCoworkersClick(user.userId, TEAM_DEFAULT_ROLE)}
           />
           <div className="flex flex-wrap">
-            {coworkers.map(({ userId, nickname, roleName }) => (
+            {teamCoworkers.map(({ userId, nickname, roleName }) => (
               <UserRoleSelectBox
                 key={userId}
                 userId={userId}

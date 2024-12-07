@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useToast from '@hooks/useToast';
-import { updateLinks, updateUserInfo, uploadProfileImage } from '@services/userService';
+import { deleteProfileImage, updateLinks, updateUserInfo, uploadProfileImage } from '@services/userService';
 import useStore from '@stores/useStore';
 import { generateLinksQueryKey, generateProfileFileQueryKey, generateUserInfoQueryKey } from '@utils/queryKeyGenerator';
 import type { EditUserInfoRequest, EditUserLinksForm } from '@/types/UserType';
@@ -46,6 +46,28 @@ export function useUploadProfileImage() {
   });
 
   return mutation;
+}
+
+export function useDeleteProfileImage() {
+  const queryClient = useQueryClient();
+  const { toastSuccess, toastError } = useToast();
+  const { userInfo, editUserInfo } = useStore();
+  const userProfileImageQueryKey = generateProfileFileQueryKey(userInfo.userId);
+
+  const mutation = useMutation({
+    mutationFn: () => deleteProfileImage(),
+    onError: () => toastError('이미지 삭제에 실패했습니다. 다시 시도해 주세요.'),
+    onSuccess: () => {
+      toastSuccess('이미지가 삭제되었습니다.');
+      editUserInfo({ profileImageName: null });
+      queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
+    },
+  });
+
+  return {
+    ...mutation,
+    mutateAsync: mutation.mutateAsync,
+  };
 }
 
 export function useUpdateLinks() {
