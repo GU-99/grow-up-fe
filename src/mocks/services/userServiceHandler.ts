@@ -162,7 +162,7 @@ const userServiceHandler = [
       );
     }
 
-    USER_DUMMY[userIndex].profileImageName = null;
+    USER_DUMMY[userIndex].fileName = null;
 
     const fileIndex = PROFILE_IMAGE_DUMMY.findIndex((file) => file.userId === userId);
     if (fileIndex === -1) {
