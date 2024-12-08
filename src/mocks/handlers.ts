@@ -1,2 +1,17 @@
-// ToDo: API 설계되면 엔드포인트 넣어서 설정할 것.
-export const handlers = [];
+import userServiceHandler from '@mocks/services/userServiceHandler';
+import teamServiceHandler from '@mocks/services/teamServiceHandler';
+import projectServiceHandler from '@mocks/services/projectServiceHandler';
+import taskServiceHandler from '@mocks/services/taskServiceHandler';
+import statusServiceHandler from '@mocks/services/statusServiceHandler';
+import authServiceHandler from '@mocks/services/authServiceHandler';
+
+const handlers = [
+  ...userServiceHandler,
+  ...teamServiceHandler,
+  ...projectServiceHandler,
+  ...taskServiceHandler,
+  ...statusServiceHandler,
+  ...authServiceHandler,
+];
+
+export default handlers;

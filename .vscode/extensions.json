@@ -9,6 +9,11 @@
     "formulahendry.auto-rename-tag",
     "pkief.material-icon-theme",
     "equinusocio.vsc-material-theme",
-    "wix.vscode-import-cost"
+    "wix.vscode-import-cost",
+    "streetsidesoftware.code-spell-checker",
+    "vitest.explorer",
+    "crystal-spider.jsdoc-generator",
+    "simonsiefke.svg-preview",
+    "bierner.jsdoc-markdown-highlighting"
   ]
 }

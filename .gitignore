@@ -30,10 +30,17 @@ dist-ssr
 .env.test
 .env.production
 .env.local
+.env.staging
 .env.development.local
 .env.test.local
 .env.production.local
 
+# https local cert
+localhost-key.pem
+localhost.pem
+
 # etc
 .history
 .eslintcache
+tsconfig.tsbuildinfo
+tsconfig.*.tsbuildinfo

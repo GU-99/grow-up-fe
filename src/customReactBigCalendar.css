@@ -1,0 +1,7 @@
+.rbc-off-range-bg {
+  background: #f4f4f4;
+}
+
+.rbc-selected-cell {
+  background: var(--color-sub);
+}

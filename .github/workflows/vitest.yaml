@@ -1,0 +1,29 @@
+name: vitest-workflow
+
+on:
+  pull_request: 
+    types: [opened, reopened, synchronize, ready_for_review]
+    branches:
+      - main
+      - develop
+    paths:
+      - 'src/**'
+
+jobs:
+  vitest:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install yarn dependencies
+        run: yarn install
+        
+      - name: Run tests with vitest
+        run: yarn run test -- --passWithNoTests
