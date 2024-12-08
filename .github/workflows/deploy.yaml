@@ -12,8 +12,6 @@ jobs:
       # Github workspace 로컬 다운로드
       - name: Checkout branch
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       # NodeJS 설치
       - name: Setup Node.js environment v20
