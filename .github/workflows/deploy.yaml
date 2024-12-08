@@ -2,8 +2,7 @@ name: deploy-workflow
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -13,6 +12,8 @@ jobs:
       # Github workspace 로컬 다운로드
       - name: Checkout branch
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       # NodeJS 설치
       - name: Setup Node.js environment v20
@@ -29,6 +30,8 @@ jobs:
         run: |
           echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          echo "VITE_KAKAO_REDIRECT_URI=${{ secrets.VITE_KAKAO_REDIRECT_URI }}" >> .env
+          echo "VITE_GOOGLE_REDIRECT_URI=${{ secrets.VITE_GOOGLE_REDIRECT_URI }}" >> .env
         shell: bash
 
       # 프로젝트 빌드
