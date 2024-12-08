@@ -14,7 +14,7 @@ export default function SocialButton({ provider, isSubmitting }: SocialButtonPro
   const googleUrl = import.meta.env.VITE_GOOGLE_URL;
   const kakaoUrl = import.meta.env.VITE_KAKAO_URL;
 
-  const isGoogle = provider === 'GOOGLE';
+  const isGoogle = provider === 'google';
 
   const [isLoading, setIsLoading] = useState(false);
   const { toastError } = useToast();
