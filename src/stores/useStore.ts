@@ -81,7 +81,7 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
     nickname: '',
     bio: null,
     links: [],
-    profileImageName: null,
+    fileName: null,
   },
 
   setUserInfo: (newUserInfo: User) =>
@@ -104,7 +104,7 @@ const createUserSlice: StateCreator<Store, [], [], UserStore> = (set) => ({
         nickname: '',
         bio: null,
         links: [],
-        profileImageName: null,
+        fileName: null,
       },
     });
     localStorage.removeItem('user-storage');

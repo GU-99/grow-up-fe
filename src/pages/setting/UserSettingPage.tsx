@@ -23,7 +23,7 @@ export default function UserSettingPage() {
       email: userInfoData.email,
       nickname: userInfoData.nickname,
       bio: userInfoData.bio,
-      profileImageName: userInfoData.profileImageName,
+      fileName: userInfoData.fileName,
     },
   });
   const { formState, register, watch, setValue, handleSubmit } = methods;
@@ -56,8 +56,8 @@ export default function UserSettingPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* 프로필 이미지 */}
             <ProfileImageContainer
-              imageUrl={watch('profileImageName')}
-              setImageUrl={(url: string) => setValue('profileImageName', url)}
+              imageUrl={watch('fileName')}
+              setImageUrl={(url: string) => setValue('fileName', url)}
             />
 
             {/* 아이디 */}
