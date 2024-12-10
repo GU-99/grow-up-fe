@@ -16,14 +16,7 @@ import {
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
 import useStore from '@stores/useStore';
-import type {
-  Team,
-  TeamCoworker,
-  TeamForm,
-  TeamListWithApproval,
-  TeamInfoForm,
-  TeamCoworkerForm,
-} from '@/types/TeamType';
+import type { Team, TeamForm, TeamListWithApproval, TeamInfoForm, TeamCoworkerForm } from '@/types/TeamType';
 import type { User } from '@/types/UserType';
 
 // 전체 팀 목록 조회
@@ -87,16 +80,17 @@ export function useLeaveTeam() {
 export function useDeleteTeam() {
   const queryClient = useQueryClient();
   const { toastSuccess, toastError } = useToast();
+  const { userInfo } = useStore();
+  const teamsQueryKey = generateTeamsQueryKey(userInfo.userId);
 
   const mutation = useMutation({
     mutationFn: (teamId: Team['teamId']) => deleteTeam(teamId),
     onError: () => {
       toastError('팀 삭제를 실패했습니다. 다시 시도해 주세요.');
     },
-    onSuccess: (_, teamId) => {
-      const teamCoworkersQueryKey = generateTeamCoworkersQueryKey(teamId);
+    onSuccess: () => {
       toastSuccess('팀을 삭제하였습니다.');
-      queryClient.invalidateQueries({ queryKey: teamCoworkersQueryKey });
+      queryClient.invalidateQueries({ queryKey: teamsQueryKey });
     },
   });
 
