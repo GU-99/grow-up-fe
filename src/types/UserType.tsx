@@ -1,6 +1,6 @@
 import type { Role } from '@/types/RoleType';
 
-export type SocialLoginProvider = 'KAKAO' | 'GOOGLE';
+export type SocialLoginProvider = 'kakao' | 'google';
 
 export type User = {
   userId: number;

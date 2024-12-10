@@ -88,14 +88,14 @@ const authServiceHandler = [
     const { provider } = params as { provider: SocialLoginProvider };
     const { code } = (await request.json()) as { code: string };
 
-    const validProviders = ['KAKAO', 'GOOGLE'];
+    const validProviders = ['kakao', 'google'];
     if (!validProviders.includes(provider)) {
       return HttpResponse.json({ message: '지원하지 않는 Provider입니다.' }, { status: 400 });
     }
 
     // 공급업체별 설정 정보
     const providerConfigs = {
-      KAKAO: {
+      kakao: {
         tokenUrl: `https://kauth.kakao.com/oauth/token`,
         userInfoUrl: 'https://kapi.kakao.com/v2/user/me',
         accessTokenParams: {
@@ -107,7 +107,7 @@ const authServiceHandler = [
         accessTokenKey: 'access_token',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
       },
-      GOOGLE: {
+      google: {
         tokenUrl: `https://oauth2.googleapis.com/token`,
         userInfoUrl: 'https://www.googleapis.com/userinfo/v2/me',
         accessTokenParams: {
@@ -165,7 +165,7 @@ const authServiceHandler = [
     }
 
     // 이메일 기반으로 사용자 검색 또는 회원가입
-    const email = provider === 'KAKAO' ? userInfo.kakao_account.email : userInfo.email;
+    const email = provider === 'kakao' ? userInfo.kakao_account.email : userInfo.email;
     if (!email) return HttpResponse.json({ message: '이메일 정보를 가져올 수 없습니다.' }, { status: 400 });
 
     const foundUser = USER_DUMMY.find((user) => user.email === email);
