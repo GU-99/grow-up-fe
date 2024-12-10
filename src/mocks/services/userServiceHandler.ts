@@ -230,7 +230,7 @@ const userServiceHandler = [
     if (!userId) return new HttpResponse(null, { status: 401 });
 
     // 접두사(nickname)와 일치하는 유저 정보 최대 5명 추출
-    const matchedSearchUsers = USER_DUMMY.filter((user) => user.nickname.startsWith(nickname))
+    const matchedSearchUsers = USER_DUMMY.filter((user) => user.nickname.startsWith(nickname) && user.userId !== userId)
       .slice(0, 5)
       .map((user) => ({ userId: user.userId, nickname: user.nickname }));
 
