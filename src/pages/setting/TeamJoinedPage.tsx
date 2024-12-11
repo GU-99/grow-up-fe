@@ -27,7 +27,7 @@ export default function JoinedTeamPage() {
                     <small className="text-xs font-bold text-category">head</small>
                     <p className="truncate">{team.creator}</p>
                   </div>
-                  <div className="w-200">
+                  <div className="w-200 grow">
                     <small className="text-xs font-bold text-category">desc</small>
                     <p className="truncate">{team.content}</p>
                   </div>
