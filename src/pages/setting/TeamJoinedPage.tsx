@@ -27,13 +27,13 @@ export default function JoinedTeamPage() {
                     <small className="text-xs font-bold text-category">head</small>
                     <p className="truncate">{team.creator}</p>
                   </div>
-                  <div className="w-200 grow">
+                  <div className="w-180 grow">
                     <small className="text-xs font-bold text-category">desc</small>
                     <p className="truncate">{team.content}</p>
                   </div>
                 </div>
 
-                <div className="mx-4 flex shrink-0 flex-col gap-4">
+                <div className="mx-4 flex w-45 shrink-0 flex-col gap-4">
                   {team.creatorId === userInfo.userId && (
                     <button
                       type="button"

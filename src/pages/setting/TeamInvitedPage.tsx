@@ -23,21 +23,21 @@ export default function InvitedTeamPage() {
                   aria-label="팀 초대 정보"
                 >
                   <div className="flex grow gap-4">
-                    <div className="w-64">
+                    <div className="w-60">
                       <small className="text-xs font-bold text-gray-500">팀</small>
                       <p className="truncate text-sm text-gray-800">{invite.teamName}</p>
                     </div>
-                    <div className="w-64">
+                    <div className="w-60">
                       <small className="text-xs font-bold text-gray-500">팀장</small>
                       <p className="truncate text-sm text-gray-800">{invite.creator}</p>
                     </div>
-                    <div className="w-380">
+                    <div className="w-180 grow">
                       <small className="text-xs font-bold text-gray-500">소개</small>
                       <p className="truncate text-sm text-gray-800">{invite.content}</p>
                     </div>
                   </div>
 
-                  <div className="flex w-50 shrink-0 flex-col gap-2">
+                  <div className="flex w-45 shrink-0 flex-col gap-2">
                     <button
                       type="button"
                       className="rounded-md bg-main px-5 py-2 text-sm text-white hover:brightness-90"
