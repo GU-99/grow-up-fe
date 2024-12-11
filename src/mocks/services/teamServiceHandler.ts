@@ -160,7 +160,7 @@ const teamServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const { teamId } = params;
 
-    if (!accessToken) return new HttpResponse(null, { status: 403 });
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
 
     const filteredTeams = TEAM_DUMMY.filter((team) => team.teamId !== Number(teamId));
     TEAM_DUMMY.length = 0;
@@ -196,6 +196,7 @@ const teamServiceHandler = [
       const projectId = statusId ? STATUS_DUMMY.find((status) => status.statusId === statusId)?.projectId : undefined;
       return !(projectId && projectIdsToDelete.includes(projectId));
     });
+
     TASK_FILE_DUMMY.length = 0;
     TASK_FILE_DUMMY.push(...filteredTaskFiles);
 
@@ -205,6 +206,7 @@ const teamServiceHandler = [
       const projectId = statusId ? STATUS_DUMMY.find((status) => status.statusId === statusId)?.projectId : undefined;
       return !(projectId && projectIdsToDelete.includes(projectId));
     });
+
     TASK_USER_DUMMY.length = 0;
     TASK_USER_DUMMY.push(...filteredTaskUsers);
 

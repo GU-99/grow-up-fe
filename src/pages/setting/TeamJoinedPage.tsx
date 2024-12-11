@@ -15,24 +15,25 @@ export default function JoinedTeamPage() {
       <Meta title="Grow Up : 팀 가입 현황" />
       <article className="h-full" aria-label="가입된 팀 목록">
         {joinedTeamList && joinedTeamList.length > 0 ? (
-          <ul className="min-w-300 space-y-2 text-sm">
+          <ul className="h-full overflow-y-auto">
             {joinedTeamList.map((team) => (
-              <li key={team.teamId} className="flex h-50 items-center gap-4 border p-8" aria-label="팀 이름">
-                <div className="flex max-h-full grow gap-4">
-                  <div className="max-h-full w-50 shrink-0">
+              <li key={team.teamId} className="flex min-w-fit items-center gap-4 border-b p-8" aria-label="팀 이름">
+                <div className="flex grow gap-4">
+                  <div className="w-60">
                     <small className="text-xs font-bold text-category">team</small>
                     <p className="truncate">{team.teamName}</p>
                   </div>
-                  <div className="max-h-full w-50 shrink-0">
+                  <div className="w-60">
                     <small className="text-xs font-bold text-category">head</small>
                     <p className="truncate">{team.creator}</p>
                   </div>
-                  <div className="max-h-full max-w-300 px-4">
+                  <div className="w-180 grow">
                     <small className="text-xs font-bold text-category">desc</small>
                     <p className="truncate">{team.content}</p>
                   </div>
                 </div>
-                <div className="flex shrink-0 flex-col gap-4">
+
+                <div className="mx-4 flex w-45 shrink-0 flex-col gap-4">
                   {team.creatorId === userInfo.userId && (
                     <button
                       type="button"
