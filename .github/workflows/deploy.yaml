@@ -2,8 +2,7 @@ name: deploy-workflow
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -29,6 +28,9 @@ jobs:
         run: |
           echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> .env
           echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          echo "VITE_KAKAO_URL=${{ secrets.VITE_KAKAO_URL }}" >> .env
+          echo "VITE_GOOGLE_URL=${{ secrets.VITE_GOOGLE_URL }}" >> .env
+          echo "VITE_STORAGE_SECRET_KEY=${{ secrets.VITE_STORAGE_SECRET_KEY }}" >> .env
         shell: bash
 
       # 프로젝트 빌드

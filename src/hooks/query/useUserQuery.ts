@@ -40,7 +40,7 @@ export function useUploadProfileImage() {
       if (!imageName) return toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
 
       toastSuccess('이미지가 업로드되었습니다.');
-      editUserInfo({ profileImageName: imageName });
+      editUserInfo({ fileName: imageName });
       queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
     },
   });
@@ -59,7 +59,7 @@ export function useDeleteProfileImage() {
     onError: () => toastError('이미지 삭제에 실패했습니다. 다시 시도해 주세요.'),
     onSuccess: () => {
       toastSuccess('이미지가 삭제되었습니다.');
-      editUserInfo({ profileImageName: null });
+      editUserInfo({ fileName: null });
       queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
     },
   });

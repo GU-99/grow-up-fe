@@ -63,7 +63,9 @@ const projectServiceHandler = [
     }
 
     // 접두사(nickname)과 일치하는 유저 정보 최대 5명 추출
-    const matchedSearchUsers = searchUsers.filter((user) => user.nickname.startsWith(nickname)).slice(0, 5);
+    const matchedSearchUsers = searchUsers
+      .filter((user) => user.nickname.startsWith(nickname) && user.userId !== userId)
+      .slice(0, 5);
 
     return HttpResponse.json(matchedSearchUsers);
   }),
