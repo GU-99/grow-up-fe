@@ -31,7 +31,7 @@ export default function TeamLayout() {
         <ListSidebar title="팀 목록" showButton text="팀 생성" onClick={openTeamModal}>
           <ListTeam data={joinedTeamList} targetId={teamId} />
         </ListSidebar>
-        <section className="flex grow flex-col border border-list bg-contents-box">
+        <section className="flex grow flex-col overflow-auto border border-list bg-contents-box">
           {joinedTeamList.length === 0 ? (
             <div className="flex h-full items-center justify-center text-center">
               소속된 팀이 없습니다! <br />
