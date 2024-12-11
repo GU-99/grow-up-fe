@@ -19,21 +19,21 @@ export default function JoinedTeamPage() {
             {joinedTeamList.map((team) => (
               <li key={team.teamId} className="flex min-w-fit items-center gap-4 border-b p-8" aria-label="팀 이름">
                 <div className="flex grow gap-4">
-                  <div className="w-64">
+                  <div className="w-60">
                     <small className="text-xs font-bold text-category">team</small>
                     <p className="truncate">{team.teamName}</p>
                   </div>
-                  <div className="w-64">
+                  <div className="w-60">
                     <small className="text-xs font-bold text-category">head</small>
                     <p className="truncate">{team.creator}</p>
                   </div>
-                  <div className="w-380">
+                  <div className="w-200">
                     <small className="text-xs font-bold text-category">desc</small>
                     <p className="truncate">{team.content}</p>
                   </div>
                 </div>
 
-                <div className="flex w-50 shrink-0 flex-col gap-4">
+                <div className="mx-4 flex shrink-0 flex-col gap-4">
                   {team.creatorId === userInfo.userId && (
                     <button
                       type="button"
