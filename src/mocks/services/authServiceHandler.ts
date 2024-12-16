@@ -278,26 +278,6 @@ const authServiceHandler = [
     });
   }),
 
-  // 액세스 토큰 테스트용 API
-  http.post(`${API_URL}/test`, ({ request }) => {
-    console.log('테스트용 API 작동 중');
-
-    const authHeader = request.headers.get('Authorization');
-
-    // Authorization 헤더의 Bearer 토큰 확인
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.split(' ')[1];
-
-      if (token) {
-        console.log('유효한 토큰입니다. 200 응답을 반환합니다.');
-        return new HttpResponse(null, { status: 200 });
-      }
-    }
-
-    console.log('유효하지 않은 토큰입니다. 401 응답을 반환합니다.');
-    return new HttpResponse(null, { status: 401 });
-  }),
-
   // 이메일 인증 번호 요청 API
   http.post(`${API_URL}/user/verify/send`, async ({ request }) => {
     const { email } = (await request.json()) as RequestEmailCode;
