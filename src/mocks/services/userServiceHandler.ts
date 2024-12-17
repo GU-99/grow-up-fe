@@ -5,7 +5,7 @@ import { convertTokenToUserId } from '@utils/converter';
 import { fileNameParser } from '@utils/fileNameParser';
 import type { Team } from '@/types/TeamType';
 import type { Role } from '@/types/RoleType';
-import type { EditUserInfoForm, EditUserLinksForm, SearchUser, User } from '@/types/UserType';
+import type { EditUserInfoForm, EditUserLinksForm, User } from '@/types/UserType';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -108,7 +108,7 @@ const userServiceHandler = [
       });
     }
 
-    return HttpResponse.json({ imageName: uploadName }, { status: 200 });
+    return HttpResponse.json({ fileName: uploadName }, { status: 200 });
   }),
   // 유저 프로필 이미지 조회 API
   http.get(`${API_URL}/file/profile/:fileName`, async ({ request, params }) => {

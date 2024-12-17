@@ -34,9 +34,7 @@ export default function SignInPage() {
     try {
       const response = await getUserInfo();
       setUserInfo(response.data);
-      console.log(response.data);
     } catch (error) {
-      console.error('유저정보 오류', error);
       throw new Error('유저 정보를 가져오는 데 실패했습니다.');
     }
   };
@@ -45,11 +43,9 @@ export default function SignInPage() {
     try {
       const response = await login(formData);
       if (!response.headers) throw new Error();
-      console.log('response', response);
 
       const accessToken = response.headers.authorization;
       if (!accessToken) throw new Error();
-      console.log('accessToken', accessToken);
 
       onLogin(accessToken.split(' ')[1]);
     } catch (error) {
@@ -57,7 +53,6 @@ export default function SignInPage() {
       if (axiosError.response?.status === 401) {
         throw new Error('아이디와 비밀번호를 한번 더 확인해 주세요.');
       }
-      console.error('로그인 도중 오류', axiosError);
       throw new Error('로그인 도중 오류가 발생했습니다.');
     }
   };
@@ -65,13 +60,10 @@ export default function SignInPage() {
   const onSubmit = async (formData: UserSignInForm) => {
     try {
       await handleLogin(formData);
-      console.log('로그인 완료');
       await fetchUserInfo();
-      console.log('유저정보 가져옴');
       navigate('/', { replace: true });
     } catch (error) {
       const axiosError = error as Error;
-      console.error('로그인 + 유저정보 오류', axiosError);
       toastError(axiosError.message);
     }
   };

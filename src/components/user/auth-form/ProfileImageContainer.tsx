@@ -26,8 +26,7 @@ export default function ProfileImageContainer({ imageUrl, setImageUrl }: Profile
   useEffect(() => {
     const handleGetProfileImage = async (uploadName: string) => {
       const response = await fetchData(uploadName);
-      if (response == null)
-        return toastError('프로필 이미지 조회 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      if (!response) return toastError('프로필 이미지 조회 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
 
       const blob = new Blob([response.data], { type: response.headers['content-type'] });
       const profileImageUrl = URL.createObjectURL(blob);

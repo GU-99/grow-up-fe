@@ -35,12 +35,12 @@ export function useUploadProfileImage() {
       }),
     onError: () => toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.'),
     onSuccess: (response) => {
-      const { imageName } = response.data;
+      const { fileName } = response.data;
 
-      if (!imageName) return toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
+      if (!fileName) return toastError('이미지 업로드에 실패했습니다. 다시 시도해 주세요.');
 
       toastSuccess('이미지가 업로드되었습니다.');
-      editUserInfo({ fileName: imageName });
+      editUserInfo({ fileName });
       queryClient.invalidateQueries({ queryKey: userProfileImageQueryKey });
     },
   });
