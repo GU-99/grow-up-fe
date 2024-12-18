@@ -51,7 +51,7 @@ export async function checkNicknameDuplicate(nicknameForm: CheckNicknameForm, ax
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function login(loginForm: UserSignInForm, axiosConfig: AxiosRequestConfig = {}) {
-  return defaultAxios.post('user/login', loginForm, axiosConfig);
+  return defaultAxios.post('user/login', loginForm, { ...axiosConfig, withCredentials: true });
 }
 
 /**
