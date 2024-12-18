@@ -39,7 +39,7 @@ export default function ProjectItem({ teamId, project }: ProjectItemProps) {
 
   return (
     <>
-      <li key={project.projectId} className="min-w-300 space-y-2 text-sm">
+      <li key={project.projectId} className="min-w-fit space-y-2 text-sm">
         <Link to={`/teams/${teamId}/projects/${project.projectId}`} className="flex h-50 items-center border p-8">
           <div className="flex max-h-full grow">
             <div className="max-h-full w-60 shrink-0">
@@ -47,13 +47,13 @@ export default function ProjectItem({ teamId, project }: ProjectItemProps) {
               <p className="truncate">{project.projectName}</p>
             </div>
 
-            <div className="flex max-h-full max-w-350 flex-col px-4">
+            <div className="flex max-h-full w-180 grow flex-col px-4">
               <small className="text-xs font-bold text-category">desc</small>
               <p className="truncate">{project.content}</p>
             </div>
           </div>
 
-          <div className="mr-6 flex shrink-0 space-x-10">
+          <div className="mr-6 flex w-60 shrink-0 space-x-10">
             <button
               type="button"
               className="flex items-center text-main hover:brightness-50"
