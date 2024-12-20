@@ -157,6 +157,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
           endDateId="endDate"
           startDateFieldName="startDate"
           endDateFieldName="endDate"
+          enableEndDateSync
         />
 
         <SearchUserInput

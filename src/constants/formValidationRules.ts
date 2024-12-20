@@ -8,7 +8,7 @@ type ValidateOption = { [key: string]: (value: string) => string | boolean };
 function getDateValidation(
   periodStartDate: Date | string | null,
   periodEndDate: Date | string | null,
-  referenceDate?: Date | string,
+  referenceDate?: Date | string | null,
 ) {
   const validation: ValidateOption = {};
   // 기준일이 설정되어 있다면, 기준일 이후로 설정되는가 검증
@@ -199,9 +199,10 @@ export const PERIOD_VALIDATION_RULES = deepFreeze({
     hasDeadline: boolean,
     periodStartDate: Date | string | null,
     periodEndDate: Date | string | null,
-    referenceDate: Date | string,
+    referenceDate: Date | string | null,
+    enableEndDateSync: boolean,
   ) => ({
     required: hasDeadline && '종료일을 선택해주세요.',
-    validate: getDateValidation(periodStartDate, periodEndDate, referenceDate),
+    validate: getDateValidation(periodStartDate, periodEndDate, enableEndDateSync ? null : referenceDate),
   }),
 });

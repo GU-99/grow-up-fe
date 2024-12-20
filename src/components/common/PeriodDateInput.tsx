@@ -14,6 +14,7 @@ type PeriodDateInputProps = {
   endDateLabel: string;
   startDateFieldName: string;
   endDateFieldName: string;
+  enableEndDateSync: boolean;
   limitStartDate?: string | Date | null;
   limitEndDate?: string | Date | null;
 };
@@ -27,6 +28,7 @@ export default function PeriodDateInput({
   endDateFieldName,
   limitStartDate = null,
   limitEndDate = null,
+  enableEndDateSync = true,
 }: PeriodDateInputProps) {
   const [hasDeadline, setHasDeadline] = useState(false);
   const { toastWarn } = useToast();
@@ -42,14 +44,29 @@ export default function PeriodDateInput({
   const endDateStr = watch(endDateFieldName);
 
   useEffect(() => {
-    const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
-    const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
-    if (startDate && endDate) setHasDeadline(startDate < endDate);
-  }, [startDateStr, endDateStr]);
+    if (enableEndDateSync && !hasDeadline) {
+      setValue(endDateFieldName, null);
+    } else {
+      const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
+      const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
+      if (startDate && endDate) {
+        setHasDeadline(startDate < endDate);
+      }
+    }
+  }, [enableEndDateSync, hasDeadline, startDateStr, endDateStr]);
 
   const handleDeadlineToggle = () => {
-    setValue(endDateFieldName, getValues(startDateFieldName));
-    clearErrors(endDateFieldName);
+    if (hasDeadline === false) {
+      if (enableEndDateSync) {
+        setValue(endDateFieldName, null);
+      } else {
+        setValue(endDateFieldName, getValues(startDateFieldName));
+      }
+      clearErrors(endDateFieldName);
+    } else {
+      setValue(endDateFieldName, getValues(startDateFieldName));
+      clearErrors(endDateFieldName);
+    }
     setHasDeadline((prev) => !prev);
   };
 
@@ -82,7 +99,13 @@ export default function PeriodDateInput({
           className={`${hasDeadline ? '' : '!bg-disable outline-none'}`}
           readOnly={!hasDeadline}
           {...register(endDateFieldName, {
-            ...PERIOD_VALIDATION_RULES.END_DATE(hasDeadline, limitStartDate, limitEndDate, watch(startDateFieldName)),
+            ...PERIOD_VALIDATION_RULES.END_DATE(
+              hasDeadline,
+              limitStartDate,
+              limitEndDate,
+              watch(startDateFieldName),
+              enableEndDateSync,
+            ),
             onChange: (e) => {
               const startDate = DateTime.fromISO(startDateStr).startOf('day');
               const endDate = DateTime.fromISO(e.target.value).startOf('day');

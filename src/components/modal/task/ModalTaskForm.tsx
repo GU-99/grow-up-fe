@@ -162,6 +162,7 @@ export default function ModalTaskForm({ formId, project, onSubmit }: ModalTaskFo
           endDateFieldName="endDate"
           limitStartDate={projectStartDate}
           limitEndDate={projectEndDate}
+          enableEndDateSync
         />
 
         <div className="mb-20">
