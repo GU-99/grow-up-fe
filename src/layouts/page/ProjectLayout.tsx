@@ -1,33 +1,41 @@
 import { useMemo } from 'react';
 import { Navigate, NavLink, Outlet, useParams } from 'react-router-dom';
 import { RiSettings5Fill } from 'react-icons/ri';
+import useStore from '@stores/useStore';
 import useModal from '@hooks/useModal';
+import useToast from '@hooks/useToast';
 import { ProjectContext } from '@hooks/useProjectContext';
+import { useReadTeamInfo } from '@hooks/query/useTeamQuery';
+import { useReadStatuses } from '@hooks/query/useStatusQuery';
 import { useReadProjectCoworkers, useReadProjects } from '@hooks/query/useProjectQuery';
 import Spinner from '@components/common/Spinner';
 import ListSidebar from '@components/sidebar/ListSidebar';
 import ListProject from '@components/sidebar/ListProject';
 import CreateModalTask from '@components/modal/task/CreateModalTask';
+import UpdateModalProject from '@components/modal/project/UpdateModalProject';
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
-import useToast from '@hooks/useToast';
-import { useReadStatuses } from '@hooks/query/useStatusQuery';
 
 export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
+  const { teamInfo } = useReadTeamInfo(Number(teamId));
   const { projectList, isProjectLoading } = useReadProjects(Number(teamId));
 
   const { statusList, isStatusesLoading } = useReadStatuses(Number(projectId));
   const { projectCoworkers, isProjectCoworkersLoading } = useReadProjectCoworkers(Number(projectId));
   const { showModal: showTaskModal, openModal: openTaskModal, closeModal: closeTaskModal } = useModal();
   const { showModal: showStatusModal, openModal: openStatusModal, closeModal: closeStatusModal } = useModal();
+  const { showModal: showProjectModal, openModal: openProjectModal, closeModal: closeProjectModal } = useModal();
   const { toastWarn } = useToast();
 
+  const { userInfo } = useStore();
   const project = useMemo(
-    () => projectList?.find((project) => project.projectId.toString() === projectId),
+    () => projectList?.find((project) => project.projectId === Number(projectId)),
     [projectList, projectId],
   );
+  const userProjectRole = projectCoworkers.find((coworker) => coworker.userId === userInfo.userId)?.roleName;
 
   if (isProjectLoading || isProjectCoworkersLoading || isStatusesLoading) return <Spinner />;
+  if (!teamInfo) return <Navigate to="/error" replace />;
   if (!project) return <Navigate to="/error" replace />;
 
   const handleCreateTaskClick = () => {
@@ -37,10 +45,18 @@ export default function ProjectLayout() {
     openTaskModal();
   };
 
+  // ToDo: 권한 확인하는 로직을 한 곳으로 모은 hook을 만들 것.
+  const handleUpdateProjectClick = () => {
+    if (userProjectRole !== 'ADMIN') {
+      return toastWarn('프로젝트 수정 권한이 없습니다.');
+    }
+    openProjectModal();
+  };
+
   return (
     <>
       <section className="flex h-full gap-10 p-15">
-        <ListSidebar label="team" title="팀 이름...">
+        <ListSidebar label="team" title={teamInfo.teamName}>
           <ListProject data={projectList} targetId={projectId} />
         </ListSidebar>
         <section className="flex w-2/3 grow flex-col border border-list bg-contents-box">
@@ -50,9 +66,13 @@ export default function ProjectLayout() {
               <small className="mr-5 font-bold text-category">project</small>
               <span className="text-emphasis">{project?.projectName}</span>
             </div>
-            <div className="flex cursor-pointer items-center text-sm text-main">
+            <button
+              type="button"
+              className="flex cursor-pointer items-center text-sm text-main"
+              onClick={handleUpdateProjectClick}
+            >
               <RiSettings5Fill /> Project Setting
-            </div>
+            </button>
           </header>
           <div className="flex grow flex-col overflow-auto">
             <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-contents-box p-10 pb-0">
@@ -86,6 +106,7 @@ export default function ProjectLayout() {
       </section>
       {showTaskModal && <CreateModalTask project={project} onClose={closeTaskModal} />}
       {showStatusModal && <CreateModalProjectStatus project={project} onClose={closeStatusModal} />}
+      {showProjectModal && <UpdateModalProject projectId={project.projectId} onClose={closeProjectModal} />}
     </>
   );
 }
