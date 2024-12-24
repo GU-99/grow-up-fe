@@ -44,29 +44,15 @@ export default function PeriodDateInput({
   const endDateStr = watch(endDateFieldName);
 
   useEffect(() => {
-    if (enableEndDateSync && !hasDeadline) {
-      setValue(endDateFieldName, null);
-    } else {
-      const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
-      const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
-      if (startDate && endDate) {
-        setHasDeadline(startDate < endDate);
-      }
-    }
-  }, [enableEndDateSync, hasDeadline, startDateStr, endDateStr]);
+    const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
+    const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
+
+    if (startDate && endDate) setHasDeadline(startDate < endDate);
+  }, [startDateStr, endDateStr]);
 
   const handleDeadlineToggle = () => {
-    if (hasDeadline === false) {
-      if (enableEndDateSync) {
-        setValue(endDateFieldName, null);
-      } else {
-        setValue(endDateFieldName, getValues(startDateFieldName));
-      }
-      clearErrors(endDateFieldName);
-    } else {
-      setValue(endDateFieldName, getValues(startDateFieldName));
-      clearErrors(endDateFieldName);
-    }
+    setValue(endDateFieldName, enableEndDateSync ? null : getValues(startDateFieldName));
+    clearErrors(endDateFieldName);
     setHasDeadline((prev) => !prev);
   };
 
@@ -103,8 +89,7 @@ export default function PeriodDateInput({
               hasDeadline,
               limitStartDate,
               limitEndDate,
-              watch(startDateFieldName),
-              enableEndDateSync,
+              hasDeadline ? startDateStr : null,
             ),
             onChange: (e) => {
               const startDate = DateTime.fromISO(startDateStr).startOf('day');

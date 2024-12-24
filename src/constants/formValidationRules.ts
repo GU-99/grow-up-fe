@@ -200,9 +200,8 @@ export const PERIOD_VALIDATION_RULES = deepFreeze({
     periodStartDate: Date | string | null,
     periodEndDate: Date | string | null,
     referenceDate: Date | string | null,
-    enableEndDateSync: boolean,
   ) => ({
     required: hasDeadline && '종료일을 선택해주세요.',
-    validate: getDateValidation(periodStartDate, periodEndDate, enableEndDateSync ? null : referenceDate),
+    validate: getDateValidation(periodStartDate, periodEndDate, referenceDate),
   }),
 });
