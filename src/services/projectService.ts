@@ -128,7 +128,7 @@ export async function addProjectCoworker(
   roleName: ProjectRoleName,
   axiosConfig: AxiosRequestConfig = {},
 ): Promise<AxiosResponse<void>> {
-  return authAxios.post(`/project/${projectId}/user/invitation`, { userId, roleName }, axiosConfig);
+  return authAxios.post(`/project/${projectId}/user`, { userId, roleName }, axiosConfig);
 }
 
 /**
