@@ -7,17 +7,18 @@ import {
   TASK_DUMMY,
   TASK_FILE_DUMMY,
   TASK_USER_DUMMY,
+  TEAM_DUMMY,
   TEAM_USER_DUMMY,
   USER_DUMMY,
 } from '@mocks/mockData';
 
 import type { Role } from '@/types/RoleType';
 import type { User } from '@/types/UserType';
-import type { Team } from '@/types/TeamType';
-import type { Project, ProjectForm } from '@/types/ProjectType';
+import type { Team, TeamInfoForm } from '@/types/TeamType';
+import type { Project, ProjectInfoForm } from '@/types/ProjectType';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
-import type { ProjectUser, TaskFileForMemory, TaskUser, UploadTaskFile } from '@/types/MockType';
+import type { ProjectUser, TaskFileForMemory, TaskUser, TeamUser, UploadTaskFile } from '@/types/MockType';
 
 /* ===================== 역할(Role) 관련 처리 ===================== */
 
@@ -39,6 +40,10 @@ export function findUser(userId: User['userId']) {
 }
 
 /* ============= 팀에 연결된 유저(Team User) 관련 처리 ============= */
+// 팀과 연결된 유저 생성
+export function createTeamUser(newTeamUser: TeamUser) {
+  TEAM_USER_DUMMY.push(newTeamUser);
+}
 
 // 팀과 연결된 유저 조회
 export function findTeamUser(teamId: Team['teamId'], userId: User['userId']) {
@@ -50,7 +55,58 @@ export function findAllTeamUsers(teamId: Team['teamId']) {
   return TEAM_USER_DUMMY.filter((teamUser) => teamUser.teamId === teamId);
 }
 
+// 특정 팀 유저 수정
+export function updateTeamUser(teamId: Team['teamId'], userId: User['userId'], newRoleId: Role['roleId']) {
+  const teamUser = findTeamUser(teamId, userId);
+  if (!teamUser) throw new Error('팀원을 찾을 수 없습니다.');
+  teamUser.roleId = newRoleId;
+}
+
+// 팀 유저 삭제
+export function deleteTeamUser(teamId: Team['teamId'], userId: User['userId']) {
+  const teamUserIndex = TEAM_USER_DUMMY.findIndex(
+    (teamUser) => teamUser.teamId === teamId && teamUser.userId === userId,
+  );
+  if (teamUserIndex === -1) throw new Error('팀 유저를 찾을 수 없습니다.');
+  TEAM_USER_DUMMY.splice(teamUserIndex, 1);
+}
+
+// 팀에 속한 모든 팀 유저 삭제
+export function deleteAllTeamUser(teamId: Team['teamId']) {
+  const filteredTeamUsers = TEAM_USER_DUMMY.filter((teamUser) => teamUser.teamId !== teamId);
+  if (TEAM_USER_DUMMY.length !== filteredTeamUsers.length) {
+    TEAM_USER_DUMMY.length = 0;
+    TEAM_USER_DUMMY.push(...filteredTeamUsers);
+  }
+}
+
 /* ====================== 팀(Team) 관련 처리 ====================== */
+// 팀 생성
+export function createTeam(newTeam: Team) {
+  TEAM_DUMMY.push(newTeam);
+}
+
+// 팀 조회
+export function findTeam(teamId: Team['teamId']) {
+  return TEAM_DUMMY.find((team) => team.teamId === teamId);
+}
+
+// 팀 수정
+export function updateTeam(teamId: Team['teamId'], updatedTeamInfo: TeamInfoForm) {
+  const team = findTeam(teamId);
+  if (!team) throw new Error('팀를 찾을 수 없습니다.');
+
+  const { teamName, content } = updatedTeamInfo;
+  team.teamName = teamName;
+  team.content = content;
+}
+
+// 팀 삭제
+export function deleteTeam(teamId: Team['teamId']) {
+  const teamIndex = TEAM_DUMMY.findIndex((team) => team.teamId === teamId);
+  if (teamIndex === -1) throw new Error('팀을 찾을 수 없습니다.');
+  TEAM_DUMMY.splice(teamIndex, 1);
+}
 
 /* ========= 프로젝트에 연결된 유저(Project User) 관련 처리 ========= */
 
@@ -67,15 +123,6 @@ export function findProjectUser(projectId: Project['projectId'], userId: User['u
 // 프로젝트의 연결된 모든 유저 조회
 export function findAllProjectUser(projectId: Project['projectId']) {
   return PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId === projectId);
-}
-
-// 프로젝트와 연결된 모든 유저 삭제
-export function deleteAllProjectUser(projectId: Project['projectId']) {
-  const filteredProjectUsers = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId !== projectId);
-  if (PROJECT_USER_DUMMY.length !== filteredProjectUsers.length) {
-    PROJECT_USER_DUMMY.length = 0;
-    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
-  }
 }
 
 // 프로젝트 유저의 역할 업데이트
@@ -103,6 +150,28 @@ export function deleteProjectUser(projectId: Project['projectId'], userId: User[
   PROJECT_USER_DUMMY.splice(projectUserIndex, 1);
 }
 
+// 특정 유저에 연결된 모든 프로젝트 삭제
+export function deleteAllProjectUserByTeamId(teamId: Team['teamId'], userId: User['userId']) {
+  const projectIdList = findAllProject(teamId).map((project) => project.projectId);
+
+  const filteredProjectUsers = PROJECT_USER_DUMMY.filter(
+    (projectUser) => !(projectIdList.includes(projectUser.projectId) && projectUser.userId === userId),
+  );
+
+  if (PROJECT_USER_DUMMY.length !== filteredProjectUsers.length) {
+    PROJECT_USER_DUMMY.length = 0;
+    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+  }
+}
+
+// 프로젝트와 연결된 모든 유저 삭제
+export function deleteAllProjectUser(projectId: Project['projectId']) {
+  const filteredProjectUsers = PROJECT_USER_DUMMY.filter((projectUser) => projectUser.projectId !== projectId);
+  if (PROJECT_USER_DUMMY.length !== filteredProjectUsers.length) {
+    PROJECT_USER_DUMMY.length = 0;
+    PROJECT_USER_DUMMY.push(...filteredProjectUsers);
+  }
+}
 /* ================= 프로젝트(Project) 관련 처리 ================= */
 
 // 프로젝트 생성
@@ -120,22 +189,23 @@ export function findAllProject(teamId: Team['teamId']) {
   return PROJECT_DUMMY.filter((project) => project.teamId === teamId);
 }
 
+// 프로젝트 정보 수정
+export function updateProject(projectId: Project['projectId'], updatedProjectInfo: ProjectInfoForm) {
+  const project = findProject(projectId);
+  if (!project) throw new Error('프로젝트를 찾을 수 없습니다.');
+
+  const { projectName, content, startDate, endDate } = updatedProjectInfo;
+  project.projectName = projectName;
+  project.content = content;
+  project.startDate = new Date(startDate);
+  project.endDate = endDate ? new Date(endDate) : null;
+}
+
 // 프로젝트 삭제
 export function deleteProject(projectId: Project['projectId']) {
   const projectIndex = PROJECT_DUMMY.findIndex((project) => project.projectId === projectId);
   if (projectIndex === -1) throw new Error('프로젝트를 찾을 수 없습니다.');
   PROJECT_DUMMY.splice(projectIndex, 1);
-}
-
-// 프로젝트 정보 수정
-export function updateProject(projectId: Project['projectId'], updatedProjectInfo: ProjectForm) {
-  const project = findProject(projectId);
-  if (!project) throw new Error('프로젝트를 찾을 수 없습니다.');
-
-  project.projectName = updatedProjectInfo.projectName;
-  project.content = updatedProjectInfo.content;
-  project.startDate = new Date(updatedProjectInfo.startDate);
-  project.endDate = updatedProjectInfo.endDate ? new Date(updatedProjectInfo.endDate) : null;
 }
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */

@@ -286,10 +286,8 @@ const taskServiceHandler = [
       const { userId } = taskUsers[i];
 
       const projectUser = findProjectUser(projectId, userId);
-      if (!projectUser) return new HttpResponse(null, { status: 403 });
-
+      const role = projectUser ? findRole(projectUser.roleId) : { roleName: null };
       const user = findUser(userId);
-      const role = findRole(projectUser.roleId);
       if (!user || !role) return new HttpResponse(null, { status: 404 });
 
       const assignee = { userId: user.userId, nickname: user.nickname, roleName: role.roleName };

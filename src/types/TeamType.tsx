@@ -17,7 +17,7 @@ export type TeamInfoForm = Pick<Team, 'teamName' | 'content'>;
 
 export type TeamCoworkerForm = Omit<TeamCoworker, 'nickname'>;
 
-export type TeamForm = Omit<Team, 'teamId' | 'creatorId'> & { coworkers: TeamCoworkerForm[] };
+export type TeamForm = TeamInfoForm & { coworkers: TeamCoworkerForm[] };
 
 export type TeamListWithApproval = Omit<Team, 'creatorId'> &
   Pick<Role, 'roleName'> & {
