@@ -176,6 +176,7 @@ export default function UpdateModalTask({
                   endDateFieldName="endDate"
                   limitStartDate={projectStartDate}
                   limitEndDate={projectEndDate}
+                  enableEndDateSync={false}
                 />
 
                 <MarkdownEditor id="content" label="내용" contentFieldName="content" />

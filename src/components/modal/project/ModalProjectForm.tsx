@@ -1,10 +1,10 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
-import RoleTooltip from '@components/common/RoleTooltip';
 import { PROJECT_DEFAULT_ROLE, PROJECT_ROLE_INFO, PROJECT_ROLES } from '@constants/role';
 import { PROJECT_VALIDATION_RULES } from '@constants/formValidationRules';
 import Spinner from '@components/common/Spinner';
+import RoleTooltip from '@components/common/RoleTooltip';
 import PeriodDateInput from '@components/common/PeriodDateInput';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
@@ -55,7 +55,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
       projectName: '',
       content: '',
       startDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
-      endDate: DateTime.fromJSDate(new Date()).toFormat('yyyy-LL-dd'),
+      endDate: null,
       coworkers: [],
     },
   });
@@ -157,6 +157,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
           endDateId="endDate"
           startDateFieldName="startDate"
           endDateFieldName="endDate"
+          enableEndDateSync
         />
 
         <SearchUserInput
