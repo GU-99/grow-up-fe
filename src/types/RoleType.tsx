@@ -12,6 +12,6 @@ export type RoleInfo = {
 
 export type Role = {
   roleId: number;
-  roleName: RoleName;
+  roleName: RoleName | null;
   roleType: 'TEAM' | 'PROJECT';
 };
