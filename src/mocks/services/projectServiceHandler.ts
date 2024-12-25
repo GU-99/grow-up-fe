@@ -10,7 +10,6 @@ import {
   deleteAllTaskUser,
   deleteProject,
   deleteProjectUser,
-  deleteTaskUser,
   findAllProject,
   findAllProjectStatus,
   findAllProjectUser,
@@ -25,9 +24,10 @@ import {
   updateProjectUserRole,
 } from '@mocks/mockAPI';
 import { PROJECT_DUMMY } from '@mocks/mockData';
+import { createProjectUserFormat } from '@mocks/mockUtils';
 import { convertTokenToUserId } from '@utils/converter';
 import type { SearchUser, UserWithRole } from '@/types/UserType';
-import type { Project, ProjectCoworkerForm, ProjectForm } from '@/types/ProjectType';
+import type { Project, ProjectCoworkerForm, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 
 const API_URL = import.meta.env.VITE_API_URL;
 let autoIncrementIdForProject = PROJECT_DUMMY.length + 1;
@@ -101,17 +101,22 @@ const projectServiceHandler = [
     };
     createProject(newProject);
 
-    // 프로젝트 유저 연결 생성
-    // ToDo: 중간에 잘못되면 일관성, 정합성을 유지할 수 없음 수정 필요.
-    coworkers.push({ userId, roleName: 'ADMIN' });
-    for (let i = 0; i < coworkers.length; i++) {
-      const coworker = coworkers[i];
-      const role = findRoleByRoleName(coworker.roleName);
-      if (!role) return new HttpResponse(null, { status: 500 });
+    // 프로젝트 유저 연결 생성 (프로젝트 생성자, 프로젝트원)
+    const projectUsers = [];
+    try {
+      const adminCoworker: ProjectCoworkerForm = { userId, roleName: 'ADMIN' };
+      coworkers.push(adminCoworker);
 
-      const { roleId } = role;
-      createProjectUser({ userId: coworker.userId, projectId, roleId });
+      for (let i = 0; i < coworkers.length; i++) {
+        const coworker = coworkers[i];
+        const coworkerProjectUser = createProjectUserFormat(coworker, projectId);
+        projectUsers.push(coworkerProjectUser);
+      }
+    } catch (error) {
+      const { message } = error as Error;
+      return HttpResponse.json({ message }, { status: 404 });
     }
+    projectUsers.forEach((projectUser) => createProjectUser(projectUser));
 
     return new HttpResponse(null, { status: 200 });
   }),
@@ -211,8 +216,8 @@ const projectServiceHandler = [
       });
       deleteAllTask(projectId);
       deleteAllProjectStatus(projectId);
-      deleteProject(projectId);
       deleteAllProjectUser(projectId);
+      deleteProject(projectId);
     } catch (error) {
       console.error((error as Error).message);
       return new HttpResponse(null, { status: 500 });
@@ -226,7 +231,7 @@ const projectServiceHandler = [
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const teamId = Number(params.teamId);
-    const updatedProjectInfo = (await request.json()) as ProjectForm;
+    const updatedProjectInfo = (await request.json()) as ProjectInfoForm;
 
     // 유저 인증 확인
     if (!accessToken) return new HttpResponse(null, { status: 401 });
@@ -265,7 +270,7 @@ const projectServiceHandler = [
   }),
 
   // 프로젝트 팀원 추가 API
-  http.post(`${API_URL}/project/:projectId/user/invitation`, async ({ request, params }) => {
+  http.post(`${API_URL}/project/:projectId/user`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const { userId: projectCoworkerId, roleName } = (await request.json()) as ProjectCoworkerForm;
@@ -374,7 +379,7 @@ const projectServiceHandler = [
     // 요청한 유저의 역할 확인 (ADMIN 또는 LEADER만 권한 변경 가능)
     const userRole = findRole(projectUser.roleId);
     if (!userRole) {
-      return new HttpResponse('서버 데이터 오류: 역할이 매칭되지 않습니다.', { status: 500 });
+      return new HttpResponse('유효하지 않은 역할입니다.', { status: 404 });
     }
 
     if (userRole.roleName !== 'ADMIN' && userRole.roleName !== 'LEADER') {
@@ -382,15 +387,6 @@ const projectServiceHandler = [
     }
 
     try {
-      const statusIds = findAllProjectStatus(projectId).map((status) => status.statusId);
-
-      statusIds.forEach((statusId) => {
-        const tasks = findAllTask(statusId);
-        tasks.forEach((task) => {
-          deleteTaskUser(task.taskId, projectCoworkerId);
-        });
-      });
-
       deleteProjectUser(projectId, projectCoworkerId);
     } catch (error) {
       console.error((error as Error).message);

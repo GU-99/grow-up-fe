@@ -22,6 +22,7 @@ module.exports = {
     'object-curly-newline': 'off',
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-shadow': 'warn',
+    '@typescript-eslint/no-use-before-define': 'off',
     'no-param-reassign': 'warn',
     'no-return-assign': 'warn',
     'no-unused-vars': 'warn',
