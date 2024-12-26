@@ -29,3 +29,9 @@ export type TaskFileForMemory = {
   file: Blob;
   uploadName: string;
 };
+
+export type ProfileFileForMemory = {
+  userId: number;
+  file: Blob;
+  uploadName: string;
+};
