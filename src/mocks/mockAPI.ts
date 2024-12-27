@@ -1,5 +1,6 @@
 import {
   FILE_DUMMY,
+  PROFILE_IMAGE_DUMMY,
   PROJECT_DUMMY,
   PROJECT_USER_DUMMY,
   ROLE_DUMMY,
@@ -13,15 +14,21 @@ import {
 } from '@mocks/mockData';
 
 import type { Role } from '@/types/RoleType';
-import type { User } from '@/types/UserType';
+import type { EditUserInfoForm, EditUserLinksForm, User } from '@/types/UserType';
 import type { Team, TeamInfoForm } from '@/types/TeamType';
 import type { Project, ProjectInfoForm } from '@/types/ProjectType';
 import type { ProjectStatus, ProjectStatusForm } from '@/types/ProjectStatusType';
 import type { Task, TaskUpdateForm } from '@/types/TaskType';
-import type { ProjectUser, TaskFileForMemory, TaskUser, TeamUser, UploadTaskFile } from '@/types/MockType';
+import type {
+  ProfileFileForMemory,
+  ProjectUser,
+  TaskFileForMemory,
+  TaskUser,
+  TeamUser,
+  UploadTaskFile,
+} from '@/types/MockType';
 
 /* ===================== 역할(Role) 관련 처리 ===================== */
-
 // 역할 조회
 export function findRole(roleId: Role['roleId']) {
   return ROLE_DUMMY.find((role) => role.roleId === roleId);
@@ -33,12 +40,41 @@ export function findRoleByRoleName(roleName: Role['roleName']) {
 }
 
 /* ===================== 유저(User) 관련 처리 ===================== */
-
 // 유저 조회
 export function findUser(userId: User['userId']) {
   return USER_DUMMY.find((user) => user.userId === userId);
 }
 
+// 유저 정보 수정
+export function updateUserInfo(userId: User['userId'], updatedUserInfo: EditUserInfoForm) {
+  const user = findUser(userId);
+  if (!user) throw new Error('해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.');
+
+  const { nickname, bio } = updatedUserInfo;
+  user.nickname = nickname;
+  user.bio = bio;
+}
+
+// 유저 링크 수정
+export function updateUserLinks(userId: User['userId'], updatedUserLinks: EditUserLinksForm) {
+  const user = findUser(userId);
+  if (!user) throw new Error('해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.');
+  user.links = updatedUserLinks.links;
+}
+
+// 유저 프로필 수정
+export function updateUserProfile(userId: User['userId'], uploadName: string) {
+  const user = findUser(userId);
+  if (!user) throw new Error('해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.');
+  user.fileName = uploadName;
+}
+
+// 유저 프로필 삭제
+export function deleteUserProfile(userId: User['userId']) {
+  const user = findUser(userId);
+  if (!user) throw new Error('해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.');
+  user.fileName = null;
+}
 /* ============= 팀에 연결된 유저(Team User) 관련 처리 ============= */
 // 팀과 연결된 유저 생성
 export function createTeamUser(newTeamUser: TeamUser) {
@@ -50,8 +86,13 @@ export function findTeamUser(teamId: Team['teamId'], userId: User['userId']) {
   return TEAM_USER_DUMMY.find((teamUser) => teamUser.teamId === teamId && teamUser.userId === userId);
 }
 
+// 유저가 속한 모든 팀 조회
+export function findAllTeamUsersByUserId(userId: User['userId']) {
+  return TEAM_USER_DUMMY.filter((teamUser) => teamUser.userId === userId);
+}
+
 // 팀에 속한 모든 유저 조회
-export function findAllTeamUsers(teamId: Team['teamId']) {
+export function findAllTeamUsersByTeamId(teamId: Team['teamId']) {
   return TEAM_USER_DUMMY.filter((teamUser) => teamUser.teamId === teamId);
 }
 
@@ -172,8 +213,8 @@ export function deleteAllProjectUser(projectId: Project['projectId']) {
     PROJECT_USER_DUMMY.push(...filteredProjectUsers);
   }
 }
-/* ================= 프로젝트(Project) 관련 처리 ================= */
 
+/* ================= 프로젝트(Project) 관련 처리 ================= */
 // 프로젝트 생성
 export function createProject(newProject: Project) {
   PROJECT_DUMMY.push(newProject);
@@ -209,7 +250,6 @@ export function deleteProject(projectId: Project['projectId']) {
 }
 
 /* ================ 프로젝트 상태(Status) 관련 처리 ================ */
-
 // 프로젝트 상태 정보 생성
 export function createProjectStatus(newStatus: ProjectStatus) {
   STATUS_DUMMY.push(newStatus);
@@ -262,7 +302,6 @@ export function reorderStatusByProject(projectId: Project['projectId']) {
 }
 
 /* ============ 일정에 연결된 유저(Task User) 관련 처리 ============ */
-
 // 일정과 연결된 모든 유저 삭제
 export function deleteAllTaskUser(taskId: Task['taskId']) {
   const filteredTaskUsers = TASK_USER_DUMMY.filter((taskUser) => taskUser.taskId !== taskId);
@@ -284,7 +323,6 @@ export function deleteTaskUser(taskId: Task['taskId'], userId: number) {
 }
 
 /* ===================== 일정(Task) 관련 처리 ===================== */
-
 // 일정 추가
 export function createTask(task: Task) {
   TASK_DUMMY.push(task);
@@ -400,6 +438,27 @@ export function reorderTaskByStatus(statusId: ProjectStatus['statusId']) {
 }
 
 /* =============== 업로드 파일 임시 저장 관련 처리 =============== */
+// 업로드된 프로필 파일을 메모리 임시 저장
+export function saveUserProfileFileInMemory(userId: User['userId'], profileInfo: ProfileFileForMemory) {
+  const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
+  if (profileImageIndex !== -1) {
+    PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = profileInfo.uploadName;
+  } else {
+    PROFILE_IMAGE_DUMMY.push(profileInfo);
+  }
+}
+
+// 임시 저장된 프로필 파일 조회
+export function downloadProfileFileInMemory(uploadName: ProfileFileForMemory['uploadName']) {
+  return PROFILE_IMAGE_DUMMY.find((file) => file.uploadName === uploadName);
+}
+
+// 임시 저장된 프로필 파일 삭제
+export function deleteProfileFileInMemory(userId: User['userId']) {
+  const fileIndex = PROFILE_IMAGE_DUMMY.findIndex((file) => file.userId === userId);
+  if (fileIndex === -1) throw new Error('삭제할 프로필 이미지가 없습니다.');
+  PROFILE_IMAGE_DUMMY.splice(fileIndex, 1);
+}
 
 // 업로드된 일정 파일을 메모리 임시 저장
 export function saveTaskFileInMemory(taskFile: TaskFileForMemory) {

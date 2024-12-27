@@ -1,141 +1,140 @@
 import { http, HttpResponse } from 'msw';
-import { PROFILE_IMAGE_DUMMY, ROLE_DUMMY, TEAM_DUMMY, TEAM_USER_DUMMY, USER_DUMMY } from '@mocks/mockData';
+import { USER_DUMMY } from '@mocks/mockData';
+import {
+  deleteProfileFileInMemory,
+  deleteUserProfile,
+  downloadProfileFileInMemory,
+  findAllTeamUsersByUserId,
+  findRole,
+  findTeam,
+  findUser,
+  saveUserProfileFileInMemory,
+  updateUserInfo,
+  updateUserLinks,
+  updateUserProfile,
+} from '@mocks/mockAPI';
 import { NICKNAME_REGEX } from '@constants/regex';
 import { convertTokenToUserId } from '@utils/converter';
 import { fileNameParser } from '@utils/fileNameParser';
-import type { Team } from '@/types/TeamType';
-import type { Role } from '@/types/RoleType';
-import type { EditUserInfoForm, EditUserLinksForm, User } from '@/types/UserType';
+import type { EditUserInfoForm, EditUserLinksForm } from '@/types/UserType';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// ToDo: Dummy 데이터 Hash화 한 곳으로 모으기
 const userServiceHandler = [
   // 유저 정보 변경 API
   http.patch(`${API_URL}/user`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    const updatedUserInfo = (await request.json()) as EditUserInfoForm;
 
-    const { nickname, bio } = (await request.json()) as EditUserInfoForm;
+    // 유저 인증 확인
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
 
-    // 토큰에서 userId 추출
+    // 유저 ID 정보 취득
     const userId = convertTokenToUserId(accessToken);
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
-
-    if (userIndex === -1) {
-      return HttpResponse.json(
-        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
-        { status: 401 },
-      );
-    }
-
-    if (USER_DUMMY[userIndex].nickname !== nickname && !NICKNAME_REGEX.test(nickname)) {
+    // 입력 데이터 검증
+    const { nickname } = updatedUserInfo;
+    if (!NICKNAME_REGEX.test(nickname)) {
       return HttpResponse.json({ message: '요청 필드의 입력 포맷이 잘못되었습니다.' }, { status: 400 });
     }
 
-    USER_DUMMY[userIndex].nickname = nickname;
-    USER_DUMMY[userIndex].bio = bio;
+    // 유저 정보 변경
+    try {
+      updateUserInfo(userId, updatedUserInfo);
+    } catch (error) {
+      const { message } = error as Error;
+      return HttpResponse.json({ message }, { status: 401 });
+    }
+
+    // 변경된 유저 정보 반환
+    const user = findUser(userId);
+    if (!user) return new HttpResponse(null, { status: 500 });
 
     const userInfo = {
-      userId: USER_DUMMY[userIndex].userId,
-      nickname: USER_DUMMY[userIndex].nickname,
-      bio: USER_DUMMY[userIndex].bio,
+      userId: user.userId,
+      nickname: user.nickname,
+      bio: user.bio,
     };
-
     return HttpResponse.json(userInfo, { status: 200 });
   }),
+
   // 링크 변경 API
   http.patch(`${API_URL}/user/links`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    const updatedUserLinks = (await request.json()) as EditUserLinksForm;
 
-    const { links } = (await request.json()) as EditUserLinksForm;
+    // 유저 인증 확인
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
 
+    // 유저 ID 정보 취득
     const userId = convertTokenToUserId(accessToken);
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    const userIndex = userId ? USER_DUMMY.findIndex((user) => user.userId === userId) : -1;
-
-    if (userIndex === -1) {
-      return HttpResponse.json(
-        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
-        { status: 401 },
-      );
+    // 유저 링크 수정
+    try {
+      updateUserLinks(userId, updatedUserLinks);
+    } catch (error) {
+      const { message } = error as Error;
+      return HttpResponse.json({ message }, { status: 401 });
     }
-    USER_DUMMY[userIndex].links = links;
 
     return HttpResponse.json(null, { status: 200 });
   }),
+
   // 유저 프로필 이미지 업로드 API
   http.post(`${API_URL}/user/profile/image`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
-
     const formData = await request.formData();
     const file = formData.get('file');
 
+    // 유저 인증 확인
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
+
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
+
+    // 업로드 파일 확인
     if (!file) return new HttpResponse(null, { status: 400 });
     if (!(file instanceof File)) return new HttpResponse('업로드된 문서는 파일이 아닙니다.', { status: 400 });
 
-    const userId = convertTokenToUserId(accessToken);
-    if (!userId) {
-      return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
-    }
-
-    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
-    if (userIndex === -1) {
-      return HttpResponse.json(
-        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
-        { status: 401 },
-      );
-    }
-
+    // 유저 프로필 이미지 정보 추가
     const { fileName, extension } = fileNameParser(file.name);
     const uploadName = extension ? `${fileName}_${Date.now()}.${extension}` : `${fileName}_${Date.now()}`;
-
-    // 유저 정보에 이미지 추가
-    USER_DUMMY[userIndex].fileName = uploadName;
-
-    // 프로필 이미지 더미 데이터 추가
-    const profileImageIndex = PROFILE_IMAGE_DUMMY.findIndex((user) => user.userId === userId);
-    if (profileImageIndex !== -1) {
-      PROFILE_IMAGE_DUMMY[profileImageIndex].uploadName = uploadName;
-    } else {
-      PROFILE_IMAGE_DUMMY.push({
-        userId,
-        file: new Blob([file], { type: file.type }),
-        uploadName,
-      });
+    try {
+      updateUserProfile(userId, uploadName);
+    } catch (error) {
+      const { message } = error as Error;
+      return HttpResponse.json({ message }, { status: 401 });
     }
+
+    // 프로필 이미지 더미데이터 추가
+    const profileInfo = { userId, uploadName, file: new Blob([file], { type: file.type }) };
+    saveUserProfileFileInMemory(userId, profileInfo);
 
     return HttpResponse.json({ fileName: uploadName }, { status: 200 });
   }),
+
   // 유저 프로필 이미지 조회 API
   http.get(`${API_URL}/file/profile/:fileName`, async ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
     const { fileName } = params;
 
-    const accessToken = request.headers.get('Authorization');
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    // 유저 인증 확인
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
 
+    // 유저 ID 정보 취득
     const userId = convertTokenToUserId(accessToken);
-    if (!userId) {
-      return HttpResponse.json({ message: '토큰에 유저 정보가 존재하지 않습니다.' }, { status: 401 });
-    }
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
 
-    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
-    if (userIndex === -1) {
-      return HttpResponse.json(
-        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
-        { status: 401 },
-      );
-    }
-
+    // 유저 프로필 이미지 조회
     const decodedFileName = decodeURIComponent(fileName.toString());
-    const fileInfo = PROFILE_IMAGE_DUMMY.find((file) => file.uploadName === decodedFileName);
-    if (!fileInfo) return new HttpResponse(null, { status: 404 });
-
-    if (fileInfo.userId !== Number(userId))
+    const fileInfo = downloadProfileFileInMemory(decodedFileName);
+    if (!fileInfo) return HttpResponse.json({ message: '프로필 파일 정보를 찾을 수 없습니다.' }, { status: 404 });
+    if (fileInfo.userId !== userId) {
       return HttpResponse.json({ message: '해당 파일에 접근 권한이 없습니다.' }, { status: 403 });
+    }
 
     const buffer = await fileInfo.file.arrayBuffer();
     return HttpResponse.arrayBuffer(buffer, {
@@ -144,69 +143,60 @@ const userServiceHandler = [
       },
     });
   }),
+
   // 유저 프로필 이미지 삭제 API
   http.delete(`${API_URL}/user/profile/image`, async ({ request }) => {
     const accessToken = request.headers.get('Authorization');
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
 
+    // 유저 인증 확인
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
+
+    // 유저 ID 정보 취득
     const userId = convertTokenToUserId(accessToken);
-    if (!userId) {
-      return HttpResponse.json({ message: '토큰에 유저 정보가 존재하지 않습니다.' }, { status: 401 });
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
+
+    // 유저 프로필 파일 삭제
+    try {
+      deleteUserProfile(userId);
+      deleteProfileFileInMemory(userId);
+    } catch (error) {
+      const { message } = error as Error;
+      return HttpResponse.json({ message }, { status: 404 });
     }
-
-    const userIndex = USER_DUMMY.findIndex((user) => user.userId === userId);
-    if (userIndex === -1) {
-      return HttpResponse.json(
-        { message: '해당 사용자를 찾을 수 없습니다. 입력 정보를 확인해 주세요.' },
-        { status: 401 },
-      );
-    }
-
-    USER_DUMMY[userIndex].fileName = null;
-
-    const fileIndex = PROFILE_IMAGE_DUMMY.findIndex((file) => file.userId === userId);
-    if (fileIndex === -1) {
-      return HttpResponse.json({ message: '삭제할 프로필 이미지가 없습니다.' }, { status: 404 });
-    }
-
-    PROFILE_IMAGE_DUMMY.splice(fileIndex, 1);
 
     return new HttpResponse(null, { status: 204 });
   }),
+
   // 전체 팀 목록 조회 API (가입한 팀, 대기중인 팀)
   http.get(`${API_URL}/user/team`, ({ request }) => {
     const accessToken = request.headers.get('Authorization');
 
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    // 유저 인증 확인
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
 
+    // 유저 ID 정보 취득
     const userId = convertTokenToUserId(accessToken);
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
 
     // 유저가 속한 모든 팀 목록 추출
-    const teamUserList = TEAM_USER_DUMMY.filter((row) => row.userId === Number(userId));
-    // 유저 정보 Hash 형태로 추출
-    const USERS: { [key: string | number]: User } = {};
-    USER_DUMMY.forEach((user) => (USERS[user.userId] = user));
+    const teamUserList = findAllTeamUsersByUserId(userId);
 
-    // 역할 정보 Hash 형태로 추출
-    const ROLES: { [key: string | number]: Role } = {};
-    ROLE_DUMMY.forEach((role) => (ROLES[role.roleId] = role));
-
-    // 팀 정보 Hash 형태로 추출
-    const TEAMS: { [key: string | number]: Team } = {};
-    TEAM_DUMMY.forEach((team) => (TEAMS[team.teamId] = team));
-
+    // 각 팀의 정보 취득
     const teamJoinStatusList = teamUserList.map((teamUser) => {
-      const role = ROLES[teamUser.roleId];
-      const team = TEAMS[teamUser.teamId];
+      const role = findRole(teamUser.roleId);
+      const team = findTeam(teamUser.teamId);
 
-      const creatorUser = USERS[team.creatorId];
-      const creatorNickname = creatorUser ? creatorUser.nickname : 'Unknown';
+      if (!role) return HttpResponse.json({ message: '역할 정보를 찾을 수 없습니다.' }, { status: 404 });
+      if (!team) return HttpResponse.json({ message: '팀 정보를 찾을 수 없습니다.' }, { status: 404 });
+
+      const creator = findUser(team?.creatorId);
+      if (!creator) return HttpResponse.json({ message: '팀 관리자 정보를 찾을 수 없습니다.' }, { status: 404 });
 
       return {
         teamId: team.teamId,
         teamName: team.teamName,
         content: team.content,
-        creator: creatorNickname,
+        creator: creator.nickname,
         creatorId: team.creatorId,
         isPendingApproval: teamUser.isPendingApproval,
         roleName: role.roleName,
@@ -223,11 +213,11 @@ const userServiceHandler = [
     const accessToken = request.headers.get('Authorization');
 
     // 유저 인증 확인
-    if (!accessToken) return new HttpResponse(null, { status: 401 });
+    if (!accessToken) return HttpResponse.json({ message: '토큰 정보가 없습니다.' }, { status: 401 });
 
     // 유저 ID 정보 취득
     const userId = convertTokenToUserId(accessToken);
-    if (!userId) return new HttpResponse(null, { status: 401 });
+    if (!userId) return HttpResponse.json({ message: '토큰에 포함된 유저 정보가 존재하지 않습니다.' }, { status: 401 });
 
     // 접두사(nickname)와 일치하는 유저 정보 최대 5명 추출
     const matchedSearchUsers = USER_DUMMY.filter((user) => user.nickname.startsWith(nickname) && user.userId !== userId)

@@ -19,7 +19,7 @@ import {
   findAllProject,
   findAllProjectStatus,
   findAllTask,
-  findAllTeamUsers,
+  findAllTeamUsersByTeamId,
   findRole,
   findRoleByRoleName,
   findTeamUser,
@@ -54,7 +54,7 @@ const teamServiceHandler = [
     if (!teamUser) return new HttpResponse(null, { status: 403 });
 
     // 팀에 참여하고 있는 모든 유저 검색
-    const teamUsers = findAllTeamUsers(teamId).filter((teamUser) => teamUser.isPendingApproval === false);
+    const teamUsers = findAllTeamUsersByTeamId(teamId).filter((teamUser) => teamUser.isPendingApproval === false);
     const searchUsers: SearchUser[] = [];
 
     // 팀 유저 정보 취득
@@ -259,7 +259,7 @@ const teamServiceHandler = [
     if (!userId) return new HttpResponse(null, { status: 401 });
 
     // 모든 팀원 조회
-    const teamUsers = findAllTeamUsers(teamId);
+    const teamUsers = findAllTeamUsersByTeamId(teamId);
 
     // 팀원 정보 조회
     const memberInfo = teamUsers.map((teamUser) => {
