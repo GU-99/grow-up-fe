@@ -9,8 +9,8 @@ import type { TeamRoleName } from '@/types/RoleType';
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId - 팀 아이디
- * @param {User['nickname']} nickname - 유저 닉네임
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {User['nickname']} nickname           - 유저 닉네임
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<SearchUser[]>>}
  */
@@ -27,7 +27,7 @@ export async function findUserByTeam(
  *
  * @export
  * @async
- * @param {TeamForm} teamData - 팀 생성정보 객체
+ * @param {TeamForm} teamData                   - 팀 생성정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -40,7 +40,7 @@ export async function createTeam(teamData: TeamForm, axiosConfig: AxiosRequestCo
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId               - 팀 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -53,7 +53,7 @@ export async function leaveTeam(teamId: Team['teamId'], axiosConfig: AxiosReques
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId               - 팀 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -66,7 +66,7 @@ export async function deleteTeam(teamId: Team['teamId'], axiosConfig: AxiosReque
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId               - 팀 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -79,7 +79,7 @@ export async function acceptTeamInvitation(teamId: Team['teamId'], axiosConfig: 
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId - 팀 아이디
+ * @param {Team['teamId']} teamId               - 팀 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -92,10 +92,10 @@ export async function declineTeamInvitation(teamId: Team['teamId'], axiosConfig:
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId
- * @param {User['userId']} userId
- * @param {string} roleName
- * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {User['userId']} userId               - 유저저 ID
+ * @param {string} roleName                     - 역할 이름
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function addTeamMember(
@@ -112,9 +112,9 @@ export async function addTeamMember(
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId
- * @param {User['userId']} userId
- * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {User['userId']} userId               - 유저 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function removeTeamMember(
@@ -130,10 +130,10 @@ export async function removeTeamMember(
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId
- * @param {User['userId']} userId
- * @param {TeamRoleName} roleName
- * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {User['userId']} userId               - 유저 ID
+ * @param {TeamRoleName} roleName               - 역할 이름름
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateTeamRole(
@@ -146,12 +146,12 @@ export async function updateTeamRole(
 }
 
 /**
- * 팀에 속한 유저 목록을 가져오는 API
+ * 팀원 목록 조회 API
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId
- * @param {AxiosRequestConfig} [axiosConfig={}] -
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<TeamCoworker[]>>}
  */
 export async function findTeamCoworker(teamId: Team['teamId'], axiosConfig: AxiosRequestConfig = {}) {
@@ -163,9 +163,9 @@ export async function findTeamCoworker(teamId: Team['teamId'], axiosConfig: Axio
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId
- * @param {TeamForm} teamData
- * @param {AxiosRequestConfig} [axiosConfig={}]
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {TeamForm} teamData                   - 팀 정보 수정 객체
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateTeamInfo(
