@@ -246,7 +246,6 @@ const teamServiceHandler = [
   }),
 
   // 팀원 목록 조회 API
-  // ToDo: 응답에 isPendingApproval 추가하기
   http.get(`${API_URL}/team/:teamId/user`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const teamId = Number(params.teamId);
@@ -270,6 +269,7 @@ const teamServiceHandler = [
         userId: user?.userId,
         nickname: user?.nickname,
         roleName: role?.roleName,
+        isPendingApproval: teamUser.isPendingApproval,
       };
     });
 

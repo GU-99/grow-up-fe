@@ -12,10 +12,11 @@ export type TeamCoworker = {
   userId: User['userId'];
   roleName: TeamRoleName;
   nickname: string;
+  isPendingApproval: boolean;
 };
 export type TeamInfoForm = Pick<Team, 'teamName' | 'content'>;
 
-export type TeamCoworkerForm = Omit<TeamCoworker, 'nickname'>;
+export type TeamCoworkerForm = Omit<TeamCoworker, 'nickname' | 'isPendingApproval'>;
 
 export type TeamForm = TeamInfoForm & { coworkers: TeamCoworkerForm[] };
 
