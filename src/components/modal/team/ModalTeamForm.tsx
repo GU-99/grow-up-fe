@@ -89,7 +89,7 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
 
     const updatedCoworkerInfos: TeamCoworker[] = [
       ...coworkerInfos,
-      { userId: user.userId, nickname: user.nickname, roleName: TEAM_DEFAULT_ROLE },
+      { userId: user.userId, nickname: user.nickname, roleName: TEAM_DEFAULT_ROLE, isPendingApproval: false },
     ];
     const updatedCoworkers = updatedCoworkerInfos.map(({ userId, roleName }) => ({
       userId,
