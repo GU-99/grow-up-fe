@@ -257,5 +257,7 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
     },
   });
 
+  teamCoworkers.sort((a, b) => Number(a.isPendingApproval) - Number(b.isPendingApproval));
+
   return { teamCoworkers, isLoading, isError };
 }
