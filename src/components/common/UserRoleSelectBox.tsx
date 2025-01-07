@@ -7,6 +7,7 @@ import type { RoleName } from '@/types/RoleType';
 type UserRoleSelectBoxProps<T extends RoleName> = {
   userId: User['userId'];
   nickname: User['nickname'];
+  isHighlighted?: boolean;
   defaultValue: RoleName;
   roles: typeof TEAM_CREATE_ROLES | typeof TEAM_ROLES | typeof PROJECT_ROLES;
   onRoleChange: (userId: number, roleName: T) => void;
@@ -16,6 +17,7 @@ type UserRoleSelectBoxProps<T extends RoleName> = {
 export default function UserRoleSelectBox<T extends RoleName>({
   userId,
   nickname,
+  isHighlighted = false,
   defaultValue,
   roles,
   onRoleChange,
@@ -26,10 +28,10 @@ export default function UserRoleSelectBox<T extends RoleName>({
   };
 
   return (
-    <div className="ml-4 mt-4 flex items-center text-sm">
+    <div className={`ml-4 mt-4 flex items-center text-sm ${isHighlighted ? '*:bg-sub' : '*:bg-gray-200'}`}>
       <select
         onChange={handleRoleChange}
-        className="mr-2 appearance-none rounded-l-lg border-none bg-gray-200 py-2 pl-4 pr-2"
+        className="mr-2 appearance-none rounded-l-lg border-none py-2 pl-4 pr-2"
         defaultValue={defaultValue}
       >
         {roles.map((role) => (
@@ -39,7 +41,7 @@ export default function UserRoleSelectBox<T extends RoleName>({
         ))}
       </select>
 
-      <div className="flex items-center justify-between rounded-r-lg bg-gray-200 p-2">
+      <div className="flex items-center justify-between rounded-r-lg p-2">
         <span>{nickname}</span>
         <button type="button" className="ml-2" onClick={() => onRemoveUser(userId)} aria-label="유저 제거">
           <IoMdCloseCircle className="size-10 cursor-pointer text-close hover:text-[#DF0000]" />

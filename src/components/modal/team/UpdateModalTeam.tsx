@@ -142,12 +142,13 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
             onUserClick={(user) => handleCoworkersClick(user.userId, TEAM_DEFAULT_ROLE)}
           />
           <div className="flex flex-wrap">
-            {teamCoworkers.map(({ userId, nickname, roleName }) => (
+            {teamCoworkers.map(({ userId, nickname, roleName, isPendingApproval }) => (
               <UserRoleSelectBox
                 key={userId}
                 userId={userId}
                 nickname={nickname}
                 roles={TEAM_ROLES}
+                isHighlighted={!isPendingApproval}
                 defaultValue={roleName as TeamRoleName}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}
