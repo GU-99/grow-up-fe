@@ -143,6 +143,8 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
             <input
               id="teamName"
               type="text"
+              aria-invalid={!isAvailable}
+              aria-describedby="teamName-Status"
               {...register('teamName', {
                 ...TEAM_VALIDATION_RULES.TEAM_NAME(teamNameList),
                 onChange: (e) => setValue('teamName', e.target.value.trim()),
@@ -156,14 +158,17 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
               ) : (
                 teamName &&
                 (isAvailable ? (
-                  <GiCheckMark className="z-10 size-10 text-main" />
+                  <GiCheckMark className="z-10 size-10 text-main" aria-label="사용 가능한 팀 이름" />
                 ) : (
-                  <RiProhibited2Line className="z-10 size-10 text-error" />
+                  <RiProhibited2Line className="z-10 size-10 text-error" aria-label="사용 불가능한 팀 이름" />
                 ))
               )}
             </div>
           </div>
-          <div className={`my-5 h-10 text-xs text-error ${errors?.teamName ? 'visible' : 'invisible'}`}>
+          <div
+            id="teamName-Status"
+            className={`my-5 h-10 text-xs text-error ${errors?.teamName ? 'visible' : 'invisible'}`}
+          >
             {errors?.teamName?.message}
           </div>
         </div>

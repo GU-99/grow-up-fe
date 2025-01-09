@@ -186,5 +186,5 @@ export async function updateTeamInfo(
  * @returns {Promise<AxiosResponse<{ available: boolean }>>}
  */
 export async function checkTeamNameAvailability(teamName: string, axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get<{ available: boolean }>(`/team/check=${teamName}`, axiosConfig);
+  return authAxios.get<{ available: boolean }>(`/team/check?name=${teamName}`, axiosConfig);
 }
