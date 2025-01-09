@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { GiCheckMark } from 'react-icons/gi';
+import { RiProhibited2Line } from 'react-icons/ri';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
-import { useReadTeams } from '@hooks/query/useTeamQuery';
+import { useCheckTeamNameAvailability, useReadTeams } from '@hooks/query/useTeamQuery';
 import { TEAM_CREATE_ROLES, TEAM_DEFAULT_ROLE, TEAM_ROLE_INFO } from '@constants/role';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import { findUser } from '@services/userService';
@@ -11,9 +13,8 @@ import RoleTooltip from '@components/common/RoleTooltip';
 import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
-import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
 import { getTeamNameList } from '@utils/extractDataList';
-
+import { checkTeamNameAvailability } from '@services/teamService';
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, User } from '@/types/UserType';
 import type { TeamRoleName } from '@/types/RoleType';
@@ -31,9 +32,6 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
   const [coworkerInfos, setCoworkerInfos] = useState<TeamCoworker[]>([]);
   const { loading, data: userList = [], clearData, fetchData } = useAxios(findUser);
   const { toastInfo } = useToast();
-
-  const { teamList, isLoading: isTeamListLoading } = useReadTeams();
-  const teamNameList = useMemo(() => getTeamNameList(teamList), [teamList]);
 
   const searchCallbackInfo: AllSearchCallback = useMemo(
     () => ({ type: 'ALL', searchCallback: fetchData }),
@@ -56,6 +54,31 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
     formState: { errors },
     register,
   } = methods;
+
+  const teamName = watch('teamName');
+  const { isAvailable, isLoading } = useCheckTeamNameAvailability(teamName);
+  const { teamList, isLoading: isTeamListLoading } = useReadTeams();
+  const teamNameList = useMemo(() => getTeamNameList(teamList), [teamList]);
+
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+
+    abortControllerRef.current = new AbortController();
+    const { signal } = abortControllerRef.current;
+
+    debounceRef.current = setTimeout(() => {
+      checkTeamNameAvailability(teamName, { signal });
+    }, 500);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+    };
+  }, [teamName, checkTeamNameAvailability]);
 
   const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
     const updatedCoworkerInfos = coworkerInfos.map((coworkerInfo) =>
@@ -104,7 +127,6 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
   const handleSubmitForm: SubmitHandler<TeamForm> = (formData: TeamForm) => onSubmit(formData);
 
   if (isTeamListLoading) return <Spinner />;
-
   return (
     <FormProvider {...methods}>
       <form id={formId} className="mb-10 flex grow flex-col justify-center" onSubmit={handleSubmit(handleSubmitForm)}>
@@ -115,14 +137,36 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
           <RoleTooltip showTooltip={showTooltip} rolesInfo={TEAM_ROLE_INFO} />
         </div>
 
-        <DuplicationCheckInput
-          id="teamName"
-          label="팀명"
-          value={watch('teamName')}
-          placeholder="팀명을 입력해주세요."
-          errors={errors.teamName?.message}
-          register={register('teamName', TEAM_VALIDATION_RULES.TEAM_NAME(teamNameList))}
-        />
+        <div>
+          <label htmlFor="teamName">팀명</label>
+          <div className="relative">
+            <input
+              id="teamName"
+              type="text"
+              {...register('teamName', {
+                ...TEAM_VALIDATION_RULES.TEAM_NAME(teamNameList),
+                onChange: (e) => setValue('teamName', e.target.value.trim()),
+              })}
+              className="h-25 w-full min-w-200 rounded-md border border-input pl-10 pr-25 text-regular placeholder:text-xs"
+              placeholder="팀명을 입력해주세요."
+            />
+            <div className="absolute right-10 top-1/2 -translate-y-1/2">
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                teamName &&
+                (isAvailable ? (
+                  <GiCheckMark className="z-10 size-10 text-main" />
+                ) : (
+                  <RiProhibited2Line className="z-10 size-10 text-error" />
+                ))
+              )}
+            </div>
+          </div>
+          <div className={`my-5 h-10 text-xs text-error ${errors?.teamName ? 'visible' : 'invisible'}`}>
+            {errors?.teamName?.message}
+          </div>
+        </div>
 
         <DescriptionTextarea
           id="teamDescription"

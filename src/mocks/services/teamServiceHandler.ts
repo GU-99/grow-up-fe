@@ -22,6 +22,7 @@ import {
   findAllTeamUsersByTeamId,
   findRole,
   findRoleByRoleName,
+  findTeamByName,
   findTeamUser,
   findUser,
   updateTeam,
@@ -402,6 +403,24 @@ const teamServiceHandler = [
     }
 
     return new HttpResponse(null, { status: 200 });
+  }),
+
+  // 팀 명 중복체크 API
+  http.get(`${API_URL}/team/check=:teamName`, ({ request, params }) => {
+    const accessToken = request.headers.get('Authorization');
+    const { teamName } = params as { teamName: string };
+
+    // 유저 인증 확인
+    if (!accessToken) return new HttpResponse(null, { status: 401 });
+
+    // 유저 ID 정보 취득
+    const userId = convertTokenToUserId(accessToken);
+    if (!userId) return new HttpResponse(null, { status: 401 });
+
+    // 팀 이름 중복 여부 확인
+    const isAvailable = !findTeamByName(teamName);
+
+    return HttpResponse.json({ available: isAvailable }, { status: 200 });
   }),
 ];
 

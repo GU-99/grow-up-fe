@@ -76,6 +76,12 @@ export function deleteUserProfile(userId: User['userId']) {
   user.fileName = null;
 }
 /* ============= 팀에 연결된 유저(Team User) 관련 처리 ============= */
+
+// 팀 이름 중복 여부 확인 함수 추가
+export function findTeamByName(teamName: string) {
+  return TEAM_DUMMY.find((team) => team.teamName.toLowerCase() === teamName.toLowerCase());
+}
+
 // 팀과 연결된 유저 생성
 export function createTeamUser(newTeamUser: TeamUser) {
   TEAM_USER_DUMMY.push(newTeamUser);

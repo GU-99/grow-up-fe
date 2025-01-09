@@ -175,3 +175,16 @@ export async function updateTeamInfo(
 ) {
   return authAxios.patch(`/team/${teamId}`, teamInfo, axiosConfig);
 }
+
+/**
+ * 팀명 중복 체크 API
+ *
+ * @export
+ * @async
+ * @param {string} teamName                     - 팀명
+ * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
+ * @returns {Promise<AxiosResponse<{ available: boolean }>>}
+ */
+export async function checkTeamNameAvailability(teamName: string, axiosConfig: AxiosRequestConfig = {}) {
+  return authAxios.get<{ available: boolean }>(`/team/check=${teamName}`, axiosConfig);
+}
