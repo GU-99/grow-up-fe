@@ -146,7 +146,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
               endDateId="endDate"
               startDateFieldName="startDate"
               endDateFieldName="endDate"
-              enableEndDateSync
+              enableEndDateSync={false}
             />
           </form>
         </FormProvider>
