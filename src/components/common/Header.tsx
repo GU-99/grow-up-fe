@@ -5,16 +5,19 @@ import { FiHome } from 'react-icons/fi';
 import { useStore } from '@stores/useStore';
 import { logout } from '@services/authService';
 import useToast from '@hooks/useToast';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Header() {
   const { userInfo: userInfoData, onLogout, clearUserInfo, isAuthenticated } = useStore();
   const navigate = useNavigate();
   const { toastSuccess } = useToast();
+  const queryClient = useQueryClient();
 
   const handleLogout = async () => {
     try {
       await logout();
       onLogout();
+      queryClient.clear();
       clearUserInfo();
       navigate('/signin', { replace: true });
       setTimeout(() => {
