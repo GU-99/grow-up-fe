@@ -256,7 +256,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 수행자 목록 조회
-  http.get(`${API_URL}/project/:projectId/task/:taskId/taskuser`, ({ request, params }) => {
+  http.get(`${API_URL}/project/:projectId/task/:taskId/assignee`, ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const projectId = Number(params.projectId);
     const taskId = Number(params.taskId);

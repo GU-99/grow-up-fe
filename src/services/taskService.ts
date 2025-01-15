@@ -91,7 +91,7 @@ export async function findAssignees(
   taskId: Task['taskId'],
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<UserWithRole[]>(`/project/${projectId}/task/${taskId}/taskuser`, axiosConfig);
+  return authAxios.get<UserWithRole[]>(`/project/${projectId}/task/${taskId}/assignee`, axiosConfig);
 }
 
 /**
