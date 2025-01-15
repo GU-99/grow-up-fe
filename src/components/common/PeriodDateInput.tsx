@@ -51,7 +51,7 @@ export default function PeriodDateInput({
   }, [startDateStr, endDateStr]);
 
   const handleDeadlineToggle = () => {
-    setValue(endDateFieldName, enableEndDateSync ? null : getValues(startDateFieldName));
+    setValue(endDateFieldName, enableEndDateSync ? getValues(startDateFieldName) : null);
     clearErrors(endDateFieldName);
     setHasDeadline((prev) => !prev);
   };
