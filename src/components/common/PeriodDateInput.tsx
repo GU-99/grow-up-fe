@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { useFormContext } from 'react-hook-form';
 import { PERIOD_VALIDATION_RULES } from '@constants/formValidationRules';
@@ -43,10 +43,29 @@ export default function PeriodDateInput({
   const startDateStr = watch(startDateFieldName);
   const endDateStr = watch(endDateFieldName);
 
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const startDate = DateTime.fromISO(e.target.value).startOf('day');
+    const endDate = DateTime.fromISO(endDateStr).startOf('day');
+
+    const shouldUpdateEndDate = !hasDeadline || (endDate && startDate > endDate);
+    if (shouldUpdateEndDate) {
+      setValue(endDateFieldName, enableEndDateSync ? e.target.value : null);
+    }
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const startDate = DateTime.fromISO(startDateStr).startOf('day');
+    const endDate = DateTime.fromISO(e.target.value).startOf('day');
+    if (startDate > endDate) {
+      toastWarn('종료일은 시작일과 같거나 이후로 설정해주세요.');
+      setValue(endDateFieldName, enableEndDateSync ? startDateStr : null);
+    }
+  };
+
   useEffect(() => {
     const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
     const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
-
+    if (!endDate) setHasDeadline(false);
     if (startDate && endDate) setHasDeadline(startDate < endDate);
   }, [startDateStr, endDateStr]);
 
@@ -65,9 +84,7 @@ export default function PeriodDateInput({
           type="date"
           {...register(startDateFieldName, {
             ...PERIOD_VALIDATION_RULES.START_DATE(limitStartDate, limitEndDate),
-            onChange: (e) => {
-              if (!hasDeadline) setValue(endDateFieldName, e.target.value);
-            },
+            onChange: handleStartDateChange,
           })}
         />
         <div className={`my-5 h-10 grow text-xs text-error ${errors[startDateFieldName] ? 'visible' : 'invisible'}`}>
@@ -91,14 +108,7 @@ export default function PeriodDateInput({
               limitEndDate,
               hasDeadline ? startDateStr : null,
             ),
-            onChange: (e) => {
-              const startDate = DateTime.fromISO(startDateStr).startOf('day');
-              const endDate = DateTime.fromISO(e.target.value).startOf('day');
-              if (startDate > endDate) {
-                toastWarn('종료일은 시작일과 같거나 이후로 설정해주세요.');
-                setValue(endDateFieldName, startDateStr);
-              }
-            },
+            onChange: handleEndDateChange,
           })}
         />
         <div className={`my-5 h-10 grow text-xs text-error ${errors[endDateFieldName] ? 'visible' : 'invisible'}`}>
