@@ -46,7 +46,7 @@ export default function PeriodDateInput({
   useEffect(() => {
     const startDate = startDateStr ? DateTime.fromISO(startDateStr).startOf('day') : null;
     const endDate = endDateStr ? DateTime.fromISO(endDateStr).startOf('day') : null;
-
+    if (!endDate) setHasDeadline(false);
     if (startDate && endDate) setHasDeadline(startDate < endDate);
   }, [startDateStr, endDateStr]);
 
@@ -66,7 +66,11 @@ export default function PeriodDateInput({
           {...register(startDateFieldName, {
             ...PERIOD_VALIDATION_RULES.START_DATE(limitStartDate, limitEndDate),
             onChange: (e) => {
-              if (!hasDeadline) setValue(endDateFieldName, e.target.value);
+              const startDate = DateTime.fromISO(e.target.value).startOf('day');
+              const endDate = DateTime.fromISO(endDateStr).startOf('day');
+              if (startDate > endDate || !hasDeadline) {
+                setValue(endDateFieldName, enableEndDateSync ? e.target.value : null);
+              }
             },
           })}
         />
@@ -96,7 +100,7 @@ export default function PeriodDateInput({
               const endDate = DateTime.fromISO(e.target.value).startOf('day');
               if (startDate > endDate) {
                 toastWarn('종료일은 시작일과 같거나 이후로 설정해주세요.');
-                setValue(endDateFieldName, startDateStr);
+                setValue(endDateFieldName, enableEndDateSync ? startDateStr : null);
               }
             },
           })}
