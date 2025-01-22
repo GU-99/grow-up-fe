@@ -110,7 +110,7 @@ export function useUpdateStatusesOrder(projectId: Project['projectId']) {
       return updateStatusesOrder(projectId, { statuses: statusOrders });
     },
     onMutate: async (newStatusTaskList: TaskListWithStatus[]) => {
-      await queryClient.cancelQueries({ queryKey: TasksQueryKey });
+      await queryClient.cancelQueries({ queryKey: TasksQueryKey, exact: true });
 
       const previousStatusTaskList = queryClient.getQueryData(TasksQueryKey);
       queryClient.setQueryData(TasksQueryKey, newStatusTaskList);
