@@ -208,7 +208,7 @@ export async function downloadTaskFile(
   fileName: string,
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<Blob>(`/file/project/${projectId}/${taskId}/${fileName}`, {
+  return authAxios.get<Blob>(`/file/project/${projectId}/task/${taskId}/${fileName}`, {
     ...axiosConfig,
     responseType: 'blob',
   });

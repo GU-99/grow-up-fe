@@ -155,7 +155,7 @@ const taskServiceHandler = [
   }),
 
   // 일정 파일 다운로드 API
-  http.get(`${API_URL}/file/project/:projectId/:taskId/:fileName`, async ({ request, params }) => {
+  http.get(`${API_URL}/file/project/:projectId/task/:taskId/:fileName`, async ({ request, params }) => {
     const accessToken = request.headers.get('Authorization');
     const { projectId, taskId, fileName } = params;
 
