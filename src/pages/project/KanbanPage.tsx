@@ -5,10 +5,11 @@ import Meta from '@components/common/Meta';
 import ProjectStatusContainer from '@components/task/kanban/ProjectStatusContainer';
 import deepClone from '@utils/deepClone';
 import { parsePrefixId } from '@utils/converter';
+import useToast from '@hooks/useToast';
 import useProjectContext from '@hooks/useProjectContext';
 import { useUpdateStatusesOrder } from '@hooks/query/useStatusQuery';
 import { useReadStatusTasks, useUpdateTasksOrder } from '@hooks/query/useTaskQuery';
-import type { Task, TaskListWithStatus } from '@/types/TaskType';
+import type { TaskListWithStatus } from '@/types/TaskType';
 
 // 상태 순서 변경
 function createChangedStatus(statusTasks: TaskListWithStatus[], dropResult: DropResult) {
@@ -37,24 +38,31 @@ function createChangedTasks(statusTasks: TaskListWithStatus[], dropResult: DropR
   const taskId = Number(parsePrefixId(draggableId));
 
   const newStatusTasks = deepClone(statusTasks);
-  const sourceTasks = newStatusTasks.find((data) => data.statusId === sourceStatusId)!.tasks;
-  const destinationTasks = isSameStatus
-    ? sourceTasks
-    : newStatusTasks.find((data) => data.statusId === destinationStatusId)!.tasks;
-  const task = sourceTasks.find((data) => data.taskId === taskId)! as Task;
+  const sourceStatus = newStatusTasks.find((data) => data.statusId === sourceStatusId)!;
+  const destinationStatus = isSameStatus
+    ? sourceStatus
+    : newStatusTasks.find((data) => data.statusId === destinationStatusId)!;
+
+  // 출발지 프로젝트 상태 목록에서 일정 제거
+  const taskIndex = sourceStatus.tasks.findIndex((data) => data.taskId === taskId);
+  const [task] = sourceStatus.tasks.splice(taskIndex, 1);
+
+  // 프로젝트 상태 변경 반영
   task.statusId = destinationStatusId;
 
-  sourceTasks.splice(source.index, 1);
-  destinationTasks.splice(destination.index, 0, task);
+  // 도착지 프로젝트 상태 목록에 일정 추가
+  destinationStatus.tasks.splice(destination.index, 0, task);
 
-  sourceTasks.forEach((task, index) => (task.sortOrder = index + 1));
-  if (!isSameStatus) destinationTasks.forEach((task, index) => (task.sortOrder = index + 1));
+  // 변경된 일정 목록에 대한 정렬 순서 재부여
+  sourceStatus.tasks = sourceStatus.tasks.map((task, index) => ({ ...task, sortOrder: index + 1 }));
+  destinationStatus.tasks = destinationStatus.tasks.map((task, index) => ({ ...task, sortOrder: index + 1 }));
 
   return newStatusTasks;
 }
 
 // ToDo: DnD시 가시성을 위한 애니메이션 처리 추가할 것
 export default function KanbanPage() {
+  const { toastError } = useToast();
   const { project } = useProjectContext();
   const { statusTaskList } = useReadStatusTasks(project.projectId);
   const { mutate: updateTaskOrderMutate } = useUpdateTasksOrder(project.projectId);
@@ -71,17 +79,25 @@ export default function KanbanPage() {
     if (!destination) return;
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    if (type === DND_TYPE.STATUS) {
-      const newStatusTaskList = createChangedStatus(localStatusTaskList, dropResult);
-      setLocalStatusTaskList(newStatusTaskList);
-      updateStatusOrderMutate(newStatusTaskList);
-    }
+    try {
+      if (type === DND_TYPE.STATUS) {
+        setLocalStatusTaskList((prevStatusTaskList) => {
+          const newStatusTaskList = createChangedStatus(prevStatusTaskList, dropResult);
+          updateStatusOrderMutate(newStatusTaskList);
+          return newStatusTaskList;
+        });
+      }
 
-    if (type === DND_TYPE.TASK) {
-      const isSameStatus = source.droppableId === destination.droppableId;
-      const newStatusTaskList = createChangedTasks(localStatusTaskList, dropResult, isSameStatus);
-      setLocalStatusTaskList(newStatusTaskList);
-      updateTaskOrderMutate(newStatusTaskList);
+      if (type === DND_TYPE.TASK) {
+        setLocalStatusTaskList((prevStatusTaskList) => {
+          const isSameStatus = source.droppableId === destination.droppableId;
+          const newStatusTaskList = createChangedTasks(prevStatusTaskList, dropResult, isSameStatus);
+          updateTaskOrderMutate(newStatusTaskList);
+          return newStatusTaskList;
+        });
+      }
+    } catch (error) {
+      toastError((error as Error).message || '순서를 변경하는 중 오류가 발생했습니다.');
     }
   };
 

@@ -117,7 +117,7 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
       return updateTaskOrder(projectId, { tasks: taskOrders });
     },
     onMutate: async (newStatusTaskList: TaskListWithStatus[]) => {
-      await queryClient.cancelQueries({ queryKey: tasksQueryKey });
+      await queryClient.cancelQueries({ queryKey: tasksQueryKey, exact: true });
 
       const previousStatusTaskList = queryClient.getQueryData(tasksQueryKey);
       queryClient.setQueryData(tasksQueryKey, newStatusTaskList);
@@ -125,7 +125,7 @@ export function useUpdateTasksOrder(projectId: Project['projectId']) {
       return { previousStatusTaskList };
     },
     onError: (err, newStatusTaskList, context) => {
-      toastError('일정 순서 변경에실패 했습니다. 잠시 후 다시 시도해 주세요.');
+      toastError('일정 순서 변경에 실패했습니다. 잠시 후 다시 시도해 주세요.');
       queryClient.setQueryData(tasksQueryKey, context?.previousStatusTaskList);
     },
   });

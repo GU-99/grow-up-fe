@@ -25,7 +25,7 @@ export default function TaskStatusContainer({ statusTask }: TaskStatusContainerP
       <Draggable draggableId={draggableId} index={index}>
         {(statusDragProvided) => (
           <article
-            className="flex min-w-125 grow basis-1/3 flex-col"
+            className="flex min-w-125 grow basis-1/3 select-none flex-col"
             ref={statusDragProvided.innerRef}
             {...statusDragProvided.draggableProps}
           >
