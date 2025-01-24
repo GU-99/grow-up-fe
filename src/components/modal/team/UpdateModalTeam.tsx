@@ -66,10 +66,11 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   } = methods;
 
   useEffect(() => {
-    if (teamInfo?.teamName && teamInfo?.content && teamCoworkers) {
-      reset({ teamName: teamInfo.teamName, content: teamInfo.content });
+    if (teamInfo) {
+      const { teamName, content } = teamInfo;
+      reset({ teamName, content });
     }
-  }, [teamInfo, teamCoworkers, reset]);
+  }, [teamInfo, reset]);
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value.trim());
