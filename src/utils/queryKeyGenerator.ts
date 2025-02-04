@@ -50,6 +50,17 @@ export function generateLinksQueryKey(userId: User['userId']) {
 }
 
 /**
+ * 팀 이름 중복 확인 queryKey 생성 함수
+ *
+ * @export
+ * @param {string} teamName - 확인할 팀 이름
+ * @returns {(string | number)[]}
+ */
+export function generateTeamNameCheckQueryKey(teamName: string) {
+  return [queryKeys.teams, teamName];
+}
+
+/**
  * 유저의 팀 목록 queryKey 생성 함수
  *
  * @export\

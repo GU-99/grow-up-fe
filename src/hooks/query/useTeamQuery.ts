@@ -1,5 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { generateTeamCoworkersQueryKey, generateTeamsQueryKey } from '@utils/queryKeyGenerator';
+import {
+  generateTeamCoworkersQueryKey,
+  generateTeamNameCheckQueryKey,
+  generateTeamsQueryKey,
+} from '@utils/queryKeyGenerator';
 import { getTeamList } from '@services/userService';
 import {
   acceptTeamInvitation,
@@ -12,6 +16,7 @@ import {
   leaveTeam,
   removeTeamMember,
   updateTeamInfo,
+  checkTeamNameAvailability,
 } from '@services/teamService';
 import useToast from '@hooks/useToast';
 import { useMemo } from 'react';
@@ -260,4 +265,26 @@ export function useReadTeamCoworkers(teamId: Team['teamId']) {
   teamCoworkers.sort((a, b) => Number(a.isPendingApproval) - Number(b.isPendingApproval));
 
   return { teamCoworkers, isLoading, isError };
+}
+
+// 팀 명 중복체크
+export function useCheckTeamNameAvailability(teamName: string) {
+  const {
+    data = { available: false },
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: generateTeamNameCheckQueryKey(teamName),
+    queryFn: async () => {
+      const { data } = await checkTeamNameAvailability(teamName);
+      return data;
+    },
+    enabled: !!teamName,
+  });
+
+  return {
+    isAvailable: data.available,
+    isLoading,
+    isError,
+  };
 }
