@@ -1,9 +1,7 @@
 import { PROJECT_ROLES_PRIORITY, TEAM_ROLES_PRIORITY } from '@constants/role';
 
 export type RolePriorityMap = Record<string, number>;
-export type RolePriority<T extends TeamRoles | ProjectRoles> = T extends TeamRoles
-  ? TeamRolesPriority
-  : ProjectRolesPriority;
+export type RolePriority<T extends Roles> = [T] extends [TeamRoles] ? TeamRolesPriority : ProjectRolesPriority;
 
 export type TeamRolesPriority = typeof TEAM_ROLES_PRIORITY;
 export type ProjectRolesPriority = typeof PROJECT_ROLES_PRIORITY;
@@ -21,6 +19,6 @@ export type RoleInfo = {
 
 export type Role = {
   roleId: number;
-  roleName: Roles | null;
+  roleName: Roles;
   roleType: 'TEAM' | 'PROJECT';
 };

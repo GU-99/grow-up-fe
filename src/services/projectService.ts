@@ -2,8 +2,8 @@ import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Team } from '@/types/TeamType';
-import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
-import type { User, SearchUser, UserWithRole } from '@/types/UserType';
+import type { Project, ProjectCoworker, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
+import type { User, SearchUser } from '@/types/UserType';
 import type { ProjectRoles } from '@/types/RoleType';
 
 /**
@@ -54,10 +54,10 @@ export async function getProjectList(teamId: Team['teamId'], axiosConfig: AxiosR
  * @async
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<UserWithRole[]>>}
+ * @returns {Promise<AxiosResponse<ProjectCoworker[]>>}
  */
 export async function getProjectUserRoleList(projectId: Project['projectId'], axiosConfig: AxiosRequestConfig = {}) {
-  return authAxios.get<UserWithRole[]>(`/project/${projectId}/user`, axiosConfig);
+  return authAxios.get<ProjectCoworker[]>(`/project/${projectId}/user`, axiosConfig);
 }
 
 /**
