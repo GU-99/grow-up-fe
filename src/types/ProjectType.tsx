@@ -1,5 +1,5 @@
 import type { User } from '@/types/UserType';
-import type { ProjectRoleName } from '@/types/RoleType';
+import type { ProjectRoles } from '@/types/RoleType';
 
 // ToDo: API 설계 완료시 데이터 타입 변경할 것
 export type Project = {
@@ -13,7 +13,7 @@ export type Project = {
 
 export type ProjectCoworker = {
   userId: User['userId'];
-  roleName: ProjectRoleName;
+  roleName: ProjectRoles;
   nickname: string;
 };
 

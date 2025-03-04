@@ -25,7 +25,7 @@ import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 
 import type { Team, TeamForm } from '@/types/TeamType';
-import type { TeamRoleName } from '@/types/RoleType';
+import type { TeamRoles } from '@/types/RoleType';
 import type { AllSearchCallback } from '@/types/SearchCallbackType';
 import type { User } from '@/types/UserType';
 
@@ -81,7 +81,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     handleClose();
   };
 
-  const handleCoworkersClick = (userId: User['userId'], roleName: TeamRoleName) => {
+  const handleCoworkersClick = (userId: User['userId'], roleName: TeamRoles) => {
     const isIncludedUser = teamCoworkers.find((coworker) => coworker.userId === userId);
     if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
 
@@ -94,7 +94,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
     deleteCoworkerMutate(userId);
   };
 
-  const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: TeamRoles) => {
     updateTeamCoworkerRoleMutate({ userId, roleName });
   };
 
@@ -150,7 +150,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
                 nickname={nickname}
                 roles={TEAM_ROLES}
                 isHighlighted={!isPendingApproval}
-                defaultValue={roleName as TeamRoleName}
+                defaultValue={roleName as TeamRoles}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}
               />

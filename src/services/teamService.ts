@@ -2,7 +2,7 @@ import { authAxios } from '@services/axiosProvider';
 import type { AxiosRequestConfig } from 'axios';
 import type { SearchUser, User } from '@/types/UserType';
 import type { Team, TeamCoworker, TeamForm, TeamInfoForm } from '@/types/TeamType';
-import type { TeamRoleName } from '@/types/RoleType';
+import type { TeamRoles } from '@/types/RoleType';
 
 /**
  * 팀에 속한 유저 목록을 검색하는 API
@@ -101,7 +101,7 @@ export async function declineTeamInvitation(teamId: Team['teamId'], axiosConfig:
 export async function addTeamMember(
   teamId: Team['teamId'],
   userId: User['userId'],
-  roleName: TeamRoleName,
+  roleName: TeamRoles,
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.post(`/team/${teamId}/invitation`, { userId, roleName }, axiosConfig);
@@ -132,14 +132,14 @@ export async function removeTeamMember(
  * @async
  * @param {Team['teamId']} teamId               - 팀 ID
  * @param {User['userId']} userId               - 유저 ID
- * @param {TeamRoleName} roleName               - 역할 이름름
+ * @param {TeamRoles} roleName                  - 역할 이름
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateTeamRole(
   teamId: Team['teamId'],
   userId: User['userId'],
-  roleName: TeamRoleName,
+  roleName: TeamRoles,
   axiosConfig: AxiosRequestConfig = {},
 ) {
   return authAxios.patch(`/team/${teamId}/user/${userId}/role`, { roleName }, axiosConfig);

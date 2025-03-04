@@ -4,7 +4,7 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { Team } from '@/types/TeamType';
 import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
 import type { User, SearchUser, UserWithRole } from '@/types/UserType';
-import type { ProjectRoleName } from '@/types/RoleType';
+import type { ProjectRoles } from '@/types/RoleType';
 
 /**
  * 프로젝트에 속한 유저 목록을 검색하는 API
@@ -65,8 +65,8 @@ export async function getProjectUserRoleList(projectId: Project['projectId'], ax
  *
  * @export
  * @async
- * @param {Team['teamId']} teamId - 팀 ID
- * @param {ProjectForm} projectData - 프로젝트 생성 정보 객체
+ * @param {Team['teamId']} teamId               - 팀 ID
+ * @param {ProjectForm} projectData             - 프로젝트 생성 정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -96,9 +96,9 @@ export async function deleteProject(projectId: Project['projectId'], axiosConfig
  *
  * @export
  * @async
- * @param {number} teamId - 팀 ID
- * @param {number} projectId - 수정할 프로젝트 ID
- * @param {ProjectInfoForm} formData - 수정할 프로젝트 정보 객체
+ * @param {number} teamId                       - 팀 ID
+ * @param {number} projectId                    - 수정할 프로젝트 ID
+ * @param {ProjectInfoForm} formData            - 수정할 프로젝트 정보 객체
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
@@ -118,14 +118,14 @@ export async function updateProjectInfo(
  * @async
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {User['userId']} userId               - 초대할 유저 ID
- * @param {ProjectRoleName} roleName   - 유저의 역할
+ * @param {ProjectRoles} roleName               - 유저의 역할
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function addProjectCoworker(
   projectId: Project['projectId'],
   userId: User['userId'],
-  roleName: ProjectRoleName,
+  roleName: ProjectRoles,
   axiosConfig: AxiosRequestConfig = {},
 ): Promise<AxiosResponse<void>> {
   return authAxios.post(`/project/${projectId}/user`, { userId, roleName }, axiosConfig);
@@ -138,14 +138,14 @@ export async function addProjectCoworker(
  * @async
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {User['userId']} userId               - 유저 ID
- * @param {ProjectRoleName} roleName   - 업데이트할 역할
+ * @param {ProjectRoles} roleName               - 업데이트할 역할
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
  * @returns {Promise<AxiosResponse<void>>}
  */
 export async function updateProjectRole(
   projectId: Project['projectId'],
   userId: User['userId'],
-  roleName: ProjectRoleName,
+  roleName: ProjectRoles,
   axiosConfig: AxiosRequestConfig = {},
 ): Promise<AxiosResponse<void>> {
   return authAxios.patch(`/project/${projectId}/user/${userId}/role`, { roleName }, axiosConfig);

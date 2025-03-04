@@ -1,9 +1,20 @@
-import { deepFreeze } from '@utils/deepFreeze';
-import type { RoleInfo } from '@/types/RoleType';
+import type { ProjectRoles, RoleInfo, TeamRoles } from '@/types/RoleType';
 
-export const TEAM_ROLES = deepFreeze(['HEAD', 'LEADER', 'MATE'] as const);
-export const TEAM_CREATE_ROLES = deepFreeze(['LEADER', 'MATE'] as const);
-export const PROJECT_ROLES = deepFreeze(['ADMIN', 'LEADER', 'ASSIGNEE'] as const);
+export const TEAM_ROLES_PRIORITY = {
+  HEAD: 3,
+  LEADER: 2,
+  MATE: 1,
+};
+
+export const PROJECT_ROLES_PRIORITY = {
+  ADMIN: 3,
+  LEADER: 2,
+  ASSIGNEE: 1,
+};
+
+export const TEAM_ROLES = Object.keys(TEAM_ROLES_PRIORITY) as TeamRoles[];
+export const TEAM_CREATE_ROLES = TEAM_ROLES.filter((role) => role !== 'HEAD');
+export const PROJECT_ROLES = Object.keys(PROJECT_ROLES_PRIORITY) as ProjectRoles[];
 
 export const PROJECT_DEFAULT_ROLE = 'ASSIGNEE';
 export const TEAM_DEFAULT_ROLE = 'MATE';

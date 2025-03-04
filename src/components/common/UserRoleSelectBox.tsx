@@ -2,19 +2,19 @@ import React from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { PROJECT_ROLES, TEAM_CREATE_ROLES, TEAM_ROLES } from '@constants/role';
 import type { User } from '@/types/UserType';
-import type { RoleName } from '@/types/RoleType';
+import type { Roles } from '@/types/RoleType';
 
-type UserRoleSelectBoxProps<T extends RoleName> = {
+type UserRoleSelectBoxProps<T extends Roles> = {
   userId: User['userId'];
   nickname: User['nickname'];
   isHighlighted?: boolean;
-  defaultValue: RoleName;
+  defaultValue: Roles;
   roles: typeof TEAM_CREATE_ROLES | typeof TEAM_ROLES | typeof PROJECT_ROLES;
   onRoleChange: (userId: number, roleName: T) => void;
   onRemoveUser: (userId: number) => void;
 };
 
-export default function UserRoleSelectBox<T extends RoleName>({
+export default function UserRoleSelectBox<T extends Roles>({
   userId,
   nickname,
   isHighlighted = false,
