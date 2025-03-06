@@ -24,7 +24,7 @@ export default function TeamItem({ team }: TeamItemProps) {
   };
 
   return (
-    <li key={team.teamId} className="flex min-w-fit items-center gap-4 border-b p-8" aria-label="팀 이름">
+    <li className="flex min-w-fit items-center gap-4 border-b p-8" aria-label="팀 이름">
       <div className="flex grow gap-4">
         <div className="w-60">
           <small className="text-xs font-bold text-category">team</small>
