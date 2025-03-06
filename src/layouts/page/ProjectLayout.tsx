@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { Navigate, NavLink, Outlet, useParams } from 'react-router-dom';
 import { RiSettings5Fill } from 'react-icons/ri';
+import { PROJECT_ROLES_PRIORITY } from '@constants/role';
+import hasPermission from '@utils/permissionChecker';
 import useStore from '@stores/useStore';
 import useModal from '@hooks/useModal';
 import useToast from '@hooks/useToast';
@@ -14,6 +16,7 @@ import ListProject from '@components/sidebar/ListProject';
 import CreateModalTask from '@components/modal/task/CreateModalTask';
 import UpdateModalProject from '@components/modal/project/UpdateModalProject';
 import CreateModalProjectStatus from '@components/modal/project-status/CreateModalProjectStatus';
+import type { ProjectRoles } from '@/types/RoleType';
 
 export default function ProjectLayout() {
   const { teamId, projectId } = useParams();
@@ -32,7 +35,7 @@ export default function ProjectLayout() {
     () => projectList?.find((project) => project.projectId === Number(projectId)),
     [projectList, projectId],
   );
-  const userProjectRole = projectCoworkers.find((coworker) => coworker.userId === userInfo.userId)?.roleName;
+  const projectUser = projectCoworkers.find((coworker) => coworker.userId === userInfo.userId);
 
   if (isProjectLoading || isProjectCoworkersLoading || isStatusesLoading) return <Spinner />;
   if (!teamInfo) return <Navigate to="/error" replace />;
@@ -47,7 +50,8 @@ export default function ProjectLayout() {
 
   // ToDo: 권한 확인하는 로직을 한 곳으로 모은 hook을 만들 것.
   const handleUpdateProjectClick = () => {
-    if (userProjectRole !== 'ADMIN') {
+    if (!projectUser) return toastWarn('유저 권한을 확인할 수 없습니다.');
+    if (!hasPermission<ProjectRoles>(PROJECT_ROLES_PRIORITY, 'ADMIN', projectUser.roleName)) {
       return toastWarn('프로젝트 수정 권한이 없습니다.');
     }
     openProjectModal();

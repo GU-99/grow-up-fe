@@ -16,7 +16,7 @@ import { getTeamNameList } from '@utils/extractDataList';
 
 import type { SubmitHandler } from 'react-hook-form';
 import type { SearchUser, User } from '@/types/UserType';
-import type { TeamRoleName } from '@/types/RoleType';
+import type { TeamRoles } from '@/types/RoleType';
 import type { TeamCoworker, TeamForm } from '@/types/TeamType';
 import type { AllSearchCallback } from '@/types/SearchCallbackType';
 
@@ -57,7 +57,7 @@ export default function ModalTeamForm({ formId, onSubmit }: ModalTeamFormProps) 
     register,
   } = methods;
 
-  const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: TeamRoles) => {
     const updatedCoworkerInfos = coworkerInfos.map((coworkerInfo) =>
       coworkerInfo.userId === userId ? { ...coworkerInfo, roleName } : coworkerInfo,
     );

@@ -1,5 +1,5 @@
 import type { User } from '@/types/UserType';
-import type { Role, TeamRoleName } from '@/types/RoleType';
+import type { Role, TeamRoles } from '@/types/RoleType';
 
 export type Team = {
   teamId: number;
@@ -10,7 +10,7 @@ export type Team = {
 
 export type TeamCoworker = {
   userId: User['userId'];
-  roleName: TeamRoleName;
+  roleName: TeamRoles;
   nickname: string;
   isPendingApproval: boolean;
 };

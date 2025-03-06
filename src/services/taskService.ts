@@ -2,8 +2,8 @@ import { authAxios } from '@services/axiosProvider';
 
 import type { AxiosRequestConfig } from 'axios';
 import type { TaskFile } from '@/types/FileType';
-import type { Project } from '@/types/ProjectType';
-import type { User, UserWithRole } from '@/types/UserType';
+import type { Project, ProjectCoworker } from '@/types/ProjectType';
+import type { User } from '@/types/UserType';
 import type { Task, TaskCreationForm, TaskUpdateForm, TaskListWithStatus, TaskOrderForm } from '@/types/TaskType';
 
 /**
@@ -84,14 +84,14 @@ export async function updateTaskOrder(
  * @param {Project['projectId']} projectId      - 프로젝트 ID
  * @param {Task['taskId']} taskId               - 일정 ID
  * @param {AxiosRequestConfig} [axiosConfig={}] - axios 요청 옵션 설정 객체
- * @returns {Promise<AxiosResponse<UserWithRole[]>>}
+ * @returns {Promise<AxiosResponse<ProjectCoworker[]>>}
  */
 export async function findAssignees(
   projectId: Project['projectId'],
   taskId: Task['taskId'],
   axiosConfig: AxiosRequestConfig = {},
 ) {
-  return authAxios.get<UserWithRole[]>(`/project/${projectId}/task/${taskId}/assignee`, axiosConfig);
+  return authAxios.get<ProjectCoworker[]>(`/project/${projectId}/task/${taskId}/assignee`, axiosConfig);
 }
 
 /**

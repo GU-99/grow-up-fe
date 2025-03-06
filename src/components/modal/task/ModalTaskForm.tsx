@@ -23,8 +23,8 @@ import Validator from '@utils/Validator';
 import { getTaskNameList } from '@utils/extractDataList';
 
 import type { SubmitHandler } from 'react-hook-form';
-import type { SearchUser, UserWithRole } from '@/types/UserType';
-import type { Project } from '@/types/ProjectType';
+import type { SearchUser } from '@/types/UserType';
+import type { Project, ProjectCoworker } from '@/types/ProjectType';
 import type { CustomFile } from '@/types/FileType';
 import type { TaskForm } from '@/types/TaskType';
 import type { ProjectSearchCallback } from '@/types/SearchCallbackType';
@@ -40,7 +40,7 @@ export default function ModalTaskForm({ formId, project, onSubmit }: ModalTaskFo
   const { projectId, startDate: projectStartDate, endDate: projectEndDate } = project;
 
   const [keyword, setKeyword] = useState('');
-  const [assignees, setAssignees] = useState<UserWithRole[]>([]);
+  const [assignees, setAssignees] = useState<ProjectCoworker[]>([]);
   const [files, setFiles] = useState<CustomFile[]>([]);
 
   const { statusList, isStatusesLoading } = useReadStatuses(projectId);

@@ -30,7 +30,7 @@ import type { User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
 import type { Project, ProjectForm, ProjectInfoForm } from '@/types/ProjectType';
-import type { ProjectRoleName } from '@/types/RoleType';
+import type { ProjectRoles } from '@/types/RoleType';
 
 type UpdateModalProjectProps = {
   projectId: Project['projectId'];
@@ -90,7 +90,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     setKeyword(e.target.value.trim());
   };
 
-  const handleCoworkersClick = (userId: User['userId'], roleName: ProjectRoleName) => {
+  const handleCoworkersClick = (userId: User['userId'], roleName: ProjectRoles) => {
     const isIncludedUser = projectCoworkers.find((coworker) => coworker.userId === userId);
     if (isIncludedUser) return toastInfo('이미 포함된 프로젝트 멤버입니다');
 
@@ -99,7 +99,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
     clearData();
   };
 
-  const handleRoleChange = (userId: User['userId'], roleName: ProjectRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: ProjectRoles) => {
     updateProjectCoworkerRoleMutate({ userId, roleName });
   };
 
@@ -173,7 +173,7 @@ export default function UpdateModalProject({ projectId, onClose: handleClose }: 
                 userId={userId}
                 nickname={nickname}
                 roles={PROJECT_ROLES}
-                defaultValue={roleName as ProjectRoleName}
+                defaultValue={roleName as ProjectRoles}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}
               />

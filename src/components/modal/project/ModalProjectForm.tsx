@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 import type { SubmitHandler } from 'react-hook-form';
 import { getProjectNameList } from '@utils/extractDataList';
 import type { TeamSearchCallback } from '@/types/SearchCallbackType';
-import type { ProjectRoleName } from '@/types/RoleType';
+import type { ProjectRoles } from '@/types/RoleType';
 import type { ProjectCoworker, ProjectForm } from '@/types/ProjectType';
 import type { SearchUser, User } from '@/types/UserType';
 import type { Team } from '@/types/TeamType';
@@ -68,7 +68,7 @@ export default function ModalProjectForm({ formId, onSubmit }: ModalProjectFormP
     register,
   } = methods;
 
-  const handleRoleChange = (userId: User['userId'], roleName: ProjectRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: ProjectRoles) => {
     const updatedCoworkerInfos = coworkerInfos.map((coworkerInfo) =>
       coworkerInfo.userId === userId ? { ...coworkerInfo, roleName } : coworkerInfo,
     );

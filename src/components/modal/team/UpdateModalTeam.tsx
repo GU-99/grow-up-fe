@@ -9,7 +9,8 @@ import {
   useUpdateTeamCoworkerRole,
   useUpdateTeamInfo,
 } from '@hooks/query/useTeamQuery';
-import { TEAM_DEFAULT_ROLE, TEAM_ROLES } from '@constants/role';
+import useStore from '@stores/useStore';
+import { TEAM_DEFAULT_ROLE, TEAM_ROLES, TEAM_ROLES_PRIORITY } from '@constants/role';
 import { TEAM_VALIDATION_RULES } from '@constants/formValidationRules';
 import ModalLayout from '@layouts/ModalLayout';
 import Spinner from '@components/common/Spinner';
@@ -19,15 +20,16 @@ import SearchUserInput from '@components/common/SearchUserInput';
 import UserRoleSelectBox from '@components/common/UserRoleSelectBox';
 import DescriptionTextarea from '@components/common/DescriptionTextarea';
 import DuplicationCheckInput from '@components/common/DuplicationCheckInput';
+import hasPermission from '@utils/permissionChecker';
 import { getTeamNameList } from '@utils/extractDataList';
 import { findUser } from '@services/userService';
 import useAxios from '@hooks/useAxios';
 import useToast from '@hooks/useToast';
 
-import type { Team, TeamForm } from '@/types/TeamType';
-import type { TeamRoleName } from '@/types/RoleType';
-import type { AllSearchCallback } from '@/types/SearchCallbackType';
 import type { User } from '@/types/UserType';
+import type { Team, TeamForm } from '@/types/TeamType';
+import type { TeamRoles } from '@/types/RoleType';
+import type { AllSearchCallback } from '@/types/SearchCallbackType';
 
 type UpdateModalTeamProps = {
   teamId: Team['teamId'];
@@ -37,12 +39,16 @@ type UpdateModalTeamProps = {
 export default function UpdateModalTeam({ teamId, onClose: handleClose }: UpdateModalTeamProps) {
   const updateTeamFormId = 'updateTeamForm';
   const [keyword, setKeyword] = useState('');
-  const { toastInfo } = useToast();
+  const { toastInfo, toastWarn } = useToast();
+  const {
+    userInfo: { userId },
+  } = useStore();
 
   const { teamCoworkers, isLoading: isTeamCoworkersLoading } = useReadTeamCoworkers(teamId);
   const { teamList, isLoading: isTeamListLoading } = useReadTeams();
   const { teamInfo } = useReadTeamInfo(Number(teamId));
   const teamNameList = useMemo(() => getTeamNameList(teamList, teamInfo?.teamName), [teamList, teamInfo?.teamName]);
+  const teamUser = teamCoworkers.find((coworker) => coworker.userId === userId);
 
   const { mutate: updateTeamMutate } = useUpdateTeamInfo();
   const { mutate: addTeamCoworkerMutate } = useAddTeamCoworker(teamId);
@@ -77,11 +83,20 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   };
 
   const handleFormSubmit: SubmitHandler<TeamForm> = async (formData) => {
+    if (!teamUser) return toastWarn('유저 권한을 확인할 수 없습니다.');
+    if (!hasPermission<TeamRoles>(TEAM_ROLES_PRIORITY, 'HEAD', teamUser.roleName)) {
+      return toastWarn('팀 수정 권한이 없습니다.');
+    }
     updateTeamMutate({ teamId, teamInfo: formData });
     handleClose();
   };
 
-  const handleCoworkersClick = (userId: User['userId'], roleName: TeamRoleName) => {
+  const handleCoworkersClick = (userId: User['userId'], roleName: TeamRoles) => {
+    if (!teamUser) return toastWarn('유저 권한을 확인할 수 없습니다.');
+    if (!hasPermission<TeamRoles>(TEAM_ROLES_PRIORITY, 'HEAD', teamUser.roleName)) {
+      return toastWarn('팀원 추가 권한이 없습니다.');
+    }
+
     const isIncludedUser = teamCoworkers.find((coworker) => coworker.userId === userId);
     if (isIncludedUser) return toastInfo('이미 포함된 팀원입니다');
 
@@ -91,10 +106,18 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
   };
 
   const handleRemoveUser = (userId: User['userId']) => {
+    if (!teamUser) return toastWarn('유저 권한을 확인할 수 없습니다.');
+    if (!hasPermission<TeamRoles>(TEAM_ROLES_PRIORITY, 'HEAD', teamUser.roleName)) {
+      return toastWarn('팀원 삭제 권한이 없습니다.');
+    }
     deleteCoworkerMutate(userId);
   };
 
-  const handleRoleChange = (userId: User['userId'], roleName: TeamRoleName) => {
+  const handleRoleChange = (userId: User['userId'], roleName: TeamRoles) => {
+    if (!teamUser) return toastWarn('유저 권한을 확인할 수 없습니다.');
+    if (!hasPermission<TeamRoles>(TEAM_ROLES_PRIORITY, 'HEAD', teamUser.roleName)) {
+      return toastWarn('팀원 역할 권한이 없습니다.');
+    }
     updateTeamCoworkerRoleMutate({ userId, roleName });
   };
 
@@ -150,7 +173,7 @@ export default function UpdateModalTeam({ teamId, onClose: handleClose }: Update
                 nickname={nickname}
                 roles={TEAM_ROLES}
                 isHighlighted={!isPendingApproval}
-                defaultValue={roleName as TeamRoleName}
+                defaultValue={roleName as TeamRoles}
                 onRoleChange={handleRoleChange}
                 onRemoveUser={handleRemoveUser}
               />

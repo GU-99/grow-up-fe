@@ -5,10 +5,13 @@ import useModal from '@hooks/useModal';
 import useToast from '@hooks/useToast';
 import { useDeleteProject, useReadProjectCoworkers } from '@hooks/query/useProjectQuery';
 import useStore from '@stores/useStore';
+import hasPermission from '@utils/permissionChecker';
+import { PROJECT_ROLES_PRIORITY } from '@constants/role';
 import UpdateModalProject from '@components/modal/project/UpdateModalProject';
 
 import type { Team } from '@/types/TeamType';
 import type { Project } from '@/types/ProjectType';
+import type { ProjectRoles } from '@/types/RoleType';
 
 type ProjectItemProps = {
   teamId: Team['teamId'];
@@ -25,15 +28,21 @@ export default function ProjectItem({ teamId, project }: ProjectItemProps) {
   const { projectCoworkers } = useReadProjectCoworkers(project.projectId);
   const { mutate: deleteProjectMutate } = useDeleteProject(teamId);
 
-  const userProjectRole = projectCoworkers.find((coworker) => coworker.userId === userId)?.roleName;
+  const projectUser = projectCoworkers.find((coworker) => coworker.userId === userId);
 
   const handleOpenUpdateModal = () => {
-    if (userProjectRole !== 'ADMIN') return toastWarn('프로젝트 수정 권한이 없습니다.');
+    if (!projectUser) return toastWarn('참여 중인 프로젝트가 아닙니다.');
+    if (!hasPermission<ProjectRoles>(PROJECT_ROLES_PRIORITY, 'ADMIN', projectUser.roleName)) {
+      return toastWarn('프로젝트 수정 권한이 없습니다.');
+    }
     openUpdateModal();
   };
 
   const handleDeleteClick = (projectId: Project['projectId']) => {
-    if (userProjectRole !== 'ADMIN') return toastWarn('프로젝트 삭제 권한이 없습니다.');
+    if (!projectUser) return toastWarn('참여 중인 프로젝트가 아닙니다.');
+    if (!hasPermission<ProjectRoles>(PROJECT_ROLES_PRIORITY, 'ADMIN', projectUser.roleName)) {
+      return toastWarn('프로젝트 삭제 권한이 없습니다.');
+    }
     deleteProjectMutate(projectId);
   };
 

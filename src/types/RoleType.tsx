@@ -1,17 +1,24 @@
-export type TeamRoleName = 'HEAD' | 'LEADER' | 'MATE';
+import { PROJECT_ROLES_PRIORITY, TEAM_ROLES_PRIORITY } from '@constants/role';
 
-export type ProjectRoleName = 'ADMIN' | 'LEADER' | 'ASSIGNEE';
+export type RolePriorityMap = Record<string, number>;
+export type RolePriority<T extends Roles> = [T] extends [TeamRoles] ? TeamRolesPriority : ProjectRolesPriority;
 
-export type RoleName = TeamRoleName | ProjectRoleName;
+export type TeamRolesPriority = typeof TEAM_ROLES_PRIORITY;
+export type ProjectRolesPriority = typeof PROJECT_ROLES_PRIORITY;
+
+export type TeamRoles = keyof TeamRolesPriority;
+export type ProjectRoles = keyof ProjectRolesPriority;
+
+export type Roles = TeamRoles | ProjectRoles;
 
 export type RoleInfo = {
-  roleName: RoleName;
+  roleName: Roles;
   label: string;
   description: string;
 };
 
 export type Role = {
   roleId: number;
-  roleName: RoleName | null;
+  roleName: Roles | null;
   roleType: 'TEAM' | 'PROJECT';
 };

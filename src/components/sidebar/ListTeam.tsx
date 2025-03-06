@@ -33,7 +33,7 @@ export default function ListTeam({ data, targetId }: ListTeamProps) {
                 <span>{team.teamName}</span>
               </Link>
               <button
-                className="mr-6 flex items-center text-main hover:brightness-50"
+                className="mr-6 flex items-center text-main hover:brightness-50 focus-visible:outline-none"
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();

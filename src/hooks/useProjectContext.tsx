@@ -1,8 +1,7 @@
 import { useOutletContext } from 'react-router-dom';
-import { Project } from '@/types/ProjectType';
-import { UserWithRole } from '@/types/UserType';
+import { Project, ProjectCoworker } from '@/types/ProjectType';
 
-export type ProjectContext = { project: Project; projectCoworkers: UserWithRole[] };
+export type ProjectContext = { project: Project; projectCoworkers: ProjectCoworker[] };
 
 export default function useProjectContext() {
   return useOutletContext<ProjectContext>();
