@@ -25,6 +25,7 @@ export default function TeamLayout() {
 
   if (hasProjectRoute) return <Outlet />;
 
+  // ToDo: 팀 가입 목록이 없는 경우 UI 분리할 것
   return (
     <>
       <section className="flex h-full gap-10 p-15">
