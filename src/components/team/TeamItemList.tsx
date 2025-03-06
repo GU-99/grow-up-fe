@@ -9,7 +9,7 @@ export default function TeamItemList({ teamList }: TeamItemListProps) {
   return (
     <ul className="h-full overflow-y-auto">
       {teamList.map((team) => (
-        <TeamItem team={team} />
+        <TeamItem key={team.teamId} team={team} />
       ))}
     </ul>
   );
