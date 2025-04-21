@@ -31,7 +31,7 @@
 ## 🏗️ Architecture
 ![front-architecture](https://github.com/user-attachments/assets/5f46e663-78df-4274-bb2d-dceaf4ed6f36)
 
-## 🏠 Backend Crew
+## 🏠 Crew
 
 | Frontend | Frontend | Frontend | Designer|
 |:---:|:---:|:---:|:---:|
